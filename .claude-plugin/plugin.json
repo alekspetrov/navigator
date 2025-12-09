@@ -22,6 +22,7 @@
     "natural-language"
   ],
   "skills": [
+    "./skills/nav-onboard",
     "./skills/nav-init",
     "./skills/nav-start",
     "./skills/nav-stats",

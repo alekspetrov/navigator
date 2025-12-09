@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Complete framework for context-efficient AI development - Philosophy, Metrics, Education, Skills, and Multi-Claude Workflows",
-    "version": "4.6.0",
+    "version": "4.7.0",
     "breaking_changes": [
+      "v4.7.0: Interactive onboarding skill (nav-onboard) with hands-on learning",
       "v4.6.0: Native agents, token monitoring hooks, architecture optimization",
       "Added retry logic, timeout monitoring, state persistence, and workflow resume",
       "New scripts: sub-claude-monitor.sh, resume-workflow.sh",

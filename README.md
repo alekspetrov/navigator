@@ -3,8 +3,8 @@
 **92% token savings. Verified, not estimated.**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.6.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
-[![Status](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/alekspetrov/navigator/releases/tag/v4.6.0)
+[![Version](https://img.shields.io/badge/version-4.7.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
+[![Status](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/alekspetrov/navigator/releases/tag/v4.7.0)
 
 ---
 
@@ -237,7 +237,60 @@ This loads:
 
 ---
 
-## What's New in v4.6.0 (Latest)
+## What's New in v4.7.0 (Latest)
+
+**Interactive Onboarding** - Learn Navigator by doing, not just reading
+
+### nav-onboard Skill
+
+Two learning flows that teach Navigator through hands-on practice:
+
+**Quick Start (~15 min)**:
+```
+"onboard me"
+→ Auto-detect your project type
+→ 3 essential skills with practice tasks
+→ Get productive immediately
+```
+
+**Full Education (~25 min)**:
+```
+"teach me Navigator"
+→ Philosophy primer (why context efficiency matters)
+→ All 5 essential skills with practice
+→ Generate personalized MY-WORKFLOW.md
+```
+
+### What You'll Learn (by doing)
+
+| Task | What You Do | What You Create |
+|------|-------------|-----------------|
+| nav-start | "Start my Navigator session" | Loaded index |
+| nav-marker | "Create checkpoint [name]" | .context-markers/*.md |
+| nav-task | "Create task doc for [feature]" | .agent/tasks/TASK-XX.md |
+| nav-sop | "Create SOP for [issue]" | .agent/sops/**/*.md |
+| nav-compact | "Clear context and preserve" | .active marker |
+
+### Project Auto-Detection
+
+Detects your tech stack and recommends relevant skills:
+- Frontend: React, Next.js, Vue, Angular, Svelte
+- Backend: Express, FastAPI, Django, Go, Rust
+- Database: PostgreSQL, MySQL, MongoDB + ORMs
+- Testing: Jest, Pytest, etc.
+
+### Personalized Workflow Guide
+
+Generates `.agent/onboarding/MY-WORKFLOW.md` with:
+- Project-specific workflow diagram
+- Daily workflow checklist
+- Skills reference with triggers
+
+[Full v4.7.0 release notes](RELEASE-NOTES-v4.7.0.md)
+
+---
+
+## What Was in v4.6.0
 
 **Architecture Optimization** - Native agents, token monitoring, cleanup
 

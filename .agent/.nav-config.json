@@ -1,8 +1,22 @@
 {
-  "version": "4.6.0",
+  "version": "5.1.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
   "auto_load_navigator": true,
-  "compact_strategy": "conservative"
+  "compact_strategy": "conservative",
+  "tom_features": {
+    "verification_checkpoints": true,
+    "confirmation_threshold": "high-stakes",
+    "profile_enabled": true,
+    "diagnose_enabled": true,
+    "belief_anchors": false
+  },
+  "loop_mode": {
+    "enabled": false,
+    "max_iterations": 5,
+    "stagnation_threshold": 3,
+    "exit_requires_explicit_signal": true,
+    "show_status_block": true
+  }
 }

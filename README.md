@@ -1,10 +1,10 @@
-# Navigator - Context Engineering for Your Codebase
+# Navigator - Context Engineering + Human-AI Collaboration
 
-**92% token savings. Verified, not estimated.**
+**92% token savings. Theory of Mind for better collaboration. Verified, not estimated.**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-4.7.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
-[![Status](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/alekspetrov/navigator/releases/tag/v4.7.0)
+[![Version](https://img.shields.io/badge/version-5.1.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
+[![Status](https://img.shields.io/badge/status-stable-green.svg)](https://github.com/alekspetrov/navigator/releases/tag/v5.1.0)
 
 ---
 
@@ -237,7 +237,150 @@ This loads:
 
 ---
 
-## What's New in v4.7.0 (Latest)
+## What's New in v5.1.0 (Latest)
+
+**Loop Mode** - Structured completion with "run until done" capability
+
+### NAVIGATOR_STATUS Block
+
+Each iteration shows structured progress:
+```
+NAVIGATOR_STATUS
+==================================================
+Phase: VERIFY
+Iteration: 3/5
+Progress: 75%
+
+Completion Indicators:
+  [x] Code committed
+  [x] Tests passing
+  [ ] Documentation updated
+  [ ] Ticket closed
+
+Exit Conditions:
+  Heuristics: 2/4 (need 2+)
+  EXIT_SIGNAL: false
+==================================================
+```
+
+### Enable Loop Mode
+
+```
+"Run until done: add user authentication"
+"Keep going until complete"
+"Iterate until finished"
+```
+
+### Key Features
+
+**Dual-condition exit gate**: Requires BOTH heuristics (2+ indicators) AND explicit EXIT_SIGNAL - prevents premature termination.
+
+**Stagnation detection**: Circuit breaker pauses after 3 same-state iterations - no infinite loops.
+
+**Progress phases**: INIT → RESEARCH → IMPL → VERIFY → COMPLETE
+
+### Integration
+
+- **nav-diagnose**: Stagnation triggers quality check
+- **nav-marker**: Markers capture loop state for resumption
+- **Autonomous completion**: EXIT_SIGNAL triggers the full protocol
+
+**Inspired by**: [Ralph for Claude Code](https://github.com/frankbria/ralph-claude-code)
+
+[Full v5.1.0 release notes](RELEASE-NOTES-v5.1.0.md)
+
+---
+
+## What Was New in v5.0.0
+
+**Theory of Mind** - Better human-AI collaboration through bilateral modeling
+
+### Two Layers
+
+```
+Navigator = Context Engineering + Human-AI Collaboration
+
+Layer 1: Context Efficiency (v1-v4)
+├── 92% token savings
+├── Lazy loading, markers, agent search
+└── Proven via OpenTelemetry
+
+Layer 2: Theory of Mind (v5.0.0)
+├── Bilateral modeling (Claude learns your preferences)
+├── Quality detection (catches collaboration drift)
+├── Verification checkpoints (confirms understanding)
+└── Based on Riedl & Weidmann 2025 research
+```
+
+### New Skills
+
+**nav-profile** - Claude remembers your preferences across sessions
+```
+"Remember I prefer concise explanations"
+→ Saved to profile
+→ Applied in future sessions
+→ Auto-learns from corrections
+```
+
+**nav-diagnose** - Detects when collaboration quality drops
+```
+Same correction twice → Triggers quality check
+"You're not getting this" → Re-anchoring prompt
+Context confusion → Suggests compact
+```
+
+### Verification Checkpoints
+
+High-stakes skills now confirm understanding before generating:
+```
+I understood you want:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Endpoint: POST /api/users
+Framework: Express (detected)
+Auth required: yes
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Proceed with generation? [Y/n]
+```
+
+Skills with checkpoints: `backend-endpoint`, `frontend-component`, `database-migration`, `nav-task`
+
+### Auto-Learn Corrections
+
+Navigator silently learns from your corrections:
+```
+User: "No, use /users not /user"
+→ Correction saved: "REST endpoints use plural nouns"
+→ Applied automatically in future generations
+→ Persists across sessions
+```
+
+[Full v5.0.0 release notes](UPDATE-NOTES-v5.0.0.md)
+
+---
+
+## Navigator + Claude Code
+
+**Navigator complements Claude Code - they don't compete.**
+
+| Feature | Claude Code | Navigator |
+|---------|-------------|-----------|
+| Session resume | Full conversation replay | Curated decision markers (97% compression) |
+| @imports | All load at start | Semantic on-demand + decision tree |
+| Auto-compact | Reactive at 95% capacity | Proactive task-switch + intent capture |
+| .claude/rules/ | Config/standards | Knowledge/procedures (.agent/) |
+
+**Key insight**:
+- **Claude Code** = Conversation infrastructure (plumbing)
+- **Navigator** = Strategic context engineering + collaboration (strategy)
+
+**Use both**:
+- Claude Code handles session management, compaction, rules
+- Navigator handles documentation structure, ToM, verification
+
+---
+
+## What Was New in v4.7.0
 
 **Interactive Onboarding** - Learn Navigator by doing, not just reading
 

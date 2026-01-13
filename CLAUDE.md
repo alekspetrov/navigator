@@ -10,6 +10,10 @@
 
 **Proven**: OpenTelemetry-verified, not estimates. Session efficiency scores 94/100.
 
+**NEW in v5.0.0**: Theory of Mind integration based on Riedl & Weidmann 2025 research - bilateral modeling, quality detection, and ToM verification checkpoints.
+
+**NEW in v5.1.0**: Loop Mode with structured completion signals, dual-condition exit gates, and stagnation detection - inspired by Ralph's autonomous loop framework.
+
 ---
 
 ## How You'll Use It
@@ -68,9 +72,11 @@ OR (legacy): `/nav:start`
 
 **What this does**:
 1. Loads `.agent/DEVELOPMENT-README.md` (navigator)
-2. Checks for assigned tasks from PM tool (if configured)
-3. Sets Navigator workflow context
-4. Activates token optimization strategy
+2. Loads user profile for bilateral modeling (if exists)
+3. Checks for assigned tasks from PM tool (if configured)
+4. Sets Navigator workflow context
+5. Activates token optimization strategy
+6. Applies ToM preferences from profile
 
 **If user doesn't start session**:
 - You MUST proactively suggest it
@@ -127,6 +133,136 @@ Examples:
 - Tests failing or implementation incomplete
 
 **Key principle**: Navigator expects full autonomy. Execute finish protocol without prompts.
+
+---
+
+### Theory of Mind Integration (v5.0.0)
+
+Navigator v5.0.0 integrates Theory of Mind (ToM) principles from Riedl & Weidmann 2025 research.
+
+**Core insight**: ToM predicts collaborative ability (23-29% boost) but NOT solo ability. Users who better model Claude's capabilities achieve better outcomes.
+
+#### ToM Features
+
+**1. Verification Checkpoints** (high-stakes skills)
+- backend-endpoint, frontend-component, nav-task, database-migration
+- Show understanding before generating code
+- Skip for simple operations (high-stakes only mode)
+
+**2. Bilateral Modeling** (nav-profile skill)
+- Claude learns YOUR preferences across sessions
+- Auto-learns from corrections
+- Adapts communication style, frameworks, verbosity
+- "Remember I prefer concise explanations"
+
+**3. Quality Detection** (nav-diagnose skill)
+- Detects when collaboration quality drops
+- Auto-triggers after repeated corrections
+- Prompts re-anchoring to restore alignment
+- "Something seems off" → diagnose and re-anchor
+
+**4. Enhanced Markers** (nav-marker)
+- Captures user intent and goals (not just state)
+- Records corrections made during session
+- Preserves belief state for accurate restoration
+
+**5. Belief State Anchors** (optional)
+- Explicit assumption declarations before generation
+- Known/assumed/unknown categorization
+- Enable with `tom_features.belief_anchors: true`
+
+#### ToM Configuration
+
+In `.agent/.nav-config.json`:
+```json
+{
+  "tom_features": {
+    "verification_checkpoints": true,
+    "confirmation_threshold": "high-stakes",
+    "profile_enabled": true,
+    "diagnose_enabled": true,
+    "belief_anchors": false
+  }
+}
+```
+
+---
+
+### Loop Mode (v5.1.0)
+
+Navigator v5.1.0 introduces **Loop Mode** - structured completion with "run until done" capability inspired by Ralph's autonomous loop framework.
+
+#### What Loop Mode Does
+
+- **NAVIGATOR_STATUS block**: Structured completion signals each iteration
+- **Dual-condition exit gate**: Requires both heuristics (2+ indicators) AND explicit EXIT_SIGNAL
+- **Stagnation detection**: Circuit breaker pauses after 3 same-state iterations
+- **Progress phases**: INIT → RESEARCH → IMPL → VERIFY → COMPLETE
+
+#### Enabling Loop Mode
+
+**Natural language triggers**:
+```
+"Run until done: add user authentication"
+"Keep going until complete"
+"Iterate until finished"
+"Loop mode for this task"
+```
+
+**Configuration** (`.agent/.nav-config.json`):
+```json
+{
+  "loop_mode": {
+    "enabled": false,
+    "max_iterations": 5,
+    "stagnation_threshold": 3,
+    "exit_requires_explicit_signal": true
+  }
+}
+```
+
+#### NAVIGATOR_STATUS Block
+
+Each iteration shows:
+```
+NAVIGATOR_STATUS
+==================================================
+Phase: VERIFY
+Iteration: 3/5
+Progress: 75%
+
+Completion Indicators:
+  [x] Code committed
+  [x] Tests passing
+  [ ] Documentation updated
+  [ ] Ticket closed
+
+Exit Conditions:
+  Heuristics: 2/4 (need 2+)
+  EXIT_SIGNAL: false
+
+State Hash: a7b3c9
+Stagnation: 1/3
+==================================================
+```
+
+#### Exit Signal
+
+Loop mode requires explicit completion signal alongside heuristics:
+
+```
+I've completed the implementation. All requirements met.
+
+EXIT_SIGNAL: true
+```
+
+This prevents premature exits when indicators are met but work remains.
+
+#### Integration with Navigator
+
+- **nav-diagnose**: Stagnation triggers quality check
+- **nav-marker**: Markers capture loop state for resumption
+- **Autonomous completion**: EXIT_SIGNAL triggers the autonomous protocol
 
 ---
 
@@ -360,7 +496,7 @@ Navigator config in `.agent/.nav-config.json`:
 
 ```json
 {
-  "version": "4.6.0",
+  "version": "5.1.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -395,4 +531,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-20
-**Navigator Version**: 4.6.0
+**Navigator Version**: 5.1.0

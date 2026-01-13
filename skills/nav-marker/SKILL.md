@@ -52,7 +52,9 @@ Example: "OAuth working, need to add tests"
 Note:
 ```
 
-### Step 3: Generate Marker Content
+### Step 3: Generate Marker Content [EXECUTE]
+
+**IMPORTANT**: You MUST actively capture ToM sections (User Intent, Corrections, Belief State).
 
 Create marker document with this structure:
 
@@ -113,6 +115,78 @@ Create marker document with this structure:
 2. Add error handling for failed logins
 3. Document setup in README
 ]
+
+## User Intent & Goals (ToM) [CAPTURE ACTIVELY]
+
+[Theory of Mind section - captures user's mental state for better restoration]
+
+**⚠️ CRITICAL: Analyze conversation to extract these - do not leave empty!**
+
+**Primary goal this session**:
+[What the user was ultimately trying to accomplish - not just the surface task]
+- Review conversation for "I want to...", "The goal is...", "We need to..."
+- Infer from task context if not explicitly stated
+
+**Stated preferences**:
+[Any preferences expressed during session:
+- Communication style (concise/detailed)
+- Code patterns preferred
+- Confirmation behavior wanted
+]
+- Look for "I prefer...", "Don't do...", "Always use..."
+
+**Corrections made**:
+[Important corrections that should persist:
+- "Should be /users not /user (plural convention)"
+- "Prefer functional components over class"
+- "Always use TypeScript strict mode"
+]
+- Look for "No, I meant...", "Actually...", "Not X, use Y"
+- These MUST be captured to avoid repeating mistakes
+
+## Belief State [CAPTURE ACTIVELY]
+
+[Captures mutual understanding state for accurate restoration]
+
+**⚠️ CRITICAL: Infer from conversation - do not leave empty!**
+
+**What user knows**:
+[User's demonstrated knowledge level:
+- Familiar with Express, new to Passport
+- Knows about JWT, unfamiliar with refresh tokens
+- Senior developer, skip basics
+]
+
+**Assumptions I made**:
+[Key assumptions during session:
+- Using Redis for sessions (confirmed by user)
+- Auth endpoints follow /api/auth/* pattern
+- Testing with Jest + React Testing Library
+]
+
+**Uncertainty areas**:
+[Questions that weren't fully resolved:
+- Not sure if user wants social logins beyond Google
+- Rate limiting requirements unclear
+- Error message format preferences unknown
+]
+
+## Loop State (if in loop mode)
+
+[Capture loop mode state for resumption - skip if not in loop mode]
+
+**Iteration**: [N]/[MAX] (e.g., 3/5)
+**Phase**: [INIT|RESEARCH|IMPL|VERIFY|COMPLETE]
+**State Hash**: [6-char hash for continuity]
+**Completion Indicators**:
+- [ ] Code committed
+- [ ] Tests passing
+- [ ] Documentation updated
+- [ ] Ticket closed
+- [ ] Marker created
+
+**EXIT_SIGNAL**: [true/false]
+**Stagnation Count**: [N]/[THRESHOLD]
 
 ## Restore Instructions
 

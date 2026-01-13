@@ -6,9 +6,11 @@
     "email": "aleks@example.com"
   },
   "metadata": {
-    "description": "Complete framework for context-efficient AI development - Philosophy, Metrics, Education, Skills, and Multi-Claude Workflows",
-    "version": "4.7.0",
+    "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind and Loop Mode",
+    "version": "5.1.0",
     "breaking_changes": [
+      "v5.1.0: Loop Mode - structured completion signals, dual-condition exit gates, stagnation detection (nav-loop skill)",
+      "v5.0.0: Theory of Mind features - nav-profile, nav-diagnose, verification checkpoints",
       "v4.7.0: Interactive onboarding skill (nav-onboard) with hands-on learning",
       "v4.6.0: Native agents, token monitoring hooks, architecture optimization",
       "Added retry logic, timeout monitoring, state persistence, and workflow resume",

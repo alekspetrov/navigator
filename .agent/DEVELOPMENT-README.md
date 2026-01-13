@@ -536,6 +536,34 @@ Next: Run /nav:compact to clear context
 
 **Technical Foundation**: Streaming JSON + session persistence enables full automation without manual coordination.
 
+#### [TASK-29: Theory of Mind v5.0.0 Release](./tasks/TASK-29-tom-v5-release.md)
+**Status**: 🚧 In Progress
+**Created**: 2025-12-11
+**Target Version**: v5.0.0
+
+**What we're building**:
+
+**Theory of Mind features** based on Riedl & Weidmann 2025 research:
+- **nav-profile**: Bilateral modeling - Claude learns user preferences across sessions
+- **nav-diagnose**: Quality detection - catches collaboration drift, prompts re-anchoring
+- **Verification checkpoints**: Confirms understanding before generating high-stakes code
+- **Auto-learn corrections**: Silently captures correction patterns
+- **Enhanced markers**: Intent and belief state capture
+
+**Two-layer positioning**:
+```
+Navigator = Context Engineering + Human-AI Collaboration
+
+Layer 1: Context Efficiency (v1-v4) - proven, 92% savings
+Layer 2: Theory of Mind (v5.0.0) - bilateral modeling, quality detection
+```
+
+**Expected Impact**:
+- 23-29% performance boost from ToM alignment (per research)
+- Fewer repeated corrections (auto-learn)
+- Better restoration from markers (intent preserved)
+- Clearer Claude Code differentiation (complementary, not competing)
+
 ---
 
 ### System Architecture (`system/`)
@@ -657,7 +685,18 @@ Next: Run /nav:compact to clear context
 *No SOPs yet - document issues as they're discovered*
 
 #### Deployment
-*No SOPs yet - currently using manual GitHub releases*
+
+##### [Plugin Release](./sops/deployment/plugin-release.md)
+**When to use**: Releasing new plugin version to marketplace
+
+**Contains**:
+- Pre-release checklist (verify all skills committed)
+- Release process (commit → push → tag → release)
+- Post-release verification (cache clearing, test install)
+- Emergency tag fixes (update tag after release)
+- Common mistakes and prevention
+
+**Created**: 2025-01-13 (after v5.1.0 missing nav-profile incident)
 
 ---
 

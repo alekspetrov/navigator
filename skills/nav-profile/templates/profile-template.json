@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "created": "${CREATED_DATE}",
+  "last_updated": "${UPDATED_DATE}",
+
+  "preferences": {
+    "communication": {
+      "verbosity": "balanced",
+      "confirmation_threshold": "high-stakes",
+      "explanation_style": "examples"
+    },
+    "technical": {
+      "preferred_frameworks": [],
+      "code_style": "mixed",
+      "testing_preference": "tdd"
+    },
+    "workflow": {
+      "autonomous_commits": true,
+      "auto_compact_threshold": 80,
+      "marker_before_risky": true
+    }
+  },
+
+  "corrections": [],
+
+  "goals": []
+}

@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind and Loop Mode",
-    "version": "5.1.0",
+    "version": "5.2.0",
     "breaking_changes": [
+      "v5.2.0: 'Finish What You Start' positioning - README rewrite, benefit-first documentation",
       "v5.1.0: Loop Mode - structured completion signals, dual-condition exit gates, stagnation detection (nav-loop skill)",
       "v5.0.0: Theory of Mind features - nav-profile, nav-diagnose, verification checkpoints",
       "v4.7.0: Interactive onboarding skill (nav-onboard) with hands-on learning",

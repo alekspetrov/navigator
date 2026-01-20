@@ -1,16 +1,10 @@
-# Navigator v5.0.0 - Finish What You Start
+# Navigator v5.0.0 - Theory of Mind
 
 **Release Date**: 2025-12-11
-
-## Tagline
-
-**Finish What You Start** — Sessions that last. AI that learns. Features that ship.
 
 ## Overview
 
 Navigator v5.0.0 introduces Theory of Mind (ToM) features for better human-AI collaboration. Based on Riedl & Weidmann 2025 research showing 23-29% performance boost from ToM alignment.
-
-Sessions crash at exchange 5-7 because context fills with documentation you never use. Navigator fixes this with context engineering (92% token savings) and now adds ToM for Claude to learn *you*.
 
 ## Two-Layer Architecture
 
@@ -281,15 +275,12 @@ Key findings:
 ## Changelog
 
 ### v5.0.0 (2025-12-11)
-- **NEW**: "Finish What You Start" positioning - sessions that last
 - **NEW**: nav-profile skill for bilateral modeling
 - **NEW**: nav-diagnose skill for quality detection
 - **NEW**: Verification checkpoints in high-stakes skills
 - **NEW**: Auto-learn correction detection
 - **ENHANCED**: nav-marker with intent/belief state capture
 - **ENHANCED**: nav-start with profile loading
-- **REWRITTEN**: README.md with benefit-first positioning (1200 → 190 lines)
-- **UPDATED**: CLAUDE.md with new tagline
 - **ADDED**: "Navigator + Claude Code" comparison section
 
 ---

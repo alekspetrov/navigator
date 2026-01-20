@@ -1,7 +1,7 @@
 {
   "name": "navigator",
-  "version": "5.1.0",
-  "description": "Complete framework for context-efficient AI development with Theory of Mind integration and Loop Mode. Philosophy, Metrics, Education, Skills, Agents, and Multi-Claude Workflows. Features ToM-based verification checkpoints, bilateral modeling (nav-profile), quality detection (nav-diagnose), enhanced context markers, and Loop Mode with structured completion signals. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
+  "version": "5.2.0",
+  "description": "Finish What You Start - Sessions that last, AI that learns, Features that ship. Context engineering + Theory of Mind + Loop Mode. Philosophy, Metrics, Education, Skills, Agents, and Multi-Claude Workflows. Features ToM-based verification checkpoints, bilateral modeling (nav-profile), quality detection (nav-diagnose), enhanced context markers, and Loop Mode with structured completion signals. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
   "author": {
     "name": "Aleks Petrov",
     "email": "aleks@example.com",

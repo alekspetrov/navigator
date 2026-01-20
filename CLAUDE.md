@@ -533,4 +533,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-20
-**Navigator Version**: 5.1.0
+**Navigator Version**: 5.2.0

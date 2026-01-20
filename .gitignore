@@ -41,6 +41,9 @@ temp/
 # Context markers (local session state)
 .agent/.context-markers/
 
+# User profile (personal preferences, not shared)
+.agent/.user-profile.json
+
 # Keep these in git (share with team)
 # .agent/.jitd-config.json
 # .agent/DEVELOPMENT-README.md

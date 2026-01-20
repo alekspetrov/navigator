@@ -53,6 +53,82 @@ Request validation needed: [yes/no]
 - Check path parameters syntax
 - No trailing slashes
 
+### Step 1.5: Verify Understanding (ToM Checkpoint) [EXECUTE]
+
+**IMPORTANT**: This step MUST be executed for high-stakes operations.
+
+**Before generating code, confirm interpretation with user**.
+
+**Display verification**:
+```
+I understood you want:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Endpoint: {METHOD} {PATH}
+Resource: {RESOURCE_NAME}
+Framework: {FRAMEWORK} (detected from package.json / specified)
+Auth required: {yes/no}
+Validation needed: {yes/no}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Assumptions I'm making:
+- Using {VALIDATION_LIBRARY} for validation (detected from existing validators)
+- Error handling follows existing pattern in {ERROR_HANDLER_PATH}
+- Route will be registered at {ROUTE_PREFIX} prefix
+
+Proceed with generation? [Y/n]
+```
+
+**Skip verification if** (HIGH-STAKES ONLY mode):
+- Simple CRUD operation (single resource, single path parameter)
+- User explicitly said "quick", "just do it", or "skip confirmation"
+- No custom authentication logic specified
+- Standard GET/POST/PUT/DELETE without complex business logic
+
+**Always verify if**:
+- Multiple path parameters (e.g., `/users/:userId/posts/:postId`)
+- Custom authorization logic specified
+- Non-standard HTTP methods or patterns
+- GraphQL mutations with side effects
+- Endpoints involving financial or sensitive data
+
+### Step 1.8: Declare Belief State (Optional - ToM Anchor)
+
+**Before generating code, optionally declare explicit assumptions** (enabled by `tom_features.belief_anchors` in config).
+
+**Display belief state anchor**:
+```
+📌 BELIEF STATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+What I know (from context):
+✅ Framework: {FRAMEWORK} (from package.json)
+✅ TypeScript: {strict/normal} mode (from tsconfig.json)
+✅ Validation: {LIBRARY} (from existing validators/)
+
+What I'm assuming (inference):
+🔸 Error handler follows pattern in {PATH}
+🔸 Routes registered at {PREFIX} prefix
+🔸 Using {CONVENTION} commit messages
+
+What I don't know (using defaults):
+❓ Request logging preference (will include)
+❓ Rate limiting requirements (will skip)
+❓ Response envelope format (will use standard)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Adjustments needed before I proceed?
+```
+
+**Skip belief anchor if**:
+- `tom_features.belief_anchors` is false in config
+- User said "skip", "just do it", "quick"
+- Simple endpoint with no custom logic
+
+**Show belief anchor if**:
+- Complex endpoint with multiple integrations
+- User profile indicates preference for detailed explanations
+- First endpoint in a new project (establishing patterns)
+
 ### Step 2: Generate Route Handler
 
 **Based on HTTP method and framework**:

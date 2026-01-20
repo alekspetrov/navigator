@@ -53,6 +53,45 @@ Props needed: [Optional: describe expected props]
 - No reserved words
 - Descriptive and specific
 
+### Step 1.5: Confirm Component Design (ToM Checkpoint) [EXECUTE]
+
+**IMPORTANT**: This step MUST be executed for complex components.
+
+**Before generating files, confirm interpretation with user**.
+
+**Display verification**:
+```
+I understood you want:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Component: {NAME}
+Type: {TYPE} (inferred because: {REASON})
+Location: src/components/{NAME}/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Detected patterns from your codebase:
+- Styling: {CSS_APPROACH} (found {EVIDENCE})
+- Testing: {TEST_LIBRARY} (found in package.json)
+- Similar component: {EXISTING_COMPONENT} at {PATH}
+
+Props I'll generate:
+{PROPS_PREVIEW}
+
+Proceed with generation? [Y/n]
+```
+
+**Skip verification if** (HIGH-STAKES ONLY mode):
+- Simple presentational component (no hooks, no data fetching)
+- User explicitly said "quick", "just do it", or "skip confirmation"
+- Component name and type are unambiguous
+- No complex props structure
+
+**Always verify if**:
+- Container component with data fetching
+- Complex props interface (5+ props)
+- Hooks component with side effects
+- Component name similar to existing component
+- User is new to codebase (no profile history)
+
 ### Step 2: Generate Props Interface
 
 **Based on component type and requirements**:

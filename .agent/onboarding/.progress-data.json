@@ -1,0 +1,43 @@
+{
+  "started": "2025-12-09T11:05:36.268981",
+  "flow_type": "full_education",
+  "project_type": "unknown",
+  "project_name": "navigator",
+  "essential_skills": [
+    "nav-start",
+    "nav-marker",
+    "nav-task",
+    "nav-sop",
+    "nav-compact"
+  ],
+  "development_skills": [],
+  "progress": {
+    "nav-start": {
+      "status": "completed",
+      "completed": "2025-12-09 11:09",
+      "notes": "Session started, lazy loading demonstrated"
+    },
+    "nav-marker": {
+      "status": "completed",
+      "completed": "2025-12-09 11:10",
+      "notes": "Created learning-test marker, 97% compression demonstrated"
+    },
+    "nav-task": {
+      "status": "completed",
+      "completed": "2025-12-09 11:12",
+      "notes": "Created TASK-28-learning-feature.md"
+    },
+    "nav-sop": {
+      "status": "completed",
+      "completed": "2025-12-09 11:13",
+      "notes": "Created test-failures.md SOP in debugging category"
+    },
+    "nav-compact": {
+      "status": "completed",
+      "completed": "2025-12-09 11:38",
+      "notes": "Compact prepared, .active marker set for auto-restore"
+    }
+  },
+  "total": 5,
+  "completed": 5
+}

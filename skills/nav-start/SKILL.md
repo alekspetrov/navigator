@@ -119,6 +119,61 @@ Parse:
 - `project_management`: Which PM tool (linear, github, jira, none)
 - `task_prefix`: Task ID format (TASK, GH, LIN, etc.)
 - `team_chat`: Team notifications (slack, discord, none)
+- `tom_features`: ToM configuration (if present, v5.0.0+)
+
+### Step 5.5: Load User Profile (ToM - Bilateral Modeling) [EXECUTE]
+
+**IMPORTANT**: This step MUST be executed, not just documented.
+
+**Check if user profile exists**:
+```bash
+if [ -f ".agent/.user-profile.json" ]; then
+  echo "📋 User profile found"
+else
+  echo "No user profile. Using defaults."
+fi
+```
+
+**If profile exists, READ IT NOW**:
+```
+Read(
+  file_path: ".agent/.user-profile.json"
+)
+```
+
+**After reading, APPLY these preferences for the session**:
+
+1. **Verbosity** (`preferences.communication.verbosity`):
+   - `concise`: Keep responses brief, code-first
+   - `balanced`: Normal explanations (default)
+   - `detailed`: Thorough explanations with context
+
+2. **Confirmation threshold** (`preferences.communication.confirmation_threshold`):
+   - `always`: Show verification checkpoints for all skills
+   - `high-stakes`: Only for backend-endpoint, database-migration, frontend-component (default)
+   - `never`: Skip verification checkpoints
+
+3. **Frameworks** (`preferences.technical.preferred_frameworks`):
+   - Remember for code generation suggestions
+   - E.g., ["react", "express"] → prefer these in examples
+
+4. **Corrections** (`corrections[]`):
+   - Review recent patterns to avoid repeating mistakes
+   - E.g., "REST endpoints use plural nouns" → apply immediately
+
+**Display profile summary in session output**:
+```
+🧠 Theory of Mind: Active
+   Profile: Loaded ({corrections_count} corrections, {goals_count} goals)
+   Verbosity: {verbosity}
+   Checkpoints: {confirmation_threshold}
+```
+
+**If profile doesn't exist**:
+```
+🧠 Theory of Mind: Active (no profile yet)
+   Say "save my preferences" to create one
+```
 
 ### Step 6: Check PM Tool for Assigned Tasks
 
@@ -169,13 +224,14 @@ Show this formatted summary:
 ```
 ╔══════════════════════════════════════════════════════╗
 ║                                                      ║
-║  🚀 Navigator Session Started                             ║
+║  🚀 Navigator Session Started                        ║
 ║                                                      ║
 ╚══════════════════════════════════════════════════════╝
 
 📖 Documentation Navigator: Loaded
 🎯 Project Management: [PM tool or "Manual"]
 ✅ Token Optimization: Active
+🧠 Theory of Mind: [Profile status from Step 5.5]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

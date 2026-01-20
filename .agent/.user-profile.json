@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "created": "2025-01-20",
+  "last_updated": "2025-01-20",
+  "preferences": {
+    "communication": {
+      "verbosity": "concise",
+      "confirmation_threshold": "high-stakes",
+      "explanation_style": "examples"
+    },
+    "technical": {
+      "preferred_frameworks": [],
+      "code_style": "functional",
+      "testing_preference": "tdd"
+    },
+    "workflow": {
+      "autonomous_commits": true,
+      "auto_compact_threshold": 80,
+      "marker_before_risky": true
+    }
+  },
+  "corrections": [
+    {
+      "date": "2025-01-20",
+      "context": "release process",
+      "original": "Put v5.2.0 content in v5.0.0 notes",
+      "corrected_to": "Check version chronology before editing release notes",
+      "pattern": "Always verify which version file to edit based on current marketplace.json version",
+      "confidence": "high"
+    },
+    {
+      "date": "2025-01-20",
+      "context": "version bump",
+      "original": "Updated some version files",
+      "corrected_to": "Update ALL 6 version files together",
+      "pattern": "Version bump requires: marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json, RELEASE-NOTES",
+      "confidence": "high"
+    },
+    {
+      "date": "2025-01-20",
+      "context": "positioning",
+      "original": "Feature-focused documentation",
+      "corrected_to": "Benefit-focused, outcome-driven messaging",
+      "pattern": "Positioning should emphasize outcomes (Finish What You Start) not features (92% savings)",
+      "confidence": "high"
+    },
+    {
+      "date": "2025-01-20",
+      "context": "competitive framing",
+      "original": "Navigator as alternative",
+      "corrected_to": "Navigator as superset",
+      "pattern": "Frame as superset (has everything + more) not alternative (different approach)",
+      "confidence": "high"
+    }
+  ],
+  "goals": [
+    {
+      "name": "navigator-v5.2.0-release",
+      "started": "2025-01-20",
+      "context": "Finish What You Start positioning and release",
+      "status": "completed",
+      "last_mentioned": "2025-01-20"
+    }
+  ]
+}

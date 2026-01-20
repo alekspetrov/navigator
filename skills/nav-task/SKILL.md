@@ -251,6 +251,46 @@ export const oauthLogin = async (req, res) => {
 
 Save to: `.agent/tasks/TASK-{XX}-{slug}.md`
 
+### Step 3.5: Verify Interpretation (ToM Checkpoint - Archive Mode Only) [EXECUTE]
+
+**IMPORTANT**: This step MUST be executed when archiving tasks (not creating new ones).
+
+**Before committing archive documentation, confirm interpretation with user**.
+
+**Display verification** (only for ARCHIVE action):
+```
+I extracted this from our session:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+What was built:
+- {FEATURE_SUMMARY}
+
+Key decisions captured:
+- {DECISION_1}: {REASONING_1}
+- {DECISION_2}: {REASONING_2}
+
+Files changed: {COUNT} total
+- {FILE_1} ({ACTION}: {PURPOSE})
+- {FILE_2} ({ACTION}: {PURPOSE})
+
+Challenges solved:
+- {CHALLENGE_1}: {SOLUTION_1}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Corrections needed? [Enter to proceed / type corrections]
+```
+
+**Always verify for ARCHIVE** because:
+- Extracting from conversation is inference-based
+- User may have made decisions not explicitly stated
+- Some files may have been modified outside conversation
+- Ensures accurate historical record
+
+**Skip verification for CREATE** because:
+- Template is mostly empty
+- User fills in details themselves
+- No inference risk
+
 ### Step 4: Update Navigator Index
 
 Edit `.agent/DEVELOPMENT-README.md` to add task to index:

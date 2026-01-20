@@ -1,12 +1,14 @@
-# Navigator: Context-Efficient AI Development
+# Navigator: Finish What You Start
+
+Sessions that last. AI that learns. Features that ship.
 
 ## Why This Exists
 
-**The problem**: AI coding sessions hit context limits in 5-7 exchanges.
+**The problem**: AI coding sessions crash at exchange 5-7. Context window fills with documentation you never use.
 
-**Why**: Loading all docs upfront wastes 70-90% of context window on irrelevant data.
+**Navigator's solution**: Context engineering—load what you need, when you need it. 150k → 12k tokens (92% reduction).
 
-**Navigator's solution**: Load what you need, when you need it. 150k → 12k tokens (92% reduction).
+**Result**: Sessions go 20+ exchanges. Features actually ship.
 
 **Proven**: OpenTelemetry-verified, not estimates. Session efficiency scores 94/100.
 

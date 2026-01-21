@@ -9,6 +9,16 @@ Sessions that last. AI that learns. Features that ship.
 
 ---
 
+## What is Navigator?
+
+Navigator is a **Claude Code plugin** that implements context engineering for AI-assisted development.
+
+Instead of loading all your documentation upfront (and crashing at exchange 7), Navigator loads what you need, when you need it—keeping 94% of your context window available for actual work.
+
+For developers using Claude Code who want sessions that finish features instead of crash mid-way.
+
+---
+
 ## The Loop You're Stuck In
 
 You know the pattern:

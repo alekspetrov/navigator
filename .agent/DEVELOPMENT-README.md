@@ -104,7 +104,7 @@ Strategic loading beats bulk loading.
 ### Fixing a Bug?
 1. Check [`sops/debugging/`](#debugging) for known issues
 2. Review relevant system docs for context
-3. After fixing, create SOP: `/nav:update-doc sop debugging [issue-name]`
+3. After fixing, create SOP: "Create an SOP for debugging [issue-name]"
 
 ---
 
@@ -162,7 +162,7 @@ Navigator projects run in **full autonomy mode**. When task implementation is co
 
 ✅ **Execute automatically** (no human prompt needed):
 1. **Commit changes** with conventional commit message
-2. **Archive implementation plan** (`/nav:update-doc feature TASK-XX`)
+2. **Archive implementation plan** ("Archive TASK-XX documentation")
 3. **Close ticket** in PM tool (if configured)
 4. **Create completion marker** (`TASK-XX-complete`)
 5. **Suggest compact** for next task
@@ -194,7 +194,7 @@ Automated actions:
 ✅ Marker: TASK-XX-complete created
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Next: Run /nav:compact to clear context
+Next: "Clear context and preserve markers" to compact
 ```
 
 **For detailed protocol**: See [`sops/development/autonomous-completion.md`](#autonomous-completion)
@@ -561,11 +561,12 @@ Next: Run /nav:compact to clear context
 ---
 
 #### [TASK-29: Theory of Mind v5.0.0 Release](./tasks/TASK-29-tom-v5-release.md)
-**Status**: 🚧 In Progress
+**Status**: ✅ Completed
 **Created**: 2025-12-11
-**Target Version**: v5.0.0
+**Completed**: 2025-01-13
+**Version**: v5.0.0
 
-**What we're building**:
+**What was built**:
 
 **Theory of Mind features** based on Riedl & Weidmann 2025 research:
 - **nav-profile**: Bilateral modeling - Claude learns user preferences across sessions
@@ -857,7 +858,7 @@ gh release create v1.1.0 --title "Navigator v1.1.0" --notes "..."
 ### Token Efficiency
 - [ ] <30k tokens per development session
 - [ ] Navigator-first loading practiced
-- [ ] `/nav:compact` used between tasks
+- [ ] Compact used between tasks
 
 ### User Experience
 - [ ] `/nav:init` creates complete structure
@@ -868,7 +869,7 @@ gh release create v1.1.0 --title "Navigator v1.1.0" --notes "..."
 
 ## 🚀 Quick Natural Language Reference
 
-Navigator v3.1 uses natural language - no commands needed!
+Navigator v5.3 uses natural language - no commands needed!
 
 **Initialize Navigator**:
 ```
@@ -891,5 +892,5 @@ Navigator v3.1 uses natural language - no commands needed!
 
 **This documentation system keeps plugin development context-efficient while maintaining comprehensive knowledge.**
 
-**Last Updated**: 2025-01-24 (v4.0.0)
+**Last Updated**: 2025-01-21 (v5.3.0)
 **Powered By**: Navigator (Complete Framework)

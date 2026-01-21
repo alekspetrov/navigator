@@ -82,6 +82,34 @@ def format_task(title, task_id, priority="Medium", complexity="Medium", status="
 
 ---
 
+## Verify
+
+Run these commands to validate the implementation:
+
+```bash
+# Run tests
+[test command for this feature]
+
+# Type check
+[type check command]
+
+# Build
+[build command]
+```
+
+---
+
+## Done
+
+Observable outcomes that prove completion:
+
+- [ ] [Specific file/API exists and exports expected interface]
+- [ ] [Tests pass - specify count or coverage target]
+- [ ] [Build succeeds without errors]
+- [ ] [User-observable behavior works as specified]
+
+---
+
 ## Related Tasks
 
 - [Link to related tasks]

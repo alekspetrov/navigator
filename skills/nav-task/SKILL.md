@@ -113,6 +113,34 @@ Generate task document from template:
 
 ---
 
+## Verify
+
+Run these commands to validate the implementation:
+
+```bash
+# Run tests
+[test command for this feature]
+
+# Type check
+[type check command]
+
+# Build
+[build command]
+```
+
+---
+
+## Done
+
+Observable outcomes that prove completion:
+
+- [ ] [Specific file/API exists and exports expected interface]
+- [ ] [Tests pass - specify count or coverage target]
+- [ ] [Build succeeds without errors]
+- [ ] [User-observable behavior works as specified]
+
+---
+
 ## Notes
 
 [Any additional context, links, references]
@@ -232,6 +260,32 @@ export const oauthLogin = async (req, res) => {
 - ✅ README updated with OAuth setup instructions
 - ✅ Environment variables documented in `.env.example`
 - ✅ API endpoints documented in `docs/api.md`
+
+---
+
+## Verify
+
+Commands executed to validate:
+
+```bash
+# Actual commands run during verification
+npm test src/auth
+npm run type-check
+npm run build
+```
+
+**Results**: All passed ✅
+
+---
+
+## Done
+
+Outcomes confirmed:
+
+- [x] `src/auth/oauth.ts` exports OAuth provider integration
+- [x] All tests pass (15 tests, 100% coverage)
+- [x] Build succeeds without errors
+- [x] OAuth login/logout flows work correctly
 
 ---
 

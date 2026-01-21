@@ -536,6 +536,30 @@ Next: Run /nav:compact to clear context
 
 **Technical Foundation**: Streaming JSON + session persistence enables full automation without manual coordination.
 
+#### [TASK-30: Task Verification Enhancement](./tasks/TASK-30-task-verification-enhancement.md)
+**Status**: ✅ Completed
+**Created**: 2025-01-21
+**Completed**: 2025-01-21
+**Version**: v5.3.0
+
+**What was built**:
+
+**Verify/Done sections** for Navigator task system:
+- `## Verify` - Executable commands to validate implementation
+- `## Done` - Observable outcomes that prove completion
+- `verify_extractor.py` - Utility to parse verification data
+- Markdown format (consistent, not XML)
+- Backward compatible (existing tasks unaffected)
+
+**Inspiration**: GSD (Get Shit Done) spec-driven system with structured verification.
+
+**Expected Impact**:
+- Machine-parseable completion requirements
+- Multi-Claude Review phase can execute verify commands
+- Clearer definition of "done"
+
+---
+
 #### [TASK-29: Theory of Mind v5.0.0 Release](./tasks/TASK-29-tom-v5-release.md)
 **Status**: 🚧 In Progress
 **Created**: 2025-12-11

@@ -123,9 +123,10 @@ save_phase_state() {
   fi
 
   local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local temp_file="${STATE_FILE}.tmp.$$"
 
-  # Update state file with phase progress
-  cat > "$STATE_FILE" <<EOF
+  # Atomic state file write: write to temp, then move
+  cat > "$temp_file" <<EOF
 {
   "session_id": "${session_id}",
   "task": "${task_id}",
@@ -138,6 +139,9 @@ save_phase_state() {
   "last_update": "${timestamp}"
 }
 EOF
+
+  # Atomic move (prevents partial writes)
+  mv "$temp_file" "$STATE_FILE"
 
   log_info "💾 State saved: ${STATE_FILE}"
 }
@@ -337,12 +341,15 @@ CRITICAL: You MUST create a completion marker when done.
 Steps:
 1. Implement all features from the plan
 2. Test your changes work correctly
-3. Create completion marker using Bash tool:
+3. FINAL STEP (MANDATORY): Create completion marker using Bash tool:
 
-   touch ${impl_done_file}
+   touch ${impl_done_file} && echo 'Marker created'
 
 Marker file: ${impl_done_file}
-This is REQUIRED for orchestrator to proceed to next phase.
+
+⚠️  WARNING: The orchestrator is BLOCKED until this marker exists.
+If you don't create it, the entire workflow fails.
+Create the marker IMMEDIATELY after implementation, before any other action.
 
 $(error_handling_instructions "$impl_done_file")" \
     --output-format json \
@@ -400,12 +407,15 @@ CRITICAL: You MUST create a completion marker when done.
 Steps:
 1. Generate comprehensive tests
 2. Run tests and verify they pass
-3. Create completion marker using Bash tool:
+3. FINAL STEP (MANDATORY): Create completion marker using Bash tool:
 
-   touch ${test_done_file}
+   touch ${test_done_file} && echo 'Marker created'
 
 Marker file: ${test_done_file}
-This is REQUIRED for orchestrator to proceed.
+
+⚠️  WARNING: The orchestrator is BLOCKED until this marker exists.
+If you don't create it, the entire workflow fails.
+Create the marker IMMEDIATELY after testing completes.
 
 $(error_handling_instructions "$test_done_file")" \
       --output-format json \
@@ -439,12 +449,15 @@ CRITICAL: You MUST create a completion marker when done.
 Steps:
 1. Generate comprehensive documentation
 2. Verify documentation is complete
-3. Create completion marker using Bash tool:
+3. FINAL STEP (MANDATORY): Create completion marker using Bash tool:
 
-   touch ${docs_done_file}
+   touch ${docs_done_file} && echo 'Marker created'
 
 Marker file: ${docs_done_file}
-This is REQUIRED for orchestrator to proceed.
+
+⚠️  WARNING: The orchestrator is BLOCKED until this marker exists.
+If you don't create it, the entire workflow fails.
+Create the marker IMMEDIATELY after documentation completes.
 
 $(error_handling_instructions "$docs_done_file")" \
       --output-format json \
@@ -514,6 +527,27 @@ $(error_handling_instructions "$docs_done_file")" \
 
   log_info "Review: Analyzing all changes..."
 
+  # Check if task file has Verify/Done sections for structured verification
+  local verify_instructions=""
+  if [ -f "$task_file" ]; then
+    if grep -q "## Verify" "$task_file"; then
+      verify_instructions="
+VERIFICATION (IMPORTANT - Task has ## Verify section):
+1. Extract commands from ## Verify section in ${task_file}
+2. Execute each command using Bash tool
+3. Report pass/fail for each command in the review report
+4. If verify_extractor.py exists, use it:
+   python3 skills/nav-task/functions/verify_extractor.py ${task_file} --commands-only
+
+DONE CRITERIA (if ## Done section exists):
+1. Check each item in ## Done section
+2. Verify each criterion is met
+3. Mark verified/failed in review report
+4. Block approval if critical items fail
+"
+    fi
+  fi
+
   review_output=$(claude -p \
     "You are the Review Claude in a multi-Claude workflow.
 
@@ -522,21 +556,30 @@ TASK: Read the plan from ${plan_file}. Review all implementation changes using g
 EFFICIENCY TIPS:
 - Use Task agent (subagent_type=Explore) to analyze patterns across multiple files
 - For large changesets: Use Task agent to summarize changes before detailed review
-
+${verify_instructions}
 REVIEW REQUIREMENTS:
 Include in ${review_report_file}:
 1) Quality score (1-10)
 2) Strengths
 3) Issues found
 4) Suggestions for improvement
-5) Approval decision (APPROVED/NEEDS_WORK)
+5) Verification Results (if Verify section exists):
+   - Command: [command]
+   - Result: PASS/FAIL
+   - Output: [summary]
+6) Done Criteria Status (if Done section exists):
+   - [x] Criterion 1: verified
+   - [ ] Criterion 2: not met (reason)
+7) Approval decision (APPROVED/NEEDS_WORK)
 
 CRITICAL: You MUST create a completion marker when done.
 
 Steps:
 1. Review all changes thoroughly
-2. Save review report to ${review_report_file}
-3. Create completion marker using Bash tool:
+2. Run verification commands (if Verify section exists)
+3. Check done criteria (if Done section exists)
+4. Save review report to ${review_report_file}
+5. Create completion marker using Bash tool:
 
    touch ${review_done_file}
 
@@ -556,7 +599,8 @@ $(error_handling_instructions "$review_done_file")" \
 
   log_success "Review requested"
 
-  if ! wait_for_marker_with_retry "$review_done_file" "review" 1 180; then
+  # Increased timeout to 300s for comprehensive review with verification
+  if ! wait_for_marker_with_retry "$review_done_file" "review" 1 300; then
     log_error "Review phase timeout"
     log_info "💾 Workflow state saved to: $STATE_FILE"
     log_info "Resume with: ./scripts/resume-workflow.sh $session_id"

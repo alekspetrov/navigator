@@ -219,19 +219,33 @@ This script:
 
 ### Step 8: Display Session Summary
 
-Show this formatted summary:
+Show the Navigator ASCII logo and session summary.
+
+**Display the logo using these exact ANSI color codes**:
+
+```bash
+# Colors: Blue N, Red A, Blue V (Navigator arrow)
+BLUE='\033[1;34m'
+RED='\033[1;31m'
+WHITE='\033[1;37m'
+GRAY='\033[90m'
+NC='\033[0m'
+
+printf "${BLUE}███╗   ██╗${NC} ${RED} █████╗ ${NC}${BLUE}██╗   ██╗${NC}\n"
+printf "${BLUE}████╗  ██║${NC} ${RED}██╔══██╗${NC}${BLUE}██║   ██║${NC}\n"
+printf "${BLUE}██╔██╗ ██║${NC} ${RED}███████║${NC}${BLUE}██║   ██║${NC}  ${WHITE}v5.3.0${NC}\n"
+printf "${BLUE}██║╚██╗██║${NC} ${RED}██╔══██║${NC}${BLUE}╚██╗ ██╔╝${NC}  ${GRAY}Finish What You Start${NC}\n"
+printf "${BLUE}██║ ╚████║${NC} ${RED}██║  ██║${NC}${BLUE} ╚████╔╝ ${NC}\n"
+printf "${BLUE}╚═╝  ╚═══╝${NC} ${RED}╚═╝  ╚═╝${NC}${BLUE}  ╚═══╝  ${NC}\n"
+```
+
+**Then show the session info**:
 
 ```
-╔══════════════════════════════════════════════════════╗
-║                                                      ║
-║  🚀 Navigator Session Started                        ║
-║                                                      ║
-╚══════════════════════════════════════════════════════╝
-
-📖 Documentation Navigator: Loaded
-🎯 Project Management: [PM tool or "Manual"]
-✅ Token Optimization: Active
-🧠 Theory of Mind: [Profile status from Step 5.5]
+📖 Navigator: Loaded
+🎯 PM: [PM tool or "Manual"]
+✅ Optimization: Active
+🧠 ToM: [Profile status from Step 5.5]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

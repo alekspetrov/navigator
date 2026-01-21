@@ -19,11 +19,30 @@ def get_plugin_version() -> Optional[str]:
     Returns:
         Version string (e.g., "4.3.0") or None if not found
     """
+    # Check multiple possible installation paths
     possible_paths = [
+        # Marketplace cache path (versioned)
+        Path.home() / '.claude' / 'plugins' / 'cache' / 'navigator-marketplace' / 'navigator',
+        # Legacy marketplace paths
         Path.home() / '.claude' / 'plugins' / 'marketplaces' / 'navigator-marketplace' / '.claude-plugin' / 'plugin.json',
         Path.home() / '.config' / 'claude' / 'plugins' / 'navigator' / '.claude-plugin' / 'plugin.json',
         Path.home() / '.claude' / 'plugins' / 'navigator' / '.claude-plugin' / 'plugin.json',
     ]
+
+    # For the cache path, need to find versioned subdirectory
+    cache_base = Path.home() / '.claude' / 'plugins' / 'cache' / 'navigator-marketplace' / 'navigator'
+    if cache_base.exists():
+        # Find the latest version directory
+        version_dirs = sorted([d for d in cache_base.iterdir() if d.is_dir()], reverse=True)
+        if version_dirs:
+            plugin_json = version_dirs[0] / '.claude-plugin' / 'plugin.json'
+            if plugin_json.exists():
+                try:
+                    with open(plugin_json, 'r') as f:
+                        data = json.load(f)
+                        return data.get('version')
+                except (json.JSONDecodeError, FileNotFoundError, PermissionError):
+                    pass
 
     for path in possible_paths:
         if path.exists():

@@ -156,11 +156,10 @@ def is_feature_enabled(config: Dict, feature_name: str) -> bool:
 
 
 def format_status(enabled: bool, feature_type: str = "config") -> str:
-    """Format status with emoji (padded for alignment)."""
-    # Emojis take ~2 char width visually, so pad accordingly
+    """Format status with ASCII characters for consistent width."""
     if feature_type == "installed":
-        return "📦   " if enabled else "—    "
-    return "✅   " if enabled else "⏸ Off"
+        return "[*]  " if enabled else "[ ]  "
+    return "[x]  " if enabled else "[ ]  "
 
 
 def show_features(config: Dict, first_session: bool = False) -> str:

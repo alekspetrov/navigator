@@ -18,6 +18,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.4.0**: Code Simplification - automatic code clarity improvements before commit. Based on Anthropic's internal code-simplifier pattern. Clarity over brevity, functionality preserved absolutely.
 
+**NEW in v5.5.0**: Auto-Update on Session Start - automatically updates Navigator when newer version detected. No manual `nav-upgrade` needed for daily releases.
+
 ---
 
 ## How You'll Use It
@@ -75,12 +77,13 @@ Strategic loading saves 92% of context for actual work.
 OR (legacy): `/nav:start`
 
 **What this does**:
-1. Loads `.agent/DEVELOPMENT-README.md` (navigator)
-2. Loads user profile for bilateral modeling (if exists)
-3. Checks for assigned tasks from PM tool (if configured)
-4. Sets Navigator workflow context
-5. Activates token optimization strategy
-6. Applies ToM preferences from profile
+1. Checks for Navigator updates (auto-updates if enabled)
+2. Loads `.agent/DEVELOPMENT-README.md` (navigator)
+3. Loads user profile for bilateral modeling (if exists)
+4. Checks for assigned tasks from PM tool (if configured)
+5. Sets Navigator workflow context
+6. Activates token optimization strategy
+7. Applies ToM preferences from profile
 
 **If user doesn't start session**:
 - You MUST proactively suggest it
@@ -333,6 +336,72 @@ In `.agent/.nav-config.json`:
 
 ---
 
+### Auto-Update on Session Start (v5.5.0)
+
+Navigator v5.5.0 introduces **Auto-Update** - automatic plugin updates when you start a session.
+
+#### Why Auto-Update
+
+With 2x daily releases, manual `nav-upgrade` creates friction. Auto-update removes this barrier - just start your session and get the latest version automatically.
+
+#### How It Works
+
+1. On session start, Navigator checks for newer version
+2. If update available AND `auto_update.enabled: true`:
+   - Runs `claude plugin update navigator` (60s timeout)
+   - If fails, tries uninstall/reinstall fallback
+3. Shows result and continues session
+
+#### Configuration
+
+In `.agent/.nav-config.json`:
+```json
+{
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1
+  }
+}
+```
+
+- `enabled`: Enable/disable auto-update (default: true)
+- `check_interval_hours`: Minimum hours between update checks (default: 1)
+
+#### UX Flow
+
+```
+User: "Start my Navigator session"
+
+[Checking for updates...]
+[✅ Auto-updated to v5.5.1]
+
+╔═══════════════════════════════════════╗
+║  🚀 Navigator Session Started (v5.5.1) ║
+╚═══════════════════════════════════════╝
+```
+
+#### Edge Cases
+
+- **Network failure**: Skip update, continue session
+- **Update timeout**: Skip update, show warning, continue
+- **Disabled in config**: Respects setting, just shows version notification
+- **Recent check**: Skips if checked within `check_interval_hours`
+
+#### Disabling Auto-Update
+
+If you prefer manual control:
+```json
+{
+  "auto_update": {
+    "enabled": false
+  }
+}
+```
+
+You'll still see update notifications - just run `nav-upgrade` manually when ready.
+
+---
+
 ### Agents vs Skills - Token Optimization Strategy
 
 Navigator uses **both strategically**:
@@ -564,7 +633,7 @@ Navigator config in `.agent/.nav-config.json`:
 
 ```json
 {
-  "version": "5.4.0",
+  "version": "5.5.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -574,6 +643,10 @@ Navigator config in `.agent/.nav-config.json`:
     "enabled": true,
     "trigger": "post-implementation",
     "scope": "modified"
+  },
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1
   }
 }
 ```
@@ -604,4 +677,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-22
-**Navigator Version**: 5.4.0
+**Navigator Version**: 5.5.0

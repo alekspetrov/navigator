@@ -108,14 +108,18 @@ Copy from plugin's `templates/` directory to `.agent/`:
 **`.nav-config.json`**:
 ```json
 {
-  "version": "4.6.0",
+  "version": "5.5.0",
   "project_name": "${PROJECT_NAME}",
   "tech_stack": "${TECH_STACK}",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
   "auto_load_navigator": true,
-  "compact_strategy": "conservative"
+  "compact_strategy": "conservative",
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1
+  }
 }
 ```
 

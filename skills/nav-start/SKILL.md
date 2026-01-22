@@ -47,6 +47,43 @@ fi
 
 **Never block session start** due to version check.
 
+### Step 1.5: Auto-Update (if enabled)
+
+If auto_update is enabled in config AND an update is available, automatically update Navigator:
+
+```bash
+# Get the skill's base directory
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+
+# Run auto-updater
+AUTO_UPDATE_RESULT=$(python3 "$SKILL_DIR/functions/auto_updater.py" 2>/dev/null)
+AUTO_UPDATE_STATUS=$(echo "$AUTO_UPDATE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status',''))" 2>/dev/null)
+
+case "$AUTO_UPDATE_STATUS" in
+  "updated")
+    NEW_VERSION=$(echo "$AUTO_UPDATE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('new_version',''))" 2>/dev/null)
+    echo "✅ Auto-updated Navigator to v$NEW_VERSION"
+    ;;
+  "up-to-date")
+    # Silently continue
+    ;;
+  "failed")
+    echo "⚠️  Auto-update failed. Run 'nav-upgrade' manually if needed."
+    ;;
+  "disabled"|"skipped")
+    # Silently continue
+    ;;
+esac
+```
+
+**Auto-update behavior**:
+- **If updated**: Show "✅ Auto-updated to vX.Y.Z", continue session
+- **If up-to-date**: Continue silently
+- **If failed**: Show warning "⚠️ Auto-update failed, run nav-upgrade manually"
+- **If disabled/skipped**: Continue silently
+
+**Never block session start** due to auto-update failure.
+
 ### Step 2: Check Navigator Initialization
 
 Check if `.agent/DEVELOPMENT-README.md` exists:

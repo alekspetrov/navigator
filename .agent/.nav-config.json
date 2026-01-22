@@ -1,5 +1,5 @@
 {
-  "version": "5.4.0",
+  "version": "5.5.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -35,5 +35,9 @@
       "prefer_explicit_returns": true,
       "consolidate_imports": true
     }
+  },
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1
   }
 }

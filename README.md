@@ -87,7 +87,7 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 
 | Feature | Navigator | Others |
 |---------|-----------|--------|
-| Structured workflows | ✅ 26 skills | ✅ |
+| Structured workflows | ✅ 27 skills | ✅ |
 | Component generation | ✅ | ✅ |
 | Test generation | ✅ | ✅ |
 | Session longevity | **20+ exchanges** | 5-7 exchanges |

@@ -1,0 +1,268 @@
+#!/usr/bin/env python3
+"""
+Navigator Feature Manager
+Display and toggle Navigator features with formatted table output.
+
+Usage:
+    python3 feature_manager.py show [--first-session]
+    python3 feature_manager.py enable <feature>
+    python3 feature_manager.py disable <feature>
+    python3 feature_manager.py info <feature>
+"""
+
+import sys
+import json
+import argparse
+from pathlib import Path
+from typing import Dict, Any, Optional, Tuple
+
+# Feature definitions with metadata
+FEATURES = {
+    "task_mode": {
+        "name": "task_mode",
+        "display_name": "Task Mode",
+        "version": "5.6.0",
+        "description": "Auto-detects task complexity, defers to skills",
+        "short_desc": "Unified workflow orchestration",
+        "config_key": "task_mode",
+        "enabled_key": "enabled",
+        "default": True
+    },
+    "tom_features": {
+        "name": "tom_features",
+        "display_name": "Theory of Mind",
+        "version": "5.0.0",
+        "description": "Verification checkpoints, user profile, diagnostics",
+        "short_desc": "Human-AI collaboration improvements",
+        "config_key": "tom_features",
+        "enabled_key": "verification_checkpoints",
+        "default": True
+    },
+    "loop_mode": {
+        "name": "loop_mode",
+        "display_name": "Loop Mode",
+        "version": "5.1.0",
+        "description": "Autonomous loop execution (enable when needed)",
+        "short_desc": "Run until done capability",
+        "config_key": "loop_mode",
+        "enabled_key": "enabled",
+        "default": False
+    },
+    "simplification": {
+        "name": "simplification",
+        "display_name": "Simplification",
+        "version": "5.4.0",
+        "description": "Post-implementation code cleanup with Opus",
+        "short_desc": "Automatic code clarity improvements",
+        "config_key": "simplification",
+        "enabled_key": "enabled",
+        "default": False
+    },
+    "auto_update": {
+        "name": "auto_update",
+        "display_name": "Auto-Update",
+        "version": "5.5.0",
+        "description": "Auto-updates on session start",
+        "short_desc": "Automatic plugin updates",
+        "config_key": "auto_update",
+        "enabled_key": "enabled",
+        "default": True
+    }
+}
+
+CONFIG_PATH = ".agent/.nav-config.json"
+
+
+def load_config() -> Tuple[Optional[Dict], Optional[str]]:
+    """Load nav-config.json, return (config, error)."""
+    path = Path(CONFIG_PATH)
+    if not path.exists():
+        return None, f"Config not found: {CONFIG_PATH}"
+
+    try:
+        with open(path, 'r') as f:
+            return json.load(f), None
+    except json.JSONDecodeError as e:
+        return None, f"Invalid JSON: {e}"
+
+
+def save_config(config: Dict) -> Optional[str]:
+    """Save config, return error if any."""
+    try:
+        with open(CONFIG_PATH, 'w') as f:
+            json.dump(config, f, indent=2)
+            f.write("\n")
+        return None
+    except Exception as e:
+        return f"Failed to save: {e}"
+
+
+def is_feature_enabled(config: Dict, feature_name: str) -> bool:
+    """Check if a feature is enabled in config."""
+    if feature_name not in FEATURES:
+        return False
+
+    feature = FEATURES[feature_name]
+    config_section = config.get(feature["config_key"], {})
+
+    if isinstance(config_section, dict):
+        return config_section.get(feature["enabled_key"], feature["default"])
+    return feature["default"]
+
+
+def format_status(enabled: bool) -> str:
+    """Format status with emoji."""
+    return "✅" if enabled else "⏸ Off"
+
+
+def show_features(config: Dict, first_session: bool = False) -> str:
+    """Generate feature table display."""
+    version = config.get("version", "unknown")
+
+    lines = []
+
+    if first_session:
+        lines.append(f"v{version} Features Now Enabled:")
+    else:
+        lines.append(f"v{version} Features:")
+
+    lines.append("")
+
+    # Table header
+    lines.append("┌─────────────────┬────────┬─────────────────────────────────────────────────┐")
+    lines.append("│ Feature         │ Status │ Description                                     │")
+    lines.append("├─────────────────┼────────┼─────────────────────────────────────────────────┤")
+
+    # Feature rows
+    for feature_name, feature in FEATURES.items():
+        enabled = is_feature_enabled(config, feature_name)
+        status = format_status(enabled)
+
+        # Truncate description if needed
+        desc = feature["description"][:47]
+        if len(feature["description"]) > 47:
+            desc = desc[:44] + "..."
+
+        # Format with padding
+        name_col = feature_name.ljust(15)
+        status_col = status.ljust(6)
+        desc_col = desc.ljust(47)
+
+        lines.append(f"│ {name_col} │ {status_col} │ {desc_col} │")
+
+    lines.append("└─────────────────┴────────┴─────────────────────────────────────────────────┘")
+    lines.append("")
+    lines.append(f"All v{version} features configured.")
+
+    return "\n".join(lines)
+
+
+def toggle_feature(config: Dict, feature_name: str, enable: bool) -> Tuple[Dict, str]:
+    """Toggle a feature, return (updated_config, message)."""
+    if feature_name not in FEATURES:
+        available = ", ".join(FEATURES.keys())
+        return config, f"❌ Unknown feature: {feature_name}\n\nAvailable: {available}"
+
+    feature = FEATURES[feature_name]
+    config_key = feature["config_key"]
+    enabled_key = feature["enabled_key"]
+
+    # Ensure config section exists
+    if config_key not in config:
+        config[config_key] = {}
+
+    if not isinstance(config[config_key], dict):
+        config[config_key] = {}
+
+    # Set the enabled flag
+    config[config_key][enabled_key] = enable
+
+    action = "enabled" if enable else "disabled"
+    status = "✅" if enable else "⏸ Off"
+
+    message = f"{status} {feature['display_name']} {action}"
+
+    return config, message
+
+
+def get_feature_info(feature_name: str, config: Dict) -> str:
+    """Get detailed info about a feature."""
+    if feature_name not in FEATURES:
+        available = ", ".join(FEATURES.keys())
+        return f"❌ Unknown feature: {feature_name}\n\nAvailable: {available}"
+
+    feature = FEATURES[feature_name]
+    enabled = is_feature_enabled(config, feature_name)
+    status = "Enabled" if enabled else "Disabled"
+
+    return f"""{feature['display_name']} (v{feature['version']})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{feature['short_desc']}
+
+Status: {status}
+Config key: {feature['config_key']}.{feature['enabled_key']}
+Default: {"On" if feature['default'] else "Off"}
+
+Description:
+{feature['description']}"""
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Navigator Feature Manager")
+    parser.add_argument("command", choices=["show", "enable", "disable", "info"],
+                        help="Command to execute")
+    parser.add_argument("feature", nargs="?", help="Feature name (for enable/disable/info)")
+    parser.add_argument("--first-session", action="store_true",
+                        help="Show welcome message for first session")
+    parser.add_argument("--json", action="store_true", help="Output as JSON")
+
+    args = parser.parse_args()
+
+    # Load config
+    config, error = load_config()
+    if error:
+        print(f"❌ {error}", file=sys.stderr)
+        return 1
+
+    if args.command == "show":
+        output = show_features(config, first_session=args.first_session)
+        print(output)
+        return 0
+
+    elif args.command in ["enable", "disable"]:
+        if not args.feature:
+            print(f"❌ Feature name required for {args.command}", file=sys.stderr)
+            return 1
+
+        enable = args.command == "enable"
+        config, message = toggle_feature(config, args.feature, enable)
+
+        if message.startswith("❌"):
+            print(message, file=sys.stderr)
+            return 1
+
+        # Save config
+        save_error = save_config(config)
+        if save_error:
+            print(f"❌ {save_error}", file=sys.stderr)
+            return 1
+
+        print(message)
+        print()
+        print(show_features(config))
+        return 0
+
+    elif args.command == "info":
+        if not args.feature:
+            print("❌ Feature name required for info", file=sys.stderr)
+            return 1
+
+        output = get_feature_info(args.feature, config)
+        print(output)
+        return 0 if not output.startswith("❌") else 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

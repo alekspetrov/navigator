@@ -363,6 +363,33 @@ Do NOT show if:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+[FIRST SESSION FEATURES DISPLAY - v5.6.0+]
+
+Check if this is first session after install/update:
+
+```bash
+FIRST_SESSION_MARKER=".agent/.features-shown-$(cat .agent/.nav-config.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('version',''))" 2>/dev/null)"
+
+if [ ! -f "$FIRST_SESSION_MARKER" ]; then
+  echo ""
+  python3 "$SKILL_BASE_DIR/../nav-features/functions/feature_manager.py" show --first-session
+  echo ""
+  echo "💡 Toggle features: 'show my features' or 'disable loop_mode'"
+  echo ""
+  touch "$FIRST_SESSION_MARKER"
+fi
+```
+
+Shows feature table on:
+- First session after Navigator install
+- First session after version update (new version = new marker)
+
+Do NOT show if:
+- Features already shown for this version
+- feature_manager.py not found (older plugin)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 [If tasks found from PM tool, list them here]
 
 [If no tasks found:]

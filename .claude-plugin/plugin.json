@@ -26,6 +26,7 @@
   ],
   "skills": [
     "./skills/nav-task-mode",
+    "./skills/nav-features",
     "./skills/nav-simplify",
     "./skills/nav-onboard",
     "./skills/nav-init",

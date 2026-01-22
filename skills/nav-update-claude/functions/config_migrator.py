@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
 # Current Navigator version
-CURRENT_VERSION = "5.6.0"
+CURRENT_VERSION = "5.7.0"
 
 # Config sections added in each version
 VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {

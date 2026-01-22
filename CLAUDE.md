@@ -22,6 +22,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.6.0**: Task Mode - unified workflow orchestration that coordinates between skills, loop mode, and direct execution. Auto-detects complexity and defers to appropriate handler.
 
+**NEW in v5.7.0**: Feature Management - view and toggle Navigator features via `nav-features` skill. Shows feature table on first session after install/update.
+
 ---
 
 ## How You'll Use It
@@ -788,4 +790,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-22
-**Navigator Version**: 5.6.0
+**Navigator Version**: 5.7.0

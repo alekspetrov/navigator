@@ -87,11 +87,12 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 
 | Feature | Navigator | Others |
 |---------|-----------|--------|
-| Structured workflows | ✅ 23 skills | ✅ |
+| Structured workflows | ✅ 25 skills | ✅ |
 | Component generation | ✅ | ✅ |
 | Test generation | ✅ | ✅ |
 | Session longevity | **20+ exchanges** | 5-7 exchanges |
 | Token savings | **92% verified** | None |
+| Code simplification | **✅** | ❌ |
 | Theory of Mind | **✅** | ❌ |
 | Loop mode | **✅** | ❌ |
 | OpenTelemetry metrics | **✅** | ❌ |

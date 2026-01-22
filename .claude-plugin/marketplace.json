@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind and Loop Mode",
-    "version": "5.4.0",
+    "version": "5.5.0",
     "breaking_changes": [
+      "v5.5.0: Auto-Update on Session Start - automatic plugin updates when newer version detected, zero friction for daily releases",
       "v5.4.0: Code Simplification Integration - nav-simplify skill, Multi-Claude simplifier role, autonomous completion integration, Loop Mode VERIFY phase",
       "v5.3.0: Task Verification Enhancement - Verify/Done sections, verify_extractor.py, multi-Claude Review integration",
       "v5.2.0: 'Finish What You Start' positioning - README rewrite, benefit-first documentation",

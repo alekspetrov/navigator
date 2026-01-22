@@ -9,7 +9,7 @@
 **Core Principle**: [Key architectural principle, e.g., "API-first design with type safety"]
 
 **Last Updated**: [Date]
-**Navigator Version**: 5.4.0
+**Navigator Version**: 5.5.0
 
 ---
 
@@ -140,12 +140,16 @@ Navigator config in `.agent/.nav-config.json`:
 
 ```json
 {
-  "version": "5.4.0",
+  "version": "5.5.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
   "auto_load_navigator": true,
-  "compact_strategy": "conservative"
+  "compact_strategy": "conservative",
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1
+  }
 }
 ```
 

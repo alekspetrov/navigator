@@ -189,6 +189,16 @@ Navigator fixes this with context engineering—the same principles Anthropic re
 
 ---
 
+## Troubleshooting
+
+**Skill loads but prints docs instead of executing**
+```bash
+/plugin update navigator
+```
+Then retry. Outdated plugin version.
+
+---
+
 ## Links
 
 - [Documentation](.agent/DEVELOPMENT-README.md)

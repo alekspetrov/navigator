@@ -20,6 +20,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.5.0**: Auto-Update on Session Start - automatically updates Navigator when newer version detected. No manual `nav-upgrade` needed for daily releases.
 
+**NEW in v5.6.0**: Task Mode - unified workflow orchestration that coordinates between skills, loop mode, and direct execution. Auto-detects complexity and defers to appropriate handler.
+
 ---
 
 ## How You'll Use It
@@ -402,6 +404,115 @@ You'll still see update notifications - just run `nav-upgrade` manually when rea
 
 ---
 
+### Task Mode - Unified Workflow Orchestration (v5.6.0)
+
+Navigator v5.6.0 introduces **Task Mode** - unified workflow orchestration that resolves conflicts between skills, loop mode, and CLAUDE.md workflows.
+
+#### The Problem Task Mode Solves
+
+Navigator had three disconnected workflow systems:
+1. **Skills** (frontend-component, etc.) - have mini-workflows (Step 1 → Step 7)
+2. **Loop Mode** - separate phase system (INIT → COMPLETE)
+3. **CLAUDE.md** - documents workflow nobody enforces
+
+**Result**: Conflicts when multiple systems try to run.
+
+#### How Task Mode Works
+
+```
+User Request
+    ↓
+TASK MODE (auto-detect)
+    ├─ Simple task? → Direct execution (no overhead)
+    ├─ Skill matches? → Let skill run (it has workflow)
+    └─ Substantial, no skill? → Task Mode phases
+```
+
+#### When Task Mode Activates
+
+**Activates when**:
+- Substantial work (complexity score >= 0.5)
+- No matching skill detected
+- Request involves planning, refactoring, or multi-file changes
+
+**Does NOT activate when**:
+- Trivial task (typo fix, single line change)
+- Skill clearly matches (component creation, endpoint, migration)
+- User says "quick", "just do", "simple fix"
+
+#### Task Mode Phases
+
+When activated, Task Mode provides phase guidance:
+
+```
+RESEARCH → PLAN → IMPL → VERIFY → COMPLETE
+```
+
+Each phase transition shows visual feedback:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE: RESEARCH → PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RESEARCH completed:
+  ✓ Found 5 related files
+  ✓ Identified patterns in src/auth/
+
+Moving to PLAN phase...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+#### Task Mode vs Loop Mode
+
+| Aspect | Task Mode | Loop Mode |
+|--------|-----------|-----------|
+| Activation | Auto-detect | Explicit trigger |
+| Iteration | None | EXIT_SIGNAL required |
+| Skill coordination | Defers to skills | Independent |
+| Best for | Features | Autonomous work |
+
+**Can coexist**: Loop Mode wraps Task Mode phases if both active.
+
+#### Configuration
+
+In `.agent/.nav-config.json`:
+```json
+{
+  "task_mode": {
+    "enabled": true,
+    "auto_detect": true,
+    "defer_to_skills": true,
+    "complexity_threshold": 0.5,
+    "show_phase_indicator": true
+  }
+}
+```
+
+#### Examples
+
+**Skill Deferral** (component creation):
+```
+User: "Create a UserProfile component"
+→ Skill match: frontend-component (95% confidence)
+→ Task Mode defers: "frontend-component skill will handle this"
+```
+
+**Task Mode Active** (refactoring):
+```
+User: "Refactor auth to use JWT"
+→ Complexity: 0.8, No skill match
+→ Task Mode activates with phase tracking
+```
+
+**Direct Execution** (simple fix):
+```
+User: "Fix the typo in README"
+→ Complexity: 0.1
+→ Direct execution (no overhead)
+```
+
+---
+
 ### Agents vs Skills - Token Optimization Strategy
 
 Navigator uses **both strategically**:
@@ -677,4 +788,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-22
-**Navigator Version**: 5.5.0
+**Navigator Version**: 5.6.0

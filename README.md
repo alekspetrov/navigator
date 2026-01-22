@@ -5,7 +5,7 @@
 Sessions that last. AI that learns. Features that ship.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-5.5.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
+[![Version](https://img.shields.io/badge/version-5.6.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
 
 ---
 
@@ -87,12 +87,13 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 
 | Feature | Navigator | Others |
 |---------|-----------|--------|
-| Structured workflows | ✅ 25 skills | ✅ |
+| Structured workflows | ✅ 26 skills | ✅ |
 | Component generation | ✅ | ✅ |
 | Test generation | ✅ | ✅ |
 | Session longevity | **20+ exchanges** | 5-7 exchanges |
 | Token savings | **92% verified** | None |
 | Code simplification | **✅** | ❌ |
+| Task Mode | **✅** | ❌ |
 | Theory of Mind | **✅** | ❌ |
 | Loop mode | **✅** | ❌ |
 | OpenTelemetry metrics | **✅** | ❌ |

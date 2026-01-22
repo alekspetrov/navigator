@@ -1,10 +1,17 @@
 {
-  "version": "5.5.0",
+  "version": "5.6.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
   "auto_load_navigator": true,
   "compact_strategy": "conservative",
+  "task_mode": {
+    "enabled": true,
+    "auto_detect": true,
+    "defer_to_skills": true,
+    "complexity_threshold": 0.5,
+    "show_phase_indicator": true
+  },
   "tom_features": {
     "verification_checkpoints": true,
     "confirmation_threshold": "high-stakes",

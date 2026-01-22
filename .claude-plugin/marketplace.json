@@ -6,9 +6,10 @@
     "email": "aleks@example.com"
   },
   "metadata": {
-    "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind and Loop Mode",
-    "version": "5.5.0",
+    "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind, Loop Mode, and Task Mode",
+    "version": "5.6.0",
     "breaking_changes": [
+      "v5.6.0: Task Mode - unified workflow orchestration, auto-detects complexity, defers to skills or provides phase guidance (nav-task-mode skill)",
       "v5.5.0: Auto-Update on Session Start - automatic plugin updates when newer version detected, zero friction for daily releases",
       "v5.4.0: Code Simplification Integration - nav-simplify skill, Multi-Claude simplifier role, autonomous completion integration, Loop Mode VERIFY phase",
       "v5.3.0: Task Verification Enhancement - Verify/Done sections, verify_extractor.py, multi-Claude Review integration",

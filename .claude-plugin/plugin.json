@@ -1,6 +1,6 @@
 {
   "name": "navigator",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "description": "Finish What You Start - Sessions that last, AI that learns, Features that ship. Context engineering + Theory of Mind + Loop Mode. Philosophy, Metrics, Education, Skills, Agents, and Multi-Claude Workflows. Features ToM-based verification checkpoints, bilateral modeling (nav-profile), quality detection (nav-diagnose), enhanced context markers, and Loop Mode with structured completion signals. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
   "author": {
     "name": "Aleks Petrov",
@@ -25,6 +25,7 @@
     "bilateral-modeling"
   ],
   "skills": [
+    "./skills/nav-simplify",
     "./skills/nav-onboard",
     "./skills/nav-init",
     "./skills/nav-start",

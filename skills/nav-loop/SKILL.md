@@ -96,7 +96,7 @@ Starting iteration 1...
 | INIT | Load context, understand requirements |
 | RESEARCH | Explore codebase, find patterns |
 | IMPL | Write code, make changes |
-| VERIFY | Run tests, validate functionality |
+| VERIFY | Run tests, validate functionality, **simplify code** |
 | COMPLETE | All indicators met, ready to exit |
 
 **Track changes during iteration**:
@@ -132,6 +132,7 @@ Progress: {PERCENT}%
 Completion Indicators:
   [{x or space}] Code changes committed
   [{x or space}] Tests passing
+  [{x or space}] Code simplified
   [{x or space}] Documentation updated
   [{x or space}] Ticket closed
   [{x or space}] Marker created
@@ -209,6 +210,7 @@ python3 functions/exit_gate.py \
 **Completion indicators** (mapped from autonomous protocol):
 - `code_committed`: Changes committed to git
 - `tests_passing`: Test suite passes (exit code 0)
+- `code_simplified`: Code simplified for clarity (v5.4.0+)
 - `docs_updated`: Documentation files changed
 - `ticket_closed`: PM tool ticket marked done
 - `marker_created`: Completion marker exists
@@ -269,6 +271,7 @@ Final Phase: COMPLETE
 Completion Indicators:
   [x] Code changes committed
   [x] Tests passing
+  [x] Code simplified
   [x] Documentation updated
   [ ] Ticket closed (skipped - no PM tool)
   [x] Marker created
@@ -347,6 +350,13 @@ Loop mode enhances (not replaces) the autonomous protocol:
 - Completion indicators map to autonomous steps
 - EXIT_SIGNAL triggers autonomous completion
 - Marker includes loop state for restoration
+
+### With nav-simplify (v5.4.0+)
+Simplification runs during VERIFY phase:
+- After tests pass, before committing
+- Configurable via `simplification.enabled` in .nav-config.json
+- Adds `code_simplified` completion indicator
+- Skip if no code changes (docs-only tasks)
 
 ### With nav-diagnose
 Stagnation triggers nav-diagnose quality check:

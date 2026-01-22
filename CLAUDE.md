@@ -16,6 +16,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.1.0**: Loop Mode with structured completion signals, dual-condition exit gates, and stagnation detection - inspired by Ralph's autonomous loop framework.
 
+**NEW in v5.4.0**: Code Simplification - automatic code clarity improvements before commit. Based on Anthropic's internal code-simplifier pattern. Clarity over brevity, functionality preserved absolutely.
+
 ---
 
 ## How You'll Use It
@@ -121,11 +123,12 @@ Examples:
 **When task implementation is complete, execute finish protocol AUTOMATICALLY**:
 
 ✅ **DO automatically** (no human prompt needed):
-1. Commit changes with conventional commit message
-2. Archive implementation plan
-3. Close ticket in PM tool (if configured)
-4. Create completion marker
-5. Suggest compact to clear context
+1. **Simplify code** (if enabled and code modified) - clarity improvements
+2. Commit changes with conventional commit message
+3. Archive implementation plan
+4. Close ticket in PM tool (if configured)
+5. Create completion marker
+6. Suggest compact to clear context
 
 ❌ **DON'T wait for**: "Please commit", "Close ticket", "Update docs"
 
@@ -264,7 +267,69 @@ This prevents premature exits when indicators are met but work remains.
 
 - **nav-diagnose**: Stagnation triggers quality check
 - **nav-marker**: Markers capture loop state for resumption
+- **nav-simplify**: Code simplified during VERIFY phase (v5.4.0+)
 - **Autonomous completion**: EXIT_SIGNAL triggers the autonomous protocol
+
+---
+
+### Code Simplification (v5.4.0)
+
+Navigator v5.4.0 introduces **Code Simplification** - automatic code clarity improvements before commit, based on Anthropic's internal code-simplifier pattern.
+
+#### Core Principle
+
+**Clarity over brevity. Functionality preserved absolutely.**
+
+Never change what code does - only how it does it.
+
+#### Simplification Rules
+
+1. **Preserve Functionality**: All original features, outputs, behaviors intact
+2. **Enhance Clarity**:
+   - Flatten nested ternaries to if-else/switch
+   - Extract deeply nested code to helper functions
+   - Use early returns to reduce nesting
+   - Rename unclear variables to descriptive names
+   - Remove redundant boolean comparisons
+3. **Apply Project Standards**: Follow patterns defined in this file
+4. **Maintain Balance**: Don't over-simplify or create "clever" solutions
+
+#### When Simplification Runs
+
+- **Autonomous completion**: After verify, before commit (if enabled)
+- **Loop Mode**: During VERIFY phase as completion indicator
+- **Multi-Claude**: Dedicated "simplifier" role in parallel workflows
+- **On-demand**: "simplify this code", "review for clarity"
+
+#### Configuration
+
+In `.agent/.nav-config.json`:
+```json
+{
+  "simplification": {
+    "enabled": true,
+    "trigger": "post-implementation",
+    "scope": "modified",
+    "model": "opus",
+    "skip_patterns": ["*.test.*", "*.spec.*", "*.md"],
+    "auto_apply": false
+  }
+}
+```
+
+#### What It Changes
+
+✅ **DO simplify**:
+- Nested ternary → if-else or switch
+- Deep nesting (>3 levels) → early returns or helper functions
+- Single-letter variables → descriptive names
+- `=== true` → truthy check
+
+❌ **DON'T change**:
+- API signatures or public exports
+- Test file structure
+- Meaningful comments (keep "why" comments)
+- Architecture or design patterns
 
 ---
 
@@ -387,8 +452,9 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 4. **Plan** → Use TodoWrite for complex tasks
 5. **Implement** → Follow patterns, write tests
 6. **Verify** → Run tests, confirm functionality
-7. **Complete** → [AUTONOMOUS] Commit, document, close ticket, create marker
-8. **Compact** → Clear context for next task
+7. **Simplify** → [AUTO] Code clarity improvements (if enabled)
+8. **Complete** → [AUTONOMOUS] Commit, document, close ticket, create marker
+9. **Compact** → Clear context for next task
 
 ---
 
@@ -498,12 +564,17 @@ Navigator config in `.agent/.nav-config.json`:
 
 ```json
 {
-  "version": "5.1.0",
+  "version": "5.4.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
   "auto_load_navigator": true,
-  "compact_strategy": "conservative"
+  "compact_strategy": "conservative",
+  "simplification": {
+    "enabled": true,
+    "trigger": "post-implementation",
+    "scope": "modified"
+  }
 }
 ```
 
@@ -532,5 +603,5 @@ Navigator config in `.agent/.nav-config.json`:
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2025-01-20
-**Navigator Version**: 5.2.0
+**Last Updated**: 2025-01-22
+**Navigator Version**: 5.4.0

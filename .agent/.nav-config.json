@@ -1,5 +1,5 @@
 {
-  "version": "5.3.0",
+  "version": "5.4.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -18,5 +18,22 @@
     "stagnation_threshold": 3,
     "exit_requires_explicit_signal": true,
     "show_status_block": true
+  },
+  "simplification": {
+    "enabled": true,
+    "trigger": "post-implementation",
+    "scope": "modified",
+    "model": "opus",
+    "skip_patterns": ["*.test.*", "*.spec.*", "*.md", "*.json", "*.yaml"],
+    "max_file_size": 50000,
+    "auto_apply": false,
+    "preserve_comments": true,
+    "rules": {
+      "avoid_nested_ternary": true,
+      "max_nesting_depth": 3,
+      "max_function_length": 50,
+      "prefer_explicit_returns": true,
+      "consolidate_imports": true
+    }
   }
 }

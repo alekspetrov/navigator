@@ -2,8 +2,8 @@
 
 **SOP ID**: DEV-003
 **Category**: Development
-**Last Updated**: 2025-10-13
-**Version**: 1.0.0
+**Last Updated**: 2025-01-22
+**Version**: 1.1.0
 
 ---
 
@@ -62,7 +62,53 @@ git status
 
 ---
 
-### Step 2: Commit Changes
+### Step 2: Simplify Code (v1.1.0+)
+
+**Check if simplification is enabled**:
+```bash
+# Check .nav-config.json for simplification settings
+cat .agent/.nav-config.json | grep -A 5 '"simplification"' 2>/dev/null
+```
+
+**If enabled and code was modified**:
+
+Invoke `nav-simplify` skill or apply directly:
+
+1. **Identify modified files**:
+```bash
+git diff --name-only HEAD~1 -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.py' '*.go'
+```
+
+2. **Analyze for simplification opportunities**:
+   - Nested ternary operators → Convert to if-else/switch
+   - Deep nesting (>3 levels) → Extract to functions or use early returns
+   - Unclear variable names → Rename to descriptive names
+   - Redundant code patterns → Consolidate
+
+3. **Apply simplifications** (if found):
+```bash
+# Use predefined function
+python3 "$SKILL_BASE_DIR/scripts/simplification_rules.py" \
+  --file "$file" \
+  --claude-md CLAUDE.md \
+  --apply
+```
+
+4. **Stage any simplification changes**:
+```bash
+git add -u  # Stage modified files only
+```
+
+**Skip simplification if**:
+- No code files modified (docs-only changes)
+- `simplification.enabled` is `false` in config
+- User explicitly says "skip simplification"
+
+**Note**: Simplification must preserve exact functionality. Only clarity improvements, no behavior changes.
+
+---
+
+### Step 3: Commit Changes
 
 **Stage and commit**:
 ```bash
@@ -93,7 +139,7 @@ git push origin HEAD
 
 ---
 
-### Step 3: Archive Implementation Plan
+### Step 4: Archive Implementation Plan
 
 **Run update-doc command**:
 ```bash
@@ -107,7 +153,7 @@ git push origin HEAD
 
 ---
 
-### Step 4: Close Ticket in PM Tool
+### Step 5: Close Ticket in PM Tool
 
 **If Linear configured**:
 ```typescript
@@ -142,7 +188,7 @@ jira issue move TASK-XX "Done"
 
 ---
 
-### Step 5: Create Completion Marker
+### Step 6: Create Completion Marker
 
 **Create marker automatically**:
 ```bash
@@ -158,7 +204,7 @@ jira issue move TASK-XX "Done"
 
 ---
 
-### Step 6: Suggest Compact
+### Step 7: Suggest Compact
 
 **Inform user**:
 ```
@@ -169,7 +215,7 @@ Ready for next task. Run /nav:compact to clear context.
 
 ---
 
-### Step 7: Show Completion Summary
+### Step 8: Show Completion Summary
 
 **Display summary**:
 ```
@@ -277,6 +323,7 @@ Choice [1-3]:
 ## Success Criteria
 
 Autonomous completion succeeds when:
+- [ ] Code simplified (if enabled and code modified)
 - [ ] Changes committed with proper message
 - [ ] Implementation plan archived
 - [ ] Ticket closed (if PM configured)
@@ -299,6 +346,7 @@ Autonomous completion succeeds when:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1.0 | 2025-01-22 | Added Step 2: Simplify Code (nav-simplify integration) |
 | 1.0.0 | 2025-10-13 | Initial SOP for autonomous completion |
 
 ---

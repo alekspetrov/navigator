@@ -360,20 +360,37 @@ Available for work:      [available] tokens ([percent]%)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+🔹 WORKFLOW ENFORCEMENT (MANDATORY)
+
+Before responding to ANY task, show:
+┌─────────────────────────────────────┐
+│ WORKFLOW CHECK                      │
+├─────────────────────────────────────┤
+│ Loop trigger: [YES/NO]              │
+│ Complexity: [0.X]                   │
+│ Mode: [LOOP/TASK/DIRECT]            │
+└─────────────────────────────────────┘
+
+Loop triggers: "run until done", "do all", "keep going"
+Task triggers: multi-file, refactor, new feature
+Skipping this check = WORKFLOW VIOLATION
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 🔹 Navigator WORKFLOW REMINDER
 
-1. Navigator-first loading
+1. Workflow enforcement
+   - ✅ ALWAYS show WORKFLOW CHECK on tasks
+   - Loop Mode: NAVIGATOR_STATUS each iteration
+   - Task Mode: Phase tracking (RESEARCH→COMPLETE)
+
+2. Navigator-first loading
    - ✅ Loaded: .agent/DEVELOPMENT-README.md
    - Next: Load ONLY relevant task/system docs
 
-2. Use agents for research
+3. Use agents for research
    - Multi-file searches: Use Task agent (saves 60-80% tokens)
    - Code exploration: Use Explore agent
-   - NOT manual Read of many files
-
-3. Task documentation
-   - After features: Use nav-task-manager skill
-   - After bugs: Use nav-sop-creator skill
 
 4. Context management
    - Run nav-compact skill after isolated sub-tasks

@@ -26,6 +26,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.8.0**: Auto-Update Project Sync - auto-update now syncs project config after plugin update. Version drift detection warns when project config is behind. Restart prompt after mid-session updates.
 
+**NEW in v5.9.0**: Workflow Enforcement - mandatory WORKFLOW CHECK block before task responses. Loop Mode and Task Mode triggers auto-detected. Complexity scoring. Hook-based enforcement available.
+
 ---
 
 ## How You'll Use It
@@ -72,6 +74,35 @@ Strategic loading saves 92% of context for actual work.
 ---
 
 ## Navigator Workflow (CRITICAL - ENFORCE STRICTLY)
+
+### WORKFLOW ENFORCEMENT (MANDATORY - READ FIRST)
+
+**Before responding to ANY task request, you MUST show this block:**
+
+```
+┌─────────────────────────────────────┐
+│ WORKFLOW CHECK                      │
+├─────────────────────────────────────┤
+│ Loop trigger: [YES/NO]              │
+│ Complexity: [0.X]                   │
+│ Mode: [LOOP/TASK/DIRECT]            │
+└─────────────────────────────────────┘
+```
+
+**Loop Mode triggers** (if ANY match → Mode: LOOP):
+- "run until done", "do all", "keep going", "iterate until"
+- "finish this", "complete everything", "don't stop"
+
+**Task Mode triggers** (if complexity >= 0.5 → Mode: TASK):
+- Multi-file changes, refactoring, new features
+- Planning required, architecture changes
+- "implement", "refactor", "add feature", "fix all"
+
+**Direct execution** (if neither → Mode: DIRECT):
+- Single file edit, quick fix, simple question
+- Complexity < 0.5, no loop trigger
+
+**If you skip this check, you are violating Navigator workflow.**
 
 ### SESSION START PROTOCOL (MANDATORY)
 
@@ -622,6 +653,13 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 ## Forbidden Actions
 
 ### Navigator Violations (HIGHEST PRIORITY)
+- ❌ NEVER skip WORKFLOW CHECK block on task requests
+  → Must show: Loop trigger? Complexity? Mode?
+  → See: [WORKFLOW ENFORCEMENT](#workflow-enforcement-mandatory---read-first)
+- ❌ NEVER ignore Loop Mode triggers ("run until done", "do all", etc.)
+  → Must activate Loop Mode with NAVIGATOR_STATUS blocks
+- ❌ NEVER skip complexity check on substantial tasks
+  → Multi-file, refactoring, features → Task Mode required
 - ❌ NEVER wait for explicit commit prompts (autonomous mode)
   → See: `.agent/philosophy/PATTERNS.md` (Autonomous Completion pattern)
 - ❌ NEVER leave tickets open after completion
@@ -805,4 +843,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-22
-**Navigator Version**: 5.8.0
+**Navigator Version**: 5.9.0

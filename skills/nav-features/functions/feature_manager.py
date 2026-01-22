@@ -156,10 +156,10 @@ def is_feature_enabled(config: Dict, feature_name: str) -> bool:
 
 
 def format_status(enabled: bool, feature_type: str = "config") -> str:
-    """Format status with emoji."""
+    """Format status with fixed-width text."""
     if feature_type == "installed":
-        return "📦" if enabled else "—"
-    return "✅" if enabled else "⏸ Off"
+        return "Inst." if enabled else "—    "
+    return "On   " if enabled else "Off  "
 
 
 def show_features(config: Dict, first_session: bool = False) -> str:
@@ -176,9 +176,9 @@ def show_features(config: Dict, first_session: bool = False) -> str:
     lines.append("")
 
     # Table header
-    lines.append("┌─────────────────┬────────┬─────────────────────────────────────────────────┐")
-    lines.append("│ Feature         │ Status │ Description                                     │")
-    lines.append("├─────────────────┼────────┼─────────────────────────────────────────────────┤")
+    lines.append("┌─────────────────┬────────┬───────────────────────────────────────────────┐")
+    lines.append("│ Feature         │ Status │ Description                                   │")
+    lines.append("├─────────────────┼────────┼───────────────────────────────────────────────┤")
 
     # Feature rows
     for feature_name, feature in FEATURES.items():
@@ -187,18 +187,18 @@ def show_features(config: Dict, first_session: bool = False) -> str:
         status = format_status(enabled, feature_type)
 
         # Truncate description if needed
-        desc = feature["description"][:47]
-        if len(feature["description"]) > 47:
-            desc = desc[:44] + "..."
+        desc = feature["description"][:45]
+        if len(feature["description"]) > 45:
+            desc = desc[:42] + "..."
 
         # Format with padding
         name_col = feature_name.ljust(15)
         status_col = status.ljust(6)
-        desc_col = desc.ljust(47)
+        desc_col = desc.ljust(45)
 
         lines.append(f"│ {name_col} │ {status_col} │ {desc_col} │")
 
-    lines.append("└─────────────────┴────────┴─────────────────────────────────────────────────┘")
+    lines.append("└─────────────────┴────────┴───────────────────────────────────────────────┘")
     lines.append("")
     lines.append(f"All v{version} features configured.")
 

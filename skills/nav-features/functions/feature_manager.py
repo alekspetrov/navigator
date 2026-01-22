@@ -26,7 +26,8 @@ FEATURES = {
         "short_desc": "Unified workflow orchestration",
         "config_key": "task_mode",
         "enabled_key": "enabled",
-        "default": True
+        "default": True,
+        "type": "config"
     },
     "tom_features": {
         "name": "tom_features",
@@ -36,7 +37,8 @@ FEATURES = {
         "short_desc": "Human-AI collaboration improvements",
         "config_key": "tom_features",
         "enabled_key": "verification_checkpoints",
-        "default": True
+        "default": True,
+        "type": "config"
     },
     "loop_mode": {
         "name": "loop_mode",
@@ -46,7 +48,8 @@ FEATURES = {
         "short_desc": "Run until done capability",
         "config_key": "loop_mode",
         "enabled_key": "enabled",
-        "default": False
+        "default": False,
+        "type": "config"
     },
     "simplification": {
         "name": "simplification",
@@ -56,7 +59,8 @@ FEATURES = {
         "short_desc": "Automatic code clarity improvements",
         "config_key": "simplification",
         "enabled_key": "enabled",
-        "default": False
+        "default": False,
+        "type": "config"
     },
     "auto_update": {
         "name": "auto_update",
@@ -66,7 +70,20 @@ FEATURES = {
         "short_desc": "Automatic plugin updates",
         "config_key": "auto_update",
         "enabled_key": "enabled",
-        "default": True
+        "default": True,
+        "type": "config"
+    },
+    "multi_claude": {
+        "name": "multi_claude",
+        "display_name": "Multi-Claude",
+        "version": "4.3.0",
+        "description": "Parallel AI execution for complex tasks",
+        "short_desc": "Multi-Claude workflow orchestration",
+        "config_key": None,
+        "enabled_key": None,
+        "default": False,
+        "type": "installed",
+        "check_command": "command -v navigator-multi-claude.sh"
     }
 }
 
@@ -97,21 +114,51 @@ def save_config(config: Dict) -> Optional[str]:
         return f"Failed to save: {e}"
 
 
+def check_installed(check_command: str) -> bool:
+    """Check if a command/script is installed."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            check_command,
+            shell=True,
+            capture_output=True,
+            timeout=5
+        )
+        return result.returncode == 0
+    except:
+        return False
+
+
 def is_feature_enabled(config: Dict, feature_name: str) -> bool:
-    """Check if a feature is enabled in config."""
+    """Check if a feature is enabled in config or installed."""
     if feature_name not in FEATURES:
         return False
 
     feature = FEATURES[feature_name]
-    config_section = config.get(feature["config_key"], {})
+
+    # Handle installed type (check if command exists)
+    if feature.get("type") == "installed":
+        check_cmd = feature.get("check_command")
+        if check_cmd:
+            return check_installed(check_cmd)
+        return False
+
+    # Handle config type
+    config_key = feature.get("config_key")
+    if not config_key:
+        return feature["default"]
+
+    config_section = config.get(config_key, {})
 
     if isinstance(config_section, dict):
         return config_section.get(feature["enabled_key"], feature["default"])
     return feature["default"]
 
 
-def format_status(enabled: bool) -> str:
+def format_status(enabled: bool, feature_type: str = "config") -> str:
     """Format status with emoji."""
+    if feature_type == "installed":
+        return "📦" if enabled else "—"
     return "✅" if enabled else "⏸ Off"
 
 
@@ -136,7 +183,8 @@ def show_features(config: Dict, first_session: bool = False) -> str:
     # Feature rows
     for feature_name, feature in FEATURES.items():
         enabled = is_feature_enabled(config, feature_name)
-        status = format_status(enabled)
+        feature_type = feature.get("type", "config")
+        status = format_status(enabled, feature_type)
 
         # Truncate description if needed
         desc = feature["description"][:47]
@@ -164,6 +212,14 @@ def toggle_feature(config: Dict, feature_name: str, enable: bool) -> Tuple[Dict,
         return config, f"❌ Unknown feature: {feature_name}\n\nAvailable: {available}"
 
     feature = FEATURES[feature_name]
+
+    # Check if feature is toggleable
+    if feature.get("type") == "installed":
+        if enable:
+            return config, f"💡 {feature['display_name']} requires installation.\n\nRun: 'Install multi-Claude workflows'"
+        else:
+            return config, f"💡 {feature['display_name']} uninstall not yet supported.\n\nManually remove scripts from ~/bin/ if needed."
+
     config_key = feature["config_key"]
     enabled_key = feature["enabled_key"]
 

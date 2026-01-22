@@ -175,26 +175,37 @@ Next steps:
 Rollback if needed: mv CLAUDE.md.backup CLAUDE.md
 ```
 
-### Step 7: Optional - Update .nav-config.json
+### Step 7: Update .nav-config.json
 
-If config exists, check version:
+If config exists, migrate to latest version with new sections:
 
 ```bash
 if [ -f ".agent/.nav-config.json" ]; then
-  version=$(jq -r '.version' .agent/.nav-config.json)
-  if [ "$version" != "4.6.0" ]; then
-    echo ""
-    echo "💡 .nav-config.json is version $version"
-    echo "   Update to 4.6.0? [Y/n]"
-    read -r response
-
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY]|)$ ]]; then
-      jq '.version = "4.6.0"' .agent/.nav-config.json > /tmp/nav-config.tmp
-      mv /tmp/nav-config.tmp .agent/.nav-config.json
-      echo "   ✓ Updated config to v4.6.0"
-    fi
-  fi
+  python3 "$SKILL_BASE_DIR/functions/config_migrator.py" .agent/.nav-config.json
 fi
+```
+
+**What this does**:
+1. Detects current config version
+2. Adds missing sections based on version:
+   - v5.4.0+: `simplification` config
+   - v5.5.0+: `auto_update` config
+   - v5.6.0+: `task_mode` config
+3. Updates version marker to current
+
+**Example output**:
+```
+✅ Config migrated: v5.4.0 → v5.6.0
+
+Changes:
+  + auto_update: (new section added)
+  + task_mode: (new section added)
+  ~ version: 5.4.0 → 5.6.0
+```
+
+**Dry run** (preview changes without applying):
+```bash
+python3 "$SKILL_BASE_DIR/functions/config_migrator.py" .agent/.nav-config.json --dry-run
 ```
 
 ## Predefined Functions
@@ -266,6 +277,41 @@ python3 claude_updater.py generate \
 5. Appends custom code standards
 6. Appends custom forbidden actions
 7. Inserts custom sections at end
+
+### functions/config_migrator.py
+
+**Purpose**: Migrate .nav-config.json to latest version, adding missing sections
+
+**Usage**:
+```bash
+# Migrate config (applies changes)
+python3 config_migrator.py .agent/.nav-config.json
+
+# Preview changes without applying
+python3 config_migrator.py .agent/.nav-config.json --dry-run
+
+# JSON output
+python3 config_migrator.py .agent/.nav-config.json --json
+```
+
+**Version-specific configs added**:
+- v5.4.0: `simplification` (code clarity improvements)
+- v5.5.0: `auto_update` (auto-update on session start)
+- v5.6.0: `task_mode` (unified workflow orchestration)
+
+**Output example**:
+```
+✅ Config migrated: v5.4.0 → v5.6.0
+
+Changes:
+  + auto_update: (new section added)
+  + task_mode: (new section added)
+  ~ version: 5.4.0 → 5.6.0
+```
+
+**Exit codes**:
+- 0: Success (config migrated or already current)
+- 1: Error (file not found, invalid JSON)
 
 ## Error Handling
 

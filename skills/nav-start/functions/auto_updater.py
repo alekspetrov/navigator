@@ -172,6 +172,144 @@ def reinstall_plugin() -> Dict:
         return {'success': False, 'error': str(e), 'method': 'reinstall'}
 
 
+# --- Version Drift Detection ---
+
+def detect_version_drift(config_path: str = '.agent/.nav-config.json') -> Dict:
+    """
+    Detect if plugin version differs from project config version.
+
+    Returns:
+        Dict with drift status:
+        - has_drift: bool
+        - plugin_version: str
+        - project_version: str
+        - message: str
+    """
+    plugin_version = get_current_version()
+    if not plugin_version:
+        return {
+            'has_drift': False,
+            'message': 'Could not detect plugin version'
+        }
+
+    try:
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+            project_version = config.get('version', '')
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {
+            'has_drift': False,
+            'message': 'Could not read project config'
+        }
+
+    if not project_version:
+        return {
+            'has_drift': True,
+            'plugin_version': plugin_version,
+            'project_version': 'unknown',
+            'message': f'Project config missing version. Plugin is v{plugin_version}.'
+        }
+
+    if compare_versions(project_version, plugin_version) < 0:
+        return {
+            'has_drift': True,
+            'plugin_version': plugin_version,
+            'project_version': project_version,
+            'message': f'Project config (v{project_version}) behind plugin (v{plugin_version}). Run "update my CLAUDE.md" to sync.'
+        }
+
+    return {
+        'has_drift': False,
+        'plugin_version': plugin_version,
+        'project_version': project_version,
+        'message': 'Versions in sync'
+    }
+
+
+def sync_project_config(config_path: str, new_version: str) -> Dict:
+    """
+    Update project .nav-config.json with new version and any missing config sections.
+
+    Returns:
+        Dict with sync status
+    """
+    try:
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {'success': False, 'error': 'Could not read config'}
+
+    old_version = config.get('version', 'unknown')
+    changes = []
+
+    # Update version
+    config['version'] = new_version
+    changes.append(f'version: {old_version} → {new_version}')
+
+    # Add missing config sections based on version
+    # v5.0.0+: tom_features
+    if 'tom_features' not in config:
+        config['tom_features'] = {
+            'verification_checkpoints': True,
+            'confirmation_threshold': 'high-stakes',
+            'profile_enabled': True,
+            'diagnose_enabled': True,
+            'belief_anchors': False
+        }
+        changes.append('added: tom_features')
+
+    # v5.1.0+: loop_mode
+    if 'loop_mode' not in config:
+        config['loop_mode'] = {
+            'enabled': False,
+            'max_iterations': 5,
+            'stagnation_threshold': 3,
+            'exit_requires_explicit_signal': True
+        }
+        changes.append('added: loop_mode')
+
+    # v5.4.0+: simplification
+    if 'simplification' not in config:
+        config['simplification'] = {
+            'enabled': True,
+            'trigger': 'post-implementation',
+            'scope': 'modified'
+        }
+        changes.append('added: simplification')
+
+    # v5.5.0+: auto_update (ensure it exists)
+    if 'auto_update' not in config:
+        config['auto_update'] = {
+            'enabled': True,
+            'check_interval_hours': 1
+        }
+        changes.append('added: auto_update')
+
+    # v5.6.0+: task_mode
+    if 'task_mode' not in config:
+        config['task_mode'] = {
+            'enabled': True,
+            'auto_detect': True,
+            'defer_to_skills': True,
+            'complexity_threshold': 0.5,
+            'show_phase_indicator': True
+        }
+        changes.append('added: task_mode')
+
+    # Save updated config
+    try:
+        with open(config_path, 'w') as f:
+            json.dump(config, f, indent=2)
+            f.write('\n')
+        return {
+            'success': True,
+            'changes': changes,
+            'message': f'Config synced: {", ".join(changes)}'
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
 # --- Auto-Update Logic ---
 
 def load_config(config_path: str = '.agent/.nav-config.json') -> Dict:
@@ -297,6 +435,9 @@ def auto_update(config_path: str = '.agent/.nav-config.json') -> Dict:
     save_config(config, config_path)
 
     if update_result['success']:
+        # Sync project config with new version
+        sync_result = sync_project_config(config_path, latest_version)
+
         return {
             'status': 'updated',
             'message': f'Auto-updated to v{latest_version}',
@@ -304,7 +445,9 @@ def auto_update(config_path: str = '.agent/.nav-config.json') -> Dict:
             'new_version': latest_version,
             'method': update_result.get('method', 'update'),
             'requires_restart': True,
-            'restart_reason': 'Claude Code caches skill paths at session start. Restart to load new skills.'
+            'restart_reason': 'Claude Code caches skill paths at session start. Restart to load new skills.',
+            'project_synced': sync_result.get('success', False),
+            'sync_changes': sync_result.get('changes', [])
         }
     else:
         return {
@@ -324,8 +467,20 @@ def main():
         default='.agent/.nav-config.json',
         help='Path to Navigator config file'
     )
+    parser.add_argument(
+        '--check-drift',
+        action='store_true',
+        help='Only check for version drift, do not update'
+    )
     args = parser.parse_args()
 
+    # Check drift mode
+    if args.check_drift:
+        result = detect_version_drift(args.config_path)
+        print(json.dumps(result, indent=2))
+        sys.exit(0 if not result.get('has_drift') else 1)
+
+    # Normal auto-update mode
     result = auto_update(args.config_path)
 
     # Output as JSON

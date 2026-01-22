@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind, Loop Mode, and Task Mode",
-    "version": "5.7.0",
+    "version": "5.8.0",
     "breaking_changes": [
+      "v5.8.0: Auto-Update Project Sync - auto-update now syncs project config, version drift detection, restart prompt after mid-session updates",
       "v5.7.0: Feature Management - nav-features skill for viewing/toggling features, first-session feature display on install/update",
       "v5.6.0: Task Mode - unified workflow orchestration, auto-detects complexity, defers to skills or provides phase guidance (nav-task-mode skill)",
       "v5.5.0: Auto-Update on Session Start - automatic plugin updates when newer version detected, zero friction for daily releases",

@@ -175,6 +175,37 @@ Parse:
 - `team_chat`: Team notifications (slack, discord, none)
 - `tom_features`: ToM configuration (if present, v5.0.0+)
 
+### Step 5.1: Check Version Drift
+
+**Check if project config version matches plugin version**:
+
+```bash
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+DRIFT_RESULT=$(python3 "$SKILL_DIR/functions/auto_updater.py" --check-drift 2>/dev/null || echo '{"has_drift": false}')
+HAS_DRIFT=$(echo "$DRIFT_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('has_drift', False))" 2>/dev/null)
+
+if [ "$HAS_DRIFT" = "True" ]; then
+  DRIFT_MSG=$(echo "$DRIFT_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('message', ''))" 2>/dev/null)
+  echo ""
+  echo "⚠️  VERSION DRIFT DETECTED"
+  echo "   $DRIFT_MSG"
+  echo ""
+fi
+```
+
+**Version drift occurs when**:
+- Plugin updated but project config wasn't synced
+- Manual plugin install without running nav-upgrade
+- Project cloned with old config version
+
+**Display warning if drift detected**:
+```
+⚠️  VERSION DRIFT DETECTED
+   Project config (v5.5.0) behind plugin (v5.7.0). Run "update my CLAUDE.md" to sync.
+```
+
+This helps users understand why skills may behave unexpectedly.
+
 ### Step 5.5: Load User Profile (ToM - Bilateral Modeling) [EXECUTE]
 
 **IMPORTANT**: This step MUST be executed, not just documented.

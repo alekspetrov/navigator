@@ -24,6 +24,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.7.0**: Feature Management - view and toggle Navigator features via `nav-features` skill. Shows feature table on first session after install/update.
 
+**NEW in v5.8.0**: Auto-Update Project Sync - auto-update now syncs project config after plugin update. Version drift detection warns when project config is behind. Restart prompt after mid-session updates.
+
 ---
 
 ## How You'll Use It
@@ -803,4 +805,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-22
-**Navigator Version**: 5.7.0
+**Navigator Version**: 5.8.0

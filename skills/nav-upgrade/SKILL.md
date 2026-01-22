@@ -262,6 +262,29 @@ After restarting, verify:
 
 Prompt user to restart Claude Code.
 
+**IMPORTANT - Restart Required After All Updates**:
+
+Claude Code caches skill paths at session start. Even successful updates require a restart to load new skills:
+
+```
+⚠️  RESTART REQUIRED
+
+Plugin updated successfully to vX.Y.Z.
+Claude Code caches skill paths at session start.
+
+To use new/updated skills:
+1. Close Claude Code
+2. Reopen Claude Code
+3. Run "nav start" to verify new version
+
+Without restart:
+- Old skill versions continue running
+- New skills won't be available
+- May see "skill not found" errors
+```
+
+This is a Claude Code behavior, not a Navigator issue. The plugin files update correctly, but the active session continues using cached skill paths from the old version.
+
 ---
 
 ### Step 4: Update Project CLAUDE.md (Automatic)

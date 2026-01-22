@@ -302,7 +302,9 @@ def auto_update(config_path: str = '.agent/.nav-config.json') -> Dict:
             'message': f'Auto-updated to v{latest_version}',
             'current_version': current_version,
             'new_version': latest_version,
-            'method': update_result.get('method', 'update')
+            'method': update_result.get('method', 'update'),
+            'requires_restart': True,
+            'restart_reason': 'Claude Code caches skill paths at session start. Restart to load new skills.'
         }
     else:
         return {

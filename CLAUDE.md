@@ -379,6 +379,10 @@ User: "Start my Navigator session"
 [Checking for updates...]
 [✅ Auto-updated to v5.5.1]
 
+⚠️  RESTART REQUIRED
+   Claude Code caches skill paths at session start.
+   Restart Claude Code to load new skills from v5.5.1.
+
 ╔═══════════════════════════════════════╗
 ║  🚀 Navigator Session Started (v5.5.1) ║
 ╚═══════════════════════════════════════╝
@@ -390,6 +394,15 @@ User: "Start my Navigator session"
 - **Update timeout**: Skip update, show warning, continue
 - **Disabled in config**: Respects setting, just shows version notification
 - **Recent check**: Skips if checked within `check_interval_hours`
+
+#### Why Restart is Required
+
+Claude Code caches skill definitions at session start. When Navigator updates mid-session:
+- Plugin files update correctly (e.g., `~/.claude/plugins/cache/.../5.7.0/`)
+- Active session still uses old cached paths (e.g., `.../5.3.0/`)
+- New/updated skills won't be available until restart
+
+This is Claude Code behavior, not a Navigator issue. The restart prompt ensures users get the updated skills.
 
 #### Disabling Auto-Update
 

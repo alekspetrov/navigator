@@ -31,7 +31,13 @@
     "trigger": "post-implementation",
     "scope": "modified",
     "model": "opus",
-    "skip_patterns": ["*.test.*", "*.spec.*", "*.md", "*.json", "*.yaml"],
+    "skip_patterns": [
+      "*.test.*",
+      "*.spec.*",
+      "*.md",
+      "*.json",
+      "*.yaml"
+    ],
     "max_file_size": 50000,
     "auto_apply": false,
     "preserve_comments": true,

@@ -62,7 +62,15 @@ AUTO_UPDATE_STATUS=$(echo "$AUTO_UPDATE_RESULT" | python3 -c "import sys,json; p
 case "$AUTO_UPDATE_STATUS" in
   "updated")
     NEW_VERSION=$(echo "$AUTO_UPDATE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('new_version',''))" 2>/dev/null)
+    REQUIRES_RESTART=$(echo "$AUTO_UPDATE_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('requires_restart', False))" 2>/dev/null)
     echo "✅ Auto-updated Navigator to v$NEW_VERSION"
+    if [ "$REQUIRES_RESTART" = "True" ]; then
+      echo ""
+      echo "⚠️  RESTART REQUIRED"
+      echo "   Claude Code caches skill paths at session start."
+      echo "   Restart Claude Code to load new skills from v$NEW_VERSION."
+      echo ""
+    fi
     ;;
   "up-to-date")
     # Silently continue
@@ -77,10 +85,19 @@ esac
 ```
 
 **Auto-update behavior**:
-- **If updated**: Show "✅ Auto-updated to vX.Y.Z", continue session
+- **If updated**: Show "✅ Auto-updated to vX.Y.Z" with restart prompt
 - **If up-to-date**: Continue silently
 - **If failed**: Show warning "⚠️ Auto-update failed, run nav-upgrade manually"
 - **If disabled/skipped**: Continue silently
+
+**IMPORTANT**: When `requires_restart: true`, display:
+```
+⚠️  RESTART REQUIRED
+   Claude Code caches skill paths at session start.
+   Restart Claude Code to load new skills from vX.Y.Z.
+```
+
+This informs users that mid-session updates require a restart to activate new skills.
 
 **Never block session start** due to auto-update failure.
 

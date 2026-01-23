@@ -5,7 +5,7 @@
 Sessions that last. AI that learns. Features that ship.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-5.7.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
+[![Version](https://img.shields.io/badge/version-6.0.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
 
 ---
 
@@ -79,6 +79,14 @@ Same correction twice → Quality check triggered
 → Stagnation detection prevents infinite loops
 ```
 
+**Knowledge Graph** (v6.0): Project memory that persists
+```
+"What do we know about auth?"
+→ Unified search across tasks, SOPs, system docs
+→ Experiential memory: patterns, pitfalls, decisions
+→ Auto-surfaces relevant context on session start
+```
+
 ---
 
 ## Same Workflows. More Capabilities.
@@ -95,6 +103,7 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 | Code simplification | **✅** | ❌ |
 | Task Mode | **✅** | ❌ |
 | Theory of Mind | **✅** | ❌ |
+| Knowledge Graph | **✅** | ❌ |
 | Loop mode | **✅** | ❌ |
 | OpenTelemetry metrics | **✅** | ❌ |
 | Figma MCP integration | **✅** | ❌ |

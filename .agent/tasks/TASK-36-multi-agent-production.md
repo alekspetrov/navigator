@@ -1,14 +1,44 @@
 # TASK-36: Multi-Agent Production Polish
 
-**Status**: 📋 Backlog
+**Status**: ✅ Completed
 **Created**: 2025-01-23
-**Version**: TBD (post-6.0)
+**Completed**: 2025-01-23
+**Version**: v6.1.0
 **Priority**: High
 **Builds On**: TASK-19, TASK-25
 
 ## Summary
 
 Polish the multi-Claude orchestration system into production-ready feature with one-command setup, visual monitoring, and reliable coordination.
+
+## What Was Built
+
+**Role Templates** (5 new files in `templates/multi-claude/`):
+- `orchestrator-claude.md` (~4k tokens) - Workflow coordination
+- `implementer-claude.md` (~5k tokens) - Feature building
+- `tester-claude.md` (~4k tokens) - Test creation/execution
+- `reviewer-claude.md` (~4k tokens) - Code review
+- `documenter-claude.md` (~4k tokens) - Documentation updates
+
+**Visual Dashboard** (`scripts/multi-claude-dashboard.sh`):
+- Real-time terminal progress visualization
+- ANSI color-coded status indicators
+- Progress bars per agent
+- Elapsed time tracking
+- Marker log tail integration
+
+**nav-multi Skill** (`skills/nav-multi/SKILL.md`):
+- Natural language trigger: "Run multi-agent workflow for X"
+- Prerequisite validation
+- Workflow type selection (POC/Standard/Full)
+- Session state management
+- Dashboard launch instructions
+
+**Configuration**:
+- `multi_agent` section in `.nav-config.json`
+- Configurable timeouts, retry attempts, parallel limits
+
+---
 
 ## Context
 

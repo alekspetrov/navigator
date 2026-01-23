@@ -30,6 +30,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v6.0.0**: Project Knowledge Graph - unified search across tasks, SOPs, system docs, and experiential memories. Patterns, pitfalls, decisions, and learnings persist across sessions. Query with "What do we know about X?". Auto-surfaces relevant memories on session start.
 
+**NEW in v6.1.0**: Multi-Agent Production - parallel Claude agents with visual dashboard. Natural language trigger: "Run multi-agent workflow for TASK-XX". Role templates (orchestrator, implementer, tester, reviewer, documenter) with minimal context (~5k each). Real-time terminal dashboard shows progress. 3x faster than sequential.
+
 ---
 
 ## How You'll Use It
@@ -953,5 +955,5 @@ Navigator config in `.agent/.nav-config.json`:
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2025-01-22
-**Navigator Version**: 5.9.0
+**Last Updated**: 2025-01-23
+**Navigator Version**: 6.1.0

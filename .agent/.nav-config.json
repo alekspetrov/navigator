@@ -1,5 +1,5 @@
 {
-  "version": "6.0.0",
+  "version": "6.1.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -62,5 +62,13 @@
     "confidence_decay_rate": 0.01,
     "staleness_threshold_days": 90,
     "git_tracked": true
+  },
+  "multi_agent": {
+    "enabled": true,
+    "default_workflow": "standard",
+    "auto_dashboard": false,
+    "parallel_limit": 3,
+    "retry_attempts": 2,
+    "phase_timeout_seconds": 180
   }
 }

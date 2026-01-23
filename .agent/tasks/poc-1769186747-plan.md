@@ -1,0 +1,143 @@
+# POC: Native Task Integration Evaluation
+
+**Status**: ✅ Complete
+**Created**: 2025-01-23
+**Related**: TASK-34
+
+---
+
+## 1. Feature Description
+
+Evaluate Claude Code's native task management tools (TaskCreate, TaskUpdate, TaskGet, TaskList) for potential integration with Navigator's workflow systems.
+
+**Current State**:
+- Claude Code v2.1.16+ provides native task tools
+- Native tasks are **session-only** (ephemeral)
+- Navigator uses `.agent/tasks/` for persistent documentation
+- TodoWrite tool provides in-conversation task lists
+
+**Hypothesis**: Native tasks could provide better UX for in-session tracking (Loop Mode iterations, Task Mode phases) while `.agent/` continues to provide persistence.
+
+---
+
+## 2. Implementation Steps
+
+### Phase 1: Research & Discovery (1-2 hours)
+
+1. **Document native task API**
+   - Test TaskCreate with sample tasks
+   - Test TaskUpdate status transitions
+   - Test TaskGet/TaskList retrieval
+   - Document dependency tracking (blockedBy/blocks)
+   - Identify any UI integration or visibility
+
+2. **Compare with TodoWrite**
+   - What does TodoWrite provide?
+   - How do native tasks differ?
+   - Can both coexist?
+
+3. **Test session persistence**
+   - Create tasks, compact context, check survival
+   - Create tasks, end session, check survival
+   - Confirm ephemeral nature
+
+### Phase 2: Integration Design (1-2 hours)
+
+4. **Map to Navigator workflow**
+   ```
+   Loop Mode:
+     INIT → TaskCreate("Loop: {goal}", pending)
+     Each iteration → TaskUpdate(id, {phase, progress})
+     EXIT_SIGNAL → TaskUpdate(id, completed)
+
+   Task Mode:
+     Detection → TaskCreate("Task: {summary}", pending)
+     Phase transition → TaskUpdate(id, {phase: PLAN|IMPL|VERIFY})
+     Completion → TaskUpdate(id, completed)
+   ```
+
+5. **Design skill integration points**
+   - nav-loop: Use native tasks for iteration tracking
+   - nav-task-mode: Use for phase progression
+   - Keep `.agent/tasks/` for documentation (unchanged)
+
+### Phase 3: Prototype (2-3 hours)
+
+6. **Create test skill wrapper**
+   - Add native task calls to nav-loop
+   - Test with real workflow
+   - Measure UX improvement
+
+7. **Evaluate results**
+   - Does native task UI add value?
+   - Is complexity justified?
+   - Any conflicts with WORKFLOW CHECK?
+
+### Phase 4: Decision (30 min)
+
+8. **Write recommendation**
+   - Integrate vs Don't integrate
+   - If integrate: Full integration plan
+   - If don't: Document reasons, close TASK-34
+
+---
+
+## 3. Files to Modify (If Integration Proceeds)
+
+| File | Change |
+|------|--------|
+| `skills/nav-loop/SKILL.md` | Add TaskCreate/Update calls |
+| `skills/nav-task-mode/SKILL.md` | Add phase tracking via tasks |
+| `CLAUDE.md` | Document native task usage |
+| `.agent/DEVELOPMENT-README.md` | Update workflow docs |
+| `.agent/tasks/TASK-34*.md` | Archive with decision |
+
+---
+
+## 4. Expected Outcome
+
+**Deliverable**: Evaluation report answering:
+
+1. **Native Task Capabilities**
+   - What tools exist (confirmed API)
+   - Session vs persistent behavior
+   - UI/visibility features
+
+2. **TodoWrite Comparison**
+   - Overlap assessment
+   - Use case differentiation
+
+3. **Navigator Integration Assessment**
+   - Value add for Loop Mode
+   - Value add for Task Mode
+   - Complexity cost analysis
+
+4. **Recommendation**
+   - Integrate / Don't integrate / Partial
+   - Rationale with evidence
+   - Implementation path (if proceeding)
+
+---
+
+## Decision Criteria
+
+| Criterion | Weight | Notes |
+|-----------|--------|-------|
+| UX improvement | High | Does native UI provide value? |
+| Complexity cost | High | Is integration worth effort? |
+| Workflow alignment | Medium | Fits Loop/Task Mode patterns? |
+| Conflict risk | Medium | Interferes with WORKFLOW CHECK? |
+| Maintenance burden | Low | Ongoing maintenance cost? |
+
+---
+
+## Notes
+
+- TASK-34 exists as backlog item - this POC provides evaluation
+- Native tasks confirmed in Claude Code v2.1.16+
+- Key distinction: ephemeral (native) vs persistent (Navigator)
+- TodoWrite already provides in-conversation tracking
+
+---
+
+**Last Updated**: 2025-01-23

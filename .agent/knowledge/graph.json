@@ -1,0 +1,6446 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-01-23T12:50:34.386733Z",
+  "stats": {
+    "total_nodes": 93,
+    "total_edges": 818,
+    "memory_count": 1
+  },
+  "nodes": {
+    "tasks": {
+      "TASK-32": {
+        "id": "TASK-32",
+        "path": ".agent/tasks/TASK-32-auto-update-project-sync.md",
+        "title": "TASK-32: Auto-Update Project Sync",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "database",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-33": {
+        "id": "TASK-33",
+        "path": ".agent/tasks/TASK-33-workflow-enforcement.md",
+        "title": "TASK-33: Workflow Enforcement Mechanism",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "authentication",
+          "testing",
+          "skills",
+          "context",
+          "task mode",
+          "task-mode",
+          "task_mode"
+        ]
+      },
+      "TASK-16": {
+        "id": "TASK-16",
+        "path": ".agent/tasks/TASK-16-product-design-skill.md",
+        "title": "TASK-16: Product Design Skill with Figma MCP Integration",
+        "status": "in-progress",
+        "concepts": [
+          "workflow",
+          "database",
+          "backend",
+          "testing",
+          "skills",
+          "context",
+          "frontend"
+        ]
+      },
+      "TASK-01": {
+        "id": "TASK-01",
+        "path": ".agent/tasks/TASK-01-session-start-pm-integration.md",
+        "title": "TASK-01: Session Start Command and PM Integration",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "backend",
+          "authentication",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "TASK-18": {
+        "id": "TASK-18",
+        "path": ".agent/tasks/tickets/TASK-18.2-narrative-rewrite.md",
+        "title": "TASK-18.2: Narrative Rewrite - Vulnerability-Driven Voice",
+        "status": "unknown",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "TASK-11": {
+        "id": "TASK-11",
+        "path": ".agent/tasks/TASK-11-project-skills-generation-v2.3.md",
+        "title": "TASK-11: Project-Specific Skills Generation (v2.3)",
+        "status": "unknown",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "deployment",
+          "api",
+          "frontend"
+        ]
+      },
+      "TASK-19": {
+        "id": "TASK-19",
+        "path": ".agent/tasks/TASK-19-multi-claude-agentic-workflow.md",
+        "title": "TASK-19: Multi-Claude Agentic Workflow Automation",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "code quality",
+          "markers",
+          "authentication",
+          "tom",
+          "testing",
+          "skills",
+          "context",
+          "deployment",
+          "api",
+          "knowledge"
+        ]
+      },
+      "TASK-05": {
+        "id": "TASK-05",
+        "path": ".agent/tasks/TASK-05-landing-page-content.md",
+        "title": "TASK-05: Landing Page Content",
+        "status": "in-progress",
+        "concepts": [
+          "deployment",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-13": {
+        "id": "TASK-13",
+        "path": ".agent/tasks/TASK-13-web-documentation-site.md",
+        "title": "TASK-13: Web Documentation Site",
+        "status": "backlog",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "deployment",
+          "api",
+          "frontend",
+          "knowledge"
+        ]
+      },
+      "TASK-26": {
+        "id": "TASK-26",
+        "path": ".agent/tasks/TASK-26-plugin-optimization-roadmap.md",
+        "title": "TASK-26: Navigator Plugin Optimization Roadmap",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-03": {
+        "id": "TASK-03",
+        "path": ".agent/tasks/TASK-03-markers-management-auto-resume.md",
+        "title": "TASK-03: Interactive Marker Management + Auto-Resume (v1.5.0)",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "authentication",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-15": {
+        "id": "TASK-15",
+        "path": ".agent/tasks/TASK-15-marketing-community-adoption.md",
+        "title": "TASK-15: Marketing Strategy & Community Adoption Plan",
+        "status": "in-progress",
+        "concepts": [
+          "session",
+          "workflow",
+          "backend",
+          "testing",
+          "skills",
+          "context",
+          "knowledge",
+          "api"
+        ]
+      },
+      "TASK-22": {
+        "id": "TASK-22",
+        "path": ".agent/tasks/TASK-22-simple-console-logger.md",
+        "title": "TASK-22: Simple Console Logger",
+        "status": "completed",
+        "concepts": [
+          "testing",
+          "context"
+        ]
+      },
+      "TASK-02": {
+        "id": "TASK-02",
+        "path": ".agent/tasks/TASK-02-readme-markers-v1.4.0.md",
+        "title": "TASK-02: README Overhaul & Context Markers Feature (v1.4.0)",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "simplification",
+          "markers",
+          "skills",
+          "context",
+          "knowledge"
+        ]
+      },
+      "TASK-example": {
+        "id": "TASK-example",
+        "path": ".agent/tasks/TASK-example.md",
+        "title": "TASK-1: Example Task",
+        "status": "backlog",
+        "concepts": [
+          "context"
+        ]
+      },
+      "TASK-34": {
+        "id": "TASK-34",
+        "path": ".agent/tasks/TASK-34-evaluate-native-task-integration.md",
+        "title": "TASK-34: Evaluate Native Task Integration",
+        "status": "backlog",
+        "concepts": [
+          "session",
+          "workflow",
+          "testing",
+          "context",
+          "task mode"
+        ]
+      },
+      "VIDEO-PRODUCTION-PLAN": {
+        "id": "VIDEO-PRODUCTION-PLAN",
+        "path": ".agent/tasks/VIDEO-PRODUCTION-PLAN.md",
+        "title": "Navigator Video Production Plan",
+        "status": "research",
+        "concepts": [
+          "session",
+          "workflow",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "TASK-17": {
+        "id": "TASK-17",
+        "path": ".agent/tasks/TASK-17-visual-regression-skill.md",
+        "title": "TASK-17: Visual Regression Integration Skill",
+        "status": "in-progress",
+        "concepts": [
+          "workflow",
+          "backend",
+          "testing",
+          "deployment",
+          "context",
+          "frontend",
+          "skills"
+        ]
+      },
+      "TASK-06": {
+        "id": "TASK-06",
+        "path": ".agent/tasks/TASK-06-session-statistics.md",
+        "title": "TASK-06: Real Session Statistics from Claude Code Internals",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "knowledge",
+          "api"
+        ]
+      },
+      "TASK-35": {
+        "id": "TASK-35",
+        "path": ".agent/tasks/TASK-35-project-memory.md",
+        "title": "TASK-35: Project Knowledge Graph",
+        "status": "research",
+        "concepts": [
+          "session",
+          "database",
+          "backend",
+          "markers",
+          "authentication",
+          "tom",
+          "testing",
+          "skills",
+          "context",
+          "knowledge",
+          "frontend",
+          "api"
+        ]
+      },
+      "TASK-36": {
+        "id": "TASK-36",
+        "path": ".agent/tasks/TASK-36-multi-agent-production.md",
+        "title": "TASK-36: Multi-Agent Production Polish",
+        "status": "backlog",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "deployment",
+          "testing",
+          "context",
+          "knowledge",
+          "skills"
+        ]
+      },
+      "TASK-30": {
+        "id": "TASK-30",
+        "path": ".agent/tasks/TASK-30-task-verification-enhancement.md",
+        "title": "TASK-30: Task Verification Enhancement",
+        "status": "completed",
+        "concepts": [
+          "database",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "task-22-simple-console-logger-1761948433-review-report": {
+        "id": "task-22-simple-console-logger-1761948433-review-report",
+        "path": ".agent/tasks/task-22-simple-console-logger-1761948433-review-report.md",
+        "title": "TASK-22 Implementation Review Report",
+        "status": "completed",
+        "concepts": [
+          "database",
+          "backend",
+          "code quality",
+          "markers",
+          "tom",
+          "testing",
+          "knowledge",
+          "api"
+        ]
+      },
+      "TASK-25": {
+        "id": "TASK-25",
+        "path": ".agent/tasks/TASK-25-fix-multi-claude-reliability.md",
+        "title": "TASK-25: Fix Multi-Claude Workflow Reliability (30% \u2192 90%)",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "authentication",
+          "testing",
+          "skills",
+          "frontend"
+        ]
+      },
+      "task-22-simple-console-logger-1761948433-plan": {
+        "id": "task-22-simple-console-logger-1761948433-plan",
+        "path": ".agent/tasks/task-22-simple-console-logger-1761948433-plan.md",
+        "title": "TASK-22: Simple Console Logger - Implementation Plan",
+        "status": "unknown",
+        "concepts": [
+          "backend",
+          "markers",
+          "code quality",
+          "testing",
+          "skills"
+        ]
+      },
+      "TASK-31": {
+        "id": "TASK-31",
+        "path": ".agent/tasks/TASK-31-code-simplification-integration.md",
+        "title": "TASK-31: Code Simplification Integration",
+        "status": "completed",
+        "concepts": [
+          "workflow",
+          "database",
+          "simplification",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-12": {
+        "id": "TASK-12",
+        "path": ".agent/tasks/TASK-12-v3.0-skills-only.md",
+        "title": "TASK-12: v3.0 Skills-Only Migration",
+        "status": "in-progress",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "code quality",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "knowledge",
+          "api",
+          "frontend",
+          "deployment"
+        ]
+      },
+      "TASK-29": {
+        "id": "TASK-29",
+        "path": ".agent/tasks/TASK-29-tom-v5-release.md",
+        "title": "TASK-29: Theory of Mind v5.0.0 Release",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "tom",
+          "testing",
+          "skills",
+          "context",
+          "knowledge",
+          "api",
+          "frontend",
+          "theory of mind"
+        ]
+      },
+      "TASK-27": {
+        "id": "TASK-27",
+        "path": ".agent/tasks/TASK-27-interactive-onboarding.md",
+        "title": "TASK-27: Interactive Onboarding Flow",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "TASK-04": {
+        "id": "TASK-04",
+        "path": ".agent/tasks/TASK-04-version-sync-release-process.md",
+        "title": "TASK-04: Version Sync Fix & Release Process Improvement",
+        "status": "completed",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "TASK-10": {
+        "id": "TASK-10",
+        "path": ".agent/tasks/TASK-10-project-skills-v2.2.md",
+        "title": "TASK-10: Project-Specific Skills Generation (v2.2)",
+        "status": "in-progress",
+        "concepts": [
+          "workflow",
+          "database",
+          "backend",
+          "simplification",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      }
+    },
+    "system": {
+      "plugin-patterns": {
+        "id": "plugin-patterns",
+        "path": ".agent/system/plugin-patterns.md",
+        "title": "Claude Code Plugin Development Patterns",
+        "concepts": [
+          "workflow",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "deployment"
+        ]
+      },
+      "project-architecture": {
+        "id": "project-architecture",
+        "path": ".agent/system/project-architecture.md",
+        "title": "Navigator Plugin - Project Architecture",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "code quality",
+          "testing",
+          "deployment",
+          "context",
+          "skills"
+        ]
+      }
+    },
+    "sops": {
+      "SOP-navigator_plugin_release_workflow": {
+        "id": "SOP-navigator_plugin_release_workflow",
+        "path": ".agent/sops/development/navigator-plugin-release-workflow.md",
+        "title": "Navigator Plugin Release Workflow",
+        "category": "development",
+        "concepts": [
+          "workflow",
+          "database",
+          "backend",
+          "testing",
+          "skills",
+          "context",
+          "deployment",
+          "api"
+        ]
+      },
+      "SOP-plugin_release_workflow": {
+        "id": "SOP-plugin_release_workflow",
+        "path": ".agent/sops/development/plugin-release-workflow.md",
+        "title": "Plugin Release Workflow",
+        "category": "development",
+        "concepts": [
+          "session",
+          "workflow",
+          "authentication",
+          "testing",
+          "skills",
+          "context",
+          "deployment"
+        ]
+      },
+      "SOP-multi_claude_troubleshooting": {
+        "id": "SOP-multi_claude_troubleshooting",
+        "path": ".agent/sops/development/multi-claude-troubleshooting.md",
+        "title": "Multi-Claude Workflow Troubleshooting",
+        "category": "development",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "SOP-multi_claude_orchestration": {
+        "id": "SOP-multi_claude_orchestration",
+        "path": ".agent/sops/development/multi-claude-orchestration.md",
+        "title": "Multi-Claude Orchestration SOP",
+        "category": "development",
+        "concepts": [
+          "session",
+          "workflow",
+          "code quality",
+          "markers",
+          "deployment",
+          "testing",
+          "context",
+          "frontend",
+          "skills"
+        ]
+      },
+      "SOP-version_management": {
+        "id": "SOP-version_management",
+        "path": ".agent/sops/development/version-management.md",
+        "title": "Version Management - Standard Operating Procedure",
+        "category": "development",
+        "concepts": [
+          "workflow",
+          "database",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "SOP-complete_release_workflow": {
+        "id": "SOP-complete_release_workflow",
+        "path": ".agent/sops/development/complete-release-workflow.md",
+        "title": "Complete Release Workflow",
+        "category": "development",
+        "concepts": [
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "deployment"
+        ]
+      },
+      "SOP-autonomous_completion": {
+        "id": "SOP-autonomous_completion",
+        "path": ".agent/sops/development/autonomous-completion.md",
+        "title": "Autonomous Task Completion",
+        "category": "development",
+        "concepts": [
+          "markers",
+          "simplification",
+          "authentication",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "SOP-test_failures": {
+        "id": "SOP-test_failures",
+        "path": ".agent/sops/debugging/test-failures.md",
+        "title": "SOP: Debugging Test Failures",
+        "category": "debugging",
+        "concepts": [
+          "testing",
+          "database",
+          "deployment",
+          "backend"
+        ]
+      },
+      "SOP-grafana_dashboard_empty_data": {
+        "id": "SOP-grafana_dashboard_empty_data",
+        "path": ".agent/sops/debugging/grafana-dashboard-empty-data.md",
+        "title": "Grafana Dashboard Shows Empty Data",
+        "category": "debugging",
+        "concepts": [
+          "database",
+          "authentication",
+          "testing",
+          "skills",
+          "context",
+          "deployment",
+          "api"
+        ]
+      },
+      "SOP-opentelemetry_setup": {
+        "id": "SOP-opentelemetry_setup",
+        "path": ".agent/sops/integrations/opentelemetry-setup.md",
+        "title": "OpenTelemetry Setup for Navigator",
+        "category": "integrations",
+        "concepts": [
+          "session",
+          "workflow",
+          "authentication",
+          "deployment",
+          "skills",
+          "context"
+        ]
+      },
+      "SOP-visual_regression_setup": {
+        "id": "SOP-visual_regression_setup",
+        "path": ".agent/sops/testing/visual-regression-setup.md",
+        "title": "SOP: Visual Regression Testing Setup",
+        "category": "testing",
+        "concepts": [
+          "workflow",
+          "deployment",
+          "testing",
+          "context",
+          "frontend",
+          "skills"
+        ]
+      },
+      "SOP-plugin_release": {
+        "id": "SOP-plugin_release",
+        "path": ".agent/sops/deployment/plugin-release.md",
+        "title": "SOP: Navigator Plugin Release",
+        "category": "deployment",
+        "concepts": [
+          "tom",
+          "testing",
+          "skills",
+          "workflow"
+        ]
+      }
+    },
+    "markers": {
+      "2025-01-20-grafana-dashboard-fixes": {
+        "id": "2025-01-20-grafana-dashboard-fixes",
+        "path": ".agent/markers/2025-01-20-grafana-dashboard-fixes.md",
+        "title": "Context Marker: Grafana Dashboard Fixes",
+        "concepts": [
+          "context",
+          "testing",
+          "markers",
+          "session"
+        ]
+      },
+      "v4.0.0-release-complete": {
+        "id": "v4.0.0-release-complete",
+        "path": ".agent/.context-markers/v4.0.0-release-complete.md",
+        "title": "Context Marker: v4.0.0 Release Complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "markers",
+          "skills",
+          "context",
+          "knowledge",
+          "api"
+        ]
+      },
+      "task-18-phase-2-complete": {
+        "id": "task-18-phase-2-complete",
+        "path": ".agent/.context-markers/task-18-phase-2-complete.md",
+        "title": "Context Marker: TASK-18 Phase 2 Complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "v2.2-complete-2025-10-19-184500": {
+        "id": "v2.2-complete-2025-10-19-184500",
+        "path": ".agent/.context-markers/v2.2-complete-2025-10-19-184500.md",
+        "title": "Navigator v2.2 Complete - Self-Improving Capability Validated",
+        "concepts": [
+          "session",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "2025-12-09-1105_learning-test": {
+        "id": "2025-12-09-1105_learning-test",
+        "path": ".agent/.context-markers/2025-12-09-1105_learning-test.md",
+        "title": "Context Marker: learning-test",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "v4.1-multi-claude-automation-proven": {
+        "id": "v4.1-multi-claude-automation-proven",
+        "path": ".agent/.context-markers/v4.1-multi-claude-automation-proven.md",
+        "title": "v4.1 Multi-Claude Automation - Proven Working!",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "deployment",
+          "testing",
+          "context",
+          "skills"
+        ]
+      },
+      "2025-10-19T18-12-v2.0-complete": {
+        "id": "2025-10-19T18-12-v2.0-complete",
+        "path": ".agent/.context-markers/2025-10-19T18-12-v2.0-complete.md",
+        "title": "Navigator v2.0 Release Complete",
+        "concepts": [
+          "database",
+          "backend",
+          "markers",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "2025-10-31-2242_phase-3-4-complete": {
+        "id": "2025-10-31-2242_phase-3-4-complete",
+        "path": ".agent/.context-markers/2025-10-31-2242_phase-3-4-complete.md",
+        "title": "Context Marker: Phase 3 & 4 Complete - Multi-Claude Workflow",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "multi-claude-v4.3-complete-2025-10-31": {
+        "id": "multi-claude-v4.3-complete-2025-10-31",
+        "path": ".agent/.context-markers/multi-claude-v4.3-complete-2025-10-31.md",
+        "title": "Context Marker: Navigator Multi-Claude v4.3.0 Complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "v3.2.0-release-complete": {
+        "id": "v3.2.0-release-complete",
+        "path": ".agent/.context-markers/v3.2.0-release-complete.md",
+        "title": "Navigator v3.2.0 Release Complete - Context Marker",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "knowledge"
+        ]
+      },
+      "2025-12-09-1108_before-compact": {
+        "id": "2025-12-09-1108_before-compact",
+        "path": ".agent/.context-markers/2025-12-09-1108_before-compact.md",
+        "title": "Context Marker: before-compact",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-10-19-185900-v2.2-release-complete": {
+        "id": "2025-10-19-185900-v2.2-release-complete",
+        "path": ".agent/.context-markers/2025-10-19-185900-v2.2-release-complete.md",
+        "title": "Navigator v2.2 Release Complete - Context Marker",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "knowledge"
+        ]
+      },
+      "2025-11-02-v4.5.0-shipped": {
+        "id": "2025-11-02-v4.5.0-shipped",
+        "path": ".agent/.context-markers/2025-11-02-v4.5.0-shipped.md",
+        "title": "Context Marker: v4.5.0 Shipped",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-10-13_task04-complete": {
+        "id": "2025-10-13_task04-complete",
+        "path": ".agent/.context-markers/2025-10-13_task04-complete.md",
+        "title": "Navigator Context Marker - TASK-04 Complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "deployment",
+          "testing",
+          "context",
+          "skills"
+        ]
+      },
+      "before-compact-2025-10-22-1105": {
+        "id": "before-compact-2025-10-22-1105",
+        "path": ".agent/.context-markers/before-compact-2025-10-22-1105.md",
+        "title": "Context Marker: before-compact-2025-10-22-1105",
+        "concepts": [
+          "context",
+          "markers",
+          "session"
+        ]
+      },
+      "youtube-video-production-complete": {
+        "id": "youtube-video-production-complete",
+        "path": ".agent/.context-markers/youtube-video-production-complete.md",
+        "title": "Context Marker: YouTube Video Production Complete",
+        "concepts": [
+          "session",
+          "markers",
+          "authentication",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-10-19-221758-v3.0.0-complete": {
+        "id": "2025-10-19-221758-v3.0.0-complete",
+        "path": ".agent/.context-markers/2025-10-19-221758-v3.0.0-complete.md",
+        "title": "Navigator v3.0.0 Release Complete - Context Marker",
+        "concepts": [
+          "session",
+          "database",
+          "backend",
+          "simplification",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "v3.5.0-phase-2-complete": {
+        "id": "v3.5.0-phase-2-complete",
+        "path": ".agent/.context-markers/v3.5.0-phase-2-complete.md",
+        "title": "Context Marker: v3.5.0 Phase 2 Complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "api"
+        ]
+      },
+      "2025-10-19T18-15-v2.0-foundation-complete": {
+        "id": "2025-10-19T18-15-v2.0-foundation-complete",
+        "path": ".agent/.context-markers/2025-10-19T18-15-v2.0-foundation-complete.md",
+        "title": "Navigator v2.0 Foundation Complete - Ready for v2.2",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "before-compact-2025-11-02-1533": {
+        "id": "before-compact-2025-11-02-1533",
+        "path": ".agent/.context-markers/before-compact-2025-11-02-1533.md",
+        "title": "Context Marker: v4.5.0 Shipped",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-01-20-repositioning-finish-what-you-start": {
+        "id": "2025-01-20-repositioning-finish-what-you-start",
+        "path": ".agent/.context-markers/2025-01-20-repositioning-finish-what-you-start.md",
+        "title": "Context Marker: Repositioning - \"Finish What You Start\"",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "tom",
+          "testing",
+          "skills",
+          "context",
+          "theory of mind"
+        ]
+      },
+      "2025-10-19-195740-v2.3-release-complete": {
+        "id": "2025-10-19-195740-v2.3-release-complete",
+        "path": ".agent/.context-markers/2025-10-19-195740-v2.3-release-complete.md",
+        "title": "Navigator v2.3 Release Complete - Context Marker",
+        "concepts": [
+          "session",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "2025-01-20-v520-release-complete": {
+        "id": "2025-01-20-v520-release-complete",
+        "path": ".agent/.context-markers/2025-01-20-v520-release-complete.md",
+        "title": "Context Marker: v5.2.0 Release Complete",
+        "concepts": [
+          "session",
+          "markers",
+          "tom",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-10-19-200824-v2.3.0-complete": {
+        "id": "2025-10-19-200824-v2.3.0-complete",
+        "path": ".agent/.context-markers/2025-10-19-200824-v2.3.0-complete.md",
+        "title": "Navigator v2.3.0 Release Complete - Context Marker",
+        "concepts": [
+          "session",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "2025-01-21-task30-verification-plan": {
+        "id": "2025-01-21-task30-verification-plan",
+        "path": ".agent/.context-markers/2025-01-21-task30-verification-plan.md",
+        "title": "Context Marker: TASK-30 Verification Enhancement Plan",
+        "concepts": [
+          "session",
+          "database",
+          "markers",
+          "authentication",
+          "testing",
+          "skills",
+          "context"
+        ]
+      },
+      "2025-10-20-092541-v3.0.0-migration-complete": {
+        "id": "2025-10-20-092541-v3.0.0-migration-complete",
+        "path": ".agent/.context-markers/2025-10-20-092541-v3.0.0-migration-complete.md",
+        "title": "Navigator v3.0.0 + Migration Guide Complete - Context Marker",
+        "concepts": [
+          "session",
+          "workflow",
+          "database",
+          "backend",
+          "markers",
+          "testing",
+          "skills",
+          "context",
+          "frontend",
+          "api"
+        ]
+      },
+      "2025-10-31-2116_phase2-parallel-complete": {
+        "id": "2025-10-31-2116_phase2-parallel-complete",
+        "path": ".agent/.context-markers/2025-10-31-2116_phase2-parallel-complete.md",
+        "title": "Context Marker: phase2-parallel-complete",
+        "concepts": [
+          "session",
+          "workflow",
+          "markers",
+          "testing",
+          "skills",
+          "context"
+        ]
+      }
+    },
+    "concepts": {
+      "session": {
+        "name": "Session",
+        "aliases": [
+          "start",
+          "workflow"
+        ],
+        "domain": "navigator"
+      },
+      "code quality": {
+        "name": "Code Quality",
+        "aliases": [],
+        "domain": "general"
+      },
+      "testing": {
+        "name": "Testing",
+        "aliases": [
+          "test",
+          "unit",
+          "integration",
+          "e2e"
+        ],
+        "domain": "quality"
+      },
+      "context": {
+        "name": "Context Management",
+        "aliases": [
+          "token",
+          "efficiency"
+        ],
+        "domain": "navigator"
+      },
+      "api": {
+        "name": "API",
+        "aliases": [
+          "endpoint",
+          "REST",
+          "GraphQL"
+        ],
+        "domain": "backend"
+      },
+      "simplification": {
+        "name": "Code Simplification",
+        "aliases": [
+          "simplify",
+          "clarity",
+          "code quality"
+        ],
+        "domain": "quality"
+      },
+      "tom": {
+        "name": "Theory of Mind",
+        "aliases": [
+          "profile",
+          "ToM",
+          "bilateral"
+        ],
+        "domain": "navigator"
+      },
+      "knowledge": {
+        "name": "Knowledge Graph",
+        "aliases": [
+          "memory",
+          "graph",
+          "learning"
+        ],
+        "domain": "navigator"
+      },
+      "workflow": {
+        "name": "Workflow",
+        "aliases": [
+          "loop",
+          "task mode",
+          "orchestration"
+        ],
+        "domain": "navigator"
+      },
+      "markers": {
+        "name": "Context Markers",
+        "aliases": [
+          "marker",
+          "compact"
+        ],
+        "domain": "navigator"
+      },
+      "authentication": {
+        "name": "Authentication",
+        "aliases": [
+          "auth",
+          "login",
+          "OAuth",
+          "JWT"
+        ],
+        "domain": "backend"
+      },
+      "task mode": {
+        "name": "Task Mode",
+        "aliases": [],
+        "domain": "general"
+      },
+      "task_mode": {
+        "name": "Task_Mode",
+        "aliases": [],
+        "domain": "general"
+      },
+      "theory of mind": {
+        "name": "Theory Of Mind",
+        "aliases": [],
+        "domain": "general"
+      },
+      "database": {
+        "name": "Database",
+        "aliases": [
+          "db",
+          "migration",
+          "schema"
+        ],
+        "domain": "backend"
+      },
+      "backend": {
+        "name": "Backend",
+        "aliases": [
+          "server",
+          "Node",
+          "Express"
+        ],
+        "domain": "backend"
+      },
+      "deployment": {
+        "name": "Deployment",
+        "aliases": [
+          "deploy",
+          "CI",
+          "CD"
+        ],
+        "domain": "devops"
+      },
+      "skills": {
+        "name": "Skills",
+        "aliases": [
+          "skill",
+          "command",
+          "plugin"
+        ],
+        "domain": "navigator"
+      },
+      "frontend": {
+        "name": "Frontend",
+        "aliases": [
+          "component",
+          "React",
+          "Vue"
+        ],
+        "domain": "frontend"
+      },
+      "task-mode": {
+        "name": "Task-Mode",
+        "aliases": [],
+        "domain": "general"
+      }
+    },
+    "memories": {
+      "mem-001": {
+        "type": "pitfall",
+        "summary": "Auth changes often break session tests due to token invalidation",
+        "path": "memories/pitfalls/mem-001.md",
+        "confidence": 0.9,
+        "concepts": [
+          "authentication",
+          "testing"
+        ],
+        "created": "2026-01-23",
+        "last_validated": "2026-01-23"
+      }
+    },
+    "files": {}
+  },
+  "edges": [
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-navigator_plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_troubleshooting",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-multi_claude_orchestration",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-version_management",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-complete_release_workflow",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-autonomous_completion",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-test_failures",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-grafana_dashboard_empty_data",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-opentelemetry_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-visual_regression_setup",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "SOP-plugin_release",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "plugin-patterns",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-32",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-33",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-16",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-01",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-11",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-05",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-13",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-26",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-19",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-03",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-15",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-22",
+      "type": "relates-to",
+      "weight": 0.4
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-02",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-34",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "VIDEO-PRODUCTION-PLAN",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-17",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-06",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-35",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-36",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-30",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "project-architecture",
+      "to": "task-22-simple-console-logger-1761948433-review-report",
+      "type": "relates-to",
+      "weight": 0.6000000000000001
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-25",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "task-22-simple-console-logger-1761948433-plan",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-31",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-12",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-29",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-27",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-04",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 0.8
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-10",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "project-architecture",
+      "to": "TASK-18",
+      "type": "relates-to",
+      "weight": 1.0
+    },
+    {
+      "from": "TASK-32",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-32",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-32",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-32",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-32",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "task mode",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "task-mode",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "task_mode",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-16",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-05",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-05",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-05",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-22",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-22",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-example",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-34",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-34",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-34",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-34",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-34",
+      "to": "task mode",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-30",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-30",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-30",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-30",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-31",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "api",
+      "type": "implements"
+    }
+  ],
+  "concept_index": {
+    "session": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-02",
+      "TASK-34",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-25",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "project-architecture",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-opentelemetry_setup",
+      "2025-01-20-grafana-dashboard-fixes",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "before-compact-2025-10-22-1105",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "database": [
+      "TASK-32",
+      "TASK-16",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-02",
+      "TASK-35",
+      "TASK-30",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-10",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-version_management",
+      "SOP-test_failures",
+      "SOP-grafana_dashboard_empty_data",
+      "v4.0.0-release-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-10-19T18-12-v2.0-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete"
+    ],
+    "testing": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-16",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-22",
+      "TASK-34",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-30",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-25",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-version_management",
+      "SOP-complete_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-test_failures",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-visual_regression_setup",
+      "SOP-plugin_release",
+      "2025-01-20-grafana-dashboard-fixes",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete",
+      "mem-001"
+    ],
+    "skills": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-16",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-05",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-02",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-30",
+      "TASK-25",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-version_management",
+      "SOP-complete_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "SOP-visual_regression_setup",
+      "SOP-plugin_release",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-19T18-12-v2.0-complete",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "context": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-16",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-05",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-22",
+      "TASK-02",
+      "TASK-example",
+      "TASK-34",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-30",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-version_management",
+      "SOP-complete_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "SOP-visual_regression_setup",
+      "2025-01-20-grafana-dashboard-fixes",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-19T18-12-v2.0-complete",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "before-compact-2025-10-22-1105",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "workflow": [
+      "TASK-33",
+      "TASK-16",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-02",
+      "TASK-34",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-36",
+      "TASK-25",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-version_management",
+      "SOP-complete_release_workflow",
+      "SOP-opentelemetry_setup",
+      "SOP-visual_regression_setup",
+      "SOP-plugin_release",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "authentication": [
+      "TASK-33",
+      "TASK-01",
+      "TASK-19",
+      "TASK-03",
+      "TASK-35",
+      "TASK-25",
+      "SOP-plugin_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "youtube-video-production-complete",
+      "2025-01-21-task30-verification-plan",
+      "mem-001"
+    ],
+    "task mode": [
+      "TASK-33",
+      "TASK-34"
+    ],
+    "task-mode": [
+      "TASK-33"
+    ],
+    "task_mode": [
+      "TASK-33"
+    ],
+    "backend": [
+      "TASK-16",
+      "TASK-01",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-15",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-35",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-10",
+      "plugin-patterns",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-test_failures",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-10-19T18-12-v2.0-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "2025-10-19-221758-v3.0.0-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-10-20-092541-v3.0.0-migration-complete"
+    ],
+    "frontend": [
+      "TASK-16",
+      "TASK-11",
+      "TASK-13",
+      "TASK-17",
+      "TASK-35",
+      "TASK-25",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-10",
+      "plugin-patterns",
+      "SOP-multi_claude_orchestration",
+      "SOP-autonomous_completion",
+      "SOP-visual_regression_setup",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-10-19T18-12-v2.0-complete",
+      "v3.2.0-release-complete",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-10-20-092541-v3.0.0-migration-complete"
+    ],
+    "api": [
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-15",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-06",
+      "TASK-35",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-10",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-version_management",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "v4.0.0-release-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-10-19T18-12-v2.0-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-10-20-092541-v3.0.0-migration-complete"
+    ],
+    "markers": [
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-02",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-25",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-complete_release_workflow",
+      "SOP-autonomous_completion",
+      "2025-01-20-grafana-dashboard-fixes",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-19T18-12-v2.0-complete",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "before-compact-2025-10-22-1105",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "deployment": [
+      "TASK-11",
+      "TASK-19",
+      "TASK-05",
+      "TASK-13",
+      "TASK-17",
+      "TASK-36",
+      "TASK-12",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_orchestration",
+      "SOP-complete_release_workflow",
+      "SOP-test_failures",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "SOP-visual_regression_setup",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-13_task04-complete"
+    ],
+    "code quality": [
+      "TASK-19",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-12",
+      "project-architecture",
+      "SOP-multi_claude_orchestration"
+    ],
+    "tom": [
+      "TASK-19",
+      "TASK-35",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-29",
+      "SOP-plugin_release",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-01-20-v520-release-complete"
+    ],
+    "knowledge": [
+      "TASK-19",
+      "TASK-13",
+      "TASK-15",
+      "TASK-02",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-12",
+      "TASK-29",
+      "v4.0.0-release-complete",
+      "v3.2.0-release-complete",
+      "2025-10-19-185900-v2.2-release-complete"
+    ],
+    "simplification": [
+      "TASK-02",
+      "TASK-31",
+      "TASK-10",
+      "SOP-autonomous_completion",
+      "2025-10-19-221758-v3.0.0-complete"
+    ],
+    "theory of mind": [
+      "TASK-29",
+      "2025-01-20-repositioning-finish-what-you-start"
+    ]
+  }
+}

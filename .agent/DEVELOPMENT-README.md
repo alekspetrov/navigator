@@ -593,6 +593,69 @@ Next: "Clear context and preserve markers" to compact
 
 ---
 
+#### [TASK-35: Project Knowledge Graph](./tasks/TASK-35-project-memory.md)
+**Status**: ✅ Phase 1-2 Complete (Foundation + Core Skill)
+**Created**: 2025-01-23
+**Completed**: 2025-01-23 (Phase 1-2)
+**Version**: v6.0.0
+
+**What was built**:
+
+**Phase 1: Foundation**
+- `.agent/knowledge/` directory structure (graph.json, concepts/, memories/)
+- `graph_manager.py` - CRUD operations, query, relationship traversal
+- `graph_builder.py` - One-time construction from existing docs
+- Configuration in `.nav-config.json` (knowledge_graph section)
+
+**Phase 2: Core Skill**
+- `nav-graph` skill with natural language triggers
+- Query interface: "What do we know about X?"
+- Memory capture: "Remember this pattern/pitfall/decision"
+- Integration with nav-start (graph stats on session start)
+
+**Memory types**:
+- **Patterns**: "We use X for Y in this project"
+- **Pitfalls**: "Watch out for X when touching auth/"
+- **Decisions**: "We chose JWT over sessions because Z"
+- **Learnings**: "This error usually means X"
+
+**Key innovation**: Context-aware retrieval loads only relevant memories (~1-2k tokens), not full history.
+
+**Impact**:
+- Unified search across all knowledge types
+- Experiential memory persists across sessions
+- <1.5k token overhead per session
+- Concept indexing links related items automatically
+
+**Remaining phases** (post-6.0.0):
+- Phase 3: Memory capture from corrections (nav-profile integration)
+- Phase 4: Full integration (nav-task, nav-marker)
+- Phase 5: Polish (conflict detection, staleness, visualization)
+
+---
+
+#### [TASK-36: Multi-Agent Production Polish](./tasks/TASK-36-multi-agent-production.md)
+**Status**: 📋 Backlog
+**Created**: 2025-01-23
+**Version**: TBD (post-6.0)
+
+**What we're building**:
+
+Production-ready multi-Claude orchestration with one-command setup, visual dashboard, and reliable coordination. Builds on TASK-19 and TASK-25 foundation.
+
+**Key features**:
+- One command spawns parallel agents (impl, test, review, docs)
+- Real-time visual dashboard in terminal
+- 95%+ success rate with automatic retry/recovery
+- 3x faster than sequential execution
+
+**Expected Impact**:
+- 3x throughput for feature development
+- Token-efficient (35k total vs 70k single session)
+- Visual feedback throughout workflow
+
+---
+
 #### [TASK-29: Theory of Mind v5.0.0 Release](./tasks/TASK-29-tom-v5-release.md)
 **Status**: ✅ Completed
 **Created**: 2025-12-11

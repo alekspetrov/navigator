@@ -206,7 +206,42 @@ fi
 
 This helps users understand why skills may behave unexpectedly.
 
-### Step 5.5: Load User Profile (ToM - Bilateral Modeling) [EXECUTE]
+### Step 5.5: Load Knowledge Graph (v6.0.0+) [EXECUTE]
+
+**Check if knowledge graph exists and is enabled**:
+```bash
+if [ -f ".agent/knowledge/graph.json" ]; then
+  # Get graph stats
+  SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
+  GRAPH_STATS=$(python3 "$SKILL_DIR/skills/nav-graph/functions/graph_manager.py" --action stats --graph-path .agent/knowledge/graph.json 2>/dev/null)
+  echo "$GRAPH_STATS"
+fi
+```
+
+**Display graph summary in session output**:
+```
+📚 Knowledge Graph: Active
+   Nodes: {total_nodes} | Memories: {memory_count}
+   Concepts: {concept_count} indexed
+```
+
+**Surface relevant memories** (if `auto_surface_relevant: true` in config):
+- Check recent tasks/markers for concepts
+- Query graph for memories matching those concepts
+- Display top 2-3 relevant memories:
+```
+💡 Relevant Memories:
+   - PITFALL: "Auth changes often break session tests" (90%)
+   - PATTERN: "Always run unit tests before integration" (85%)
+```
+
+**If graph doesn't exist**:
+```
+📚 Knowledge Graph: Not initialized
+   Run "Initialize knowledge graph" to enable
+```
+
+### Step 5.6: Load User Profile (ToM - Bilateral Modeling) [EXECUTE]
 
 **IMPORTANT**: This step MUST be executed, not just documented.
 
@@ -318,8 +353,8 @@ NC='\033[0m'
 
 printf "${BLUE}███╗   ██╗${NC} ${RED} █████╗ ${NC}${BLUE}██╗   ██╗${NC}\n"
 printf "${BLUE}████╗  ██║${NC} ${RED}██╔══██╗${NC}${BLUE}██║   ██║${NC}\n"
-printf "${BLUE}██╔██╗ ██║${NC} ${RED}███████║${NC}${BLUE}██║   ██║${NC}  ${WHITE}v5.5.0${NC}\n"
-printf "${BLUE}██║╚██╗██║${NC} ${RED}██╔══██║${NC}${BLUE}╚██╗ ██╔╝${NC}  ${GRAY}Finish What You Start${NC}\n"
+printf "${BLUE}██╔██╗ ██║${NC} ${RED}███████║${NC}${BLUE}██║   ██║${NC}  ${WHITE}v6.0.0${NC}\n"
+printf "${BLUE}██║╚██╗██║${NC} ${RED}██╔══██║${NC}${BLUE}╚██╗ ██╔╝${NC}  ${GRAY}Knowledge Graph${NC}\n"
 printf "${BLUE}██║ ╚████║${NC} ${RED}██║  ██║${NC}${BLUE} ╚████╔╝ ${NC}\n"
 printf "${BLUE}╚═╝  ╚═══╝${NC} ${RED}╚═╝  ╚═╝${NC}${BLUE}  ╚═══╝  ${NC}\n"
 ```
@@ -330,7 +365,8 @@ printf "${BLUE}╚═╝  ╚═══╝${NC} ${RED}╚═╝  ╚═╝${NC}${
 📖 Navigator: Loaded
 🎯 PM: [PM tool or "Manual"]
 ✅ Optimization: Active
-🧠 ToM: [Profile status from Step 5.5]
+🧠 ToM: [Profile status from Step 5.6]
+📚 Graph: [Knowledge graph status from Step 5.5]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

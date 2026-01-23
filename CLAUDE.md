@@ -28,6 +28,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v5.9.0**: Workflow Enforcement - mandatory WORKFLOW CHECK block before task responses. Loop Mode and Task Mode triggers auto-detected. Complexity scoring. Hook-based enforcement available.
 
+**NEW in v6.0.0**: Project Knowledge Graph - unified search across tasks, SOPs, system docs, and experiential memories. Patterns, pitfalls, decisions, and learnings persist across sessions. Query with "What do we know about X?". Auto-surfaces relevant memories on session start.
+
 ---
 
 ## How You'll Use It
@@ -558,6 +560,115 @@ User: "Fix the typo in README"
 → Complexity: 0.1
 → Direct execution (no overhead)
 ```
+
+---
+
+### Project Knowledge Graph (v6.0.0)
+
+Navigator v6.0.0 introduces the **Project Knowledge Graph** - unified search across all project knowledge with experiential memory.
+
+#### Why Knowledge Graph
+
+Before v6.0.0, knowledge was siloed:
+- Tasks in `.agent/tasks/`
+- SOPs in `.agent/sops/`
+- System docs in `.agent/system/`
+- No way to query "What do we know about X?"
+
+**Now**: One interface to query everything, plus memories that persist across sessions.
+
+#### What It Provides
+
+1. **Unified Search**: Query across tasks, SOPs, system docs, markers
+2. **Experiential Memory**: Patterns, pitfalls, decisions, learnings
+3. **Concept Indexing**: Auto-extracted concepts link related items
+4. **Relationship Traversal**: Find what's related to what
+
+#### Query Interface
+
+```
+"What do we know about auth?"
+"Show everything related to payments"
+"Any pitfalls for testing?"
+"What decisions did we make about architecture?"
+```
+
+**Response format**:
+```
+Knowledge Graph: "auth"
+
+TASKS (3)
+  - TASK-29: Theory of Mind (completed)
+  - TASK-05: Autonomous Completion (completed)
+  - TASK-12: V3 Skills-Only (completed)
+
+MEMORIES (2)
+  - PITFALL: "Auth changes break session tests" (90%)
+  - DECISION: "JWT over sessions for scaling" (95%)
+
+SOPs (1)
+  - DEV-003: Autonomous Completion
+
+Load details: "Read TASK-29" or "Show auth pitfalls"
+```
+
+#### Memory Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| **Pattern** | "We use X for Y" | "JWT tokens for stateless auth" |
+| **Pitfall** | "Watch out for X" | "Auth changes break session tests" |
+| **Decision** | "We chose X because Y" | "JWT over sessions for scaling" |
+| **Learning** | "X usually means Y" | "This error usually indicates Z" |
+
+#### Capturing Memories
+
+```
+"Remember this pattern: we use X for Y"
+"Remember this pitfall: watch out for X when..."
+"Remember we decided to use X because..."
+```
+
+**Auto-capture** (if enabled):
+- Corrections from nav-profile → memories
+- Task decisions → memories
+
+#### Configuration
+
+In `.agent/.nav-config.json`:
+```json
+{
+  "knowledge_graph": {
+    "enabled": true,
+    "auto_capture_corrections": true,
+    "auto_capture_decisions": true,
+    "auto_surface_relevant": true,
+    "max_session_memories": 5,
+    "confidence_decay_rate": 0.01,
+    "staleness_threshold_days": 90,
+    "git_tracked": true
+  }
+}
+```
+
+#### Token Budget
+
+| Component | Tokens | When |
+|-----------|--------|------|
+| graph.json (50 nodes) | ~1000 | On query |
+| Memory summaries (5) | ~500 | Session start |
+| Full memory detail | ~500 each | On request |
+
+**Session overhead**: ~1.3k tokens (well under 2k budget)
+
+#### Initialization
+
+First time:
+```
+"Initialize knowledge graph"
+```
+
+This scans `.agent/` and builds the initial graph from existing docs.
 
 ---
 

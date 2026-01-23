@@ -1,5 +1,5 @@
 {
-  "version": "5.9.0",
+  "version": "6.0.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -52,5 +52,15 @@
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1
+  },
+  "knowledge_graph": {
+    "enabled": true,
+    "auto_capture_corrections": true,
+    "auto_capture_decisions": true,
+    "auto_surface_relevant": true,
+    "max_session_memories": 5,
+    "confidence_decay_rate": 0.01,
+    "staleness_threshold_days": 90,
+    "git_tracked": true
   }
 }

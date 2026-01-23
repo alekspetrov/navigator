@@ -1,7 +1,7 @@
 {
   "name": "navigator",
-  "version": "5.9.0",
-  "description": "Finish What You Start - Sessions that last, AI that learns, Features that ship. Context engineering + Theory of Mind + Loop Mode + Task Mode + Auto-Update. Philosophy, Metrics, Education, Skills, Agents, and Multi-Claude Workflows. Features unified workflow orchestration (Task Mode), auto-update on session start, ToM-based verification checkpoints, bilateral modeling (nav-profile), quality detection (nav-diagnose), enhanced context markers, and Loop Mode with structured completion signals. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
+  "version": "6.0.0",
+  "description": "Finish What You Start - Sessions that last, AI that learns, Features that ship. Context engineering + Theory of Mind + Knowledge Graph + Loop Mode + Task Mode. Features Project Knowledge Graph (unified search, experiential memory), unified workflow orchestration, auto-update on session start, ToM-based verification checkpoints, bilateral modeling, quality detection, enhanced context markers, and Loop Mode. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
   "author": {
     "name": "Aleks Petrov",
     "email": "aleks@example.com",
@@ -15,6 +15,8 @@
     "context-management",
     "token-optimization",
     "knowledge-management",
+    "knowledge-graph",
+    "experiential-memory",
     "productivity",
     "skills",
     "agents",
@@ -25,6 +27,7 @@
     "bilateral-modeling"
   ],
   "skills": [
+    "./skills/nav-graph",
     "./skills/nav-task-mode",
     "./skills/nav-features",
     "./skills/nav-simplify",

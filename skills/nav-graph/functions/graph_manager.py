@@ -146,8 +146,51 @@ def add_edge(graph: dict, from_id: str, to_id: str,
     return graph
 
 
+def resolve_concept_alias(graph: dict, query: str) -> str:
+    """Resolve a query term to canonical concept name via aliases."""
+    query_lower = query.lower()
+
+    # Direct match in concept_index
+    if query_lower in graph.get("concept_index", {}):
+        return query_lower
+
+    # Check if query matches any concept's aliases
+    for concept_name, concept_data in graph["nodes"].get("concepts", {}).items():
+        # Check concept name
+        if concept_name.lower() == query_lower:
+            return concept_name
+        # Check aliases
+        aliases = concept_data.get("aliases", [])
+        for alias in aliases:
+            if alias.lower() == query_lower:
+                return concept_name
+
+    # Common abbreviation mappings as fallback
+    abbreviations = {
+        "auth": "authentication",
+        "authn": "authentication",
+        "authz": "authorization",
+        "db": "database",
+        "fe": "frontend",
+        "be": "backend",
+        "api": "api",
+        "ui": "frontend",
+        "tom": "theory of mind",
+        "docs": "documentation",
+    }
+    if query_lower in abbreviations:
+        canonical = abbreviations[query_lower]
+        if canonical in graph.get("concept_index", {}):
+            return canonical
+
+    return query_lower
+
+
 def query_by_concept(graph: dict, concept: str) -> dict:
     """Query all nodes related to a concept."""
+    # Resolve aliases first
+    resolved_concept = resolve_concept_alias(graph, concept)
+
     # Map node types to result categories
     type_to_category = {
         "tasks": "tasks",
@@ -158,7 +201,8 @@ def query_by_concept(graph: dict, concept: str) -> dict:
     }
 
     results = {
-        "concept": concept,
+        "concept": concept,  # Show original query
+        "resolved_to": resolved_concept if resolved_concept != concept.lower() else None,
         "tasks": [],
         "memories": [],
         "sops": [],
@@ -166,12 +210,9 @@ def query_by_concept(graph: dict, concept: str) -> dict:
         "files": []
     }
 
-    # Direct concept match
-    if concept not in graph["concept_index"]:
-        # Skip to alias check below
-        pass
-    else:
-        node_ids = graph["concept_index"][concept]
+    # Query using resolved concept
+    if resolved_concept in graph.get("concept_index", {}):
+        node_ids = graph["concept_index"][resolved_concept]
         for node_id in node_ids:
             for node_type, nodes in graph["nodes"].items():
                 if node_id not in nodes:
@@ -183,21 +224,10 @@ def query_by_concept(graph: dict, concept: str) -> dict:
                 node_data["id"] = node_id
                 results[category].append(node_data)
 
-    # Also check concept node itself
-    if concept in graph["nodes"].get("concepts", {}):
-        concept_node = graph["nodes"]["concepts"][concept]
+    # Also check concept node itself for additional aliases
+    if resolved_concept in graph["nodes"].get("concepts", {}):
+        concept_node = graph["nodes"]["concepts"][resolved_concept]
         results["concept_details"] = concept_node
-
-        # Check aliases
-        aliases = concept_node.get("aliases", [])
-        for alias in aliases:
-            if alias.lower() != concept.lower():
-                alias_results = query_by_concept(graph, alias.lower())
-                # Merge results
-                for key in ["tasks", "memories", "sops", "system", "files"]:
-                    for item in alias_results.get(key, []):
-                        if item not in results[key]:
-                            results[key].append(item)
 
     return results
 
@@ -320,7 +350,12 @@ def _format_file(file_node: dict) -> str:
 def format_query_results(results: dict) -> str:
     """Format query results for display."""
     concept = results.get("concept", "Unknown")
-    output = [f"Knowledge Graph: \"{concept}\"", ""]
+    resolved = results.get("resolved_to")
+
+    if resolved:
+        output = [f"Knowledge Graph: \"{concept}\" → \"{resolved}\"", ""]
+    else:
+        output = [f"Knowledge Graph: \"{concept}\"", ""]
 
     tasks = results.get("tasks", [])
     memories = results.get("memories", [])

@@ -1,13 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-01-23T16:30:36.484322Z",
+  "last_updated": "2026-01-23T16:36:29.981280Z",
   "stats": {
-    "total_nodes": 89,
+    "total_nodes": 91,
     "total_edges": 813,
-    "memory_count": 0,
-    "task_count": 40,
-    "sop_count": 12,
-    "concept_count": 16
+    "memory_count": 2
   },
   "nodes": {
     "tasks": {
@@ -1241,7 +1238,32 @@
         "domain": "navigator"
       }
     },
-    "memories": {},
+    "memories": {
+      "mem-001": {
+        "type": "pitfall",
+        "summary": "Concept aliases must be normalized during graph build, not just query time",
+        "path": "memories/pitfalls/mem-001.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge",
+          "testing"
+        ],
+        "created": "2026-01-23",
+        "last_validated": "2026-01-23"
+      },
+      "mem-002": {
+        "type": "decision",
+        "summary": "Store memory summaries in graph.json index, not separate files - enables single-file load",
+        "path": "memories/decisions/mem-002.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge",
+          "context"
+        ],
+        "created": "2026-01-23",
+        "last_validated": "2026-01-23"
+      }
+    },
     "files": {}
   },
   "edges": [
@@ -5928,7 +5950,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
+      "2025-10-31-2116_phase2-parallel-complete",
+      "mem-001"
     ],
     "context": [
       "TASK-32",
@@ -5998,7 +6021,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
+      "2025-10-31-2116_phase2-parallel-complete",
+      "mem-002"
     ],
     "skills": [
       "TASK-32",
@@ -6374,7 +6398,9 @@
       "v4.0.0-release-complete",
       "v3.2.0-release-complete",
       "2025-10-19-185900-v2.2-release-complete",
-      "before-compact-2025-01-23-task35-knowledge-graph"
+      "before-compact-2025-01-23-task35-knowledge-graph",
+      "mem-001",
+      "mem-002"
     ],
     "theory of mind": [
       "TASK-19",

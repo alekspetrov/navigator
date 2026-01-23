@@ -188,6 +188,37 @@ Create marker document with this structure:
 **EXIT_SIGNAL**: [true/false]
 **Stagnation Count**: [N]/[THRESHOLD]
 
+## Knowledge Graph State (v6.0.0+)
+
+[Capture graph state for restoration - skip if no knowledge graph]
+
+**Check if graph exists**:
+```bash
+if [ -f ".agent/knowledge/graph.json" ]; then
+  python3 skills/nav-graph/functions/graph_manager.py --action stats --graph-path .agent/knowledge/graph.json
+fi
+```
+
+**Memories surfaced this session**:
+[List memories that were queried or created:
+- mem-001: "Auth changes break session tests" (surfaced)
+- mem-002: "Use plural REST endpoints" (created from correction)
+]
+
+**Concepts active**:
+[Concepts relevant to current work:
+- authentication
+- testing
+- api
+]
+
+**Graph queries made**:
+[Knowledge graph queries from this session:
+- "What do we know about auth?" → 3 tasks, 1 memory
+]
+
+This allows restoration to re-surface relevant memories when resuming.
+
 ## Restore Instructions
 
 To restore this marker:

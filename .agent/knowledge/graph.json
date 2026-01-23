@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-01-23T12:50:34.386733Z",
+  "last_updated": "2026-01-23T15:30:45.365052Z",
   "stats": {
-    "total_nodes": 93,
-    "total_edges": 818,
-    "memory_count": 1
+    "total_nodes": 94,
+    "total_edges": 819,
+    "memory_count": 2
   },
   "nodes": {
     "tasks": {
@@ -296,23 +296,21 @@
         ]
       },
       "TASK-35": {
-        "id": "TASK-35",
         "path": ".agent/tasks/TASK-35-project-memory.md",
-        "title": "TASK-35: Project Knowledge Graph",
+        "title": "Project Knowledge Graph",
         "status": "research",
         "concepts": [
-          "session",
-          "database",
-          "backend",
-          "markers",
-          "authentication",
-          "tom",
-          "testing",
+          "deployment",
+          "knowledge",
           "skills",
           "context",
-          "knowledge",
+          "tom",
+          "api",
+          "authentication",
           "frontend",
-          "api"
+          "testing",
+          "markers",
+          "database"
         ]
       },
       "TASK-36": {
@@ -1255,6 +1253,17 @@
         "concepts": [
           "authentication",
           "testing"
+        ],
+        "created": "2026-01-23",
+        "last_validated": "2026-01-23"
+      },
+      "mem-002": {
+        "type": "pattern",
+        "summary": "Always use plural REST endpoints",
+        "path": "memories/patterns/mem-002.md",
+        "confidence": 0.9,
+        "concepts": [
+          "api"
         ],
         "created": "2026-01-23",
         "last_validated": "2026-01-23"
@@ -5874,6 +5883,11 @@
       "from": "TASK-18",
       "to": "api",
       "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "deployment",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6321,7 +6335,8 @@
       "2025-10-19T18-15-v2.0-foundation-complete",
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
-      "2025-10-20-092541-v3.0.0-migration-complete"
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "mem-002"
     ],
     "markers": [
       "TASK-18",
@@ -6397,7 +6412,8 @@
       "SOP-opentelemetry_setup",
       "SOP-visual_regression_setup",
       "v4.1-multi-claude-automation-proven",
-      "2025-10-13_task04-complete"
+      "2025-10-13_task04-complete",
+      "TASK-35"
     ],
     "code quality": [
       "TASK-19",

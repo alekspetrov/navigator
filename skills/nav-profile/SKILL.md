@@ -241,6 +241,22 @@ if (profile.corrections.length > 20) {
 [Internal log: Correction saved to profile]
 ```
 
+**Sync to Knowledge Graph** (if enabled in config):
+```bash
+# Check if knowledge graph integration is enabled
+if [ -f ".agent/knowledge/graph.json" ]; then
+  # Convert correction to memory
+  python3 skills/nav-graph/functions/correction_to_memory.py \
+    --action convert-one \
+    --correction-json '{"pattern": "{pattern}", "context": "{context}", "confidence": "{confidence}"}' \
+    --graph-path .agent/knowledge/graph.json
+
+  # [Internal log: Correction synced to knowledge graph as memory]
+fi
+```
+
+This creates a pitfall/pattern/learning memory in the knowledge graph, making the correction available via "What do we know about X?" queries.
+
 **Periodically surface learnings** (every 5 corrections):
 ```
 📚 I've learned from your corrections:

@@ -360,6 +360,36 @@ Edit `.agent/DEVELOPMENT-README.md` to add task to index:
 
 Keep index organized (active tasks first, completed below).
 
+### Step 4.5: Sync to Knowledge Graph (v6.0.0+)
+
+**If knowledge graph exists**, sync task to graph:
+
+```bash
+if [ -f ".agent/knowledge/graph.json" ]; then
+  python3 skills/nav-graph/functions/task_to_graph.py \
+    --action add \
+    --task-path ".agent/tasks/TASK-{XX}-{slug}.md" \
+    --graph-path .agent/knowledge/graph.json
+fi
+```
+
+**What this does**:
+- Extracts concepts from task content (auth, api, testing, etc.)
+- Adds task node to graph with status and concepts
+- Creates `implements` edges from task to concepts
+- For **completed tasks**: Extracts Technical Decisions as `decision` memories
+
+**Output**:
+```
+Added task: TASK-XX
+Title: {Feature Name}
+Status: completed
+Concepts: auth, api, testing
+Decisions extracted: 2
+```
+
+This makes the task queryable via "What do we know about auth?" and preserves architectural decisions as persistent memories.
+
 ### Step 5: Update PM Tool (If Configured)
 
 **If PM tool is Linear**:

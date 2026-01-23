@@ -594,24 +594,34 @@ Next: "Clear context and preserve markers" to compact
 ---
 
 #### [TASK-35: Project Knowledge Graph](./tasks/TASK-35-project-memory.md)
-**Status**: ✅ Phase 1-2 Complete (Foundation + Core Skill)
+**Status**: ✅ Completed
 **Created**: 2025-01-23
-**Completed**: 2025-01-23 (Phase 1-2)
+**Completed**: 2025-01-23
 **Version**: v6.0.0
 
 **What was built**:
 
-**Phase 1: Foundation**
+**Phase 1-2: Foundation + Core Skill**
 - `.agent/knowledge/` directory structure (graph.json, concepts/, memories/)
 - `graph_manager.py` - CRUD operations, query, relationship traversal
 - `graph_builder.py` - One-time construction from existing docs
+- `nav-graph` skill with natural language triggers
 - Configuration in `.nav-config.json` (knowledge_graph section)
 
-**Phase 2: Core Skill**
-- `nav-graph` skill with natural language triggers
-- Query interface: "What do we know about X?"
-- Memory capture: "Remember this pattern/pitfall/decision"
-- Integration with nav-start (graph stats on session start)
+**Phase 3: Memory Capture from Corrections**
+- `correction_to_memory.py` - Converts profile corrections to memories
+- nav-profile integration (auto-sync corrections to graph)
+- Concept extraction from correction context
+
+**Phase 4: Full Integration**
+- `task_to_graph.py` - Syncs tasks with graph, extracts decisions
+- nav-task integration (Step 4.5 syncs to graph)
+- nav-marker integration (captures graph state for restoration)
+
+**Phase 5: Polish**
+- `graph_maintenance.py` - Health checks, conflict detection, staleness
+- Confidence decay system
+- Low-confidence pruning (dry-run by default)
 
 **Memory types**:
 - **Patterns**: "We use X for Y in this project"
@@ -619,18 +629,12 @@ Next: "Clear context and preserve markers" to compact
 - **Decisions**: "We chose JWT over sessions because Z"
 - **Learnings**: "This error usually means X"
 
-**Key innovation**: Context-aware retrieval loads only relevant memories (~1-2k tokens), not full history.
-
 **Impact**:
 - Unified search across all knowledge types
 - Experiential memory persists across sessions
-- <1.5k token overhead per session
+- <1.5k token overhead per session (verified: 94 nodes = ~2k tokens)
 - Concept indexing links related items automatically
-
-**Remaining phases** (post-6.0.0):
-- Phase 3: Memory capture from corrections (nav-profile integration)
-- Phase 4: Full integration (nav-task, nav-marker)
-- Phase 5: Polish (conflict detection, staleness, visualization)
+- Health score monitoring (100/100 on clean graph)
 
 ---
 

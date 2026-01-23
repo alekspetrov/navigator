@@ -331,11 +331,27 @@ Added to graph.
 ```
 
 ### nav-profile (Corrections)
-Corrections auto-create memories:
-```
+Corrections auto-create memories via `correction_to_memory.py`:
+```bash
+# When correction detected in nav-profile:
+python3 skills/nav-graph/functions/correction_to_memory.py \
+  --action convert-one \
+  --correction-json '{"pattern": "...", "context": "...", "confidence": "high"}'
+
+# Output:
 [Correction detected]
-→ Creating pitfall memory
+→ Type: pitfall (based on pattern analysis)
+→ Concepts: [auth, testing] (auto-extracted)
+→ Created memory: mem-002
 → Added to graph
+```
+
+**Sync all corrections**:
+```bash
+python3 skills/nav-graph/functions/correction_to_memory.py \
+  --action sync \
+  --profile-path .agent/.user-profile.json \
+  --graph-path .agent/knowledge/graph.json
 ```
 
 ### nav-marker (Context Markers)
@@ -364,6 +380,55 @@ In `.agent/.nav-config.json`:
     "git_tracked": true
   }
 }
+```
+
+---
+
+## Graph Maintenance
+
+### Health Check
+```bash
+python3 skills/nav-graph/functions/graph_maintenance.py --action health
+```
+
+Output:
+```
+Knowledge Graph Health Check
+========================================
+Total Nodes: 94
+Total Edges: 819
+Memories: 2 (2 high confidence)
+Health Score: 100/100
+
+No issues detected!
+```
+
+### Conflict Detection
+Find memories that may contradict each other:
+```bash
+python3 skills/nav-graph/functions/graph_maintenance.py --action conflicts
+```
+
+### Stale Memory Detection
+Find memories not validated in 90+ days:
+```bash
+python3 skills/nav-graph/functions/graph_maintenance.py --action stale --stale-days 90
+```
+
+### Low Confidence Pruning
+Find and optionally remove low-confidence memories:
+```bash
+# Preview what would be removed
+python3 skills/nav-graph/functions/graph_maintenance.py --action prune --threshold 0.3 --dry-run
+
+# Actually remove (use with caution)
+python3 skills/nav-graph/functions/graph_maintenance.py --action prune --threshold 0.3 --execute
+```
+
+### Apply Decay
+Reduce confidence of stale memories:
+```bash
+python3 skills/nav-graph/functions/graph_maintenance.py --action decay --decay-rate 0.01
 ```
 
 ---

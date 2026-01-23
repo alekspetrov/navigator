@@ -176,7 +176,11 @@ def resolve_concept_alias(graph: dict, query: str) -> str:
         "api": "api",
         "ui": "frontend",
         "tom": "theory of mind",
+        "profile": "theory of mind",
         "docs": "documentation",
+        "task-mode": "workflow",
+        "task_mode": "workflow",
+        "loop": "workflow",
     }
     if query_lower in abbreviations:
         canonical = abbreviations[query_lower]

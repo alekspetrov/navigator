@@ -32,8 +32,8 @@ def extract_concepts_from_text(text: str) -> list:
         r'\b(token|context|efficiency)\b',
         r'\b(skill|command|plugin)\b',
         r'\b(marker|compact|session)\b',
-        r'\b(profile|tom|theory.of.mind)\b',
-        r'\b(loop|task.mode|workflow)\b',
+        r'\b(profile|tom|theory[\s._-]?of[\s._-]?mind)\b',
+        r'\b(loop|task[\s._-]?mode|workflow)\b',
         r'\b(simplif|clarity|code.quality)\b',
         r'\b(memory|knowledge|graph)\b',
     ]
@@ -82,11 +82,15 @@ def extract_concepts_from_text(text: str) -> list:
         'marker': 'markers',
         'compact': 'markers',
         'session': 'session',
-        'profile': 'tom',
-        'tom': 'tom',
-        'theory.of.mind': 'tom',
+        'profile': 'theory of mind',
+        'tom': 'theory of mind',
+        'theory of mind': 'theory of mind',
+        'theory-of-mind': 'theory of mind',
+        'theory_of_mind': 'theory of mind',
         'loop': 'workflow',
-        'task.mode': 'workflow',
+        'task mode': 'workflow',
+        'task-mode': 'workflow',
+        'task_mode': 'workflow',
         'workflow': 'workflow',
         'simplif': 'simplification',
         'clarity': 'simplification',
@@ -287,9 +291,9 @@ def build_concept_nodes(all_concepts: set) -> dict:
             'aliases': ['start', 'workflow'],
             'domain': 'navigator'
         },
-        'tom': {
+        'theory of mind': {
             'name': 'Theory of Mind',
-            'aliases': ['profile', 'ToM', 'bilateral'],
+            'aliases': ['tom', 'ToM', 'profile', 'bilateral'],
             'domain': 'navigator'
         },
         'workflow': {

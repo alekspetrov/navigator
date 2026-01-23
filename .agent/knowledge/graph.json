@@ -1,10 +1,13 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-01-23T15:30:45.365052Z",
+  "last_updated": "2026-01-23T16:30:36.484322Z",
   "stats": {
-    "total_nodes": 94,
-    "total_edges": 819,
-    "memory_count": 2
+    "total_nodes": 89,
+    "total_edges": 813,
+    "memory_count": 0,
+    "task_count": 40,
+    "sop_count": 12,
+    "concept_count": 16
   },
   "nodes": {
     "tasks": {
@@ -14,11 +17,11 @@
         "title": "TASK-32: Auto-Update Project Sync",
         "status": "completed",
         "concepts": [
-          "session",
           "database",
           "testing",
+          "context",
           "skills",
-          "context"
+          "session"
         ]
       },
       "TASK-33": {
@@ -27,15 +30,12 @@
         "title": "TASK-33: Workflow Enforcement Mechanism",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
-          "authentication",
           "testing",
-          "skills",
+          "authentication",
           "context",
-          "task mode",
-          "task-mode",
-          "task_mode"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-16": {
@@ -44,13 +44,13 @@
         "title": "TASK-16: Product Design Skill with Figma MCP Integration",
         "status": "in-progress",
         "concepts": [
-          "workflow",
           "database",
           "backend",
           "testing",
-          "skills",
           "context",
-          "frontend"
+          "frontend",
+          "workflow",
+          "skills"
         ]
       },
       "TASK-01": {
@@ -59,14 +59,14 @@
         "title": "TASK-01: Session Start Command and PM Integration",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
           "backend",
-          "authentication",
+          "api",
           "testing",
-          "skills",
+          "authentication",
           "context",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-18": {
@@ -75,13 +75,13 @@
         "title": "TASK-18.2: Narrative Rewrite - Vulnerability-Driven Voice",
         "status": "unknown",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-11": {
@@ -90,17 +90,17 @@
         "title": "TASK-11: Project-Specific Skills Generation (v2.3)",
         "status": "unknown",
         "concepts": [
-          "session",
-          "workflow",
           "database",
-          "backend",
-          "markers",
-          "testing",
-          "skills",
-          "context",
           "deployment",
           "api",
-          "frontend"
+          "backend",
+          "testing",
+          "markers",
+          "context",
+          "frontend",
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-19": {
@@ -109,20 +109,20 @@
         "title": "TASK-19: Multi-Claude Agentic Workflow Automation",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
           "database",
-          "backend",
-          "code quality",
-          "markers",
-          "authentication",
-          "tom",
-          "testing",
-          "skills",
-          "context",
           "deployment",
           "api",
-          "knowledge"
+          "backend",
+          "code quality",
+          "knowledge",
+          "theory of mind",
+          "testing",
+          "markers",
+          "authentication",
+          "context",
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-05": {
@@ -131,9 +131,9 @@
         "title": "TASK-05: Landing Page Content",
         "status": "in-progress",
         "concepts": [
-          "deployment",
+          "context",
           "skills",
-          "context"
+          "deployment"
         ]
       },
       "TASK-13": {
@@ -142,18 +142,18 @@
         "title": "TASK-13: Web Documentation Site",
         "status": "backlog",
         "concepts": [
-          "session",
-          "workflow",
           "database",
-          "backend",
-          "markers",
-          "testing",
-          "skills",
-          "context",
           "deployment",
           "api",
+          "backend",
+          "knowledge",
+          "testing",
+          "markers",
+          "context",
           "frontend",
-          "knowledge"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-26": {
@@ -162,12 +162,12 @@
         "title": "TASK-26: Navigator Plugin Optimization Roadmap",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "TASK-03": {
@@ -176,13 +176,13 @@
         "title": "TASK-03: Interactive Marker Management + Auto-Resume (v1.5.0)",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
+          "testing",
           "markers",
           "authentication",
-          "testing",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "TASK-15": {
@@ -191,14 +191,14 @@
         "title": "TASK-15: Marketing Strategy & Community Adoption Plan",
         "status": "in-progress",
         "concepts": [
-          "session",
-          "workflow",
           "backend",
+          "api",
+          "session",
           "testing",
-          "skills",
           "context",
-          "knowledge",
-          "api"
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-22": {
@@ -207,8 +207,8 @@
         "title": "TASK-22: Simple Console Logger",
         "status": "completed",
         "concepts": [
-          "testing",
-          "context"
+          "context",
+          "testing"
         ]
       },
       "TASK-02": {
@@ -217,13 +217,13 @@
         "title": "TASK-02: README Overhaul & Context Markers Feature (v1.4.0)",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
-          "database",
           "simplification",
+          "database",
+          "session",
           "markers",
-          "skills",
           "context",
+          "workflow",
+          "skills",
           "knowledge"
         ]
       },
@@ -242,11 +242,10 @@
         "title": "TASK-34: Evaluate Native Task Integration",
         "status": "backlog",
         "concepts": [
-          "session",
           "workflow",
-          "testing",
           "context",
-          "task mode"
+          "session",
+          "testing"
         ]
       },
       "VIDEO-PRODUCTION-PLAN": {
@@ -255,14 +254,14 @@
         "title": "Navigator Video Production Plan",
         "status": "research",
         "concepts": [
-          "session",
-          "workflow",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-17": {
@@ -271,12 +270,12 @@
         "title": "TASK-17: Visual Regression Integration Skill",
         "status": "in-progress",
         "concepts": [
-          "workflow",
           "backend",
-          "testing",
           "deployment",
+          "testing",
           "context",
           "frontend",
+          "workflow",
           "skills"
         ]
       },
@@ -286,31 +285,33 @@
         "title": "TASK-06: Real Session Statistics from Claude Code Internals",
         "status": "completed",
         "concepts": [
+          "api",
           "session",
-          "markers",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "knowledge",
-          "api"
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-35": {
+        "id": "TASK-35",
         "path": ".agent/tasks/TASK-35-project-memory.md",
-        "title": "Project Knowledge Graph",
+        "title": "TASK-35: Project Knowledge Graph",
         "status": "research",
         "concepts": [
-          "deployment",
-          "knowledge",
-          "skills",
-          "context",
-          "tom",
+          "database",
+          "backend",
           "api",
-          "authentication",
-          "frontend",
+          "session",
+          "theory of mind",
           "testing",
           "markers",
-          "database"
+          "authentication",
+          "context",
+          "frontend",
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-36": {
@@ -319,14 +320,14 @@
         "title": "TASK-36: Multi-Agent Production Polish",
         "status": "backlog",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "deployment",
+          "session",
           "testing",
+          "markers",
           "context",
-          "knowledge",
-          "skills"
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-30": {
@@ -335,10 +336,10 @@
         "title": "TASK-30: Task Verification Enhancement",
         "status": "completed",
         "concepts": [
+          "context",
           "database",
-          "testing",
           "skills",
-          "context"
+          "testing"
         ]
       },
       "task-22-simple-console-logger-1761948433-review-report": {
@@ -349,12 +350,12 @@
         "concepts": [
           "database",
           "backend",
-          "code quality",
-          "markers",
-          "tom",
+          "api",
+          "theory of mind",
           "testing",
-          "knowledge",
-          "api"
+          "markers",
+          "code quality",
+          "knowledge"
         ]
       },
       "TASK-25": {
@@ -363,13 +364,13 @@
         "title": "TASK-25: Fix Multi-Claude Workflow Reliability (30% \u2192 90%)",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
+          "testing",
           "markers",
           "authentication",
-          "testing",
+          "frontend",
+          "workflow",
           "skills",
-          "frontend"
+          "session"
         ]
       },
       "task-22-simple-console-logger-1761948433-plan": {
@@ -379,9 +380,9 @@
         "status": "unknown",
         "concepts": [
           "backend",
+          "testing",
           "markers",
           "code quality",
-          "testing",
           "skills"
         ]
       },
@@ -391,13 +392,13 @@
         "title": "TASK-31: Code Simplification Integration",
         "status": "completed",
         "concepts": [
-          "workflow",
-          "database",
           "simplification",
-          "markers",
+          "database",
           "testing",
-          "skills",
-          "context"
+          "markers",
+          "context",
+          "workflow",
+          "skills"
         ]
       },
       "TASK-12": {
@@ -406,19 +407,19 @@
         "title": "TASK-12: v3.0 Skills-Only Migration",
         "status": "in-progress",
         "concepts": [
-          "session",
-          "workflow",
           "database",
+          "deployment",
+          "api",
+          "session",
           "backend",
           "code quality",
-          "markers",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "knowledge",
-          "api",
           "frontend",
-          "deployment"
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-29": {
@@ -427,19 +428,18 @@
         "title": "TASK-29: Theory of Mind v5.0.0 Release",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
           "database",
           "backend",
-          "markers",
-          "tom",
-          "testing",
-          "skills",
-          "context",
-          "knowledge",
           "api",
+          "session",
+          "theory of mind",
+          "testing",
+          "markers",
+          "context",
           "frontend",
-          "theory of mind"
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "TASK-27": {
@@ -448,16 +448,16 @@
         "title": "TASK-27: Interactive Onboarding Flow",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "TASK-04": {
@@ -466,12 +466,12 @@
         "title": "TASK-04: Version Sync Fix & Release Process Improvement",
         "status": "completed",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "TASK-10": {
@@ -480,16 +480,16 @@
         "title": "TASK-10: Project-Specific Skills Generation (v2.2)",
         "status": "in-progress",
         "concepts": [
-          "workflow",
+          "simplification",
           "database",
           "backend",
-          "simplification",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "workflow",
+          "skills"
         ]
       }
     },
@@ -499,14 +499,14 @@
         "path": ".agent/system/plugin-patterns.md",
         "title": "Claude Code Plugin Development Patterns",
         "concepts": [
-          "workflow",
           "backend",
-          "markers",
+          "deployment",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "deployment"
+          "workflow",
+          "skills"
         ]
       },
       "project-architecture": {
@@ -514,14 +514,14 @@
         "path": ".agent/system/project-architecture.md",
         "title": "Navigator Plugin - Project Architecture",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
-          "code quality",
-          "testing",
           "deployment",
+          "workflow",
+          "testing",
+          "markers",
           "context",
-          "skills"
+          "code quality",
+          "skills",
+          "session"
         ]
       }
     },
@@ -532,14 +532,14 @@
         "title": "Navigator Plugin Release Workflow",
         "category": "development",
         "concepts": [
-          "workflow",
           "database",
           "backend",
-          "testing",
-          "skills",
-          "context",
+          "api",
           "deployment",
-          "api"
+          "testing",
+          "context",
+          "workflow",
+          "skills"
         ]
       },
       "SOP-plugin_release_workflow": {
@@ -548,13 +548,13 @@
         "title": "Plugin Release Workflow",
         "category": "development",
         "concepts": [
-          "session",
-          "workflow",
-          "authentication",
+          "deployment",
           "testing",
-          "skills",
+          "authentication",
           "context",
-          "deployment"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "SOP-multi_claude_troubleshooting": {
@@ -563,12 +563,12 @@
         "title": "Multi-Claude Workflow Troubleshooting",
         "category": "development",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "SOP-multi_claude_orchestration": {
@@ -577,15 +577,15 @@
         "title": "Multi-Claude Orchestration SOP",
         "category": "development",
         "concepts": [
-          "session",
-          "workflow",
-          "code quality",
-          "markers",
           "deployment",
+          "workflow",
           "testing",
+          "markers",
           "context",
           "frontend",
-          "skills"
+          "code quality",
+          "skills",
+          "session"
         ]
       },
       "SOP-version_management": {
@@ -594,12 +594,12 @@
         "title": "Version Management - Standard Operating Procedure",
         "category": "development",
         "concepts": [
-          "workflow",
           "database",
+          "api",
           "testing",
-          "skills",
           "context",
-          "api"
+          "workflow",
+          "skills"
         ]
       },
       "SOP-complete_release_workflow": {
@@ -608,12 +608,12 @@
         "title": "Complete Release Workflow",
         "category": "development",
         "concepts": [
-          "workflow",
-          "markers",
+          "deployment",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "deployment"
+          "workflow",
+          "skills"
         ]
       },
       "SOP-autonomous_completion": {
@@ -622,14 +622,14 @@
         "title": "Autonomous Task Completion",
         "category": "development",
         "concepts": [
-          "markers",
           "simplification",
-          "authentication",
+          "api",
           "testing",
-          "skills",
+          "markers",
+          "authentication",
           "context",
           "frontend",
-          "api"
+          "skills"
         ]
       },
       "SOP-test_failures": {
@@ -638,10 +638,10 @@
         "title": "SOP: Debugging Test Failures",
         "category": "debugging",
         "concepts": [
-          "testing",
-          "database",
           "deployment",
-          "backend"
+          "database",
+          "backend",
+          "testing"
         ]
       },
       "SOP-grafana_dashboard_empty_data": {
@@ -651,12 +651,12 @@
         "category": "debugging",
         "concepts": [
           "database",
-          "authentication",
-          "testing",
-          "skills",
-          "context",
           "deployment",
-          "api"
+          "api",
+          "testing",
+          "authentication",
+          "context",
+          "skills"
         ]
       },
       "SOP-opentelemetry_setup": {
@@ -665,12 +665,12 @@
         "title": "OpenTelemetry Setup for Navigator",
         "category": "integrations",
         "concepts": [
-          "session",
-          "workflow",
-          "authentication",
           "deployment",
+          "authentication",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "SOP-visual_regression_setup": {
@@ -679,11 +679,11 @@
         "title": "SOP: Visual Regression Testing Setup",
         "category": "testing",
         "concepts": [
-          "workflow",
           "deployment",
           "testing",
           "context",
           "frontend",
+          "workflow",
           "skills"
         ]
       },
@@ -693,10 +693,10 @@
         "title": "SOP: Navigator Plugin Release",
         "category": "deployment",
         "concepts": [
-          "tom",
-          "testing",
+          "workflow",
           "skills",
-          "workflow"
+          "theory of mind",
+          "testing"
         ]
       }
     },
@@ -706,9 +706,9 @@
         "path": ".agent/markers/2025-01-20-grafana-dashboard-fixes.md",
         "title": "Context Marker: Grafana Dashboard Fixes",
         "concepts": [
+          "markers",
           "context",
           "testing",
-          "markers",
           "session"
         ]
       },
@@ -717,14 +717,14 @@
         "path": ".agent/.context-markers/v4.0.0-release-complete.md",
         "title": "Context Marker: v4.0.0 Release Complete",
         "concepts": [
-          "session",
-          "workflow",
           "database",
+          "api",
+          "session",
           "markers",
-          "skills",
           "context",
-          "knowledge",
-          "api"
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "task-18-phase-2-complete": {
@@ -732,12 +732,12 @@
         "path": ".agent/.context-markers/task-18-phase-2-complete.md",
         "title": "Context Marker: TASK-18 Phase 2 Complete",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "v2.2-complete-2025-10-19-184500": {
@@ -745,15 +745,15 @@
         "path": ".agent/.context-markers/v2.2-complete-2025-10-19-184500.md",
         "title": "Navigator v2.2 Complete - Self-Improving Capability Validated",
         "concepts": [
-          "session",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "skills",
+          "session"
         ]
       },
       "2025-12-09-1105_learning-test": {
@@ -761,12 +761,12 @@
         "path": ".agent/.context-markers/2025-12-09-1105_learning-test.md",
         "title": "Context Marker: learning-test",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "v4.1-multi-claude-automation-proven": {
@@ -774,13 +774,13 @@
         "path": ".agent/.context-markers/v4.1-multi-claude-automation-proven.md",
         "title": "v4.1 Multi-Claude Automation - Proven Working!",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "deployment",
           "testing",
+          "markers",
           "context",
-          "skills"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "2025-10-19T18-12-v2.0-complete": {
@@ -790,11 +790,11 @@
         "concepts": [
           "database",
           "backend",
+          "api",
           "markers",
-          "skills",
           "context",
           "frontend",
-          "api"
+          "skills"
         ]
       },
       "2025-10-31-2242_phase-3-4-complete": {
@@ -802,12 +802,12 @@
         "path": ".agent/.context-markers/2025-10-31-2242_phase-3-4-complete.md",
         "title": "Context Marker: Phase 3 & 4 Complete - Multi-Claude Workflow",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "multi-claude-v4.3-complete-2025-10-31": {
@@ -815,14 +815,14 @@
         "path": ".agent/.context-markers/multi-claude-v4.3-complete-2025-10-31.md",
         "title": "Context Marker: Navigator Multi-Claude v4.3.0 Complete",
         "concepts": [
-          "session",
-          "workflow",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "v3.2.0-release-complete": {
@@ -831,12 +831,12 @@
         "title": "Navigator v3.2.0 Release Complete - Context Marker",
         "concepts": [
           "session",
-          "workflow",
-          "markers",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
+          "workflow",
+          "skills",
           "knowledge"
         ]
       },
@@ -845,12 +845,12 @@
         "path": ".agent/.context-markers/2025-12-09-1108_before-compact.md",
         "title": "Context Marker: before-compact",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-10-19-185900-v2.2-release-complete": {
@@ -859,12 +859,12 @@
         "title": "Navigator v2.2 Release Complete - Context Marker",
         "concepts": [
           "session",
-          "workflow",
-          "markers",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
+          "workflow",
+          "skills",
           "knowledge"
         ]
       },
@@ -873,12 +873,12 @@
         "path": ".agent/.context-markers/2025-11-02-v4.5.0-shipped.md",
         "title": "Context Marker: v4.5.0 Shipped",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-10-13_task04-complete": {
@@ -886,13 +886,13 @@
         "path": ".agent/.context-markers/2025-10-13_task04-complete.md",
         "title": "Navigator Context Marker - TASK-04 Complete",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "deployment",
           "testing",
+          "markers",
           "context",
-          "skills"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "before-compact-2025-10-22-1105": {
@@ -900,8 +900,8 @@
         "path": ".agent/.context-markers/before-compact-2025-10-22-1105.md",
         "title": "Context Marker: before-compact-2025-10-22-1105",
         "concepts": [
-          "context",
           "markers",
+          "context",
           "session"
         ]
       },
@@ -910,12 +910,12 @@
         "path": ".agent/.context-markers/youtube-video-production-complete.md",
         "title": "Context Marker: YouTube Video Production Complete",
         "concepts": [
-          "session",
+          "testing",
           "markers",
           "authentication",
-          "testing",
+          "context",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-10-19-221758-v3.0.0-complete": {
@@ -923,16 +923,33 @@
         "path": ".agent/.context-markers/2025-10-19-221758-v3.0.0-complete.md",
         "title": "Navigator v3.0.0 Release Complete - Context Marker",
         "concepts": [
-          "session",
+          "simplification",
           "database",
           "backend",
-          "simplification",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "skills",
+          "session"
+        ]
+      },
+      "before-compact-2025-01-23-task35-knowledge-graph": {
+        "id": "before-compact-2025-01-23-task35-knowledge-graph",
+        "path": ".agent/.context-markers/before-compact-2025-01-23-task35-knowledge-graph.md",
+        "title": "Context Marker: TASK-35 Knowledge Graph Complete",
+        "concepts": [
+          "api",
+          "session",
+          "theory of mind",
+          "testing",
+          "markers",
+          "authentication",
+          "context",
+          "workflow",
+          "skills",
+          "knowledge"
         ]
       },
       "v3.5.0-phase-2-complete": {
@@ -940,13 +957,13 @@
         "path": ".agent/.context-markers/v3.5.0-phase-2-complete.md",
         "title": "Context Marker: v3.5.0 Phase 2 Complete",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "2025-10-19T18-15-v2.0-foundation-complete": {
@@ -954,16 +971,16 @@
         "path": ".agent/.context-markers/2025-10-19T18-15-v2.0-foundation-complete.md",
         "title": "Navigator v2.0 Foundation Complete - Ready for v2.2",
         "concepts": [
-          "session",
-          "workflow",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "before-compact-2025-11-02-1533": {
@@ -971,12 +988,12 @@
         "path": ".agent/.context-markers/before-compact-2025-11-02-1533.md",
         "title": "Context Marker: v4.5.0 Shipped",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-01-20-repositioning-finish-what-you-start": {
@@ -984,14 +1001,13 @@
         "path": ".agent/.context-markers/2025-01-20-repositioning-finish-what-you-start.md",
         "title": "Context Marker: Repositioning - \"Finish What You Start\"",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
-          "tom",
+          "theory of mind",
           "testing",
-          "skills",
+          "markers",
           "context",
-          "theory of mind"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "2025-10-19-195740-v2.3-release-complete": {
@@ -999,15 +1015,15 @@
         "path": ".agent/.context-markers/2025-10-19-195740-v2.3-release-complete.md",
         "title": "Navigator v2.3 Release Complete - Context Marker",
         "concepts": [
-          "session",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "skills",
+          "session"
         ]
       },
       "2025-01-20-v520-release-complete": {
@@ -1015,11 +1031,11 @@
         "path": ".agent/.context-markers/2025-01-20-v520-release-complete.md",
         "title": "Context Marker: v5.2.0 Release Complete",
         "concepts": [
-          "session",
+          "theory of mind",
           "markers",
-          "tom",
+          "context",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-10-19-200824-v2.3.0-complete": {
@@ -1027,15 +1043,15 @@
         "path": ".agent/.context-markers/2025-10-19-200824-v2.3.0-complete.md",
         "title": "Navigator v2.3.0 Release Complete - Context Marker",
         "concepts": [
-          "session",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "skills",
+          "session"
         ]
       },
       "2025-01-21-task30-verification-plan": {
@@ -1043,13 +1059,13 @@
         "path": ".agent/.context-markers/2025-01-21-task30-verification-plan.md",
         "title": "Context Marker: TASK-30 Verification Enhancement Plan",
         "concepts": [
-          "session",
           "database",
+          "testing",
           "markers",
           "authentication",
-          "testing",
+          "context",
           "skills",
-          "context"
+          "session"
         ]
       },
       "2025-10-20-092541-v3.0.0-migration-complete": {
@@ -1057,16 +1073,16 @@
         "path": ".agent/.context-markers/2025-10-20-092541-v3.0.0-migration-complete.md",
         "title": "Navigator v3.0.0 + Migration Guide Complete - Context Marker",
         "concepts": [
-          "session",
-          "workflow",
           "database",
           "backend",
-          "markers",
+          "api",
           "testing",
-          "skills",
+          "markers",
           "context",
           "frontend",
-          "api"
+          "workflow",
+          "skills",
+          "session"
         ]
       },
       "2025-10-31-2116_phase2-parallel-complete": {
@@ -1074,56 +1090,16 @@
         "path": ".agent/.context-markers/2025-10-31-2116_phase2-parallel-complete.md",
         "title": "Context Marker: phase2-parallel-complete",
         "concepts": [
-          "session",
-          "workflow",
-          "markers",
           "testing",
+          "markers",
+          "context",
+          "workflow",
           "skills",
-          "context"
+          "session"
         ]
       }
     },
     "concepts": {
-      "session": {
-        "name": "Session",
-        "aliases": [
-          "start",
-          "workflow"
-        ],
-        "domain": "navigator"
-      },
-      "code quality": {
-        "name": "Code Quality",
-        "aliases": [],
-        "domain": "general"
-      },
-      "testing": {
-        "name": "Testing",
-        "aliases": [
-          "test",
-          "unit",
-          "integration",
-          "e2e"
-        ],
-        "domain": "quality"
-      },
-      "context": {
-        "name": "Context Management",
-        "aliases": [
-          "token",
-          "efficiency"
-        ],
-        "domain": "navigator"
-      },
-      "api": {
-        "name": "API",
-        "aliases": [
-          "endpoint",
-          "REST",
-          "GraphQL"
-        ],
-        "domain": "backend"
-      },
       "simplification": {
         "name": "Code Simplification",
         "aliases": [
@@ -1132,66 +1108,6 @@
           "code quality"
         ],
         "domain": "quality"
-      },
-      "tom": {
-        "name": "Theory of Mind",
-        "aliases": [
-          "profile",
-          "ToM",
-          "bilateral"
-        ],
-        "domain": "navigator"
-      },
-      "knowledge": {
-        "name": "Knowledge Graph",
-        "aliases": [
-          "memory",
-          "graph",
-          "learning"
-        ],
-        "domain": "navigator"
-      },
-      "workflow": {
-        "name": "Workflow",
-        "aliases": [
-          "loop",
-          "task mode",
-          "orchestration"
-        ],
-        "domain": "navigator"
-      },
-      "markers": {
-        "name": "Context Markers",
-        "aliases": [
-          "marker",
-          "compact"
-        ],
-        "domain": "navigator"
-      },
-      "authentication": {
-        "name": "Authentication",
-        "aliases": [
-          "auth",
-          "login",
-          "OAuth",
-          "JWT"
-        ],
-        "domain": "backend"
-      },
-      "task mode": {
-        "name": "Task Mode",
-        "aliases": [],
-        "domain": "general"
-      },
-      "task_mode": {
-        "name": "Task_Mode",
-        "aliases": [],
-        "domain": "general"
-      },
-      "theory of mind": {
-        "name": "Theory Of Mind",
-        "aliases": [],
-        "domain": "general"
       },
       "database": {
         "name": "Database",
@@ -1211,6 +1127,15 @@
         ],
         "domain": "backend"
       },
+      "api": {
+        "name": "API",
+        "aliases": [
+          "endpoint",
+          "REST",
+          "GraphQL"
+        ],
+        "domain": "backend"
+      },
       "deployment": {
         "name": "Deployment",
         "aliases": [
@@ -1220,12 +1145,63 @@
         ],
         "domain": "devops"
       },
-      "skills": {
-        "name": "Skills",
+      "code quality": {
+        "name": "Code Quality",
+        "aliases": [],
+        "domain": "general"
+      },
+      "knowledge": {
+        "name": "Knowledge Graph",
         "aliases": [
-          "skill",
-          "command",
-          "plugin"
+          "memory",
+          "graph",
+          "learning"
+        ],
+        "domain": "navigator"
+      },
+      "theory of mind": {
+        "name": "Theory of Mind",
+        "aliases": [
+          "tom",
+          "ToM",
+          "profile",
+          "bilateral"
+        ],
+        "domain": "navigator"
+      },
+      "testing": {
+        "name": "Testing",
+        "aliases": [
+          "test",
+          "unit",
+          "integration",
+          "e2e"
+        ],
+        "domain": "quality"
+      },
+      "authentication": {
+        "name": "Authentication",
+        "aliases": [
+          "auth",
+          "login",
+          "OAuth",
+          "JWT"
+        ],
+        "domain": "backend"
+      },
+      "markers": {
+        "name": "Context Markers",
+        "aliases": [
+          "marker",
+          "compact"
+        ],
+        "domain": "navigator"
+      },
+      "context": {
+        "name": "Context Management",
+        "aliases": [
+          "token",
+          "efficiency"
         ],
         "domain": "navigator"
       },
@@ -1238,37 +1214,34 @@
         ],
         "domain": "frontend"
       },
-      "task-mode": {
-        "name": "Task-Mode",
-        "aliases": [],
-        "domain": "general"
-      }
-    },
-    "memories": {
-      "mem-001": {
-        "type": "pitfall",
-        "summary": "Auth changes often break session tests due to token invalidation",
-        "path": "memories/pitfalls/mem-001.md",
-        "confidence": 0.9,
-        "concepts": [
-          "authentication",
-          "testing"
+      "workflow": {
+        "name": "Workflow",
+        "aliases": [
+          "loop",
+          "task mode",
+          "orchestration"
         ],
-        "created": "2026-01-23",
-        "last_validated": "2026-01-23"
+        "domain": "navigator"
       },
-      "mem-002": {
-        "type": "pattern",
-        "summary": "Always use plural REST endpoints",
-        "path": "memories/patterns/mem-002.md",
-        "confidence": 0.9,
-        "concepts": [
-          "api"
+      "skills": {
+        "name": "Skills",
+        "aliases": [
+          "skill",
+          "command",
+          "plugin"
         ],
-        "created": "2026-01-23",
-        "last_validated": "2026-01-23"
+        "domain": "navigator"
+      },
+      "session": {
+        "name": "Session",
+        "aliases": [
+          "start",
+          "workflow"
+        ],
+        "domain": "navigator"
       }
     },
+    "memories": {},
     "files": {}
   },
   "edges": [
@@ -4406,11 +4379,6 @@
     },
     {
       "from": "TASK-32",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-32",
       "to": "database",
       "type": "implements"
     },
@@ -4421,27 +4389,17 @@
     },
     {
       "from": "TASK-32",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-32",
       "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-32",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-33",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-33",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-33",
-      "to": "authentication",
       "type": "implements"
     },
     {
@@ -4451,7 +4409,7 @@
     },
     {
       "from": "TASK-33",
-      "to": "skills",
+      "to": "authentication",
       "type": "implements"
     },
     {
@@ -4461,22 +4419,17 @@
     },
     {
       "from": "TASK-33",
-      "to": "task mode",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-33",
-      "to": "task-mode",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-33",
-      "to": "task_mode",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-16",
       "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-33",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -4492,11 +4445,6 @@
     {
       "from": "TASK-16",
       "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-16",
-      "to": "skills",
       "type": "implements"
     },
     {
@@ -4510,18 +4458,28 @@
       "type": "implements"
     },
     {
-      "from": "TASK-01",
-      "to": "session",
+      "from": "TASK-16",
+      "to": "workflow",
       "type": "implements"
     },
     {
-      "from": "TASK-01",
-      "to": "workflow",
+      "from": "TASK-16",
+      "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-01",
       "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -4531,82 +4489,47 @@
     },
     {
       "from": "TASK-01",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-01",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-01",
       "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-01",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
       "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-01",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "testing",
       "type": "implements"
     },
     {
       "from": "TASK-11",
       "to": "database",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "backend",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-11",
-      "to": "context",
       "type": "implements"
     },
     {
@@ -4621,12 +4544,57 @@
     },
     {
       "from": "TASK-11",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
       "to": "frontend",
       "type": "implements"
     },
     {
-      "from": "TASK-19",
+      "from": "TASK-11",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-11",
       "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -4636,7 +4604,17 @@
     },
     {
       "from": "TASK-19",
-      "to": "database",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "context",
       "type": "implements"
     },
     {
@@ -4646,62 +4624,42 @@
     },
     {
       "from": "TASK-19",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
       "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-19",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-05",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-05",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-05",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-13",
       "to": "session",
       "type": "implements"
     },
     {
-      "from": "TASK-13",
-      "to": "workflow",
+      "from": "TASK-05",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-05",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-05",
+      "to": "deployment",
       "type": "implements"
     },
     {
       "from": "TASK-13",
       "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -4711,7 +4669,7 @@
     },
     {
       "from": "TASK-13",
-      "to": "markers",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -4721,22 +4679,12 @@
     },
     {
       "from": "TASK-13",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-13",
       "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-13",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-13",
-      "to": "api",
       "type": "implements"
     },
     {
@@ -4746,22 +4694,17 @@
     },
     {
       "from": "TASK-13",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-26",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-26",
       "to": "workflow",
       "type": "implements"
     },
     {
-      "from": "TASK-26",
-      "to": "markers",
+      "from": "TASK-13",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-13",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -4771,7 +4714,7 @@
     },
     {
       "from": "TASK-26",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -4780,18 +4723,33 @@
       "type": "implements"
     },
     {
-      "from": "TASK-19",
+      "from": "TASK-26",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-26",
       "to": "session",
       "type": "implements"
     },
     {
       "from": "TASK-19",
-      "to": "workflow",
+      "to": "database",
       "type": "implements"
     },
     {
       "from": "TASK-19",
-      "to": "database",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -4806,6 +4764,21 @@
     },
     {
       "from": "TASK-19",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-19",
       "to": "markers",
       "type": "implements"
     },
@@ -4816,12 +4789,12 @@
     },
     {
       "from": "TASK-19",
-      "to": "tom",
+      "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-19",
-      "to": "testing",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -4831,32 +4804,7 @@
     },
     {
       "from": "TASK-19",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
       "type": "implements"
     },
     {
@@ -4866,7 +4814,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "markers",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -4876,12 +4824,22 @@
     },
     {
       "from": "TASK-18",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-18",
       "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
       "type": "implements"
     },
     {
@@ -4891,7 +4849,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "session",
+      "to": "deployment",
       "type": "implements"
     },
     {
@@ -4901,27 +4859,22 @@
     },
     {
       "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-18",
-      "to": "deployment",
+      "to": "skills",
       "type": "implements"
     },
     {
-      "from": "TASK-03",
+      "from": "TASK-18",
       "to": "session",
       "type": "implements"
     },
     {
       "from": "TASK-03",
-      "to": "workflow",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -4936,7 +4889,12 @@
     },
     {
       "from": "TASK-03",
-      "to": "testing",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-03",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -4946,17 +4904,7 @@
     },
     {
       "from": "TASK-03",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-15",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-15",
-      "to": "workflow",
       "type": "implements"
     },
     {
@@ -4966,7 +4914,27 @@
     },
     {
       "from": "TASK-15",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
       "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-15",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -4976,42 +4944,17 @@
     },
     {
       "from": "TASK-15",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-15",
       "to": "knowledge",
       "type": "implements"
     },
     {
-      "from": "TASK-15",
-      "to": "api",
+      "from": "TASK-22",
+      "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-22",
       "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-22",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-02",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-02",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-02",
-      "to": "database",
       "type": "implements"
     },
     {
@@ -5021,17 +4964,32 @@
     },
     {
       "from": "TASK-02",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
       "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-02",
-      "to": "skills",
+      "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-02",
-      "to": "context",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-02",
+      "to": "skills",
       "type": "implements"
     },
     {
@@ -5046,17 +5004,7 @@
     },
     {
       "from": "TASK-34",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-34",
       "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-34",
-      "to": "testing",
       "type": "implements"
     },
     {
@@ -5066,22 +5014,27 @@
     },
     {
       "from": "TASK-34",
-      "to": "task mode",
-      "type": "implements"
-    },
-    {
-      "from": "VIDEO-PRODUCTION-PLAN",
       "to": "session",
       "type": "implements"
     },
     {
-      "from": "VIDEO-PRODUCTION-PLAN",
-      "to": "workflow",
+      "from": "TASK-34",
+      "to": "testing",
       "type": "implements"
     },
     {
       "from": "VIDEO-PRODUCTION-PLAN",
       "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -5091,7 +5044,12 @@
     },
     {
       "from": "VIDEO-PRODUCTION-PLAN",
-      "to": "testing",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "VIDEO-PRODUCTION-PLAN",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -5101,27 +5059,12 @@
     },
     {
       "from": "VIDEO-PRODUCTION-PLAN",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "VIDEO-PRODUCTION-PLAN",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-17",
-      "to": "workflow",
+      "to": "session",
       "type": "implements"
     },
     {
       "from": "TASK-17",
       "to": "backend",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-17",
-      "to": "testing",
       "type": "implements"
     },
     {
@@ -5131,6 +5074,11 @@
     },
     {
       "from": "TASK-17",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
       "to": "context",
       "type": "implements"
     },
@@ -5141,17 +5089,12 @@
     },
     {
       "from": "TASK-17",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-17",
+      "to": "skills",
       "type": "implements"
     },
     {
@@ -5161,7 +5104,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "markers",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -5171,7 +5114,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5181,17 +5124,27 @@
     },
     {
       "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-06",
       "to": "api",
       "type": "implements"
     },
     {
       "from": "TASK-06",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-06",
-      "to": "markers",
       "type": "implements"
     },
     {
@@ -5201,7 +5154,7 @@
     },
     {
       "from": "TASK-06",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5211,17 +5164,12 @@
     },
     {
       "from": "TASK-06",
-      "to": "knowledge",
+      "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-06",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-35",
-      "to": "session",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5236,6 +5184,26 @@
     },
     {
       "from": "TASK-35",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-35",
       "to": "markers",
       "type": "implements"
     },
@@ -5246,27 +5214,7 @@
     },
     {
       "from": "TASK-35",
-      "to": "tom",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-35",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-35",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-35",
       "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-35",
-      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5276,22 +5224,12 @@
     },
     {
       "from": "TASK-35",
-      "to": "api",
+      "to": "skills",
       "type": "implements"
     },
     {
-      "from": "TASK-36",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-36",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-36",
-      "to": "markers",
+      "from": "TASK-35",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5301,7 +5239,17 @@
     },
     {
       "from": "TASK-36",
+      "to": "session",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
       "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5311,12 +5259,22 @@
     },
     {
       "from": "TASK-36",
-      "to": "knowledge",
+      "to": "workflow",
       "type": "implements"
     },
     {
       "from": "TASK-36",
       "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-36",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-30",
+      "to": "context",
       "type": "implements"
     },
     {
@@ -5326,17 +5284,12 @@
     },
     {
       "from": "TASK-30",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-30",
       "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-30",
-      "to": "context",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -5351,17 +5304,12 @@
     },
     {
       "from": "task-22-simple-console-logger-1761948433-review-report",
-      "to": "code quality",
+      "to": "api",
       "type": "implements"
     },
     {
       "from": "task-22-simple-console-logger-1761948433-review-report",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "task-22-simple-console-logger-1761948433-review-report",
-      "to": "tom",
+      "to": "theory of mind",
       "type": "implements"
     },
     {
@@ -5371,22 +5319,22 @@
     },
     {
       "from": "task-22-simple-console-logger-1761948433-review-report",
-      "to": "knowledge",
+      "to": "markers",
       "type": "implements"
     },
     {
       "from": "task-22-simple-console-logger-1761948433-review-report",
-      "to": "api",
+      "to": "code quality",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-review-report",
+      "to": "knowledge",
       "type": "implements"
     },
     {
       "from": "TASK-25",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-25",
-      "to": "workflow",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -5401,7 +5349,12 @@
     },
     {
       "from": "TASK-25",
-      "to": "testing",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-25",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -5411,12 +5364,17 @@
     },
     {
       "from": "TASK-25",
-      "to": "frontend",
+      "to": "session",
       "type": "implements"
     },
     {
       "from": "task-22-simple-console-logger-1761948433-plan",
       "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "task-22-simple-console-logger-1761948433-plan",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -5431,22 +5389,7 @@
     },
     {
       "from": "task-22-simple-console-logger-1761948433-plan",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "task-22-simple-console-logger-1761948433-plan",
       "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-31",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-31",
-      "to": "database",
       "type": "implements"
     },
     {
@@ -5456,7 +5399,7 @@
     },
     {
       "from": "TASK-31",
-      "to": "markers",
+      "to": "database",
       "type": "implements"
     },
     {
@@ -5466,7 +5409,7 @@
     },
     {
       "from": "TASK-31",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5475,18 +5418,33 @@
       "type": "implements"
     },
     {
-      "from": "TASK-12",
-      "to": "session",
+      "from": "TASK-31",
+      "to": "workflow",
       "type": "implements"
     },
     {
-      "from": "TASK-12",
-      "to": "workflow",
+      "from": "TASK-31",
+      "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-12",
       "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -5501,32 +5459,17 @@
     },
     {
       "from": "TASK-12",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-12",
       "to": "testing",
       "type": "implements"
     },
     {
       "from": "TASK-12",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-12",
       "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-12",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-12",
-      "to": "api",
       "type": "implements"
     },
     {
@@ -5536,17 +5479,17 @@
     },
     {
       "from": "TASK-12",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-12",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5556,22 +5499,22 @@
     },
     {
       "from": "TASK-18",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
       "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "workflow",
       "type": "implements"
     },
     {
@@ -5586,42 +5529,12 @@
     },
     {
       "from": "TASK-29",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "tom",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-29",
       "to": "api",
       "type": "implements"
     },
     {
       "from": "TASK-29",
-      "to": "frontend",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -5630,13 +5543,38 @@
       "type": "implements"
     },
     {
-      "from": "TASK-27",
-      "to": "session",
+      "from": "TASK-29",
+      "to": "testing",
       "type": "implements"
     },
     {
-      "from": "TASK-27",
+      "from": "TASK-29",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
       "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-29",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5647,31 +5585,6 @@
     {
       "from": "TASK-27",
       "to": "backend",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-27",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-27",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-27",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-27",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-27",
-      "to": "frontend",
       "type": "implements"
     },
     {
@@ -5680,13 +5593,43 @@
       "type": "implements"
     },
     {
-      "from": "TASK-04",
+      "from": "TASK-27",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-27",
       "to": "session",
       "type": "implements"
     },
     {
       "from": "TASK-04",
-      "to": "workflow",
+      "to": "testing",
       "type": "implements"
     },
     {
@@ -5696,7 +5639,12 @@
     },
     {
       "from": "TASK-04",
-      "to": "testing",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-04",
+      "to": "workflow",
       "type": "implements"
     },
     {
@@ -5706,22 +5654,12 @@
     },
     {
       "from": "TASK-04",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "session",
       "type": "implements"
     },
     {
       "from": "TASK-18",
       "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
       "type": "implements"
     },
     {
@@ -5735,18 +5673,13 @@
       "type": "implements"
     },
     {
-      "from": "TASK-10",
-      "to": "workflow",
+      "from": "TASK-18",
+      "to": "skills",
       "type": "implements"
     },
     {
-      "from": "TASK-10",
-      "to": "database",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-10",
-      "to": "backend",
+      "from": "TASK-18",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -5756,7 +5689,17 @@
     },
     {
       "from": "TASK-10",
-      "to": "markers",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "backend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -5766,7 +5709,7 @@
     },
     {
       "from": "TASK-10",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5781,22 +5724,17 @@
     },
     {
       "from": "TASK-10",
-      "to": "api",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-10",
+      "to": "skills",
       "type": "implements"
     },
     {
       "from": "TASK-18",
       "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "markers",
       "type": "implements"
     },
     {
@@ -5806,17 +5744,22 @@
     },
     {
       "from": "TASK-18",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
       "to": "context",
       "type": "implements"
     },
     {
       "from": "TASK-18",
-      "to": "knowledge",
+      "to": "workflow",
       "type": "implements"
     },
     {
       "from": "TASK-18",
-      "to": "session",
+      "to": "knowledge",
       "type": "implements"
     },
     {
@@ -5826,7 +5769,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "markers",
+      "to": "session",
       "type": "implements"
     },
     {
@@ -5836,12 +5779,17 @@
     },
     {
       "from": "TASK-18",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-18",
       "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "skills",
       "type": "implements"
     },
     {
@@ -5851,17 +5799,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "markers",
+      "to": "api",
       "type": "implements"
     },
     {
@@ -5871,7 +5809,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "skills",
+      "to": "markers",
       "type": "implements"
     },
     {
@@ -5881,70 +5819,21 @@
     },
     {
       "from": "TASK-18",
-      "to": "api",
+      "to": "workflow",
       "type": "implements"
     },
     {
-      "from": "TASK-35",
-      "to": "deployment",
+      "from": "TASK-18",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-18",
+      "to": "session",
       "type": "implements"
     }
   ],
   "concept_index": {
-    "session": [
-      "TASK-32",
-      "TASK-33",
-      "TASK-01",
-      "TASK-18",
-      "TASK-11",
-      "TASK-19",
-      "TASK-13",
-      "TASK-26",
-      "TASK-03",
-      "TASK-15",
-      "TASK-02",
-      "TASK-34",
-      "VIDEO-PRODUCTION-PLAN",
-      "TASK-06",
-      "TASK-35",
-      "TASK-36",
-      "TASK-25",
-      "TASK-12",
-      "TASK-29",
-      "TASK-27",
-      "TASK-04",
-      "project-architecture",
-      "SOP-plugin_release_workflow",
-      "SOP-multi_claude_troubleshooting",
-      "SOP-multi_claude_orchestration",
-      "SOP-opentelemetry_setup",
-      "2025-01-20-grafana-dashboard-fixes",
-      "v4.0.0-release-complete",
-      "task-18-phase-2-complete",
-      "v2.2-complete-2025-10-19-184500",
-      "2025-12-09-1105_learning-test",
-      "v4.1-multi-claude-automation-proven",
-      "2025-10-31-2242_phase-3-4-complete",
-      "multi-claude-v4.3-complete-2025-10-31",
-      "v3.2.0-release-complete",
-      "2025-12-09-1108_before-compact",
-      "2025-10-19-185900-v2.2-release-complete",
-      "2025-11-02-v4.5.0-shipped",
-      "2025-10-13_task04-complete",
-      "before-compact-2025-10-22-1105",
-      "youtube-video-production-complete",
-      "2025-10-19-221758-v3.0.0-complete",
-      "v3.5.0-phase-2-complete",
-      "2025-10-19T18-15-v2.0-foundation-complete",
-      "before-compact-2025-11-02-1533",
-      "2025-01-20-repositioning-finish-what-you-start",
-      "2025-10-19-195740-v2.3-release-complete",
-      "2025-01-20-v520-release-complete",
-      "2025-10-19-200824-v2.3.0-complete",
-      "2025-01-21-task30-verification-plan",
-      "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
-    ],
     "database": [
       "TASK-32",
       "TASK-16",
@@ -6030,79 +5919,12 @@
       "2025-10-13_task04-complete",
       "youtube-video-production-complete",
       "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
       "v3.5.0-phase-2-complete",
       "2025-10-19T18-15-v2.0-foundation-complete",
       "before-compact-2025-11-02-1533",
       "2025-01-20-repositioning-finish-what-you-start",
       "2025-10-19-195740-v2.3-release-complete",
-      "2025-10-19-200824-v2.3.0-complete",
-      "2025-01-21-task30-verification-plan",
-      "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete",
-      "mem-001"
-    ],
-    "skills": [
-      "TASK-32",
-      "TASK-33",
-      "TASK-16",
-      "TASK-01",
-      "TASK-18",
-      "TASK-11",
-      "TASK-19",
-      "TASK-05",
-      "TASK-13",
-      "TASK-26",
-      "TASK-03",
-      "TASK-15",
-      "TASK-02",
-      "VIDEO-PRODUCTION-PLAN",
-      "TASK-17",
-      "TASK-06",
-      "TASK-35",
-      "TASK-36",
-      "TASK-30",
-      "TASK-25",
-      "task-22-simple-console-logger-1761948433-plan",
-      "TASK-31",
-      "TASK-12",
-      "TASK-29",
-      "TASK-27",
-      "TASK-04",
-      "TASK-10",
-      "plugin-patterns",
-      "project-architecture",
-      "SOP-navigator_plugin_release_workflow",
-      "SOP-plugin_release_workflow",
-      "SOP-multi_claude_troubleshooting",
-      "SOP-multi_claude_orchestration",
-      "SOP-version_management",
-      "SOP-complete_release_workflow",
-      "SOP-autonomous_completion",
-      "SOP-grafana_dashboard_empty_data",
-      "SOP-opentelemetry_setup",
-      "SOP-visual_regression_setup",
-      "SOP-plugin_release",
-      "v4.0.0-release-complete",
-      "task-18-phase-2-complete",
-      "v2.2-complete-2025-10-19-184500",
-      "2025-12-09-1105_learning-test",
-      "v4.1-multi-claude-automation-proven",
-      "2025-10-19T18-12-v2.0-complete",
-      "2025-10-31-2242_phase-3-4-complete",
-      "multi-claude-v4.3-complete-2025-10-31",
-      "v3.2.0-release-complete",
-      "2025-12-09-1108_before-compact",
-      "2025-10-19-185900-v2.2-release-complete",
-      "2025-11-02-v4.5.0-shipped",
-      "2025-10-13_task04-complete",
-      "youtube-video-production-complete",
-      "2025-10-19-221758-v3.0.0-complete",
-      "v3.5.0-phase-2-complete",
-      "2025-10-19T18-15-v2.0-foundation-complete",
-      "before-compact-2025-11-02-1533",
-      "2025-01-20-repositioning-finish-what-you-start",
-      "2025-10-19-195740-v2.3-release-complete",
-      "2025-01-20-v520-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
@@ -6166,6 +5988,7 @@
       "before-compact-2025-10-22-1105",
       "youtube-video-production-complete",
       "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
       "v3.5.0-phase-2-complete",
       "2025-10-19T18-15-v2.0-foundation-complete",
       "before-compact-2025-11-02-1533",
@@ -6176,6 +5999,144 @@
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "skills": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-16",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-05",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-02",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-17",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-30",
+      "TASK-25",
+      "task-22-simple-console-logger-1761948433-plan",
+      "TASK-31",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "TASK-10",
+      "plugin-patterns",
+      "project-architecture",
+      "SOP-navigator_plugin_release_workflow",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-version_management",
+      "SOP-complete_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "SOP-visual_regression_setup",
+      "SOP-plugin_release",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-19T18-12-v2.0-complete",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "session": [
+      "TASK-32",
+      "TASK-33",
+      "TASK-01",
+      "TASK-18",
+      "TASK-11",
+      "TASK-19",
+      "TASK-13",
+      "TASK-26",
+      "TASK-03",
+      "TASK-15",
+      "TASK-02",
+      "TASK-34",
+      "VIDEO-PRODUCTION-PLAN",
+      "TASK-06",
+      "TASK-35",
+      "TASK-36",
+      "TASK-25",
+      "TASK-12",
+      "TASK-29",
+      "TASK-27",
+      "TASK-04",
+      "project-architecture",
+      "SOP-plugin_release_workflow",
+      "SOP-multi_claude_troubleshooting",
+      "SOP-multi_claude_orchestration",
+      "SOP-opentelemetry_setup",
+      "2025-01-20-grafana-dashboard-fixes",
+      "v4.0.0-release-complete",
+      "task-18-phase-2-complete",
+      "v2.2-complete-2025-10-19-184500",
+      "2025-12-09-1105_learning-test",
+      "v4.1-multi-claude-automation-proven",
+      "2025-10-31-2242_phase-3-4-complete",
+      "multi-claude-v4.3-complete-2025-10-31",
+      "v3.2.0-release-complete",
+      "2025-12-09-1108_before-compact",
+      "2025-10-19-185900-v2.2-release-complete",
+      "2025-11-02-v4.5.0-shipped",
+      "2025-10-13_task04-complete",
+      "before-compact-2025-10-22-1105",
+      "youtube-video-production-complete",
+      "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
+      "v3.5.0-phase-2-complete",
+      "2025-10-19T18-15-v2.0-foundation-complete",
+      "before-compact-2025-11-02-1533",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-10-19-195740-v2.3-release-complete",
+      "2025-01-20-v520-release-complete",
+      "2025-10-19-200824-v2.3.0-complete",
+      "2025-01-21-task30-verification-plan",
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "2025-10-31-2116_phase2-parallel-complete"
+    ],
+    "authentication": [
+      "TASK-33",
+      "TASK-01",
+      "TASK-19",
+      "TASK-03",
+      "TASK-35",
+      "TASK-25",
+      "SOP-plugin_release_workflow",
+      "SOP-autonomous_completion",
+      "SOP-grafana_dashboard_empty_data",
+      "SOP-opentelemetry_setup",
+      "youtube-video-production-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
+      "2025-01-21-task30-verification-plan"
     ],
     "workflow": [
       "TASK-33",
@@ -6222,37 +6183,13 @@
       "2025-10-19-185900-v2.2-release-complete",
       "2025-11-02-v4.5.0-shipped",
       "2025-10-13_task04-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
       "v3.5.0-phase-2-complete",
       "2025-10-19T18-15-v2.0-foundation-complete",
       "before-compact-2025-11-02-1533",
       "2025-01-20-repositioning-finish-what-you-start",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete"
-    ],
-    "authentication": [
-      "TASK-33",
-      "TASK-01",
-      "TASK-19",
-      "TASK-03",
-      "TASK-35",
-      "TASK-25",
-      "SOP-plugin_release_workflow",
-      "SOP-autonomous_completion",
-      "SOP-grafana_dashboard_empty_data",
-      "SOP-opentelemetry_setup",
-      "youtube-video-production-complete",
-      "2025-01-21-task30-verification-plan",
-      "mem-001"
-    ],
-    "task mode": [
-      "TASK-33",
-      "TASK-34"
-    ],
-    "task-mode": [
-      "TASK-33"
-    ],
-    "task_mode": [
-      "TASK-33"
     ],
     "backend": [
       "TASK-16",
@@ -6331,12 +6268,12 @@
       "2025-10-19T18-12-v2.0-complete",
       "multi-claude-v4.3-complete-2025-10-31",
       "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
       "v3.5.0-phase-2-complete",
       "2025-10-19T18-15-v2.0-foundation-complete",
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
-      "2025-10-20-092541-v3.0.0-migration-complete",
-      "mem-002"
+      "2025-10-20-092541-v3.0.0-migration-complete"
     ],
     "markers": [
       "TASK-18",
@@ -6382,6 +6319,7 @@
       "before-compact-2025-10-22-1105",
       "youtube-video-production-complete",
       "2025-10-19-221758-v3.0.0-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph",
       "v3.5.0-phase-2-complete",
       "2025-10-19T18-15-v2.0-foundation-complete",
       "before-compact-2025-11-02-1533",
@@ -6412,8 +6350,7 @@
       "SOP-opentelemetry_setup",
       "SOP-visual_regression_setup",
       "v4.1-multi-claude-automation-proven",
-      "2025-10-13_task04-complete",
-      "TASK-35"
+      "2025-10-13_task04-complete"
     ],
     "code quality": [
       "TASK-19",
@@ -6422,15 +6359,6 @@
       "TASK-12",
       "project-architecture",
       "SOP-multi_claude_orchestration"
-    ],
-    "tom": [
-      "TASK-19",
-      "TASK-35",
-      "task-22-simple-console-logger-1761948433-review-report",
-      "TASK-29",
-      "SOP-plugin_release",
-      "2025-01-20-repositioning-finish-what-you-start",
-      "2025-01-20-v520-release-complete"
     ],
     "knowledge": [
       "TASK-19",
@@ -6445,7 +6373,18 @@
       "TASK-29",
       "v4.0.0-release-complete",
       "v3.2.0-release-complete",
-      "2025-10-19-185900-v2.2-release-complete"
+      "2025-10-19-185900-v2.2-release-complete",
+      "before-compact-2025-01-23-task35-knowledge-graph"
+    ],
+    "theory of mind": [
+      "TASK-19",
+      "TASK-35",
+      "task-22-simple-console-logger-1761948433-review-report",
+      "TASK-29",
+      "SOP-plugin_release",
+      "before-compact-2025-01-23-task35-knowledge-graph",
+      "2025-01-20-repositioning-finish-what-you-start",
+      "2025-01-20-v520-release-complete"
     ],
     "simplification": [
       "TASK-02",
@@ -6453,10 +6392,6 @@
       "TASK-10",
       "SOP-autonomous_completion",
       "2025-10-19-221758-v3.0.0-complete"
-    ],
-    "theory of mind": [
-      "TASK-29",
-      "2025-01-20-repositioning-finish-what-you-start"
     ]
   }
 }

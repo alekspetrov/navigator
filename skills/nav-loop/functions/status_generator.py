@@ -74,7 +74,7 @@ def generate_status_block(
     exit_signal: bool = False,
     next_action: str = "Continue working"
 ) -> str:
-    """Generate formatted NAVIGATOR_STATUS block."""
+    """Generate formatted NAVIGATOR_STATUS block with machine-readable JSON."""
 
     progress = calculate_progress(phase, indicators)
     indicator_display = format_indicators(indicators)
@@ -101,6 +101,20 @@ Stagnation: {stagnation_count}/{stagnation_threshold}
 Next Action: {next_action}
 {'=' * 50}
 """
+
+    # Append machine-readable JSON block for robust Pilot parsing
+    json_signal = {
+        "v": 2,
+        "type": "status",
+        "phase": phase,
+        "progress": progress,
+        "iteration": iteration,
+        "max_iterations": max_iterations,
+        "indicators": indicators,
+        "exit_signal": exit_signal
+    }
+    status += f"\n\n```pilot-signal\n{json.dumps(json_signal)}\n```"
+
     return status.strip()
 
 

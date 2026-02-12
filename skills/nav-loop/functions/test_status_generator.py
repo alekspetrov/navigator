@@ -153,6 +153,52 @@ class TestGenerateStatusBlock(unittest.TestCase):
         self.assertIn("Iteration: 1/5", result)
         self.assertIn("State Hash: abc123", result)
 
+    def test_pilot_signal_json_block_present(self):
+        """Status block should include pilot-signal JSON block."""
+        result = generate_status_block(
+            phase="IMPL",
+            iteration=2,
+            max_iterations=5,
+            indicators={"code_committed": True},
+            state_hash="abc123",
+            prev_hash="000000",
+            stagnation_count=0
+        )
+        self.assertIn("```pilot-signal", result)
+        self.assertIn("```", result)
+
+    def test_pilot_signal_json_structure(self):
+        """Pilot-signal JSON should have correct structure."""
+        indicators = {"code_committed": True, "tests_passing": False}
+        result = generate_status_block(
+            phase="VERIFY",
+            iteration=3,
+            max_iterations=5,
+            indicators=indicators,
+            state_hash="def456",
+            prev_hash="abc123",
+            stagnation_count=1,
+            exit_signal=True
+        )
+
+        # Extract JSON from pilot-signal block
+        import re
+        match = re.search(r'```pilot-signal\n(.+?)\n```', result, re.DOTALL)
+        self.assertIsNotNone(match, "pilot-signal block not found")
+
+        json_str = match.group(1)
+        signal = json.loads(json_str)
+
+        # Verify JSON structure
+        self.assertEqual(signal["v"], 2)
+        self.assertEqual(signal["type"], "status")
+        self.assertEqual(signal["phase"], "VERIFY")
+        self.assertEqual(signal["iteration"], 3)
+        self.assertEqual(signal["max_iterations"], 5)
+        self.assertEqual(signal["indicators"], indicators)
+        self.assertEqual(signal["exit_signal"], True)
+        self.assertIn("progress", signal)
+
     def test_exit_signal_display(self):
         """Exit signal should be displayed correctly."""
         result = generate_status_block(

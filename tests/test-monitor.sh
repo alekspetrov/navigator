@@ -13,6 +13,37 @@ NC='\033[0m'
 TEST_DIR=".agent/tasks/test-monitor-$$"
 mkdir -p "$TEST_DIR"
 
+# Portable timeout function for macOS/Linux compatibility
+run_with_timeout() {
+  local timeout_seconds="$1"
+  shift
+
+  # Check if GNU timeout is available
+  if command -v timeout &>/dev/null; then
+    timeout "$timeout_seconds" "$@"
+    return $?
+  elif command -v gtimeout &>/dev/null; then
+    gtimeout "$timeout_seconds" "$@"
+    return $?
+  else
+    # Portable fallback using background process
+    "$@" &
+    local cmd_pid=$!
+
+    (sleep "$timeout_seconds" && kill -TERM "$cmd_pid" 2>/dev/null) &
+    local watchdog_pid=$!
+
+    wait "$cmd_pid" 2>/dev/null
+    local exit_code=$?
+
+    # Kill watchdog if command finished before timeout
+    kill "$watchdog_pid" 2>/dev/null || true
+    wait "$watchdog_pid" 2>/dev/null || true
+
+    return $exit_code
+  fi
+}
+
 log_test() {
   echo -e "${YELLOW}[TEST]${NC} $1"
 }
@@ -47,8 +78,9 @@ test_marker_detection() {
   # Create marker after 2 seconds
   (sleep 2 && touch "$marker_file") &
 
-  # Start monitor (5 second timeout)
-  if timeout 10 ./scripts/sub-claude-monitor.sh "test1" 5 "$test_pid" "$marker_file" 2>/dev/null; then
+  # Start monitor (15 second timeout to allow for 5-second check interval)
+  # Monitor checks at t=0, t=5, t=10... marker created at t=2, detected at t=5
+  if run_with_timeout 20 ./scripts/sub-claude-monitor.sh "test1" 15 "$test_pid" "$marker_file" 2>/dev/null; then
     log_pass "Monitor detected marker creation"
   else
     log_fail "Monitor failed to detect marker"

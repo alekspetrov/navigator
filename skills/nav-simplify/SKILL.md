@@ -144,9 +144,30 @@ For each modified file, analyze for simplification opportunities:
 
 **Run analysis**:
 ```bash
-# Project-relative path (resolved from repo root)
-python3 skills/nav-simplify/scripts/code_analyzer.py --file "$file"
+# Project-relative path (resolved from repo root). Pass --scoring roi to
+# enable cost/benefit gating (default: complexity, legacy behavior).
+python3 skills/nav-simplify/scripts/code_analyzer.py --file "$file" --scoring roi
 ```
+
+### Step 4.5: ROI Gate (when scoring.mode = "roi")
+
+If `simplification.scoring.mode` is `"roi"` in `.agent/.nav-config.json` (or `--scoring roi` was passed), the analyzer emits `benefit_score`, `cost_score`, `roi_score`, and a `gate_action` field. Honor the gate:
+
+| `gate_action` | Behavior |
+|---|---|
+| `skip` | Skip this file. Emit a one-line reason with ROI math. Continue to next file. |
+| `suggest` | Force interactive mode for this file regardless of `auto_apply`. Show diff + reason. |
+| `apply` | Proceed with Step 5+ as normal (honor `auto_apply`). |
+
+**Skip emission format**:
+```
+⏭️  {file} — low ROI (B={B}/10, C={C}/10, ROI={R}). Skipping.
+   {reason}
+```
+
+`{reason}` summarizes the dominant cost factor (e.g., "stable file (412 days), 8 import references" or "below skip_below threshold").
+
+**Mode is opt-in.** When `scoring.mode == "complexity"` (default), Step 4.5 is a no-op and behavior is unchanged from prior versions.
 
 ### Step 5: Apply Simplification Rules
 
@@ -295,6 +316,23 @@ Changes applied:   {X}
 }
 ```
 
+When invoked with `--scoring roi` (or `simplification.scoring.mode == "roi"`), the output additionally contains:
+
+```json
+{
+  "benefit_score": 6.1,
+  "cost_score": 4.3,
+  "roi_score": 1.4,
+  "gate_action": "suggest",
+  "scoring_explanation": {
+    "benefit": {"issue_density": 0.4, "severity_impact": 5.2, "in_active_diff": true},
+    "cost": {"estimated_touch_lines": 32, "file_loc": 287, "days_since_modified": 12, "import_references": 3},
+    "thresholds": {"skip_below": 0.5, "suggest_below": 1.5, "auto_apply_at": 1.5},
+    "cost_floor": 0.5
+  }
+}
+```
+
 ### scripts/simplification_rules.py
 
 **Purpose**: Apply project-specific simplification rules
@@ -337,6 +375,13 @@ Add to `.agent/.nav-config.json`:
       "max_function_length": 50,
       "prefer_explicit_returns": true,
       "consolidate_imports": true
+    },
+    "scoring": {
+      "mode": "complexity",
+      "skip_below": 0.5,
+      "suggest_below": 1.5,
+      "auto_apply_at": 1.5,
+      "cost_floor": 0.5
     }
   }
 }
@@ -352,6 +397,10 @@ Add to `.agent/.nav-config.json`:
 - `auto_apply`: Apply changes without confirmation
 - `preserve_comments`: Keep meaningful comments
 - `rules`: Specific simplification rules
+- `scoring.mode`: `"complexity"` (legacy, default) or `"roi"` (opt-in cost/benefit gating)
+- `scoring.skip_below`: ROI threshold below which files are skipped entirely
+- `scoring.auto_apply_at`: ROI threshold at and above which auto-apply is honored
+- `scoring.cost_floor`: Minimum cost denominator to prevent ROI explosions
 
 ## Integration Points
 

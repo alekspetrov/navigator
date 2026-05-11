@@ -13,9 +13,40 @@ Usage:
 import argparse
 import json
 import re
-import sys
+import subprocess
 from pathlib import Path
 from typing import Any
+
+try:
+    from cost_analyzer import compute_cost_score
+except ImportError:
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).parent))
+    from cost_analyzer import compute_cost_score
+
+# Per-issue-type benefit weights — bigger number = simplifying this type
+# of issue yields more readability gain.
+TYPE_WEIGHTS: dict[str, float] = {
+    "deep_nesting": 3.0,
+    "nested_ternary": 2.5,
+    "long_function": 2.0,
+    "unclear_naming": 1.0,
+    "redundant_comparison": 0.5,
+}
+
+DEFAULT_BENEFIT_WEIGHTS: dict[str, float] = {
+    "density": 0.4,
+    "severity_impact": 0.4,
+    "in_active_diff": 0.2,
+}
+
+DEFAULT_SCORING_THRESHOLDS: dict[str, float] = {
+    "skip_below": 0.5,
+    "suggest_below": 1.5,
+    "auto_apply_at": 1.5,
+}
+
+SEVERITY_WEIGHTS: dict[str, float] = {"high": 3.0, "medium": 2.0, "low": 1.0}
 
 
 def detect_indent_unit(content: str, default: int = 2) -> int:
@@ -195,25 +226,109 @@ def analyze_redundant_code(content: str) -> list[dict[str, Any]]:
 
 
 def calculate_complexity_score(issues: list[dict[str, Any]]) -> float:
-    """Calculate overall complexity score (0-10)."""
+    """Calculate overall complexity score (0-10). Legacy metric, kept for backward compat."""
     if not issues:
         return 0.0
+    total_weight = sum(SEVERITY_WEIGHTS.get(issue.get("severity", "low"), 1.0) for issue in issues)
+    return round(min(total_weight / 2, 10.0), 1)
 
-    severity_weights = {
-        "high": 3.0,
-        "medium": 2.0,
-        "low": 1.0
+
+def _file_in_active_diff(path: str | Path) -> bool:
+    """True if file appears in uncommitted, cached, or last-commit diff."""
+    p = str(path)
+    for args in (
+        ["git", "diff", "--name-only", "--", p],
+        ["git", "diff", "--name-only", "--cached", "--", p],
+        ["git", "diff", "--name-only", "HEAD~1", "--", p],
+    ):
+        try:
+            result = subprocess.run(
+                args, capture_output=True, text=True, timeout=2, check=False
+            )
+            if result.stdout.strip():
+                return True
+        except (subprocess.SubprocessError, OSError):
+            continue
+    return False
+
+
+def compute_benefit_score(
+    issues: list[dict[str, Any]],
+    loc: int,
+    in_diff: bool,
+    weights: dict[str, float] | None = None,
+) -> tuple[float, dict[str, Any]]:
+    """Compute the benefit side of the ROI ratio."""
+    if not issues:
+        return 0.0, {"issue_density": 0.0, "severity_impact": 0.0, "in_active_diff": in_diff}
+
+    w = weights or DEFAULT_BENEFIT_WEIGHTS
+
+    # Density: issues per 100 lines, capped at 10
+    density = min(10.0, (len(issues) / max(loc, 1)) * 100)
+
+    # Severity × type impact, normalized
+    raw_impact = sum(
+        SEVERITY_WEIGHTS.get(issue.get("severity", "low"), 1.0)
+        * TYPE_WEIGHTS.get(issue.get("type", ""), 1.0)
+        for issue in issues
+    )
+    severity_impact = min(10.0, raw_impact / 3.0)
+
+    diff_signal = 10.0 if in_diff else 0.0
+
+    score = (
+        density * w["density"]
+        + severity_impact * w["severity_impact"]
+        + diff_signal * w["in_active_diff"]
+    )
+
+    explanation = {
+        "issue_density": round(density, 2),
+        "severity_impact": round(severity_impact, 2),
+        "in_active_diff": in_diff,
     }
-
-    total_weight = sum(severity_weights.get(issue.get("severity", "low"), 1.0) for issue in issues)
-
-    # Normalize to 0-10 scale (cap at 10)
-    score = min(total_weight / 2, 10.0)
-    return round(score, 1)
+    return round(score, 2), explanation
 
 
-def analyze_file(file_path: str) -> dict[str, Any]:
-    """Analyze a single file for simplification opportunities."""
+def compute_roi_score(benefit: float, cost: float, cost_floor: float = 0.5) -> float:
+    """ROI = B / max(C, floor). Floor prevents divide-by-zero churn on cheap files."""
+    return round(benefit / max(cost, cost_floor), 2)
+
+
+def load_scoring_config(repo_root: Path | None = None) -> dict[str, Any]:
+    """Load ``simplification.scoring`` from ``.agent/.nav-config.json`` if present."""
+    root = repo_root or Path.cwd()
+    config_path = root / ".agent" / ".nav-config.json"
+    if not config_path.exists():
+        return {}
+    try:
+        data = json.loads(config_path.read_text())
+        return data.get("simplification", {}).get("scoring", {}) or {}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def roi_gate_action(roi: float, thresholds: dict[str, float]) -> str:
+    """Map ROI → gate action: ``skip``, ``suggest``, or ``apply``."""
+    skip_below = thresholds.get("skip_below", DEFAULT_SCORING_THRESHOLDS["skip_below"])
+    auto_apply_at = thresholds.get("auto_apply_at", DEFAULT_SCORING_THRESHOLDS["auto_apply_at"])
+    if roi < skip_below:
+        return "skip"
+    if roi < auto_apply_at:
+        return "suggest"
+    return "apply"
+
+
+def analyze_file(file_path: str, scoring_mode: str | None = None) -> dict[str, Any]:
+    """Analyze a single file for simplification opportunities.
+
+    ``scoring_mode``:
+        - ``"complexity"`` (default): legacy behavior, no ROI fields
+        - ``"roi"``: adds ``benefit_score`` / ``cost_score`` / ``roi_score`` /
+          ``scoring_explanation`` / ``gate_action`` to the output
+        - ``None``: read from ``.agent/.nav-config.json`` if present, else ``"complexity"``
+    """
     path = Path(file_path)
 
     if not path.exists():
@@ -234,24 +349,56 @@ def analyze_file(file_path: str) -> dict[str, Any]:
     issues.extend(analyze_unclear_names(content))
     issues.extend(analyze_redundant_code(content))
 
-    # Sort by line number
     issues.sort(key=lambda x: x.get("line", 0))
 
     complexity_score = calculate_complexity_score(issues)
-
-    # Count high and medium severity issues as recommended actions
     recommended_actions = sum(
-        1 for issue in issues
-        if issue.get("severity") in ("high", "medium")
+        1 for issue in issues if issue.get("severity") in ("high", "medium")
     )
 
-    return {
+    result: dict[str, Any] = {
         "file": file_path,
         "issues": issues,
         "complexity_score": complexity_score,
         "recommended_actions": recommended_actions,
-        "total_issues": len(issues)
+        "total_issues": len(issues),
     }
+
+    config = load_scoring_config()
+    mode = scoring_mode or config.get("mode", "complexity")
+    if mode != "roi":
+        return result
+
+    loc = max(1, len([line for line in content.split("\n") if line.strip()]))
+    in_diff = _file_in_active_diff(path)
+
+    benefit, benefit_explain = compute_benefit_score(
+        issues, loc, in_diff, weights=config.get("benefit_weights")
+    )
+    cost, cost_explain = compute_cost_score(
+        issues, loc, path, weights=config.get("cost_weights")
+    )
+    cost_floor = config.get("cost_floor", 0.5)
+    roi = compute_roi_score(benefit, cost, cost_floor=cost_floor)
+
+    thresholds = {**DEFAULT_SCORING_THRESHOLDS, **{
+        k: v for k, v in config.items() if k in DEFAULT_SCORING_THRESHOLDS
+    }}
+    gate = roi_gate_action(roi, thresholds)
+
+    result.update({
+        "benefit_score": benefit,
+        "cost_score": cost,
+        "roi_score": roi,
+        "gate_action": gate,
+        "scoring_explanation": {
+            "benefit": benefit_explain,
+            "cost": cost_explain,
+            "thresholds": thresholds,
+            "cost_floor": cost_floor,
+        },
+    })
+    return result
 
 
 def format_text_output(result: dict[str, Any]) -> str:
@@ -267,6 +414,13 @@ def format_text_output(result: dict[str, Any]) -> str:
     output.append(f"Complexity Score: {result['complexity_score']}/10")
     output.append(f"Total Issues: {result['total_issues']}")
     output.append(f"Recommended Actions: {result['recommended_actions']}")
+    if "roi_score" in result:
+        output.append(
+            f"Benefit: {result['benefit_score']}/10  "
+            f"Cost: {result['cost_score']}/10  "
+            f"ROI: {result['roi_score']}  "
+            f"Gate: {result['gate_action']}"
+        )
     output.append("")
 
     if not result['issues']:
@@ -294,10 +448,16 @@ def main():
     parser.add_argument("--file", required=True, help="Path to file to analyze")
     parser.add_argument("--output", choices=["json", "text"], default="text", help="Output format")
     parser.add_argument("--standards", help="Path to CLAUDE.md for project standards (optional)")
+    parser.add_argument(
+        "--scoring",
+        choices=["complexity", "roi"],
+        default=None,
+        help="Scoring mode override (defaults to .nav-config.json setting)",
+    )
 
     args = parser.parse_args()
 
-    result = analyze_file(args.file)
+    result = analyze_file(args.file, scoring_mode=args.scoring)
 
     if args.output == "json":
         print(json.dumps(result, indent=2))

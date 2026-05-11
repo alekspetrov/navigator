@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T17:42:52.301460Z",
+  "last_updated": "2026-05-11T21:33:49.894128Z",
   "stats": {
-    "total_nodes": 114,
+    "total_nodes": 115,
     "total_edges": 813,
-    "memory_count": 25
+    "memory_count": 26
   },
   "nodes": {
     "tasks": {
@@ -1541,6 +1541,22 @@
         "concepts": [
           "testing",
           "skills"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-026": {
+        "type": "pattern",
+        "summary": "Navigator user-facing flows map (v6.8.0): ~28 flows across 8 categories. Canonical path: start\u2192task-mode\u2192impl-skill\u2192simplify\u2192commit\u2192compact",
+        "path": "memories/patterns/mem-026.md",
+        "confidence": 90.0,
+        "concepts": [
+          "navigator-flows",
+          "user-experience",
+          "skills",
+          "hooks",
+          "workflow",
+          "session-lifecycle"
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
@@ -6386,7 +6402,8 @@
       "mem-020",
       "mem-021",
       "mem-022",
-      "mem-025"
+      "mem-025",
+      "mem-026"
     ],
     "session": [
       "TASK-32",
@@ -6514,7 +6531,8 @@
       "mem-013",
       "mem-014",
       "mem-016",
-      "mem-020"
+      "mem-020",
+      "mem-026"
     ],
     "backend": [
       "TASK-16",
@@ -6775,6 +6793,18 @@
       "mem-016",
       "mem-019"
     ],
-    "code-style": []
+    "code-style": [],
+    "navigator-flows": [
+      "mem-026"
+    ],
+    "user-experience": [
+      "mem-026"
+    ],
+    "hooks": [
+      "mem-026"
+    ],
+    "session-lifecycle": [
+      "mem-026"
+    ]
   }
 }

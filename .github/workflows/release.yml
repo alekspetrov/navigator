@@ -64,7 +64,7 @@ jobs:
             fi
           fi
 
-      - name: Create Release
+      - name: Create or update Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.version.outputs.tag }}
@@ -72,23 +72,40 @@ jobs:
           NOTES_EXISTS: ${{ steps.check_notes.outputs.exists }}
           IS_PRERELEASE: ${{ steps.prerelease.outputs.is_prerelease }}
         run: |
-          ARGS=(
-            "$TAG"
-            --title "Navigator $TAG"
-          )
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists — updating in place."
+            EDIT_ARGS=(
+              "$TAG"
+              --title "Navigator $TAG"
+              --prerelease="$IS_PRERELEASE"
+            )
+            if [ "$NOTES_EXISTS" = "true" ]; then
+              EDIT_ARGS+=(--notes-file "$NOTES_PATH")
+            fi
+            gh release edit "${EDIT_ARGS[@]}"
 
-          if [ "$NOTES_EXISTS" = "true" ]; then
-            ARGS+=(--notes-file "$NOTES_PATH")
-            ARGS+=("$NOTES_PATH")
+            if [ "$NOTES_EXISTS" = "true" ]; then
+              gh release upload "$TAG" "$NOTES_PATH" --clobber
+            fi
           else
-            ARGS+=(--notes "Release $TAG"$'\n\n'"See commit history for changes.")
-          fi
+            ARGS=(
+              "$TAG"
+              --title "Navigator $TAG"
+            )
 
-          if [ "$IS_PRERELEASE" = "true" ]; then
-            ARGS+=(--prerelease)
-          fi
+            if [ "$NOTES_EXISTS" = "true" ]; then
+              ARGS+=(--notes-file "$NOTES_PATH")
+              ARGS+=("$NOTES_PATH")
+            else
+              ARGS+=(--notes "Release $TAG"$'\n\n'"See commit history for changes.")
+            fi
 
-          gh release create "${ARGS[@]}"
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              ARGS+=(--prerelease)
+            fi
+
+            gh release create "${ARGS[@]}"
+          fi
 
       - name: Verify marketplace compatibility
         run: |

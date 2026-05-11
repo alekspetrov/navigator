@@ -83,11 +83,12 @@ def determine_memory_type(correction: dict) -> str:
     return 'learning'
 
 
-def correction_to_memory(correction: dict, graph_path: str) -> Optional[str]:
-    """Convert a single correction to a graph memory."""
-    graph = load_graph(graph_path)
+def _correction_to_memory_in_graph(correction: dict, graph: dict) -> str:
+    """Add one correction to an already-loaded graph (no I/O).
 
-    # Extract info from correction
+    Returns the new memory_id. Caller is responsible for save_graph().
+    Split out so sync_corrections_to_graph can load/save once around the batch.
+    """
     pattern = correction.get('pattern', '')
     if not pattern:
         pattern = correction.get('corrected_to', 'Unknown correction')
@@ -95,20 +96,27 @@ def correction_to_memory(correction: dict, graph_path: str) -> Optional[str]:
     concepts = extract_concepts_from_correction(correction)
     memory_type = determine_memory_type(correction)
 
-    # Determine confidence based on correction confidence
     confidence_map = {'high': 0.9, 'medium': 0.8, 'low': 0.7}
     confidence = confidence_map.get(correction.get('confidence', 'medium'), 0.8)
 
-    # Create memory
-    memory_id = add_memory(
+    return add_memory(
         graph=graph,
         memory_type=memory_type,
         summary=pattern,
         concepts=concepts,
         confidence=confidence,
-        source_task=None  # Corrections don't have source tasks
+        source_task=None,
     )
 
+
+def correction_to_memory(correction: dict, graph_path: str) -> Optional[str]:
+    """Convert a single correction to a graph memory.
+
+    Single-item entry point — loads, mutates, saves. For batches, use
+    sync_corrections_to_graph which amortizes the I/O.
+    """
+    graph = load_graph(graph_path)
+    memory_id = _correction_to_memory_in_graph(correction, graph)
     if save_graph(graph_path, graph):
         return memory_id
     return None
@@ -116,7 +124,12 @@ def correction_to_memory(correction: dict, graph_path: str) -> Optional[str]:
 
 def sync_corrections_to_graph(profile_path: str, graph_path: str,
                                last_synced_count: int = 0) -> dict:
-    """Sync new corrections from profile to graph as memories."""
+    """Sync new corrections from profile to graph as memories.
+
+    Loads the graph once, adds all new memories in-memory, saves once.
+    Replaces the previous per-item load/save pattern (N file I/O cycles
+    for N corrections) which caused write amplification.
+    """
     profile = load_profile(profile_path)
     corrections = profile.get('corrections', [])
 
@@ -130,13 +143,25 @@ def sync_corrections_to_graph(profile_path: str, graph_path: str,
         'new_count': len(corrections)
     }
 
+    if not new_corrections:
+        return results
+
+    # Load once, mutate in memory, save once
+    graph = load_graph(graph_path)
     for correction in new_corrections:
-        memory_id = correction_to_memory(correction, graph_path)
-        if memory_id:
+        try:
+            memory_id = _correction_to_memory_in_graph(correction, graph)
             results['synced'] += 1
             results['memory_ids'].append(memory_id)
-        else:
+        except Exception as e:
             results['failed'] += 1
+            results.setdefault('errors', []).append(str(e))
+
+    if not save_graph(graph_path, graph):
+        # Save failed — roll back the success count since nothing was persisted
+        results['failed'] += results['synced']
+        results['synced'] = 0
+        results.setdefault('errors', []).append('save_graph() returned False')
 
     return results
 

@@ -63,3 +63,6 @@ __pycache__/
 social/
 skills/nav-social-post/
 docs/social/
+
+# Workshop materials (event-specific, kept local)
+workshop/

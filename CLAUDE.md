@@ -12,27 +12,7 @@ Sessions that last. AI that learns. Features that ship.
 
 **Proven**: OpenTelemetry-verified, not estimates. Session efficiency scores 94/100.
 
-**NEW in v5.0.0**: Theory of Mind integration based on Riedl & Weidmann 2025 research - bilateral modeling, quality detection, and ToM verification checkpoints.
-
-**NEW in v5.1.0**: Loop Mode with structured completion signals, dual-condition exit gates, and stagnation detection - inspired by Ralph's autonomous loop framework.
-
-**NEW in v5.4.0**: Code Simplification - automatic code clarity improvements before commit. Based on Anthropic's internal code-simplifier pattern. Clarity over brevity, functionality preserved absolutely.
-
-**NEW in v5.5.0**: Auto-Update on Session Start - automatically updates Navigator when newer version detected. No manual `nav-upgrade` needed for daily releases.
-
-**NEW in v5.6.0**: Task Mode - unified workflow orchestration that coordinates between skills, loop mode, and direct execution. Auto-detects complexity and defers to appropriate handler.
-
-**NEW in v5.7.0**: Feature Management - view and toggle Navigator features via `nav-features` skill. Shows feature table on first session after install/update.
-
-**NEW in v5.8.0**: Auto-Update Project Sync - auto-update now syncs project config after plugin update. Version drift detection warns when project config is behind. Restart prompt after mid-session updates.
-
-**NEW in v5.9.0**: Workflow Enforcement - mandatory WORKFLOW CHECK block before task responses. Loop Mode and Task Mode triggers auto-detected. Complexity scoring. Hook-based enforcement available.
-
-**NEW in v6.0.0**: Project Knowledge Graph - unified search across tasks, SOPs, system docs, and experiential memories. Patterns, pitfalls, decisions, and learnings persist across sessions. Query with "What do we know about X?". Auto-surfaces relevant memories on session start.
-
-**NEW in v6.1.0**: Multi-Agent Production - parallel Claude agents with visual dashboard. Natural language trigger: "Run multi-agent workflow for TASK-XX". Role templates (orchestrator, implementer, tester, reviewer, documenter) with minimal context (~5k each). Real-time terminal dashboard shows progress. 3x faster than sequential.
-
-**NEW in v6.3.0**: Structured research output + autonomous Loop Mode. `navigator-research` agent now emits a `research_findings` JSON block (Phase 0 navigator-first check, language-agnostic entry points, Unknowns section, real file counts) that `research_to_graph.py` ingests as graph memories — research findings persist across sessions. Loop Mode gains `iteration_approval`, `never_pause_on_stagnation`, and `stagnation_diversify_strategy` for true overnight runs (inspired by karpathy/autoresearch's NEVER STOP directive). New ANTI-PATTERN #9: Context Flooding from Command Output. Four nav-graph reliability fixes: memory ID collision (max+1 instead of len+1), backing file creation, concept aliases (perf/security/config), batch I/O in correction sync.
+**Version history**: see [CHANGELOG.md](./CHANGELOG.md) for the full release log, or [releases/](./releases/) for per-version notes.
 
 ---
 

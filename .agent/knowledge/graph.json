@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T17:30:31.577228Z",
+  "last_updated": "2026-05-11T17:42:52.301460Z",
   "stats": {
-    "total_nodes": 109,
+    "total_nodes": 114,
     "total_edges": 813,
-    "memory_count": 20
+    "memory_count": 25
   },
   "nodes": {
     "tasks": {
@@ -1479,6 +1479,67 @@
         "confidence": 1.0,
         "concepts": [
           "workflow",
+          "skills"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-021": {
+        "type": "pattern",
+        "summary": "Code-writing skills (frontend-component, backend-endpoint, database-migration, backend-test, frontend-test) emit a structured execution_summary JSON block as their final step. Schema mirrors research_findings: skill, task, files_created/modified, tests_added, stack_detected, patterns_followed[], decisions_made[], pitfalls_avoided[], assumptions_made[]. Ingested via skills/nav-graph/functions/execution_to_graph.py. [skills/nav-graph/functions/execution_to_graph.py:11-33]",
+        "path": "memories/patterns/mem-021.md",
+        "confidence": 0.9,
+        "concepts": [
+          "skills",
+          "knowledge",
+          "execution"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-022": {
+        "type": "pattern",
+        "summary": "Every code-writing skill begins with Step 0 (Phase 0 graph check): query knowledge graph for relevant concept(s) before generation. Surface patterns to apply, pitfalls to avoid, decisions to respect. Skip only if knowledge_graph disabled in nav-config. [skills/frontend-component/SKILL.md:30-50]",
+        "path": "memories/patterns/mem-022.md",
+        "confidence": 0.9,
+        "concepts": [
+          "skills",
+          "knowledge",
+          "execution"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-023": {
+        "type": "decision",
+        "summary": "Default confidence for execution_summary entries is 0.75 (vs 0.7 for research_findings) because execution captures are first-hand observations, not inference. Future tuning may differentiate per-entry-type. [skills/nav-graph/functions/execution_to_graph.py:43]",
+        "path": "memories/decisions/mem-023.md",
+        "confidence": 0.8,
+        "concepts": [
+          "knowledge"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-024": {
+        "type": "pattern",
+        "summary": "code_analyzer.py auto-detects indent unit from file content (smallest non-zero leading-space count, snapped to {2,4,8}; tabs treated as 1-per-level). Replaces the previous hardcoded depth = indent // 2 that produced false positives on 4-space code. [skills/nav-simplify/scripts/code_analyzer.py:21-50]",
+        "path": "memories/patterns/mem-024.md",
+        "confidence": 1.0,
+        "concepts": [
+          "simplification",
+          "code quality"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-025": {
+        "type": "decision",
+        "summary": "backend-test and frontend-test SKILL.md files were expanded from 38-line stubs to working skills (~150 lines each) rather than deprecated, because adding tests to existing code is a distinct task from generating tests alongside new code. Each has Phase 0, framework detection, generation, verification, and execution_summary emission. [skills/backend-test/SKILL.md]",
+        "path": "memories/decisions/mem-025.md",
+        "confidence": 0.85,
+        "concepts": [
+          "testing",
           "skills"
         ],
         "created": "2026-05-11",
@@ -6175,7 +6236,8 @@
       "2025-10-31-2116_phase2-parallel-complete",
       "mem-001",
       "mem-010",
-      "mem-011"
+      "mem-011",
+      "mem-025"
     ],
     "context": [
       "TASK-32",
@@ -6321,7 +6383,10 @@
       "mem-014",
       "mem-017",
       "mem-018",
-      "mem-020"
+      "mem-020",
+      "mem-021",
+      "mem-022",
+      "mem-025"
     ],
     "session": [
       "TASK-32",
@@ -6619,7 +6684,8 @@
       "TASK-12",
       "project-architecture",
       "SOP-multi_claude_orchestration",
-      "mem-015"
+      "mem-015",
+      "mem-024"
     ],
     "knowledge": [
       "TASK-19",
@@ -6638,7 +6704,10 @@
       "before-compact-2025-01-23-task35-knowledge-graph",
       "mem-001",
       "mem-002",
-      "mem-017"
+      "mem-017",
+      "mem-021",
+      "mem-022",
+      "mem-023"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6658,7 +6727,8 @@
       "2025-10-19-221758-v3.0.0-complete",
       "mem-013",
       "mem-015",
-      "mem-018"
+      "mem-018",
+      "mem-024"
     ],
     "knowledge-graph": [
       "mem-003",
@@ -6693,7 +6763,9 @@
     ],
     "execution": [
       "mem-012",
-      "mem-017"
+      "mem-017",
+      "mem-021",
+      "mem-022"
     ],
     "autonomous": [
       "mem-013",
@@ -6702,6 +6774,7 @@
     "loop": [
       "mem-016",
       "mem-019"
-    ]
+    ],
+    "code-style": []
   }
 }

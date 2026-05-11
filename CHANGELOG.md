@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.10.0] — 2026-05-11
+
+**PreCompact + PostCompact hooks — compact-resilient markers.** Pairs with v6.9.0 SessionStart to close the session-lifecycle loop. Navigator state now survives every compact, including silent auto-compacts that users previously didn't even notice happening. New `hooks/nav_pre_compact.py` fires on every manual `/compact` or auto-compact: reads the JSONL transcript, runs the same heuristic summarizer as `marker_compressor.py`, captures git state + active tasks, writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md` and sets `.active`. The trigger token in the filename makes silent auto-compacts visible. New `hooks/nav_post_compact.py` appends Claude Code's official `compact_summary` to the same marker after compact completes, so restores get both heuristic and authoritative summaries. `nav-compact` skill Step 0 detects the hook and skips manual marker creation when installed (single source of truth). Opt-out via `compact_hook.enabled: false`; legacy projects fall back to manual nav-compact flow automatically.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.10.0.md)
+
 ## [v6.9.0] — 2026-05-11
 
 **SessionStart hook for zero-Read context injection.** Claude Code's `SessionStart` hook now pre-loads Navigator state (navigator + active marker + config + graph stats + user profile + open tasks + auto-update) into the model's context window via `additionalContext` — before the first user turn. The `nav-start` skill detects a sentinel and skips its 6 file reads, eliminating ~35k tokens per session start in local measurement (73.3k → 37.8k). New `hooks/nav_session_start.py` builds the parity payload (9500-char cap, source-aware: `--resume` hoists marker first); new `skills/nav-init/functions/settings_merger.py` provides idempotent `.claude/settings.json` merging that preserves user-defined hooks. Templates fix `${CLAUDE_PROJECT_ROOT}` (non-existent) → `${CLAUDE_PROJECT_DIR}` (actual Claude Code env var). Opt-out via `session_start_hook.enabled: false`; legacy projects fall back to the Read-based path automatically.

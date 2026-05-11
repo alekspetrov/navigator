@@ -1039,5 +1039,56 @@ will fall back to the legacy Read-based path automatically.
 
 **This documentation system keeps plugin development context-efficient while maintaining comprehensive knowledge.**
 
-**Last Updated**: 2026-05-11 (v6.9.0 — SessionStart hook)
+---
+
+## 🗜️ PreCompact + PostCompact Hooks (v6.10.0+)
+
+Pairs with the v6.9.0 SessionStart hook to close the session-lifecycle loop:
+Navigator state survives every compact, including silent auto-compacts.
+
+**Problem solved**: Claude Code can **auto-compact** when the context window
+approaches its limit. The user doesn't see it happen — they just discover
+the conversation has been summarized, and the previous `nav-compact` skill
+flow (which required manual invocation) never fired. State is lost.
+
+**What ships**:
+- `hooks/nav_pre_compact.py` — fires on every manual `/compact` or auto-compact.
+  Reads the JSONL transcript, runs the same heuristic summarizer as
+  `skills/nav-marker/functions/marker_compressor.py`, captures git state +
+  active tasks, writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md`,
+  and sets `.active` to point at it.
+- `hooks/nav_post_compact.py` — fires after compact finishes. Appends a
+  `## Compact Summary (Claude Code)` section to the marker using the
+  `compact_summary` field from stdin, so the restore gets both the heuristic
+  pre-compact extract AND Claude Code's own post-compact summary.
+- `skills/nav-compact/SKILL.md` Step 0 — detects the hook and skips manual
+  marker creation when it's installed (single source of truth).
+
+**Filename convention**: `before-compact-{trigger}-{YYYY-MM-DD-HHmm}.md`. The
+trigger token (`manual` / `auto`) makes silent auto-compacts visible in marker
+listings.
+
+**Effect**: combined with SessionStart, no state is lost across:
+- Manual `/compact`
+- Silent auto-compact
+- New session start (the SessionStart hook surfaces the marker via `.active`)
+
+**Configuration** (`.agent/.nav-config.json`):
+```json
+"compact_hook": {
+  "enabled": true,
+  "include_transcript_summary": true,
+  "include_git_state": true,
+  "char_budget": 8000,
+  "append_post_compact_summary": true
+}
+```
+
+**Disable**:
+Set `compact_hook.enabled: false` — both hooks become no-ops, `nav-compact`
+falls back to its manual marker-creation flow automatically.
+
+---
+
+**Last Updated**: 2026-05-11 (v6.10.0 — PreCompact + PostCompact hooks)
 **Powered By**: Navigator (Complete Framework)

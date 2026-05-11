@@ -154,6 +154,13 @@ Navigator config in `.agent/.nav-config.json`:
     "enabled": true,
     "include_sections": ["navigator", "marker", "config", "graph", "profile", "tasks", "auto_update"],
     "char_budget": 9500
+  },
+  "compact_hook": {
+    "enabled": true,
+    "include_transcript_summary": true,
+    "include_git_state": true,
+    "char_budget": 8000,
+    "append_post_compact_summary": true
   }
 }
 ```

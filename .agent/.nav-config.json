@@ -1,5 +1,5 @@
 {
-  "version": "6.9.0",
+  "version": "6.10.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -56,6 +56,13 @@
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1
+  },
+  "compact_hook": {
+    "enabled": true,
+    "include_transcript_summary": true,
+    "include_git_state": true,
+    "char_budget": 8000,
+    "append_post_compact_summary": true
   },
   "knowledge_graph": {
     "enabled": true,

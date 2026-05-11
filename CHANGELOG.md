@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.5.0] — 2026-05-11
+
+**Execution-layer parity completion.** v6.4.0 fixed the bugs; v6.5.0 closes the parity gaps with the research agent. New `execution_to_graph.py` mirrors `research_to_graph.py`. All 5 code-writing skills (frontend-component, backend-endpoint, database-migration, backend-test, frontend-test) emit `execution_summary` JSON for ingestion. Phase 0 (graph check) added as Step 0 on the three primary code-writing skills. `code_analyzer.py` auto-detects indent unit (fixes 4-space false positives). `backend-test` / `frontend-test` expanded from 38-line stubs to working skills with the same Phase 0 → generate → verify → summary pattern.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.5.0.md)
+
 ## [v6.4.0] — 2026-05-11
 
 **Execution-layer parity pass.** Self-audit of the execution layer (skills that write code + orchestration that wraps them) using v6.3.0's sharpened `navigator-research` agent surfaced 10 concrete bugs and gaps. All fixed: `workflow_enforcer.py` hook wired (was dead code), test skill triggers route correctly, `nav-simplify` no longer silently pauses autonomous flows, Loop Mode thresholds aligned via shared constants, `stagnation_detector` gains `--autonomous` mode, `nav-multi` SESSION_ID collision fixed, 12 execution-layer concept aliases added to the graph, `$SKILL_BASE_DIR` removed.

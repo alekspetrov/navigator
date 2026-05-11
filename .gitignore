@@ -47,6 +47,7 @@ temp/
 # Hook state files (local session state, regenerated each turn)
 .agent/.nav-workflow-state.json
 .agent/.nav-profile-sync-state.json
+.agent/.nav-read-counter.json
 
 # Keep these in git (share with team)
 # .agent/.jitd-config.json

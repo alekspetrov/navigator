@@ -66,6 +66,32 @@ def _hook_enabled(root: Path) -> bool:
     return hook_cfg.get("enabled", True)
 
 
+def _reset_read_counter(root: Path, session_id: str | None) -> None:
+    """Reset .agent/.nav-read-counter.json on Stop (TASK-40 / v6.12.0).
+
+    The read-guard hook (`nav_read_guard.py`) counts non-allowlisted .agent/
+    reads per turn. This Stop hook clears the counter so the next turn starts
+    at zero. Guarded by read_guard_hook.enabled so projects without the
+    counter are unaffected.
+    """
+    cfg = _safe_json(root / ".agent" / ".nav-config.json") or {}
+    guard_cfg = cfg.get("read_guard_hook") or {}
+    if guard_cfg.get("enabled", True) is False:
+        return
+    counter_path = root / ".agent" / ".nav-read-counter.json"
+    payload = {
+        "schema": 1,
+        "session_id": session_id or "",
+        "turn_count": 0,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    try:
+        counter_path.parent.mkdir(parents=True, exist_ok=True)
+        counter_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    except Exception as e:
+        print(f"nav_workflow_state: counter reset failed: {e}", file=sys.stderr)
+
+
 def _last_assistant_text(stdin_data: dict) -> str:
     """Prefer the inline last_assistant_message if Claude Code provides it;
     otherwise scan the JSONL transcript for the most recent assistant entry."""
@@ -159,6 +185,10 @@ def main() -> int:
         )
     except Exception as e:
         print(f"nav_workflow_state: write failed: {e}", file=sys.stderr)
+
+    # Per-turn cleanup: reset the read-guard counter so the next turn starts
+    # at zero. Silent no-op if read_guard_hook is disabled.
+    _reset_read_counter(root, stdin_data.get("session_id"))
 
     print(json.dumps({}))
     return 0

@@ -58,7 +58,15 @@ def generate_component(name: str, props_interface: str, template_content: str, d
 def main():
     parser = argparse.ArgumentParser(description='Generate React component from template')
     parser.add_argument('--name', required=True, help='Component name (PascalCase)')
-    parser.add_argument('--type', default='simple', choices=['simple', 'with-hooks', 'container'], help='Component type')
+    parser.add_argument(
+        '--type',
+        default='simple',
+        choices=[
+            'simple', 'with-hooks', 'container',
+            'nextjs-page', 'nextjs-layout', 'nextjs-client', 'nextjs-server',
+        ],
+        help='Component type (nextjs-* variants for App Router projects)',
+    )
     parser.add_argument('--props-interface', required=True, help='Props interface name')
     parser.add_argument('--template', required=True, help='Template file path')
     parser.add_argument('--output', help='Output file path (optional, prints to stdout if not provided)')

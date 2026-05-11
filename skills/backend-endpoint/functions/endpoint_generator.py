@@ -82,7 +82,12 @@ def main():
     parser.add_argument('--path', required=True, help='API endpoint path')
     parser.add_argument('--method', required=True, choices=['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], help='HTTP method')
     parser.add_argument('--resource', required=True, help='Resource name (PascalCase)')
-    parser.add_argument('--framework', default='express', choices=['express', 'fastify', 'nestjs'], help='Backend framework')
+    parser.add_argument(
+        '--framework',
+        default='express',
+        choices=['express', 'fastify', 'nestjs', 'nextjs'],
+        help='Backend framework (nextjs = App Router Route Handler)',
+    )
     parser.add_argument('--auth', action='store_true', help='Include authentication middleware')
     parser.add_argument('--validation', action='store_true', help='Include validation middleware')
     parser.add_argument('--template', required=True, help='Template file path')

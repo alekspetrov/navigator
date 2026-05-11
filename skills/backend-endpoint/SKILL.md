@@ -65,6 +65,7 @@ Framework:
   - express (default)
   - fastify
   - nestjs
+  - nextjs   (App Router Route Handler — app/api/<resource>/route.ts)
   - graphql
 
 Authentication required: [yes/no]
@@ -488,6 +489,33 @@ Express.js route handler template.
 - `${RESOURCE_NAME}` - Resource name (PascalCase)
 - `${VALIDATION_MIDDLEWARE}` - Validation middleware
 - `${AUTH_MIDDLEWARE}` - Authentication middleware
+
+### nextjs-route-template.ts (collection)
+
+Next.js App Router Route Handler for a **collection** endpoint — no dynamic segment.
+
+**When to use**: `package.json` has `"next"` in deps **and** the path has no `[id]`. Output path: `app/api/<resource>/route.ts`. Exports `GET` (list) + `POST` (create).
+
+### nextjs-route-dynamic-template.ts (single resource)
+
+Next.js App Router Route Handler for a **single resource** endpoint with a dynamic segment.
+
+**When to use**: path includes `[id]` (or similar). Output path: `app/api/<resource>/[id]/route.ts`. Exports `GET` (read), `PATCH` (update), `DELETE`.
+
+**Picking between them**:
+- `POST /api/favourites` → collection template
+- `GET /api/favourites/[id]` → dynamic template
+- If unsure, ask the user whether the endpoint operates on a list or a single resource
+
+**Both templates encode Next.js 15+/16 conventions**:
+- Named async exports per HTTP method
+- `params` is a `Promise<…>` — `await` it (Next.js 15+ change), **only on dynamic**
+- Non-dynamic routes do not declare a context parameter (TypeScript infers `Promise<{}>` from the file path)
+- Returns `NextResponse.json(...)` with explicit status codes
+- Zod schema for body validation
+- See `.agent/philosophy/NEXTJS-PATTERNS.md` §E, §H
+
+**Prefer Server Actions** over Route Handlers for **mutations from your own UI** (forms, buttons). Use Route Handlers for webhooks, third-party callers, and public REST endpoints. See `NEXTJS-PATTERNS.md` §F.
 
 ### fastify-route-template.ts
 

@@ -53,21 +53,35 @@ If the graph returns nothing useful, proceed without it. Skip this step only if 
 
 ### Step 1: Gather Component Requirements
 
+**First, detect the framework**: read `package.json`. If `"next"` is in `dependencies`, this is a Next.js App Router project — use the Next.js variants in Step 3 and **default styling to Tailwind** (no CSS module file). See `.agent/philosophy/NEXTJS-PATTERNS.md` for the patterns these templates encode.
+
 **Ask user for component details**:
 ```
 Component name: [PascalCase name, e.g., UserProfile]
 Component type:
-  - simple (basic functional component)
-  - with-hooks (useState, useEffect, etc.)
-  - container (data fetching component)
+  Generic React:
+    - simple            (basic functional component)
+    - with-hooks        (useState, useEffect, etc.)
+    - container         (data fetching component)
+  Next.js App Router:
+    - nextjs-page       (app/<route>/page.tsx — Server Component, async)
+    - nextjs-layout     (app/<route>/layout.tsx — Server Component, metadata + viewport)
+    - nextjs-server     (Server Component with fetch, async)
+    - nextjs-client     ('use client' component with state/effects)
 
 Styling approach:
-  - css-modules (default)
+  - tailwind            (default for nextjs-* types)
+  - css-modules         (default for generic React types)
   - styled-components
-  - tailwind
 
 Props needed: [Optional: describe expected props]
 ```
+
+**Picking the right Next.js variant**:
+- User says "create a Schedule page" → `nextjs-page`
+- User says "wrap the app" / "root layout" → `nextjs-layout`
+- User says "needs `useState`" / "click handler" / "interactive" → `nextjs-client`
+- User says "fetches data" / "list of X" → `nextjs-server`
 
 **Validate component name**:
 - Use predefined function: `functions/name_validator.py`
@@ -156,6 +170,22 @@ Use template: templates/component-with-hooks-template.tsx
 ```
 Use template: templates/component-container-template.tsx
 ```
+
+**Next.js App Router variants** (use when `"next"` is in `package.json`):
+| --type           | Template                                                | Output path example                    |
+|------------------|---------------------------------------------------------|----------------------------------------|
+| `nextjs-page`    | `templates/nextjs-page-template.tsx`                    | `app/schedule/page.tsx`                |
+| `nextjs-layout`  | `templates/nextjs-layout-template.tsx`                  | `app/schedule/layout.tsx`              |
+| `nextjs-server`  | `templates/nextjs-server-component-template.tsx`        | `app/components/speaker-list.tsx`      |
+| `nextjs-client`  | `templates/nextjs-client-component-template.tsx`        | `app/components/favourite-button.tsx`  |
+
+The Next.js templates already encode Next.js 15+/16 conventions:
+- `params`/`searchParams` are `Promise`s — `await` them
+- `'use client'` directive on line 1 of client components, above all imports
+- Mobile-first Tailwind classes
+- Metadata + viewport exports on layouts
+
+**Skip Step 5 (Style File) for `nextjs-*` types** — Tailwind classes are baked into the templates, no CSS module needed.
 
 **Use predefined function**: `functions/component_generator.py`
 

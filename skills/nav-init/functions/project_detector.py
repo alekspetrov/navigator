@@ -63,26 +63,37 @@ def _detect_from_package_json(cwd: Path) -> Optional[Dict[str, str]]:
         name = data.get("name", cwd.name)
         deps = {**data.get("dependencies", {}), **data.get("devDependencies", {})}
 
-        # Detect framework/stack
+        # Detect framework — first match wins, lets downstream branch deterministically
+        framework = None
         stack_parts = []
 
         if "next" in deps:
+            framework = "nextjs"
             stack_parts.append("Next.js")
         elif "react" in deps:
+            framework = "react"
             stack_parts.append("React")
         elif "vue" in deps:
+            framework = "vue"
             stack_parts.append("Vue")
         elif "angular" in deps:
+            framework = "angular"
             stack_parts.append("Angular")
         elif "svelte" in deps:
+            framework = "svelte"
             stack_parts.append("Svelte")
         elif "express" in deps:
+            framework = "express"
             stack_parts.append("Express")
         elif "fastify" in deps:
+            framework = "fastify"
             stack_parts.append("Fastify")
 
         if "typescript" in deps:
             stack_parts.append("TypeScript")
+
+        if "tailwindcss" in deps or "@tailwindcss/postcss" in deps:
+            stack_parts.append("Tailwind")
 
         if "prisma" in deps:
             stack_parts.append("Prisma")
@@ -96,6 +107,7 @@ def _detect_from_package_json(cwd: Path) -> Optional[Dict[str, str]]:
         return {
             "name": name,
             "tech_stack": tech_stack,
+            "framework": framework,
             "detected_from": "package.json",
         }
     except (json.JSONDecodeError, IOError):

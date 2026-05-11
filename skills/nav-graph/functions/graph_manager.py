@@ -181,6 +181,12 @@ def resolve_concept_alias(graph: dict, query: str) -> str:
         "task-mode": "workflow",
         "task_mode": "workflow",
         "loop": "workflow",
+        "perf": "performance",
+        "latency": "performance",
+        "sec": "security",
+        "vuln": "security",
+        "config": "configuration",
+        "env": "configuration",
     }
     if query_lower in abbreviations:
         canonical = abbreviations[query_lower]
@@ -264,15 +270,45 @@ def query_related(graph: dict, node_id: str, max_depth: int = 2) -> list:
     return list(related)
 
 
+def _next_memory_id(memories: dict) -> str:
+    """Generate the next memory ID by scanning existing IDs.
+
+    Uses max(existing numeric suffix) + 1 instead of len(memories) + 1.
+    Prevents the collision that occurs when a memory is deleted and the
+    counter resets to an already-used ID.
+    """
+    max_n = 0
+    for mid in memories:
+        # Expected form: 'mem-NNN' (zero-padded), but be lenient
+        if mid.startswith("mem-"):
+            tail = mid[4:]
+            try:
+                n = int(tail)
+            except ValueError:
+                continue
+            if n > max_n:
+                max_n = n
+    return f"mem-{max_n + 1:03d}"
+
+
 def add_memory(graph: dict, memory_type: str, summary: str,
                concepts: list, confidence: float = 0.8,
-               source_task: Optional[str] = None) -> str:
-    """Add a memory node to the graph."""
-    # Generate memory ID
-    memory_count = len(graph["nodes"].get("memories", {})) + 1
-    memory_id = f"mem-{memory_count:03d}"
+               source_task: Optional[str] = None,
+               base_dir: str = ".agent/knowledge",
+               create_file: bool = True) -> str:
+    """Add a memory node to the graph.
 
-    # Determine path
+    Also creates the backing markdown file at
+    `{base_dir}/memories/{memory_type}s/{id}.md` by default, so the `path`
+    field in the graph node always resolves to a real file. Pass
+    `create_file=False` to skip file creation (e.g. when ingesting into a
+    transient/test graph that isn't on disk).
+    """
+    # Generate memory ID via max-existing + 1 (collision-safe across deletes)
+    memories = graph["nodes"].get("memories", {})
+    memory_id = _next_memory_id(memories)
+
+    # Determine path (relative; resolves to {base_dir}/{path})
     path = f"memories/{memory_type}s/{memory_id}.md"
 
     memory_data = {
@@ -286,6 +322,28 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     }
 
     graph = add_node(graph, "memories", memory_id, memory_data)
+
+    if create_file:
+        try:
+            # Lazy import to avoid a hard dependency cycle at module load
+            from memory_writer import create_memory_file
+            create_memory_file(
+                memory_id=memory_id,
+                memory_type=memory_type,
+                title=summary[:80],
+                summary=summary,
+                confidence=int(round(confidence * 100)),
+                concepts=concepts or [],
+                base_dir=base_dir,
+            )
+        except Exception as e:
+            # Non-fatal: the graph node is still valid even if file creation
+            # fails. Surface a warning so callers can investigate.
+            print(
+                f"warning: add_memory created {memory_id} node but failed to "
+                f"write backing file ({e})",
+                file=sys.stderr,
+            )
 
     # Add edge from source task if provided
     if source_task:

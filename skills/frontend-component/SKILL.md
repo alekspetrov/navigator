@@ -29,6 +29,28 @@ Auto-invoke when user mentions:
 
 ## Execution Steps
 
+### Step 0: Check Existing Patterns (Phase 0)
+
+Before gathering requirements, query the knowledge graph for what we already know about frontend/component work in this project. This mirrors `navigator-research`'s Phase 0 and prevents re-deriving patterns we've already decided on.
+
+```bash
+python3 skills/nav-graph/functions/graph_manager.py \
+  --action query --concept frontend \
+  --graph-path .agent/knowledge/graph.json 2>/dev/null | head -40
+```
+
+If memories surface (look for `PATTERN`, `PITFALL`, `DECISION` entries), read the full memory files for any directly relevant ones:
+```bash
+ls .agent/knowledge/memories/{patterns,pitfalls,decisions}/ 2>/dev/null
+```
+
+**What to do with what you find**:
+- **Patterns**: apply them (don't re-derive — e.g. "we use CSS Modules, not styled-components")
+- **Pitfalls**: avoid them (record in `pitfalls_avoided` in Step 8)
+- **Decisions**: respect them (e.g. "we chose React.memo for list items")
+
+If the graph returns nothing useful, proceed without it. Skip this step only if the knowledge graph is disabled in `.agent/.nav-config.json`.
+
 ### Step 1: Gather Component Requirements
 
 **Ask user for component details**:
@@ -267,6 +289,44 @@ Next Steps:
 2. Run tests: npm test UserProfile
 3. Import and use in your feature
 ```
+
+### Step 8: Emit Execution Summary (Graph Ingestion)
+
+After Step 7, emit an `execution_summary` JSON block that captures patterns/decisions/pitfalls from this run. This block is the parity equivalent of the `research_findings` block emitted by `navigator-research`, and it gets ingested into the knowledge graph so future component work can surface what we learned.
+
+**Output the block verbatim** (replace placeholders with actual values from this run):
+
+```json
+{
+  "execution_summary": {
+    "skill": "frontend-component",
+    "task": "{COMPONENT_NAME} component",
+    "files_created": ["{paths of files written}"],
+    "files_modified": ["{paths of files edited}"],
+    "tests_added": ["{test file path}"],
+    "stack_detected": "{e.g. react+typescript+vitest}",
+    "patterns_followed": [
+      {"summary": "{convention applied — e.g. functional component with Props interface}", "concepts": ["frontend"], "confidence": 0.8}
+    ],
+    "decisions_made": [
+      {"summary": "{non-obvious choice — e.g. React.memo because props are stable}", "concepts": ["frontend"], "confidence": 0.75, "evidence": "{path:line}"}
+    ],
+    "pitfalls_avoided": [],
+    "assumptions_made": ["{e.g. project uses CSS Modules (detected via existing components)}"]
+  }
+}
+```
+
+**Ingestion** (run from project root):
+
+```bash
+echo '<execution_summary JSON>' | python3 skills/nav-graph/functions/execution_to_graph.py -
+```
+
+**Rules**:
+- Only include `decisions_made` and `pitfalls_avoided` entries that are non-obvious and would help future runs.
+- Skip the block entirely if no patterns/decisions/pitfalls were notable — empty blocks pollute the graph.
+- Confidence ≥ 0.7 for first-hand execution; 0.75 is a reasonable default.
 
 ---
 

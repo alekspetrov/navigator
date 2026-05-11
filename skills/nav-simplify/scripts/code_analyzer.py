@@ -18,19 +18,61 @@ from pathlib import Path
 from typing import Any
 
 
+def detect_indent_unit(content: str, default: int = 2) -> int:
+    """Auto-detect indent unit (spaces per level) from file content.
+
+    Strategy:
+        1. If any line starts with a tab, use 1 (each tab = one level).
+        2. Otherwise, take the smallest non-zero leading-space count seen
+           on a non-blank line. That's the file's indent unit.
+        3. Clamp to {2, 4, 8} — anything else is almost certainly noise.
+        4. Fall back to `default` if no indented lines were observed.
+    """
+    min_indent = None
+    for line in content.split('\n'):
+        if not line.strip():
+            continue
+        if line.startswith('\t'):
+            return 1
+        stripped = line.lstrip(' ')
+        leading = len(line) - len(stripped)
+        if leading == 0:
+            continue
+        if min_indent is None or leading < min_indent:
+            min_indent = leading
+
+    if min_indent is None:
+        return default
+    # Snap to common indent widths
+    if min_indent in (2, 4, 8):
+        return min_indent
+    if min_indent == 1 or min_indent == 3:
+        return 2  # likely a continuation line, not the true indent
+    return min_indent
+
+
 def analyze_nesting_depth(content: str) -> list[dict[str, Any]]:
-    """Detect deeply nested code blocks."""
+    """Detect deeply nested code blocks.
+
+    Indent unit is auto-detected from the file rather than hardcoded — 2/4-space
+    files (Python, Go, Java, TypeScript variants) and tab-indented files all
+    measure correctly.
+    """
     issues = []
     lines = content.split('\n')
+    indent_unit = detect_indent_unit(content)
 
     for i, line in enumerate(lines, 1):
-        # Count indentation level (assuming 2 or 4 space indent)
         stripped = line.lstrip()
         if not stripped:
             continue
 
-        indent = len(line) - len(stripped)
-        depth = indent // 2  # Assuming 2-space indent
+        # Tabs: depth = leading-tab count; spaces: depth = leading-spaces / unit
+        if line.startswith('\t'):
+            depth = len(line) - len(line.lstrip('\t'))
+        else:
+            indent = len(line) - len(stripped)
+            depth = indent // indent_unit if indent_unit > 0 else 0
 
         if depth > 3:
             issues.append({
@@ -38,6 +80,7 @@ def analyze_nesting_depth(content: str) -> list[dict[str, Any]]:
                 "type": "deep_nesting",
                 "severity": "high" if depth > 4 else "medium",
                 "depth": depth,
+                "indent_unit": indent_unit,
                 "suggestion": "Extract to helper function or use early returns"
             })
 

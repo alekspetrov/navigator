@@ -35,6 +35,30 @@ Auto-invoke when user mentions:
 
 ## Execution Steps
 
+### Step 0: Check Existing Patterns (Phase 0)
+
+Before detecting the framework, query the knowledge graph for what we already know about database work in this project. For migrations — the highest-stakes execution path — Phase 0 is especially valuable because past pitfalls (failed NOT NULL adds, bad rollback assumptions, naming collisions) often repeat.
+
+```bash
+python3 skills/nav-graph/functions/graph_manager.py \
+  --action query --concept database \
+  --graph-path .agent/knowledge/graph.json 2>/dev/null | head -40
+```
+
+Also check `migration`, `schema`, and `performance` (for index decisions).
+
+If memories surface (`PATTERN`, `PITFALL`, `DECISION` entries), read the full memory files for any relevant ones:
+```bash
+ls .agent/knowledge/memories/{patterns,pitfalls,decisions}/ 2>/dev/null
+```
+
+**What to do with what you find**:
+- **Patterns**: apply them (e.g. "we always use UUIDs over auto-increment IDs")
+- **Pitfalls**: avoid them — these are the most important for migrations (record what you avoided in `pitfalls_avoided` in Step 7)
+- **Decisions**: respect them (e.g. "we chose JSONB over separate tables for tags")
+
+Skip this step only if the knowledge graph is disabled in `.agent/.nav-config.json`.
+
 ### Step 1: Detect Migration Framework
 
 **Check project for migration tool**:
@@ -296,6 +320,46 @@ Next Steps:
 4. Verify schema changes
 5. Commit migration file
 ```
+
+### Step 7: Emit Execution Summary (Graph Ingestion)
+
+After Step 6, emit an `execution_summary` JSON block. Database migrations are the highest-stakes execution path — recording the patterns and decisions here is the most valuable. This block flows into the knowledge graph via `execution_to_graph.py`.
+
+**Output the block verbatim** (replace placeholders with actual values):
+
+```json
+{
+  "execution_summary": {
+    "skill": "database-migration",
+    "task": "{MIGRATION_NAME}",
+    "files_created": ["{migration file path}"],
+    "files_modified": [],
+    "tests_added": [],
+    "stack_detected": "{e.g. knex+postgres or prisma+postgres}",
+    "patterns_followed": [
+      {"summary": "{convention applied — e.g. timestamp-prefixed filenames, UUID primary keys}", "concepts": ["database"], "confidence": 0.8}
+    ],
+    "decisions_made": [
+      {"summary": "{non-obvious choice — e.g. used VARCHAR(255) over TEXT for indexability}", "concepts": ["database"], "confidence": 0.75, "evidence": "{path:line}"}
+    ],
+    "pitfalls_avoided": [
+      {"summary": "{e.g. added DEFAULT to NOT NULL column to avoid failing on existing rows}", "concepts": ["database"], "confidence": 0.9}
+    ],
+    "assumptions_made": ["{e.g. PostgreSQL 14+ — used gen_random_uuid()}"]
+  }
+}
+```
+
+**Ingestion** (run from project root):
+
+```bash
+echo '<execution_summary JSON>' | python3 skills/nav-graph/functions/execution_to_graph.py -
+```
+
+**Migration-specific rules**:
+- Always record pitfalls — DB changes are easy to get wrong, future agents need the warning.
+- Stack detection should include both the migration framework AND the target DB (e.g. `knex+postgres`).
+- Decisions about column types, indexes, and constraints are valuable to capture even when they feel obvious.
 
 ---
 

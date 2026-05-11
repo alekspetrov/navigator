@@ -29,6 +29,30 @@ Auto-invoke when user mentions:
 
 ## Execution Steps
 
+### Step 0: Check Existing Patterns (Phase 0)
+
+Before gathering requirements, query the knowledge graph for what we already know about API/endpoint work in this project. Mirrors `navigator-research`'s Phase 0.
+
+```bash
+python3 skills/nav-graph/functions/graph_manager.py \
+  --action query --concept api \
+  --graph-path .agent/knowledge/graph.json 2>/dev/null | head -40
+```
+
+Also check `authentication`, `validation`, and `security` if the endpoint touches those areas.
+
+If memories surface (`PATTERN`, `PITFALL`, `DECISION` entries), read the full memory files for relevant ones:
+```bash
+ls .agent/knowledge/memories/{patterns,pitfalls,decisions}/ 2>/dev/null
+```
+
+**What to do with what you find**:
+- **Patterns**: apply them (e.g. "we use Zod for validation, not Joi")
+- **Pitfalls**: avoid them (record in `pitfalls_avoided` in Step 8)
+- **Decisions**: respect them (e.g. "we return 404 over 422 for missing resources")
+
+If the graph returns nothing useful, proceed without it. Skip this step only if the knowledge graph is disabled in `.agent/.nav-config.json`.
+
 ### Step 1: Gather Endpoint Requirements
 
 **Ask user for endpoint details**:
@@ -297,6 +321,46 @@ Next Steps:
 3. Run tests: npm test
 4. Test with Postman/Thunder Client
 ```
+
+### Step 8: Emit Execution Summary (Graph Ingestion)
+
+After Step 7, emit an `execution_summary` JSON block. This is the parity equivalent of the `research_findings` block emitted by `navigator-research`, ingested into the knowledge graph so future endpoint work can surface what we learned.
+
+**Output the block verbatim** (replace placeholders with actual values):
+
+```json
+{
+  "execution_summary": {
+    "skill": "backend-endpoint",
+    "task": "{METHOD} {PATH}",
+    "files_created": ["{route, validator, test paths}"],
+    "files_modified": ["{router registration paths}"],
+    "tests_added": ["{test file path}"],
+    "stack_detected": "{e.g. express+typescript+zod}",
+    "patterns_followed": [
+      {"summary": "{convention applied — e.g. Zod schema for request validation}", "concepts": ["api"], "confidence": 0.8}
+    ],
+    "decisions_made": [
+      {"summary": "{non-obvious choice — e.g. 404 over 422 because resource itself missing}", "concepts": ["api"], "confidence": 0.75, "evidence": "{path:line}"}
+    ],
+    "pitfalls_avoided": [
+      {"summary": "{gotcha that future agents should know — e.g. middleware order matters: auth before validator}", "concepts": ["api"], "confidence": 0.85}
+    ],
+    "assumptions_made": ["{e.g. project uses Express middleware pattern (detected via package.json)}"]
+  }
+}
+```
+
+**Ingestion** (run from project root):
+
+```bash
+echo '<execution_summary JSON>' | python3 skills/nav-graph/functions/execution_to_graph.py -
+```
+
+**Rules**:
+- Only include non-obvious entries — empty/trivial blocks pollute the graph.
+- Skip the entire block if there's nothing notable to record.
+- Confidence ≥ 0.7 for first-hand execution; 0.75 is a reasonable default.
 
 ---
 

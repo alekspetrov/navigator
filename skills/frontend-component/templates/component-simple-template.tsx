@@ -5,7 +5,7 @@
 import React from 'react';
 ${STYLE_IMPORT}
 
-${PROPS_INTERFACE}
+${PROPS_INTERFACE_BLOCK}
 
 export const ${COMPONENT_NAME}: React.FC<${PROPS_INTERFACE}> = ({
   children,

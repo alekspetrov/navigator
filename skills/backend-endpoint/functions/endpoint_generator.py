@@ -53,12 +53,11 @@ def generate_endpoint(
         middlewares.append(validator_name)
 
     middleware_chain = ', '.join(middlewares) if middlewares else ''
+    middleware_block = f"  {middleware_chain},\n" if middlewares else ''
 
-    # Convert resource to different cases
     resource_lower = resource.lower()
-    resource_plural = resource.lower() + 's'  # Simple pluralization
+    resource_plural = resource.lower() + 's'
 
-    # Perform substitutions
     substitutions = {
         '${ROUTE_PATH}': path,
         '${HTTP_METHOD}': method.upper(),
@@ -69,6 +68,7 @@ def generate_endpoint(
         '${VALIDATION_MIDDLEWARE}': f'validate{resource}' if validation else '',
         '${AUTH_MIDDLEWARE}': 'authMiddleware' if auth else '',
         '${MIDDLEWARE_CHAIN}': middleware_chain,
+        '${MIDDLEWARE_BLOCK}': middleware_block,
     }
 
     result = template_content

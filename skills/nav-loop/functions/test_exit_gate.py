@@ -16,10 +16,10 @@ class TestCountIndicators(unittest.TestCase):
     """Tests for indicator counting."""
 
     def test_empty_dict(self):
-        """Empty dict should return 0 met, 5 total."""
+        """Empty dict should return 0 met, 6 total."""
         met, total = count_indicators({})
         self.assertEqual(met, 0)
-        self.assertEqual(total, 5)
+        self.assertEqual(total, 6)
 
     def test_all_true(self):
         """All true indicators should count correctly."""

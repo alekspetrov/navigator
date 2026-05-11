@@ -33,9 +33,16 @@ def generate_component(name: str, props_interface: str, template_content: str, d
     # Convert PascalCase to kebab-case for file names
     kebab_name = ''.join(['-' + c.lower() if c.isupper() else c for c in name]).lstrip('-')
 
-    # Perform substitutions
+    props_interface_block = (
+        f"interface {props_interface} {{\n"
+        f"  children?: React.ReactNode;\n"
+        f"  className?: string;\n"
+        f"}}"
+    )
+
     substitutions = {
         '${COMPONENT_NAME}': name,
+        '${PROPS_INTERFACE_BLOCK}': props_interface_block,
         '${PROPS_INTERFACE}': props_interface,
         '${STYLE_IMPORT}': f"import styles from './{name}.module.css';",
         '${DESCRIPTION}': description or f"{name} component",

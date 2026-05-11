@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 hooks/monitor-tokens.py",
+            "command": "python3 hooks/token_monitor.py",
             "timeout": 5
           }
         ]

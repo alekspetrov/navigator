@@ -14,8 +14,7 @@ const router = Router();
  */
 router.${HTTP_METHOD_LOWER}(
   '${ROUTE_PATH}',
-  ${MIDDLEWARE_CHAIN ? MIDDLEWARE_CHAIN + ',' : ''}
-  async (req: Request, res: Response, next: NextFunction) => {
+${MIDDLEWARE_BLOCK}  async (req: Request, res: Response, next: NextFunction) => {
     try {
       // TODO: Implement ${RESOURCE_NAME_LOWER} ${HTTP_METHOD_LOWER} logic
 

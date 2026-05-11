@@ -1,5 +1,5 @@
 {
-  "version": "6.10.3",
+  "version": "6.11.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -64,6 +64,15 @@
     "include_git_state": true,
     "char_budget": 8000,
     "append_post_compact_summary": true
+  },
+  "task_graph_sync_hook": {
+    "enabled": true
+  },
+  "workflow_state_hook": {
+    "enabled": true
+  },
+  "profile_sync_hook": {
+    "enabled": true
   },
   "knowledge_graph": {
     "enabled": true,

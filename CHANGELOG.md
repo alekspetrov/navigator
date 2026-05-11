@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.11.0] — 2026-05-11
+
+**Phase 1 lifecycle hooks — TASK-38 hook-migration roadmap kickoff.** Three new silent side-effect hooks migrate "model, remember to..." rules from CLAUDE.md prose into deterministic Python. `hooks/nav_task_graph_sync.py` (Opp 4) fires `PostToolUse` on `Write|Edit` matching `.agent/tasks/TASK-*.md` — runs `task_to_graph.py --action add` to upsert the task into the knowledge graph. `hooks/nav_workflow_state.py` (Opp 2) fires every `Stop` — reads the last assistant message, records `check_shown`/`nav_status_shown`/`loop_phase` into `.agent/.nav-workflow-state.json`. Silent infrastructure for the Phase 2 blocking workflow_enforcer. `hooks/nav_profile_sync.py` (Opp 3) fires `PostToolUse` on writes to `.user-profile.json` — diffs corrections array against `last_synced_count`, runs `correction_to_memory.py` only when array grew. Zero injected tokens across all three hooks. Q1 verified: `add_node` upserts by node_id (no duplicates). All 11 settings_merger tests still pass. Smoke-tested live: Opp 3 synced 4 backlogged corrections to the graph as a side effect of being wired up.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.11.0.md)
+
 ## [v6.10.3] — 2026-05-11
 
 **settings_merger safety pass — don't kill user hooks on init.** Pre-emptive hardening before TASK-38 (v6.11 roadmap) widens the hook surface through the same merger. `settings_merger.py` now writes atomically (tempfile + `os.replace`, no partial-write corruption), supports `--dry-run` for preview, and surfaces non-list incoming hook values via stderr instead of skipping them silently. `nav-init` Step 6 detects foreign hooks (anything not matching Navigator's known commands) before merging, lists them, and asks the user via AskUserQuestion before proceeding. Both `nav-init` and `nav-upgrade` now write timestamped backups (`.pre-nav-init.{YYYYMMDD-HHMMSS}`, `.pre-upgrade.{ts}`) instead of a single overwriting `.backup` — re-running upgrade no longer loses the pristine pre-Navigator backup. New `test_settings_merger.py` covers 11 cases (fresh install, preserves user same/different event, idempotent rerun, dedupe by command, top-level keys, invalid JSON aborts, empty file aborts, non-list skip warning, dry-run no write, atomic write under simulated failure) — all pass in <10ms. No new features.

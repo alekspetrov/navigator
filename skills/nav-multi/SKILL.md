@@ -133,6 +133,29 @@ cat > ".agent/tasks/${SESSION_ID}-state.json" << EOF
 EOF
 ```
 
+### Step 5.5: Branch-Per-Run Convention
+
+**Each multi-agent run should use a dedicated git branch.** Two parallel workflows committing to the same branch produces interleaved, hard-to-review history. A per-run branch isolates each workflow's commits and makes PR review possible.
+
+**Convention**:
+```bash
+BRANCH="nav-multi/${SESSION_ID}"
+git checkout -b "$BRANCH"
+echo "🌿 Branch: $BRANCH"
+```
+
+**Why this matters**:
+- **Parallel safety**: Two runs on `main` race on every commit. Each run on its own branch is safe.
+- **Reviewable diffs**: One branch = one workflow = one PR.
+- **Clean rollback**: Failed workflow? Delete the branch. No `git revert` archaeology.
+- **Bisect-friendly**: Mixed-workflow commits on `main` are nearly impossible to bisect.
+
+**When to skip**:
+- POC workflow with no commits planned (just exploration).
+- User explicitly asks to commit to current branch (rare — confirm intent).
+
+**Cleanup after success**: open a PR from the branch, or merge directly if the workflow declared no review needed (configured via `multi_agent.default_workflow`).
+
 ### Step 6: Launch Workflow
 
 ```bash

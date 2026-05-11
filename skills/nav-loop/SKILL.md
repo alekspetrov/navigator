@@ -46,6 +46,7 @@ Loop mode settings in `.agent/.nav-config.json`:
     "exit_requires_explicit_signal": true,
     "show_status_block": true,
     "iteration_approval": "none",
+    "periodic_interval": 3,
     "never_pause_on_stagnation": false,
     "stagnation_diversify_strategy": "combine"
   }
@@ -63,7 +64,8 @@ Loop mode settings in `.agent/.nav-config.json`:
 - `iteration_approval`: When to prompt the user for accept/reject between iterations.
   - `"none"` (default) — never prompt; loop runs uninterrupted
   - `"strict"` — prompt after every iteration
-  - `"periodic"` — prompt every 3 iterations (good for overnight check-ins)
+  - `"periodic"` — prompt every N iterations (where N = `periodic_interval`, default 3)
+- `periodic_interval`: When `iteration_approval == "periodic"`, the cadence of prompts. Default 3 (every 3rd iteration). Set higher for less frequent check-ins on long overnight runs (e.g., 5 or 10).
 - `never_pause_on_stagnation`: If `true`, stagnation triggers **auto-diversification** instead of an `AskUserQuestion` pause. Required for true overnight runs. Inspired by karpathy/autoresearch's NEVER STOP directive.
 - `stagnation_diversify_strategy`: Which recovery to attempt when `never_pause_on_stagnation` fires.
   - `"combine"` — combine previous near-misses / partially-met indicators
@@ -176,7 +178,7 @@ Next Action: {NEXT_ACTION}
 |---------|----------|
 | `"none"` | Never prompt. Loop continues to Step 4. |
 | `"strict"` | Prompt after every iteration. |
-| `"periodic"` | Prompt every 3rd iteration (iter 3, 6, 9, ...). |
+| `"periodic"` | Prompt every Nth iteration. N defaults to 3; configurable via `loop_mode.periodic_interval`. |
 
 **When prompting**, use AskUserQuestion immediately after the status block:
 

@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind, Loop Mode, Task Mode, and Project Knowledge Graph",
-    "version": "6.1.0",
+    "version": "6.3.0",
     "breaking_changes": [
+      "v6.3.0: Structured research output + autonomous loop mode - navigator-research agent emits research_findings JSON ingested via research_to_graph.py; Loop Mode adds iteration_approval + never_pause_on_stagnation for overnight runs; new ANTI-PATTERN #9 (Context Flooding); 4 nav-graph reliability fixes (memory ID collision, file backing, concept aliases, batch I/O)",
       "v6.1.0: Multi-Agent Production - parallel Claude agents with visual dashboard; nav-multi skill for natural language trigger; 5 role templates (orchestrator, implementer, tester, reviewer, documenter); reliability fixes for research tasks",
       "v6.0.0: Project Knowledge Graph - unified search across tasks, SOPs, system docs; experiential memory (patterns, pitfalls, decisions, learnings); auto-surfaces relevant context on session start",
       "v5.9.0: Workflow Enforcement - mandatory WORKFLOW CHECK block, Loop/Task Mode detection, complexity scoring, hook-based enforcement",

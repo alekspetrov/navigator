@@ -32,6 +32,8 @@ Sessions that last. AI that learns. Features that ship.
 
 **NEW in v6.1.0**: Multi-Agent Production - parallel Claude agents with visual dashboard. Natural language trigger: "Run multi-agent workflow for TASK-XX". Role templates (orchestrator, implementer, tester, reviewer, documenter) with minimal context (~5k each). Real-time terminal dashboard shows progress. 3x faster than sequential.
 
+**NEW in v6.3.0**: Structured research output + autonomous Loop Mode. `navigator-research` agent now emits a `research_findings` JSON block (Phase 0 navigator-first check, language-agnostic entry points, Unknowns section, real file counts) that `research_to_graph.py` ingests as graph memories — research findings persist across sessions. Loop Mode gains `iteration_approval`, `never_pause_on_stagnation`, and `stagnation_diversify_strategy` for true overnight runs (inspired by karpathy/autoresearch's NEVER STOP directive). New ANTI-PATTERN #9: Context Flooding from Command Output. Four nav-graph reliability fixes: memory ID collision (max+1 instead of len+1), backing file creation, concept aliases (perf/security/config), batch I/O in correction sync.
+
 ---
 
 ## How You'll Use It
@@ -273,7 +275,7 @@ Navigator v5.1.0 introduces **Loop Mode** - structured completion with "run unti
 }
 ```
 
-**Autonomous overnight mode** (v6.2.2+):
+**Autonomous overnight mode** (v6.3.0+):
 - `iteration_approval`: `"none"` | `"strict"` | `"periodic"` — when to prompt the user between iterations
 - `never_pause_on_stagnation`: when `true`, stagnation triggers auto-diversification instead of an `AskUserQuestion` pause (inspired by autoresearch's NEVER STOP directive)
 - `stagnation_diversify_strategy`: `"combine"` | `"radical"` | `"reread"` — recovery to attempt
@@ -965,4 +967,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2025-01-23
-**Navigator Version**: 6.1.0
+**Navigator Version**: 6.3.0

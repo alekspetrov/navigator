@@ -161,7 +161,10 @@ Navigator config in `.agent/.nav-config.json`:
     "include_git_state": true,
     "char_budget": 8000,
     "append_post_compact_summary": true
-  }
+  },
+  "task_graph_sync_hook": { "enabled": true },
+  "workflow_state_hook":  { "enabled": true },
+  "profile_sync_hook":    { "enabled": true }
 }
 ```
 

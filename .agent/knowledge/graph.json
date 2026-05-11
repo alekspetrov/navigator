@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T21:56:04.984497Z",
+  "last_updated": "2026-05-11T22:11:30.534514Z",
   "stats": {
-    "total_nodes": 117,
-    "total_edges": 813,
-    "memory_count": 27
+    "total_nodes": 121,
+    "total_edges": 823,
+    "memory_count": 31
   },
   "nodes": {
     "tasks": {
@@ -490,16 +490,20 @@
         ]
       },
       "TASK-38": {
-        "title": "Hook-Migration Roadmap v6.11",
-        "status": "design",
-        "priority": "high",
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-38-hook-migration-roadmap-v6.11.md",
+        "title": "Hook-Migration Roadmap \u2014 v6.11 (Umbrella)",
+        "status": "in-progress",
         "concepts": [
-          "hooks",
-          "architecture",
-          "claude-code",
-          "workflow",
-          "knowledge-graph",
-          "session-lifecycle"
+          "skills",
+          "knowledge",
+          "tom",
+          "testing",
+          "deployment",
+          "context",
+          "api",
+          "markers",
+          "database",
+          "workflow"
         ]
       }
     },
@@ -1588,6 +1592,50 @@
           "deterministic-rules",
           "auditable-ai",
           "versionable-workflow"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-028": {
+        "type": "pattern",
+        "summary": "Always verify which version file to edit based on current marketplace.json version",
+        "path": "memories/patterns/mem-028.md",
+        "confidence": 0.9,
+        "concepts": [
+          "general"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-029": {
+        "type": "learning",
+        "summary": "Version bump requires: marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json, RELEASE-NOTES",
+        "path": "memories/learnings/mem-029.md",
+        "confidence": 0.9,
+        "concepts": [
+          "general"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-030": {
+        "type": "pattern",
+        "summary": "Positioning should emphasize outcomes (Finish What You Start) not features (92% savings)",
+        "path": "memories/patterns/mem-030.md",
+        "confidence": 0.9,
+        "concepts": [
+          "general"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-031": {
+        "type": "learning",
+        "summary": "Frame as superset (has everything + more) not alternative (different approach)",
+        "path": "memories/learnings/mem-031.md",
+        "confidence": 0.9,
+        "concepts": [
+          "general"
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
@@ -6182,6 +6230,56 @@
       "from": "TASK-18",
       "to": "session",
       "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-38",
+      "to": "workflow",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6213,7 +6311,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "mem-012"
+      "mem-012",
+      "TASK-38"
     ],
     "testing": [
       "TASK-32",
@@ -6284,7 +6383,8 @@
       "mem-001",
       "mem-010",
       "mem-011",
-      "mem-025"
+      "mem-025",
+      "TASK-38"
     ],
     "context": [
       "TASK-32",
@@ -6356,7 +6456,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
       "mem-002",
-      "mem-014"
+      "mem-014",
+      "TASK-38"
     ],
     "skills": [
       "TASK-32",
@@ -6434,7 +6535,8 @@
       "mem-021",
       "mem-022",
       "mem-025",
-      "mem-026"
+      "mem-026",
+      "TASK-38"
     ],
     "session": [
       "TASK-32",
@@ -6648,7 +6750,8 @@
       "2025-10-19T18-15-v2.0-foundation-complete",
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
-      "2025-10-20-092541-v3.0.0-migration-complete"
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "TASK-38"
     ],
     "markers": [
       "TASK-18",
@@ -6704,7 +6807,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
+      "2025-10-31-2116_phase2-parallel-complete",
+      "TASK-38"
     ],
     "deployment": [
       "TASK-11",
@@ -6725,7 +6829,8 @@
       "SOP-opentelemetry_setup",
       "SOP-visual_regression_setup",
       "v4.1-multi-claude-automation-proven",
-      "2025-10-13_task04-complete"
+      "2025-10-13_task04-complete",
+      "TASK-38"
     ],
     "code quality": [
       "TASK-19",
@@ -6757,7 +6862,8 @@
       "mem-017",
       "mem-021",
       "mem-022",
-      "mem-023"
+      "mem-023",
+      "TASK-38"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6862,6 +6968,15 @@
     ],
     "versionable-workflow": [
       "mem-027"
+    ],
+    "tom": [
+      "TASK-38"
+    ],
+    "general": [
+      "mem-028",
+      "mem-029",
+      "mem-030",
+      "mem-031"
     ]
   }
 }

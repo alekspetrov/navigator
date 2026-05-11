@@ -164,7 +164,10 @@ Merge Navigator's hook configuration into `.claude/settings.json`. This installs
 1. **SessionStart hook** — injects Navigator context (navigator + active marker + config + graph + profile) directly into the session, eliminating ~6 Read tool calls at session start (v6.9.0+)
 2. **PreCompact hook** — writes a context marker before manual `/compact` or auto-compact, capturing transcript summary + git state + active tasks. Survives silent auto-compacts that previously lost state (v6.10.0+)
 3. **PostCompact hook** — appends Claude Code's official compact summary to the marker, so restores get both heuristic and authoritative summaries (v6.10.0+)
-4. **PostToolUse token monitor** — warns at 70% / 85% context usage
+4. **Stop workflow-state writer** — silent infra (v6.11.0+). After every assistant turn, records whether the WORKFLOW CHECK block / NAVIGATOR_STATUS appeared, into `.agent/.nav-workflow-state.json`. Feeds the (future) blocking workflow_enforcer in Phase 2.
+5. **PostToolUse task→graph sync** — when an `.agent/tasks/TASK-*.md` file is written or edited, auto-upserts the task into the knowledge graph (v6.11.0+). Replaces the soft "remember to sync graph" rule.
+6. **PostToolUse profile correction sync** — when `.user-profile.json` is written, diffs corrections array and auto-syncs new entries to graph as memories (v6.11.0+). Idempotent via `.nav-profile-sync-state.json`.
+7. **PostToolUse token monitor** — warns at 70% / 85% context usage
 
 ```bash
 mkdir -p .claude
@@ -250,18 +253,23 @@ diff -u .claude/settings.json /tmp/nav-init-preview.json | head -80
 ```
 
 **What this does**:
-- **SessionStart hook**: Auto-injects Navigator state on every session start. The `nav-start` skill becomes a display-only renderer over already-loaded context (saves ~35k tokens per session).
-- **PreCompact hook**: Writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md` automatically before any compact. No more lost state on silent auto-compact.
-- **PostCompact hook**: Appends Claude Code's official compact summary to the same marker, then `.active` triggers SessionStart to surface it on next session.
-- **PostToolUse hook**: Monitors context usage after each tool call. Warns at 70%, critical alert at 85%, suggests compact when approaching limits.
+- **SessionStart**: Auto-injects Navigator state on every session start; nav-start becomes display-only (~35k tokens saved/session).
+- **PreCompact / PostCompact**: Writes `.context-markers/before-compact-{manual,auto}-{ts}.md` before compact + appends Claude Code's summary after. Survives auto-compact.
+- **Stop**: Writes `.nav-workflow-state.json` after every turn (silent infra for upcoming blocking workflow enforcement).
+- **PostToolUse task→graph**: Upserts touched `.agent/tasks/TASK-*.md` to knowledge graph automatically.
+- **PostToolUse profile sync**: Auto-converts new `.user-profile.json` corrections into graph memories.
+- **PostToolUse token monitor**: Warns at 70% / 85% context usage.
 
 **Idempotent**: Safe to re-run — `settings_merger.py` deduplicates by command string and never clobbers user-defined hooks.
 
 **Opt-out**: Users can disable any hook via `.agent/.nav-config.json`:
 ```json
 {
-  "session_start_hook": { "enabled": false },
-  "compact_hook": { "enabled": false }
+  "session_start_hook":    { "enabled": false },
+  "compact_hook":          { "enabled": false },
+  "workflow_state_hook":   { "enabled": false },
+  "task_graph_sync_hook":  { "enabled": false },
+  "profile_sync_hook":     { "enabled": false }
 }
 ```
 

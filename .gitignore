@@ -44,6 +44,10 @@ temp/
 # User profile (personal preferences, not shared)
 .agent/.user-profile.json
 
+# Hook state files (local session state, regenerated each turn)
+.agent/.nav-workflow-state.json
+.agent/.nav-profile-sync-state.json
+
 # Keep these in git (share with team)
 # .agent/.jitd-config.json
 # .agent/DEVELOPMENT-README.md

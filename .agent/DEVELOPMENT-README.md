@@ -1090,5 +1090,71 @@ falls back to its manual marker-creation flow automatically.
 
 ---
 
-**Last Updated**: 2026-05-11 (v6.10.2 — auto-updater marketplace refresh + qualified plugin name)
+## 🪝 Phase 1 Lifecycle Hooks (v6.11.0+)
+
+Three new silent side-effect hooks complete the v6.11 "policy in hooks" roadmap
+(TASK-38, Phase 1). All deterministic, zero-injection, autonomous. Each replaces
+a "model, remember to..." rule that previously depended on attention.
+
+### `hooks/nav_task_graph_sync.py` — PostToolUse on Write/Edit
+
+When the touched file matches `.agent/tasks/TASK-*.md`, runs
+`task_to_graph.py --action add` to upsert the task node into the knowledge
+graph. `add_node` assigns by `node_id`, so re-running is effectively upsert.
+
+**Replaces**: `nav-task` Step "If knowledge graph exists, sync task to graph".
+
+### `hooks/nav_workflow_state.py` — Stop (every assistant turn)
+
+Reads the last assistant message (from stdin's `last_assistant_message` or
+the JSONL transcript) and writes `.agent/.nav-workflow-state.json` with:
+- `check_shown` — was `WORKFLOW CHECK` block emitted this turn?
+- `nav_status_shown` — was `NAVIGATOR_STATUS` block emitted (loop mode)?
+- `loop_phase` — INIT / RESEARCH / IMPL / VERIFY / COMPLETE if detected
+- `assistant_text_chars` — rough size signal
+
+Silent infrastructure for the **Phase 2 workflow_enforcer hard-block** (Opp 1
+in TASK-38) — that hook will read this state file to decide whether a
+UserPromptSubmit should be blocked when a loop trigger appears but no
+WORKFLOW CHECK was shown.
+
+**Never sets `decision: "block"`** — protects against the `stop_hook_active`
+infinite-loop trap. Also early-exits when `stop_hook_active=true`.
+
+### `hooks/nav_profile_sync.py` — PostToolUse on Write/Edit
+
+When the touched file is `.user-profile.json`, diffs the corrections array
+against `.agent/.nav-profile-sync-state.json`'s `last_synced_count`. If the
+array grew, runs `correction_to_memory.py --action sync --last-synced N`
+to convert new corrections into graph memories. Counter only advances on
+successful sync — failed runs retry next time.
+
+**Replaces**: `nav-profile` "monitor ALL conversations for corrections" prose.
+
+### Configuration
+
+`.agent/.nav-config.json` — all three default to enabled:
+
+```json
+"task_graph_sync_hook": { "enabled": true },
+"workflow_state_hook":  { "enabled": true },
+"profile_sync_hook":    { "enabled": true }
+```
+
+### State files (gitignored)
+
+- `.agent/.nav-workflow-state.json` — regenerated every Stop
+- `.agent/.nav-profile-sync-state.json` — `{"last_synced_count": N}`
+
+Both under `.agent/` per project convention, gitignored at the repo level.
+
+### What's still in Phase 2 / 3
+
+Per TASK-38:
+- **Phase 2** (v6.11.1+): Opp 1 — `workflow_enforcer.py` upgraded to exit 2 (block) when loop trigger appears with no WORKFLOW CHECK in prior turn (reads workflow_state file written here). First blocking hook in the codebase — explicit design decision required.
+- **Phase 3** (v6.12.x): Opp 6 (`.agent/` bulk-read guard, PreToolUse counter) + Opp 5 (commit archival reminder, PostToolUse Bash with strict gating).
+
+---
+
+**Last Updated**: 2026-05-11 (v6.11.0 — Phase 1 lifecycle hooks)
 **Powered By**: Navigator (Complete Framework)

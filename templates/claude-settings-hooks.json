@@ -34,6 +34,17 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_workflow_state.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write|Bash|Task",
@@ -54,6 +65,26 @@
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/token_monitor.py\"",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_task_graph_sync.py\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_profile_sync.py\"",
+            "timeout": 10
           }
         ]
       }

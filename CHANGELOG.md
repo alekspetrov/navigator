@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.10.3] — 2026-05-11
+
+**settings_merger safety pass — don't kill user hooks on init.** Pre-emptive hardening before TASK-38 (v6.11 roadmap) widens the hook surface through the same merger. `settings_merger.py` now writes atomically (tempfile + `os.replace`, no partial-write corruption), supports `--dry-run` for preview, and surfaces non-list incoming hook values via stderr instead of skipping them silently. `nav-init` Step 6 detects foreign hooks (anything not matching Navigator's known commands) before merging, lists them, and asks the user via AskUserQuestion before proceeding. Both `nav-init` and `nav-upgrade` now write timestamped backups (`.pre-nav-init.{YYYYMMDD-HHMMSS}`, `.pre-upgrade.{ts}`) instead of a single overwriting `.backup` — re-running upgrade no longer loses the pristine pre-Navigator backup. New `test_settings_merger.py` covers 11 cases (fresh install, preserves user same/different event, idempotent rerun, dedupe by command, top-level keys, invalid JSON aborts, empty file aborts, non-list skip warning, dry-run no write, atomic write under simulated failure) — all pass in <10ms. No new features.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.10.3.md)
+
 ## [v6.10.2] — 2026-05-11
 
 **Auto-updater fix — SessionStart auto-update now actually works.** The `"Auto-update failed. Run nav-upgrade manually."` banner shown at the top of every session was the result of three stacked bugs in `skills/nav-start/functions/auto_updater.py`. (1) The plugin was being referenced by its unqualified name `navigator` — Claude Code requires the qualified form `navigator@navigator-marketplace` and rejects the bare name. (2) Even with the qualified name, `claude plugin update` reported "already at latest" because the local marketplace cache was stale; Claude Code does not auto-refresh it before update. A new `refresh_marketplace()` helper now runs `claude plugin marketplace update navigator-marketplace` first. (3) `get_current_version` parsed `claude plugin list` expecting the version on the same line as the plugin name, but the actual output puts `Version: X.Y.Z` on a separate indented line — so the regex always missed and the auto-updater short-circuited with "Could not detect current Navigator version" before the version comparison ever ran. Parser now scans forward from the plugin entry header. End-to-end verified: auto-updater reports accurate `current_version` and either `up-to-date` or `updated` correctly.

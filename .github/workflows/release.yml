@@ -26,13 +26,27 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
-      - name: Check if release notes exist
+      - name: Locate release notes
         id: check_notes
         run: |
-          if [ -f "RELEASE-NOTES-v${{ steps.version.outputs.version }}.md" ]; then
+          VERSION="${{ steps.version.outputs.version }}"
+          # Canonical location (Navigator convention)
+          PRIMARY="releases/RELEASE-NOTES-v${VERSION}.md"
+          # Legacy fallback — pre-v3.x notes lived at repo root
+          FALLBACK="RELEASE-NOTES-v${VERSION}.md"
+
+          if [ -f "$PRIMARY" ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
+            echo "path=$PRIMARY" >> $GITHUB_OUTPUT
+            echo "Found release notes at $PRIMARY"
+          elif [ -f "$FALLBACK" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "path=$FALLBACK" >> $GITHUB_OUTPUT
+            echo "Found release notes at $FALLBACK (legacy path)"
           else
             echo "exists=false" >> $GITHUB_OUTPUT
+            echo "path=" >> $GITHUB_OUTPUT
+            echo "No release notes file found for v${VERSION}; workflow will fall back to generic body."
           fi
 
       - name: Determine if pre-release
@@ -55,12 +69,11 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: "Navigator ${{ steps.version.outputs.tag }}"
-          body_path: ${{ steps.check_notes.outputs.exists == 'true' && format('RELEASE-NOTES-v{0}.md', steps.version.outputs.version) || '' }}
+          body_path: ${{ steps.check_notes.outputs.path }}
           body: ${{ steps.check_notes.outputs.exists == 'false' && format('Release {0}\n\nSee commit history for changes.', steps.version.outputs.tag) || '' }}
           draft: false
           prerelease: ${{ steps.prerelease.outputs.is_prerelease }}
-          files: |
-            RELEASE-NOTES-v${{ steps.version.outputs.version }}.md
+          files: ${{ steps.check_notes.outputs.path }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -2,31 +2,28 @@
 """
 Navigator Workflow Enforcer Hook
 
-Claude Code hook that runs before tool execution to detect workflow requirements.
-Prints warnings if Loop Mode or Task Mode should be active.
+Claude Code hook that runs on UserPromptSubmit to detect workflow requirements.
 
-This is a "soft" enforcer - it warns but doesn't block.
-The hard enforcement is in CLAUDE.md requiring WORKFLOW CHECK block.
+Behavior (v6.11.1+):
+  - Soft warn (exit 0) by default: prints WORKFLOW CHECK reminder to stdout.
+  - Hard block (exit 2) when ALL of:
+      1. Loop Mode trigger detected in current prompt
+      2. .agent/.nav-workflow-state.json shows prior turn check_shown=false
+      3. workflow_enforcer_hook.strict_block = true (default true)
+  - Always exits 0 (soft warn) when state file missing — keeps Phase 1 projects unaffected.
 
-Usage (in .claude/settings.json):
-{
-  "hooks": {
-    "UserPromptSubmit": [{
-      "hooks": [{
-        "type": "command",
-        "command": "python3 hooks/workflow_enforcer.py",
-        "timeout": 5
-      }]
-    }]
-  }
-}
+This is the first blocking hook in Navigator (TASK-38 Phase 2). Gating on the
+state file written by hooks/nav_workflow_state.py keeps false-positives near zero:
+the block only fires when prior turn empirically skipped the CHECK block.
 
 Input (from Claude Code):
     stdin JSON: {"prompt": "..."} for UserPromptSubmit
     Fallback: CLAUDE_USER_MESSAGE env var (legacy)
 
 Output:
-    Prints warning if workflow mode should be active but wasn't detected.
+    stdout: WORKFLOW CHECK reminder block.
+    stderr (on block): explanation surfaced to Claude per Claude Code hooks spec.
+    exit 0 (warn) or exit 2 (block).
 """
 
 import json
@@ -79,36 +76,48 @@ def check_config() -> dict:
     return {}
 
 
+def read_prior_turn_state() -> dict:
+    """Read .agent/.nav-workflow-state.json — written by hooks/nav_workflow_state.py.
+
+    Returns {} when the file is missing or unreadable; callers must treat this
+    as "no signal" and never block on it.
+    """
+    state_path = Path(".agent/.nav-workflow-state.json")
+    if not state_path.exists():
+        return {}
+    try:
+        with open(state_path) as f:
+            return json.load(f) or {}
+    except Exception:
+        return {}
+
+
 def main():
     """Main hook logic."""
     message = get_user_message()
     if not message:
-        # No message to check
         sys.exit(0)
 
-    # Detect workflow requirements
-    result = detect_workflow(message)
-
-    # Check config
     config = check_config()
+    enforcer_cfg = config.get("workflow_enforcer_hook", {})
+    if enforcer_cfg.get("enabled", True) is False:
+        sys.exit(0)
+    strict_block = enforcer_cfg.get("strict_block", True)
+
+    result = detect_workflow(message)
     task_mode_enabled = config.get("task_mode", {}).get("enabled", True)
-    loop_mode_enabled = config.get("loop_mode", {}).get("enabled", False)
 
     warnings = []
-
-    # Warn if Loop Mode should be active
     if result["loop_mode"]:
         trigger = result.get("loop_trigger", "unknown")
         warnings.append(f"⚠️  LOOP MODE TRIGGER DETECTED: '{trigger}'")
         warnings.append("   Show NAVIGATOR_STATUS blocks and use EXIT_SIGNAL.")
 
-    # Warn if Task Mode should be active
     if result["task_mode"] and task_mode_enabled:
         score = result.get("complexity", 0)
         warnings.append(f"⚠️  TASK MODE RECOMMENDED: complexity={score}")
         warnings.append("   Show phase tracking (RESEARCH → IMPL → VERIFY → COMPLETE).")
 
-    # Print warnings if any
     if warnings:
         print("\n".join(warnings))
         print("")
@@ -120,6 +129,30 @@ def main():
         print(f"│ Complexity: {result.get('complexity', 0):<19} │")
         print(f"│ Mode: {result['recommended_mode']:<24} │")
         print("└─────────────────────────────────────┘")
+
+    # Hard-block gate (TASK-38 Phase 2). Only fires when:
+    #   - strict_block enabled
+    #   - current prompt has a Loop trigger
+    #   - prior turn state file confirms WORKFLOW CHECK was NOT shown
+    if strict_block and result["loop_mode"]:
+        state = read_prior_turn_state()
+        last_turn = state.get("last_turn") or {}
+        check_shown = last_turn.get("check_shown")
+        # Only block when we have a definitive prior-turn signal saying "missed".
+        # Missing state file or unset value → soft warn (Phase 1 projects unaffected).
+        if check_shown is False:
+            trigger = result.get("loop_trigger", "unknown")
+            sys.stderr.write(
+                "Navigator workflow_enforcer: blocked.\n"
+                f"  Reason: loop trigger '{trigger}' detected, but the prior "
+                "assistant turn did not show a WORKFLOW CHECK block "
+                "(.agent/.nav-workflow-state.json: check_shown=false).\n"
+                "  Action: emit the WORKFLOW CHECK block at the top of the next "
+                "response, then continue with NAVIGATOR_STATUS for Loop Mode.\n"
+                "  Opt-out: set workflow_enforcer_hook.strict_block=false in "
+                ".agent/.nav-config.json.\n"
+            )
+            sys.exit(2)
 
     sys.exit(0)
 

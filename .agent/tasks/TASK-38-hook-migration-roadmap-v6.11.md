@@ -146,11 +146,9 @@ Skip without strict gating — costs > savings otherwise.
 
 All three are silent side-effects (zero injected tokens). Pure correctness improvements. No architectural decision required.
 
-### Phase 2 — First Blocking Hook (target: v6.11.1 or v6.12.0)
+### Phase 2 — First Blocking Hook (✅ SHIPPED in v6.11.1, 2026-05-11)
 
-4. **Opp 1** (workflow enforcer hard-block). Requires explicit design decision: are Navigator hooks allowed to block? Document the precedent.
-
-Ship only after Phase 1 has run in production for ~1 week, since Opp 2's state file needs to be reliably written before Opp 1 reads it.
+4. **Opp 1** (workflow enforcer hard-block). ✅ Shipped. Three-condition gate: loop trigger + state file `check_shown=false` + `strict_block=true`. Missing state file → soft-warn fallback. Architectural precedent documented in `mem-027` and `releases/RELEASE-NOTES-v6.11.1.md`.
 
 ### Phase 3 — Conditional Injectors (target: v6.12.x)
 

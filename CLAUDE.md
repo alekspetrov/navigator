@@ -947,4 +947,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2026-05-11
-**Navigator Version**: 6.7.0
+**Navigator Version**: 6.8.0

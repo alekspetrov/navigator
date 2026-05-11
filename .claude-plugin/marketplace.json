@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind, Loop Mode, Task Mode, and Project Knowledge Graph",
-    "version": "6.7.0",
+    "version": "6.8.0",
     "breaking_changes": [
+      "v6.8.0: nav-simplify ROI scoring (TASK-37 implementation) - cost/benefit gate now ships; simplification.scoring.mode='roi' opts in to ROI-based file gating (skip/suggest/apply); new cost_analyzer.py adds touch_lines/file_loc/recency/import_refs cost signals; benefit composed of issue_density + severity_impact + active_diff; backward compatible (complexity_score unchanged, default mode stays 'complexity'); 20 unit tests cover scoring math and gate logic",
       "v6.7.0: Release workflow hardening + nav-simplify ROI design - Replaced softprops/action-gh-release@v2 with native gh release create (uses runner-provided GitHub CLI, closes the last Node.js 20 deprecation warning); design pass for nav-simplify complexity-cost scoring captured in TASK-37 (cost/benefit ROI gate to prevent churn-for-churn's-sake simplifications, opt-in via simplification.scoring.mode)",
       "v6.6.0: Release hygiene + Loop Mode flexibility - GitHub Actions bumped to checkout@v5 and softprops/action-gh-release@v2 (Node.js 24 ready, ahead of June 2026 deprecation); iteration_approval='periodic' cadence now parameterized via loop_mode.periodic_interval (default 3, configurable for overnight runs); nav-multi documents branch-per-run convention (nav-multi/{SESSION_ID}) for parallel workflow safety",
       "v6.5.0: Execution-layer parity completion - new execution_to_graph.py mirrors research_to_graph.py; all 5 code-writing skills (frontend-component, backend-endpoint, database-migration, backend-test, frontend-test) emit execution_summary JSON for graph ingestion; Phase 0 (knowledge graph check) added as Step 0 in code-writing skills; code_analyzer.py auto-detects indent unit (fixes 4-space false positives); backend-test and frontend-test expanded from stubs to working skills with Phase 0 + framework detection + generation + verification + summary",

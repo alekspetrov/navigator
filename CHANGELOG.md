@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.8.0] — 2026-05-11
+
+**nav-simplify ROI scoring shipped.** TASK-37 implementation: cost/benefit ROI gate so the simplifier can decline to simplify when the math doesn't favor it. New `cost_analyzer.py` adds four cost signals (touch lines, file LOC, git recency, import references); benefit composed of issue density + severity impact + active-diff signal. Three-tier gate (`skip` / `suggest` / `apply`) with configurable thresholds. Opt-in via `simplification.scoring.mode: "roi"` — default stays `"complexity"` for backward compat. 20 unit tests cover scoring math and gate logic. Calibrated on this repo's actual files; ROI ordering matches intuition (active-diff messy files prioritize; stable clean files de-prioritize).
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.8.0.md)
+
 ## [v6.7.0] — 2026-05-11
 
 **Release workflow hardening + nav-simplify ROI design.** Replaced `softprops/action-gh-release@v2` with native `gh release create` — closes the last Node.js 20 deprecation warning by removing the third-party Node action entirely (uses the runner's pre-installed GitHub CLI). Design pass for `nav-simplify` complexity-cost scoring captured in TASK-37: cost/benefit ROI gate so the simplifier can decline to simplify when the math doesn't favor it (opt-in via `simplification.scoring.mode`; weights need real-data calibration before implementation).

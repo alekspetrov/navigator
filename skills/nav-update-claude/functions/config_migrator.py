@@ -15,8 +15,43 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Tuple
 
-# Current Navigator version
-CURRENT_VERSION = "5.7.0"
+# Fallback version used only if plugin.json cannot be located/read.
+# The real current version is loaded at runtime from .claude-plugin/plugin.json
+# (see _read_plugin_version below). Keeping a fallback avoids hard-failing
+# migrations on broken installs, but it intentionally lags far behind so a
+# stale literal cannot silently downgrade a user's config.
+_FALLBACK_VERSION = "0.0.0"
+
+
+def _read_plugin_version() -> str:
+    """
+    Resolve the current Navigator version from .claude-plugin/plugin.json.
+
+    Walks upward from this file's location looking for a sibling
+    ``.claude-plugin/plugin.json``. This works both when invoked from the
+    plugin source repo and from an installed plugin cache directory, since
+    Claude Code preserves the ``skills/<skill>/functions/`` layout.
+
+    Returns the ``version`` field, or ``_FALLBACK_VERSION`` if the file
+    cannot be found or parsed.
+    """
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / ".claude-plugin" / "plugin.json"
+        if candidate.is_file():
+            try:
+                with open(candidate, "r") as f:
+                    data = json.load(f)
+                version = data.get("version")
+                if isinstance(version, str) and version:
+                    return version
+            except (OSError, json.JSONDecodeError):
+                break
+            break
+    return _FALLBACK_VERSION
+
+
+CURRENT_VERSION = _read_plugin_version()
 
 # Config sections added in each version
 VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
@@ -124,8 +159,11 @@ def migrate_config(config_path: str, dry_run: bool = False) -> Dict[str, Any]:
             "value": value
         })
 
-    # Update version
-    if current_version != CURRENT_VERSION:
+    # Update version — only when the existing config is OLDER than the
+    # current Navigator version. A direction-blind `!=` here previously
+    # caused downgrades when the running plugin's CURRENT_VERSION was a
+    # stale literal lower than the user's installed version (issue #7).
+    if version_less_than(current_version, CURRENT_VERSION):
         old_version = current_version
         config["version"] = CURRENT_VERSION
         changes.append({
@@ -145,7 +183,10 @@ def migrate_config(config_path: str, dry_run: bool = False) -> Dict[str, Any]:
         "success": True,
         "config_path": str(path),
         "old_version": current_version,
-        "new_version": CURRENT_VERSION,
+        # Reflect the version actually stored in the config. If the user is
+        # already on a newer version we leave it alone (see guard above), so
+        # reporting CURRENT_VERSION here would be a lie.
+        "new_version": config.get("version", current_version),
         "changes": changes,
         "config": config
     }

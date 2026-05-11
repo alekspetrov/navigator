@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.9.0] — 2026-05-11
+
+**SessionStart hook for zero-Read context injection.** Claude Code's `SessionStart` hook now pre-loads Navigator state (navigator + active marker + config + graph stats + user profile + open tasks + auto-update) into the model's context window via `additionalContext` — before the first user turn. The `nav-start` skill detects a sentinel and skips its 6 file reads, eliminating ~35k tokens per session start in local measurement (73.3k → 37.8k). New `hooks/nav_session_start.py` builds the parity payload (9500-char cap, source-aware: `--resume` hoists marker first); new `skills/nav-init/functions/settings_merger.py` provides idempotent `.claude/settings.json` merging that preserves user-defined hooks. Templates fix `${CLAUDE_PROJECT_ROOT}` (non-existent) → `${CLAUDE_PROJECT_DIR}` (actual Claude Code env var). Opt-out via `session_start_hook.enabled: false`; legacy projects fall back to the Read-based path automatically.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.9.0.md)
+
 ## [v6.8.0] — 2026-05-11
 
 **nav-simplify ROI scoring shipped.** TASK-37 implementation: cost/benefit ROI gate so the simplifier can decline to simplify when the math doesn't favor it. New `cost_analyzer.py` adds four cost signals (touch lines, file LOC, git recency, import references); benefit composed of issue density + severity impact + active-diff signal. Three-tier gate (`skip` / `suggest` / `apply`) with configurable thresholds. Opt-in via `simplification.scoring.mode: "roi"` — default stays `"complexity"` for backward compat. 20 unit tests cover scoring math and gate logic. Calibrated on this repo's actual files; ROI ordering matches intuition (active-diff messy files prioritize; stable clean files de-prioritize).

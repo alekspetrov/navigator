@@ -701,6 +701,89 @@ Progressive saves: 53%
 
 ---
 
+## 9. Context Flooding from Command Output
+
+### What It Is
+
+Letting verbose command output land directly in the conversation context.
+
+```bash
+# Anti-pattern: full output flows into context
+npm test                              # 8k tokens of test output
+python train.py                       # 12k tokens of progress logs
+grep -r "useState" src/               # 5k tokens of matches
+cargo build --verbose                 # 20k tokens of compile output
+```
+
+Each invocation adds raw, mostly-irrelevant noise to the working window. The signal you care about — pass/fail, the one failing test, the matching file — is buried.
+
+### Why It Fails
+
+**Context pollution**:
+- 95% of the output is irrelevant (progress bars, warnings you'd ignore, repeated patterns)
+- The 5% that matters (a stack trace, a failure line) gets diluted
+- Subsequent reasoning has to wade through it
+- Compounds: 3 verbose commands = 30-50k tokens spent on noise
+
+**Practical impact**:
+```
+Pre-run context:  40k tokens (clean, on-task)
+After npm test:    48k tokens (8k of "✓ test passed" lines)
+After build:       68k tokens (now half noise)
+After grep -r:     73k tokens
+                   ↑ AI now reasons over 33k tokens of irrelevant output
+```
+
+**Karpathy's autoresearch explicitly warns**:
+> `uv run train.py > run.log 2>&1` (redirect everything — do NOT use tee or let output flood your context)
+
+### How to Recognize
+
+**Warning signs**:
+- ⚠️ A single tool result >2k tokens of output
+- ⚠️ Repeated patterns dominate (progress bars, identical log lines)
+- ⚠️ You read 200 lines to find 1 line that mattered
+- ⚠️ Build/test/install output captured inline instead of summarized
+- ⚠️ Binary or log artifacts pasted into context
+
+**Quick check**: If you could replace the tool output with a single grep line and lose nothing, you flooded context.
+
+### What to Do Instead
+
+**Redirect verbose output to a file, then extract only what matters**:
+
+```bash
+# Tests
+npm test > test.log 2>&1
+grep -E "(FAIL|✗|^Tests:)" test.log | head -20
+
+# Build
+cargo build --verbose > build.log 2>&1
+grep -E "(error|warning: unused)" build.log | head -10
+
+# Long-running training/jobs
+python train.py > run.log 2>&1
+grep -E "^(val_|loss|epoch)" run.log | tail -20
+
+# Wide greps
+grep -rn "useState" src/ > matches.txt
+head -20 matches.txt && echo "... $(wc -l < matches.txt) total matches"
+```
+
+**Pattern**: redirect → filter → only the filtered result enters context.
+
+**Cost comparison**:
+```
+Inline:  npm test          → 8000 tokens
+Filtered: > log + grep      → 200 tokens (97% savings)
+```
+
+**This is the shell-level companion to Pattern #3 (Preprocessing Before LLM)** — same principle, different tool.
+
+**Read more**: [Patterns: Preprocessing Before LLM](./PATTERNS.md#3-preprocessing-before-llm) · [Anti-Patterns: Forcing LLMs to Parse Structured Data](#3-forcing-llms-to-parse-structured-data)
+
+---
+
 ## Summary
 
 ### The Anti-Patterns
@@ -713,6 +796,7 @@ Progressive saves: 53%
 6. **No Navigator Start** - Work without guidance (manual searching)
 7. **Ignoring Signals** - Don't check efficiency (miss optimizations)
 8. **No Refinement** - Load everything upfront (waste details)
+9. **Context Flooding** - Let verbose command output land inline (waste 90%+)
 
 ### Recognition Pattern
 

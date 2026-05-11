@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.4.0] — 2026-05-11
+
+**Execution-layer parity pass.** Self-audit of the execution layer (skills that write code + orchestration that wraps them) using v6.3.0's sharpened `navigator-research` agent surfaced 10 concrete bugs and gaps. All fixed: `workflow_enforcer.py` hook wired (was dead code), test skill triggers route correctly, `nav-simplify` no longer silently pauses autonomous flows, Loop Mode thresholds aligned via shared constants, `stagnation_detector` gains `--autonomous` mode, `nav-multi` SESSION_ID collision fixed, 12 execution-layer concept aliases added to the graph, `$SKILL_BASE_DIR` removed.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.4.0.md)
+
 ## [v6.3.0] — 2026-05-11
 
 **Structured research output + autonomous Loop Mode.** `navigator-research` agent emits a `research_findings` JSON block that `research_to_graph.py` ingests into the knowledge graph — research persists across sessions. Loop Mode gains `iteration_approval`, `never_pause_on_stagnation`, and `stagnation_diversify_strategy` for overnight runs (inspired by karpathy/autoresearch's NEVER STOP directive). New ANTI-PATTERN #9: Context Flooding from Command Output. Four nav-graph reliability fixes (memory ID collision, file backing, concept aliases, batch I/O).

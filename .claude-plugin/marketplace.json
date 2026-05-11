@@ -7,8 +7,9 @@
   },
   "metadata": {
     "description": "Context Engineering + Human-AI Collaboration Framework with Theory of Mind, Loop Mode, Task Mode, and Project Knowledge Graph",
-    "version": "6.3.0",
+    "version": "6.4.0",
     "breaking_changes": [
+      "v6.4.0: Execution-layer parity pass - workflow_enforcer hook wired (was dead code); test skill trigger phrases ('add test', 'test this', 'test this component') now route correctly; nav-simplify detects autonomous context and skips when auto_apply=false instead of pausing; nav-loop phase_detector/exit_gate share TOTAL_INDICATORS=6 / COMPLETE_THRESHOLD=4 constants; stagnation_detector --autonomous flag emits AUTO-DIVERSIFY instead of PAUSE; nav-multi SESSION_ID appends PID to prevent collisions; 12 new execution-layer concept aliases (execution, implementation, autonomous, verify, orchestration, etc.); $SKILL_BASE_DIR removed from nav-simplify",
       "v6.3.0: Structured research output + autonomous loop mode - navigator-research agent emits research_findings JSON ingested via research_to_graph.py; Loop Mode adds iteration_approval + never_pause_on_stagnation for overnight runs; new ANTI-PATTERN #9 (Context Flooding); 4 nav-graph reliability fixes (memory ID collision, file backing, concept aliases, batch I/O)",
       "v6.1.0: Multi-Agent Production - parallel Claude agents with visual dashboard; nav-multi skill for natural language trigger; 5 role templates (orchestrator, implementer, tester, reviewer, documenter); reliability fixes for research tasks",
       "v6.0.0: Project Knowledge Graph - unified search across tasks, SOPs, system docs; experiential memory (patterns, pitfalls, decisions, learnings); auto-surfaces relevant context on session start",

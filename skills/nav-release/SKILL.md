@@ -87,8 +87,8 @@ Ready to release Navigator vX.Y.Z
 This will:
 1. Commit any pending changes
 2. Push to origin/main
-3. Create git tag vX.Y.Z
-4. Create GitHub release
+3. Create and push git tag vX.Y.Z
+4. CI workflow (.github/workflows/release.yml) publishes the GitHub release from the tag
 
 Proceed? [Y/n]
 ```
@@ -105,15 +105,30 @@ git commit -m "chore(release): prepare vX.Y.Z" || true
 # 2. Push to origin
 git push origin main
 
-# 3. Create tag (AFTER push)
+# 3. Create and push tag — this triggers .github/workflows/release.yml,
+#    which creates the GitHub release from releases/RELEASE-NOTES-vX.Y.Z.md.
 git tag -a vX.Y.Z -m "Navigator vX.Y.Z: [description]"
 git push origin vX.Y.Z
-
-# 4. Create GitHub release
-gh release create vX.Y.Z --title "Navigator vX.Y.Z" --notes-file RELEASE-NOTES-vX.Y.Z.md
 ```
 
+**Do NOT run `gh release create` locally.** The workflow owns release
+publication. Local creation races the workflow and historically caused
+"release with the same tag name already exists" CI failures.
+
 ### Step 5: Post-Release Verification
+
+**Wait for the Publish Release workflow and verify it succeeded**:
+
+```bash
+# Watch the most recent run; exits non-zero if it fails.
+gh run watch --exit-status "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
+
+# Confirm the release is published
+gh release view vX.Y.Z --json tagName,name,isDraft,assets
+```
+
+If the workflow fails, inspect with `gh run view --log-failed` and fix
+before retrying — do NOT fall back to `gh release create` locally.
 
 **Verify tag contains all skills**:
 
@@ -203,7 +218,8 @@ Release is successful when:
 - [ ] All skills validated (exist + committed)
 - [ ] Version consistent across all files
 - [ ] Git tag created after all commits
-- [ ] GitHub release published
+- [ ] Publish Release workflow run completes successfully
+- [ ] GitHub release published with notes asset attached
 - [ ] Test installation succeeds (no errors)
 
 ---

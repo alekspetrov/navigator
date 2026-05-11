@@ -25,6 +25,46 @@ Invoke this skill when the user:
 
 ## Execution Steps
 
+### Step 0: Detect PreCompact Hook (Fast Path) [v6.10.0+]
+
+**Before doing anything else**, check whether the project has the PreCompact hook installed.
+
+```bash
+HAS_HOOK=$(grep -l "nav_pre_compact" .claude/settings.json .claude/settings.local.json 2>/dev/null | head -1)
+```
+
+**If the hook is present**:
+
+→ **Fast path activated**. The `PreCompact` hook will write the marker automatically when the user runs `/compact` (or when Claude Code auto-compacts). Skip Steps 2–5 (marker creation + `.active` writing) — the hook owns those. Just print:
+
+```
+╔══════════════════════════════════════════════════════╗
+║  🗜️  Navigator Compact (hook-managed)                 ║
+╚══════════════════════════════════════════════════════╝
+
+✅ PreCompact hook is installed — Navigator will write the
+   marker automatically when you run /compact.
+
+Auto-compact is also covered: when Claude Code compacts
+silently near the context limit, the hook still fires and
+writes a marker tagged with `-auto-` in the filename.
+
+Just run:    /compact
+
+The PostCompact hook will append Claude Code's official
+summary to the marker once compact finishes. On your next
+session, "Start my Navigator session" picks up the marker
+via .active and offers restore.
+```
+
+That's it. Don't create a duplicate marker — the hook handles it deterministically.
+
+**If the hook is absent** (legacy project, manually disabled, or pre-v6.10 install):
+
+→ **Legacy path**. Execute Steps 1–5 below as documented. Manual marker creation, then user runs `/compact`.
+
+---
+
 ### Step 1: Check If Worth Compacting
 
 Estimate conversation size:

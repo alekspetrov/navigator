@@ -157,12 +157,14 @@ If `CLAUDE.md` doesn't exist:
 - Copy `templates/CLAUDE.md` to project root
 - Customize with project info
 
-### 6. Setup Claude Code Hooks (SessionStart + Token Monitor)
+### 6. Setup Claude Code Hooks (SessionStart + PreCompact + PostCompact + Token Monitor)
 
 Merge Navigator's hook configuration into `.claude/settings.json`. This installs:
 
 1. **SessionStart hook** — injects Navigator context (navigator + active marker + config + graph + profile) directly into the session, eliminating ~6 Read tool calls at session start (v6.9.0+)
-2. **PostToolUse token monitor** — warns at 70% / 85% context usage
+2. **PreCompact hook** — writes a context marker before manual `/compact` or auto-compact, capturing transcript summary + git state + active tasks. Survives silent auto-compacts that previously lost state (v6.10.0+)
+3. **PostCompact hook** — appends Claude Code's official compact summary to the marker, so restores get both heuristic and authoritative summaries (v6.10.0+)
+4. **PostToolUse token monitor** — warns at 70% / 85% context usage
 
 ```bash
 mkdir -p .claude
@@ -185,14 +187,19 @@ echo "   Claude Code caches hook definitions at session start."
 ```
 
 **What this does**:
-- **SessionStart hook**: Auto-injects Navigator state on every session start. The `nav-start` skill becomes a display-only renderer over already-loaded context (saves ~1.5-2k tokens of tool-call ceremony per session).
+- **SessionStart hook**: Auto-injects Navigator state on every session start. The `nav-start` skill becomes a display-only renderer over already-loaded context (saves ~35k tokens per session).
+- **PreCompact hook**: Writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md` automatically before any compact. No more lost state on silent auto-compact.
+- **PostCompact hook**: Appends Claude Code's official compact summary to the same marker, then `.active` triggers SessionStart to surface it on next session.
 - **PostToolUse hook**: Monitors context usage after each tool call. Warns at 70%, critical alert at 85%, suggests compact when approaching limits.
 
 **Idempotent**: Safe to re-run — `settings_merger.py` deduplicates by command string and never clobbers user-defined hooks.
 
-**Opt-out**: Users can disable the SessionStart injection via `.agent/.nav-config.json`:
+**Opt-out**: Users can disable any hook via `.agent/.nav-config.json`:
 ```json
-{ "session_start_hook": { "enabled": false } }
+{
+  "session_start_hook": { "enabled": false },
+  "compact_hook": { "enabled": false }
+}
 ```
 
 ### 7. Create .gitignore Entries

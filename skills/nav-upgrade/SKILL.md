@@ -328,9 +328,13 @@ git commit -m "chore: update CLAUDE.md to Navigator v4.3.0"
 
 **Install or merge Navigator hooks** into the project's `.claude/settings.json`.
 
-**v6.9.0+ adds the SessionStart hook** — auto-injects Navigator context at
-session start, eliminating ~6 Read tool calls. Existing projects must opt in
-the first time we touch their settings.json.
+**v6.9.0+** adds the SessionStart hook — auto-injects Navigator context at
+session start, eliminating ~6 Read tool calls.
+
+**v6.10.0+** adds PreCompact + PostCompact hooks — automatically writes a
+context marker before any compact (manual or silent auto-compact), so state
+survives both. Existing projects must opt in the first time we touch their
+settings.json.
 
 ```bash
 mkdir -p .claude
@@ -352,16 +356,20 @@ fi
 
 Use AskUserQuestion:
 ```
-Activate zero-Read session start hook? (v6.9.0+)
+Activate Navigator's lifecycle hooks? (v6.9.0+ / v6.10.0+)
 
-This injects Navigator context (navigator + active marker + config + graph)
-directly into your session, so the nav-start skill doesn't need to Read 6
-files. Eliminates ~1.5-2k tokens of tool-call ceremony per session start.
+Installs three hooks:
+- SessionStart: pre-loads navigator state, eliminates ~6 Reads per session
+- PreCompact:   writes a context marker before any compact (manual OR auto)
+- PostCompact:  appends Claude Code's compact summary to that marker
+
+Combined effect: zero state loss across sessions and across silent
+auto-compacts. ~35k tokens saved per session start.
 
 Idempotent — preserves your existing hooks. Requires a Claude Code restart
 to take effect.
 
-[1] Yes, install SessionStart hook (recommended)
+[1] Yes, install all lifecycle hooks (recommended)
 [2] No, keep PostToolUse only
 ```
 

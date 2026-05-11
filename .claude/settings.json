@@ -1,12 +1,12 @@
 {
-  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/settings.json",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_session_start.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_session_start.py\"",
             "timeout": 10
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_pre_compact.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_pre_compact.py\"",
             "timeout": 30
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_post_compact.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_post_compact.py\"",
             "timeout": 10
           }
         ]
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_workflow_state.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_workflow_state.py\"",
             "timeout": 5
           }
         ]
@@ -62,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_read_guard.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_read_guard.py\"",
             "timeout": 5
           }
         ]
@@ -84,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_commit_reminder.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_commit_reminder.py\"",
             "timeout": 3
           }
         ]
@@ -94,7 +94,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_task_graph_sync.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_task_graph_sync.py\"",
             "timeout": 10
           }
         ]
@@ -104,7 +104,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_profile_sync.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_profile_sync.py\"",
             "timeout": 10
           }
         ]

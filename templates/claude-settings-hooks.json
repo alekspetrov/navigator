@@ -45,9 +45,8 @@
         ]
       }
     ],
-    "PreToolUse": [
+    "UserPromptSubmit": [
       {
-        "matcher": "Edit|Write|Bash|Task",
         "hooks": [
           {
             "type": "command",
@@ -55,7 +54,9 @@
             "timeout": 5
           }
         ]
-      },
+      }
+    ],
+    "PreToolUse": [
       {
         "matcher": "Read",
         "hooks": [

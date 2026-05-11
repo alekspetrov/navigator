@@ -1,6 +1,6 @@
 # TASK-40: Phase 3 Hook Migration — v6.12.x
 
-**Status**: 📐 Planning (not yet implemented)
+**Status**: 🚧 v6.12.0 shipped (Opp 6 warn-only), v6.12.1 shipped (strict_block + course correction), v6.12.2 pending (full Opp 5 after PostToolUse probe)
 **Created**: 2026-05-11
 **Builds on**: TASK-38 Phase 1 (v6.11.0), Phase 2 (v6.11.1 + v6.11.2 UX patch)
 **Architectural pattern**: mem-027 (three-layer), mem-034 (blocking-hook discipline)
@@ -151,6 +151,47 @@ OQ-1, OQ-2, OQ-3 are blockers — they determine the output-channel decision. Re
 - `releases/RELEASE-NOTES-v6.11.1.md` + `v6.11.2.md` — Phase 2 (blocking hook + UX patch reference)
 - `hooks/nav_task_graph_sync.py:83-102` — PreToolUse path resolution pattern (use this for OQ-1)
 - `hooks/workflow_enforcer.py:39-69` — sentinel pattern (relevant if Opp 6 ever gains a blocking variant)
+
+---
+
+## v6.12.1 Section — Course Correction (Shipped 2026-05-11)
+
+### Findings from v6.12.0 live verification
+
+1. **PreToolUse stdout AND `hookSpecificOutput.additionalContext` are silent to the model.** The dual-channel `_emit()` from v6.12.0 was dead code. Counter advanced correctly on 5 Reads; warnings never surfaced. Closes OQ-2 with answer: neither channel works.
+2. **The counter IS state-file ground truth.** Earlier analysis claimed "a count alone fails mem-027's three-condition gate." Wrong — this hook's prior invocations write the counter, so reading count >= threshold IS empirical state-file confirmation.
+3. **Plugin's `.claude/settings.json` was missing 5 of 7 hooks.** Fresh installs never got the v6.11+ lifecycle hooks without manually running `nav-init`.
+4. **Template wired `workflow_enforcer.py` to wrong event.** Template had it on `PreToolUse`; hook code reads `data.get("prompt")` which only exists on `UserPromptSubmit`. Latent no-op for any fresh user.
+
+### Changes shipped in v6.12.1
+
+- **Change A**: `nav_read_guard.py` strict_block mode (default true). exit 2 at escalate_threshold. Sentinel-wrapped user-addressed stderr. Dead `_emit()` removed. Warn path moved to stderr.
+- **Change B**: 20-line PostToolUse probe at `hooks/nav_commit_reminder.py`. Wired temporarily in this repo's `.claude/settings.json`. Will be replaced by full Opp 5 in v6.12.2 once probe channel is confirmed.
+- **Change C**: `.claude/settings.json` synced with corrected template. workflow_enforcer moved from PreToolUse → UserPromptSubmit in BOTH files.
+
+### Knowledge captured
+
+- `mem-035` (pitfall): "PreToolUse stdout and additionalContext are silent — exit 2 is the only behavior-affecting channel." Future PreToolUse hooks inherit this constraint.
+- mem-027 update pending (after v6.12.2 closes the phase).
+
+### Open questions status
+
+| ID | Status | Answer |
+|---|---|---|
+| OQ-1 | Closed in v6.12.0 | file_path is absolute. Defensive path resolution still in place. |
+| OQ-2 | Closed in v6.12.1 | Both stdout and additionalContext silent on PreToolUse. exit 2 only. |
+| OQ-3 | Probe in flight | nav_commit_reminder.py probe shipped in v6.12.1; result expected in next live session. |
+| OQ-4 | Closed | session_id stable across resume (counter session-change reset is defensive but not load-bearing). |
+| OQ-5 | Deferred to v6.12.2 | Profile `_find_inprogress_tasks` perf when full Opp 5 lands. |
+
+### v6.12.2 plan (closes TASK-38)
+
+After live session surfaces probe result:
+1. Read which sentinel appears (stderr / stdout / neither) in mem-035
+2. Replace `nav_commit_reminder.py` probe with full Opp 5 logic using the confirmed channel
+3. If neither surfaces: redesign Opp 5 as a Stop hook that diffs git log vs in-progress task statuses (different mechanism, separate ticket)
+4. Update mem-027 examples list with read guard + commit reminder
+5. Ship v6.12.2 → TASK-38 closed
 
 ---
 

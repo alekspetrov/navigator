@@ -10,23 +10,25 @@ The tail-risk this prevents: sequential bulk-loads of `.agent/` documentation
 crash mid-session — the exact anti-pattern Navigator's lazy-loading strategy
 exists to avoid.
 
-Behavior (v6.12.0):
+Behavior (v6.12.1+):
   - Counter file: `.agent/.nav-read-counter.json` (per-session, reset on Stop)
   - Allowlist (do not count): DEVELOPMENT-README.md, .nav-config.json,
     .user-profile.json, knowledge/graph.json
-  - Warn at count >= warn_threshold (default 3): suggest Task/Explore agent
-  - Escalate at count >= escalate_threshold (default 5): name the anti-pattern
-  - Never blocks (exit 0 always). A blocking variant is deferred until live
-    telemetry shows warnings are ignored — would require a companion state
-    file to satisfy mem-027's three-condition gate.
+  - Warn at count >= warn_threshold (default 3): stderr advisory, exit 0
+  - Escalate at count >= escalate_threshold (default 5):
+      * strict_block=true (default) → exit 2, sentinel-wrapped stderr block
+      * strict_block=false → stderr advisory only, exit 0
+  - Counter satisfies mem-027's three-condition gate: this hook writes the
+    state file on prior invocations; reading count >= threshold IS state-file
+    confirmation that violations already occurred this turn.
 
 Spec: https://docs.claude.com/en/docs/claude-code/hooks#pretooluse
   - stdin JSON: tool_name, tool_input.file_path, cwd, session_id
-  - file_path may be absolute OR relative (handled defensively per mem-027
-    path-resolution discipline).
-  - Output: dual-channel — stdout plain text AND structured JSON with
-    `hookSpecificOutput.additionalContext`. Whichever channel CC consumes
-    will surface the warning. (OQ-2 open; defensive.)
+  - file_path may be absolute OR relative (handled per mem-027 discipline).
+  - Output channel: stderr only. mem-035 confirmed PreToolUse stdout AND
+    hookSpecificOutput.additionalContext are silent to the model. Block
+    (exit 2) is the only behavior-affecting channel; warn (exit 0) text on
+    stderr surfaces in the CC UI but does not influence model behavior.
 """
 from __future__ import annotations
 
@@ -143,23 +145,48 @@ def _increment_counter(root: Path, session_id: str | None) -> int:
     return new_count
 
 
-def _emit(text: str) -> None:
-    """Dual-channel emit for OQ-2 defensive: structured JSON + plain stdout.
+# Sentinel for stderr — distinct from workflow_enforcer's <nav-workflow-block>
+# so future strip logic doesn't accidentally consume read-guard messages.
+NAV_READ_BLOCK_OPEN = "<nav-read-guard-block>"
+NAV_READ_BLOCK_CLOSE = "</nav-read-guard-block>"
 
-    Claude Code's PreToolUse output channel behavior is not fully documented.
-    We emit both so whichever the harness consumes will surface the warning.
+
+def _warn(text: str) -> None:
+    """Soft-warn output goes to stderr (PreToolUse stdout/additionalContext are
+    silent to the model per mem-035). Exit 0 — Read still completes.
     """
-    payload = {
-        "hookSpecificOutput": {
-            "hookEventName": "PreToolUse",
-            "additionalContext": text,
-        },
-    }
-    print(json.dumps(payload))
-    # Also emit plain text on a separate line in case stdout-text injection
-    # is the path that surfaces. The structured JSON above is well-formed
-    # on its own; this trailing text is harmless if discarded.
-    print(text)
+    sys.stderr.write(text + "\n")
+
+
+def _block(count: int, threshold: int) -> None:
+    """Hard-block output: sentinel-wrapped, user-addressed stderr per mem-034.
+
+    Block is the only behavior-affecting PreToolUse output channel — exit 2
+    refuses the Read tool call. The message addresses the USER (Claude can
+    technically continue after the tool error, but the user needs to choose
+    a recovery path).
+
+    Deliberately omits the triggering file_path — keeps the message free of
+    arbitrary substrings that could become future recursive-trigger surfaces.
+    """
+    sys.stderr.write(
+        NAV_READ_BLOCK_OPEN + "\n"
+        f"Navigator nav-read-guard: blocked at {count} .agent/ reads "
+        f"(escalate_threshold={threshold}).\n"
+        "  Why: this turn has crossed the bulk-load threshold. Sequential "
+        ".agent/ reads risk 50k+ token consumption and session crash.\n"
+        "  How to proceed (your choice):\n"
+        "    1. Use a Task or Explore agent for the remaining lookups — "
+        "they read excerpts, not full files, and are designed for "
+        "multi-file discovery.\n"
+        "    2. Split the work: end this turn, start a new one (the "
+        "counter resets on every Stop event).\n"
+        "    3. Raise the threshold: set read_guard_hook.escalate_threshold "
+        "to a higher number in .agent/.nav-config.json.\n"
+        "    4. Disable strict enforcement: set read_guard_hook.strict_block"
+        "=false in .agent/.nav-config.json.\n"
+        + NAV_READ_BLOCK_CLOSE + "\n"
+    )
 
 
 def main() -> int:
@@ -206,22 +233,25 @@ def main() -> int:
 
     warn_at = int(cfg.get("warn_threshold", DEFAULT_WARN_THRESHOLD))
     escalate_at = int(cfg.get("escalate_threshold", DEFAULT_ESCALATE_THRESHOLD))
+    strict_block = cfg.get("strict_block", True)
 
     session_id = stdin_data.get("session_id")
     count = _increment_counter(root, session_id)
 
+    if count >= escalate_at and strict_block:
+        _block(count, escalate_at)
+        return 2
     if count >= escalate_at:
-        _emit(
+        _warn(
             f"[nav-read-guard] {count} .agent/ files read this turn. "
-            "This matches the bulk-load anti-pattern (risk: 50k+ tokens). "
-            "Stop sequential reads. Use a Task or Explore agent for "
-            "multi-file discovery — it reads excerpts, not full files."
+            "Bulk-load anti-pattern threshold crossed (risk: 50k+ tokens). "
+            "Use a Task or Explore agent for multi-file discovery."
         )
     elif count >= warn_at:
-        _emit(
+        _warn(
             f"[nav-read-guard] {count} .agent/ files read this turn. "
-            "Navigator lazy-loading pattern: load only what the current task "
-            "needs. For broader surveys, use a Task or Explore agent."
+            "Navigator lazy-loading pattern: load only what the task needs. "
+            "For broader surveys, use a Task or Explore agent."
         )
 
     return 0

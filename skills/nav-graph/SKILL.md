@@ -362,6 +362,34 @@ Markers reference graph state:
 - Concepts active: auth, testing
 ```
 
+### navigator-research (Codebase Exploration Agent)
+
+The `navigator-research` agent emits a structured `research_findings` JSON block alongside its markdown summary. After the agent returns, ingest those findings as graph memories via `research_to_graph.py`:
+
+```bash
+# Save the JSON block from the agent output to a file (or pipe via stdin)
+python3 skills/nav-graph/functions/research_to_graph.py findings.json
+
+# Or from stdin
+cat findings.json | python3 skills/nav-graph/functions/research_to_graph.py -
+
+# Validate without writing
+python3 skills/nav-graph/functions/research_to_graph.py findings.json --dry-run
+```
+
+**Trigger phrases**:
+- "Ingest research findings"
+- "Save these findings to the graph"
+- (Automatic, when a navigator-research invocation completes — orchestrator may auto-ingest)
+
+**Defaults**:
+- Confidence: `0.7` (lower than corrections/explicit captures — research is inference)
+- Memory types accepted: `pattern`, `pitfall`, `decision`, `learning`
+- Invalid entries are skipped with a printed error (exit code 1 if any errors)
+- Evidence path (e.g. `src/auth.ts:42`) is embedded into the memory summary
+
+**Schema**: see the `Output Format` section of `agents/navigator-research.md` for the full JSON shape the agent emits.
+
 ---
 
 ## Configuration

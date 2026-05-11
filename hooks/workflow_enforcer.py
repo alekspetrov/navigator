@@ -121,6 +121,11 @@ def read_prior_turn_state() -> dict:
 
 def main():
     """Main hook logic."""
+    # Escape hatch for autonomous executors (e.g. PILOT) that drive Claude
+    # programmatically and should bypass interactive workflow gating.
+    if os.environ.get("PILOT_EXECUTOR"):
+        sys.exit(0)
+
     message = get_user_message()
     if not message:
         sys.exit(0)

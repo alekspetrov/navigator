@@ -49,12 +49,7 @@ Creates the Navigator documentation structure (`.agent/`) in a new project, copi
        ├── navigator-dashboard.json
        └── README.md
    ```
-3. **Creates `.claude/` directory with hooks**:
-   ```
-   .claude/
-   └── settings.json    # SessionStart context injection + token monitor
-   ```
-4. **Copies templates**: DEVELOPMENT-README.md, config, Grafana setup
+3. **Copies templates**: DEVELOPMENT-README.md, config, Grafana setup
 5. **Auto-detects project info**: Name, tech stack (from package.json if available)
 6. **Updates CLAUDE.md**: Adds Navigator-specific instructions to project
 7. **Creates .gitignore entries**: Excludes temporary Navigator files
@@ -157,110 +152,27 @@ If `CLAUDE.md` doesn't exist:
 - Copy `templates/CLAUDE.md` to project root
 - Customize with project info
 
-### 6. Setup Claude Code Hooks (SessionStart + PreCompact + PostCompact + Token Monitor)
+### 6. Claude Code Hooks (Plugin Manifest)
 
-Merge Navigator's hook configuration into `.claude/settings.json`. This installs:
+**Navigator's lifecycle hooks ship with the plugin manifest** (`.claude-plugin/plugin.json`'s top-level `hooks` field) starting v6.13.0+. They are *not* merged into the project's `.claude/settings.json` — Claude Code only substitutes `${CLAUDE_PLUGIN_DIR}` for hooks declared in a plugin manifest, so merging them into user settings (the prior approach) produced broken commands like `/hooks/X.py`.
 
-1. **SessionStart hook** — injects Navigator context (navigator + active marker + config + graph + profile) directly into the session, eliminating ~6 Read tool calls at session start (v6.9.0+)
-2. **PreCompact hook** — writes a context marker before manual `/compact` or auto-compact, capturing transcript summary + git state + active tasks. Survives silent auto-compacts that previously lost state (v6.10.0+)
-3. **PostCompact hook** — appends Claude Code's official compact summary to the marker, so restores get both heuristic and authoritative summaries (v6.10.0+)
-4. **Stop workflow-state writer** — silent infra (v6.11.0+). After every assistant turn, records whether the WORKFLOW CHECK block / NAVIGATOR_STATUS appeared, into `.agent/.nav-workflow-state.json`. Feeds the (future) blocking workflow_enforcer in Phase 2.
-5. **PostToolUse task→graph sync** — when an `.agent/tasks/TASK-*.md` file is written or edited, auto-upserts the task into the knowledge graph (v6.11.0+). Replaces the soft "remember to sync graph" rule.
-6. **PostToolUse profile correction sync** — when `.user-profile.json` is written, diffs corrections array and auto-syncs new entries to graph as memories (v6.11.0+). Idempotent via `.nav-profile-sync-state.json`.
-7. **PostToolUse token monitor** — warns at 70% / 85% context usage
+The plugin registers the following hooks automatically when the plugin is installed:
 
-```bash
-mkdir -p .claude
+1. **SessionStart** — injects Navigator context (navigator + active marker + config + graph + profile) into the session, eliminating ~6 Read tool calls at start (v6.9.0+)
+2. **PreCompact** — writes a context marker before manual or silent auto-compact (v6.10.0+)
+3. **PostCompact** — appends Claude Code's compact summary to the marker (v6.10.0+)
+4. **Stop** — silent workflow-state writer; records whether WORKFLOW CHECK / NAVIGATOR_STATUS appeared (v6.11.0+)
+5. **UserPromptSubmit** — workflow_enforcer (Loop/Task mode trigger detection + optional strict_block gate)
+6. **PreToolUse(Read)** — nav_read_guard (bulk-read circuit breaker)
+7. **PostToolUse(Edit|Write|Bash)** — token monitor (warns at 70% / 85% context usage)
+8. **PostToolUse(Edit|Write)** — task→graph sync and profile correction sync (v6.11.0+)
 
-# Resolve plugin dir (provides templates/ + skills/nav-init/functions/)
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
-if [ ! -d "$PLUGIN_DIR" ]; then
-  PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
-fi
+**Nothing for nav-init to do here.** The skill no longer writes to `.claude/settings.json` for hooks.
 
-# Safety: if user already has .claude/settings.json, surface any foreign hooks
-# and back up before merging. v6.10.2+
-if [ -f .claude/settings.json ]; then
-  FOREIGN_HOOKS=$(python3 - <<'PY' 2>/dev/null || true
-import json, sys
-try:
-    d = json.load(open(".claude/settings.json"))
-except Exception:
-    print(""); sys.exit(0)
-nav_marks = {"nav_session_start", "nav_pre_compact", "nav_post_compact",
-             "workflow_enforcer", "token_monitor", "monitor-tokens"}
-foreign = []
-for event, entries in (d.get("hooks") or {}).items():
-    if not isinstance(entries, list):
-        continue
-    for entry in entries:
-        for h in (entry.get("hooks") or []):
-            cmd = (h or {}).get("command", "")
-            if cmd and not any(m in cmd for m in nav_marks):
-                foreign.append(f"  {event}: {cmd[:80]}")
-print("\n".join(foreign))
-PY
-)
-  if [ -n "$FOREIGN_HOOKS" ]; then
-    echo "⚠️  Existing .claude/settings.json has hooks Navigator doesn't recognize:"
-    echo "$FOREIGN_HOOKS"
-    echo ""
-    echo "Navigator's merger preserves these (dedupe is by command string),"
-    echo "but back up first if anything looks off."
-    echo ""
-    # Skill should call AskUserQuestion here:
-    #   "Proceed with hook merge? Existing user hooks will be preserved."
-    #   [1] Yes, merge (timestamped backup will be created)
-    #   [2] No, abort init
-  fi
-
-  # Timestamped backup — never collides with prior backups
-  BACKUP=".claude/settings.json.pre-nav-init.$(date +%Y%m%d-%H%M%S)"
-  cp .claude/settings.json "$BACKUP"
-  echo "✓ Backed up existing settings → $BACKUP"
-fi
-
-# Idempotent atomic merge — preserves any existing user hooks
-python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
-    .claude/settings.json \
-    "$PLUGIN_DIR/templates/claude-settings-hooks.json"
-
-echo "✓ Claude Code hooks configured (SessionStart + PreCompact + PostCompact + token monitor)"
-echo ""
-echo "⚠️  RESTART REQUIRED to activate hooks"
-echo "   Claude Code caches hook definitions at session start."
 ```
-
-**Skill orchestration** (the bash block above is illustrative — the skill
-should actually use AskUserQuestion when foreign hooks are detected):
-
-1. Run the foreign-hook detector silently.
-2. If output is non-empty: invoke AskUserQuestion with the detected hooks
-   listed in the question text. Options: `[1] Merge (recommended, backup
-   will be created)` / `[2] Abort init`.
-3. On confirm: take the timestamped backup, then run `settings_merger.py`.
-4. On abort: exit cleanly without touching `settings.json`.
-
-**Preview mode (optional)**: users who want to see the merged result before
-applying can pass `--preview` to nav-init, which dry-runs the merger:
-
-```bash
-python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
-    --dry-run .claude/settings.json \
-    "$PLUGIN_DIR/templates/claude-settings-hooks.json" \
-    > /tmp/nav-init-preview.json
-diff -u .claude/settings.json /tmp/nav-init-preview.json | head -80
+⚠️  RESTART REQUIRED to activate hooks after plugin install/update.
+   Claude Code caches plugin manifest hooks at session start.
 ```
-
-**What this does**:
-- **SessionStart**: Auto-injects Navigator state on every session start; nav-start becomes display-only (~35k tokens saved/session).
-- **PreCompact / PostCompact**: Writes `.context-markers/before-compact-{manual,auto}-{ts}.md` before compact + appends Claude Code's summary after. Survives auto-compact.
-- **Stop**: Writes `.nav-workflow-state.json` after every turn (silent infra for upcoming blocking workflow enforcement).
-- **PostToolUse task→graph**: Upserts touched `.agent/tasks/TASK-*.md` to knowledge graph automatically.
-- **PostToolUse profile sync**: Auto-converts new `.user-profile.json` corrections into graph memories.
-- **PostToolUse token monitor**: Warns at 70% / 85% context usage.
-
-**Idempotent**: Safe to re-run — `settings_merger.py` deduplicates by command string and never clobbers user-defined hooks.
 
 **Opt-out**: Users can disable any hook via `.agent/.nav-config.json`:
 ```json
@@ -269,9 +181,12 @@ diff -u .claude/settings.json /tmp/nav-init-preview.json | head -80
   "compact_hook":          { "enabled": false },
   "workflow_state_hook":   { "enabled": false },
   "task_graph_sync_hook":  { "enabled": false },
-  "profile_sync_hook":     { "enabled": false }
+  "profile_sync_hook":     { "enabled": false },
+  "workflow_enforcer_hook":{ "enabled": false }
 }
 ```
+
+(The hooks themselves read this config and short-circuit when disabled, so no settings.json mutation is needed.)
 
 ### 7. Create .gitignore Entries
 
@@ -296,8 +211,6 @@ Created structure:
   📁 .agent/sops/               Standard procedures
   📁 .agent/grafana/            Metrics dashboard
   📄 .agent/.nav-config.json    Configuration
-  📁 .claude/                   Claude Code hooks
-  📄 .claude/settings.json      SessionStart context injection + token monitor
   📄 CLAUDE.md                  Updated with Navigator workflow
 
 Next steps:
@@ -376,15 +289,15 @@ def merge(target_path: Path, fragment: dict) -> dict:
     - If target exists: deep-merge `hooks` arrays by event name; dedupe entries
       by command string. Preserves user-defined hooks and other top-level keys.
     - Refuses to clobber invalid JSON (exits 2).
-
-    CLI:
-        python3 settings_merger.py .claude/settings.json fragment.json
-        python3 settings_merger.py .claude/settings.json -  # fragment on stdin
     """
 ```
 
-Used by nav-init Step 6 and nav-upgrade Step 5 to install the SessionStart
-hook + PostToolUse token monitor without clobbering existing user config.
+**Status (v6.13.0+)**: Retained as general-purpose JSON merger for non-hook
+keys (permissions, mcpServers, etc.) that downstream skills may want to
+preserve. Navigator no longer passes a hooks fragment through it — hooks now
+ship with the plugin manifest (`.claude-plugin/plugin.json`). The hook-merging
+code path is dead-for-Navigator but kept intact for safety (existing call
+sites that already pass non-hook fragments continue to work).
 
 ## Examples
 

@@ -324,83 +324,51 @@ git commit -m "chore: update CLAUDE.md to Navigator v4.3.0"
 
 ---
 
-### Step 5: Install/Update Claude Code Hooks
+### Step 5: Migrate Legacy Hooks Out of `.claude/settings.json`
 
-**Install or merge Navigator hooks** into the project's `.claude/settings.json`.
+**v6.13.0+**: Navigator's lifecycle hooks now ship with the plugin manifest
+(`.claude-plugin/plugin.json`'s top-level `hooks` field). Claude Code only
+substitutes `${CLAUDE_PLUGIN_DIR}` for hooks declared in a plugin manifest,
+so the prior approach (merging hooks into the project's `.claude/settings.json`)
+produced broken commands like `/hooks/X.py` (empty expansion). Hooks ship
+with the plugin from v6.13.0 onwards.
 
-**v6.9.0+** adds the SessionStart hook — auto-injects Navigator context at
-session start, eliminating ~6 Read tool calls.
-
-**v6.10.0+** adds PreCompact + PostCompact hooks — automatically writes a
-context marker before any compact (manual or silent auto-compact), so state
-survives both. Existing projects must opt in the first time we touch their
-settings.json.
+**For existing installs**, the old hook entries are duplicated in
+`.claude/settings.json` and must be removed to prevent double-firing:
 
 ```bash
-mkdir -p .claude
-
-# Timestamped backup — never overwrites a prior backup. v6.10.2+
-# The first-ever upgrade's backup may contain the user's pre-Navigator hook
-# configuration; keep it around as the "pristine" restore point.
-if [ -f ".claude/settings.json" ]; then
-  BACKUP=".claude/settings.json.pre-upgrade.$(date +%Y%m%d-%H%M%S)"
-  cp .claude/settings.json "$BACKUP"
-  echo "✓ Backed up .claude/settings.json → $BACKUP"
-  echo "  (the first-ever pre-upgrade backup is your pristine pre-Navigator state — keep it)"
-fi
-
-# Resolve plugin dir
 PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
 if [ ! -d "$PLUGIN_DIR" ]; then
   PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
 fi
+
+python3 "$PLUGIN_DIR/skills/nav-upgrade/functions/migrate_hooks_out_of_settings.py" \
+    .claude/settings.json
+
+# Output:
+#   ✓ Backup written → .claude/settings.json.pre-migrate.<timestamp>
+#   ✓ Removed N Navigator hook entries (commands path matched)
+#   ✓ Preserved K unrelated user hooks
 ```
 
-**Ask user once** (only if SessionStart hook not already installed):
+**Behavior**:
+- Conservative match: command string must contain BOTH `hooks/` AND one of
+  the known Navigator hook names (`nav_session_start`, `nav_pre_compact`,
+  `nav_post_compact`, `nav_workflow_state`, `nav_read_guard`,
+  `nav_task_graph_sync`, `nav_profile_sync`, `nav_commit_reminder`,
+  `token_monitor`, `workflow_enforcer`).
+- Writes a `.pre-migrate.<timestamp>` backup before any change.
+- Logs every removed entry to stderr.
+- Idempotent: re-running on an already-migrated file is a no-op.
+- Never touches entries with unrelated commands.
 
-Use AskUserQuestion:
+**Fresh installs do not need this step** — they never had hooks in
+`.claude/settings.json` to begin with.
+
 ```
-Activate Navigator's lifecycle hooks? (v6.9.0+ / v6.10.0+)
-
-Installs three hooks:
-- SessionStart: pre-loads navigator state, eliminates ~6 Reads per session
-- PreCompact:   writes a context marker before any compact (manual OR auto)
-- PostCompact:  appends Claude Code's compact summary to that marker
-
-Combined effect: zero state loss across sessions and across silent
-auto-compacts. ~35k tokens saved per session start.
-
-Idempotent — preserves your existing hooks. Requires a Claude Code restart
-to take effect.
-
-[1] Yes, install all lifecycle hooks (recommended)
-[2] No, keep PostToolUse only
+⚠️  RESTART REQUIRED to activate hooks from the plugin manifest.
+   Claude Code caches plugin hook definitions at session start.
 ```
-
-**If user accepts** (or this is a fresh init):
-
-```bash
-python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
-    .claude/settings.json \
-    "$PLUGIN_DIR/templates/claude-settings-hooks.json"
-
-echo ""
-echo "✓ SessionStart hook + token monitor installed"
-echo ""
-echo "⚠️  RESTART REQUIRED to activate SessionStart hook"
-echo "   Claude Code caches hook definitions at session start."
-echo "   Restart Claude Code, then 'Start my Navigator session' to verify."
-```
-
-**If user declines**: write a fragment containing only the PostToolUse block
-(strip the SessionStart entry before merging).
-
-**What this enables**:
-- **SessionStart hook**: zero-Read session start, ~6 Read calls eliminated
-- **PostToolUse hook**: context budget monitoring (warn at 70%, alert at 85%)
-- **PreToolUse hook**: workflow enforcer (WORKFLOW CHECK block on every task)
-
-**Idempotent**: `settings_merger.py` dedupes by command string. Safe to re-run.
 
 ---
 

@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.6.0] — 2026-05-11
+
+**Release hygiene + Loop Mode flexibility.** Compact maintenance pass: GitHub Actions bumped to Node.js 24-ready versions (`checkout@v5`, `action-gh-release@v2`) ahead of June 2026 deprecation; `loop_mode.periodic_interval` (default 3) parameterizes the previously-hardcoded `iteration_approval: "periodic"` cadence for tunable overnight runs; `nav-multi` documents branch-per-run convention (`nav-multi/{SESSION_ID}`) for parallel workflow safety.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.6.0.md)
+
 ## [v6.5.0] — 2026-05-11
 
 **Execution-layer parity completion.** v6.4.0 fixed the bugs; v6.5.0 closes the parity gaps with the research agent. New `execution_to_graph.py` mirrors `research_to_graph.py`. All 5 code-writing skills (frontend-component, backend-endpoint, database-migration, backend-test, frontend-test) emit `execution_summary` JSON for ingestion. Phase 0 (graph check) added as Step 0 on the three primary code-writing skills. `code_analyzer.py` auto-detects indent unit (fixes 4-space false positives). `backend-test` / `frontend-test` expanded from 38-line stubs to working skills with the same Phase 0 → generate → verify → summary pattern.

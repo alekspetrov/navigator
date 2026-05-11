@@ -1,5 +1,5 @@
 {
-  "version": "6.5.0",
+  "version": "6.6.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -26,6 +26,7 @@
     "exit_requires_explicit_signal": true,
     "show_status_block": true,
     "iteration_approval": "none",
+    "periodic_interval": 3,
     "never_pause_on_stagnation": false,
     "stagnation_diversify_strategy": "combine"
   },

@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T21:33:49.894128Z",
+  "last_updated": "2026-05-11T21:56:04.984497Z",
   "stats": {
-    "total_nodes": 115,
+    "total_nodes": 117,
     "total_edges": 813,
-    "memory_count": 26
+    "memory_count": 27
   },
   "nodes": {
     "tasks": {
@@ -487,6 +487,19 @@
           "frontend",
           "workflow",
           "skills"
+        ]
+      },
+      "TASK-38": {
+        "title": "Hook-Migration Roadmap v6.11",
+        "status": "design",
+        "priority": "high",
+        "concepts": [
+          "hooks",
+          "architecture",
+          "claude-code",
+          "workflow",
+          "knowledge-graph",
+          "session-lifecycle"
         ]
       }
     },
@@ -1557,6 +1570,24 @@
           "hooks",
           "workflow",
           "session-lifecycle"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-027": {
+        "type": "pattern",
+        "summary": "Three-layer AI tooling architecture: Model (judgment) / Hooks (policy & I/O) / Harness (lifecycle). Claude Code's hook surface enables migrating 'always remember to X' rules from prompts to deterministic Python \u2014 auditable, versionable, per-project composable.",
+        "path": "memories/patterns/mem-027.md",
+        "confidence": 0.95,
+        "concepts": [
+          "hooks",
+          "architecture",
+          "claude-code",
+          "session-lifecycle",
+          "policy-vs-judgment",
+          "deterministic-rules",
+          "auditable-ai",
+          "versionable-workflow"
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
@@ -6532,7 +6563,8 @@
       "mem-014",
       "mem-016",
       "mem-020",
-      "mem-026"
+      "mem-026",
+      "TASK-38"
     ],
     "backend": [
       "TASK-16",
@@ -6756,7 +6788,8 @@
       "mem-007",
       "mem-008",
       "mem-009",
-      "mem-010"
+      "mem-010",
+      "TASK-38"
     ],
     "memory-id": [
       "mem-003"
@@ -6801,10 +6834,34 @@
       "mem-026"
     ],
     "hooks": [
-      "mem-026"
+      "mem-026",
+      "mem-027",
+      "TASK-38"
     ],
     "session-lifecycle": [
-      "mem-026"
+      "mem-026",
+      "mem-027",
+      "TASK-38"
+    ],
+    "architecture": [
+      "mem-027",
+      "TASK-38"
+    ],
+    "claude-code": [
+      "mem-027",
+      "TASK-38"
+    ],
+    "policy-vs-judgment": [
+      "mem-027"
+    ],
+    "deterministic-rules": [
+      "mem-027"
+    ],
+    "auditable-ai": [
+      "mem-027"
+    ],
+    "versionable-workflow": [
+      "mem-027"
     ]
   }
 }

@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.7.0] — 2026-05-11
+
+**Release workflow hardening + nav-simplify ROI design.** Replaced `softprops/action-gh-release@v2` with native `gh release create` — closes the last Node.js 20 deprecation warning by removing the third-party Node action entirely (uses the runner's pre-installed GitHub CLI). Design pass for `nav-simplify` complexity-cost scoring captured in TASK-37: cost/benefit ROI gate so the simplifier can decline to simplify when the math doesn't favor it (opt-in via `simplification.scoring.mode`; weights need real-data calibration before implementation).
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.7.0.md)
+
 ## [v6.6.0] — 2026-05-11
 
 **Release hygiene + Loop Mode flexibility.** Compact maintenance pass: GitHub Actions bumped to Node.js 24-ready versions (`checkout@v5`, `action-gh-release@v2`) ahead of June 2026 deprecation; `loop_mode.periodic_interval` (default 3) parameterizes the previously-hardcoded `iteration_approval: "periodic"` cadence for tunable overnight runs; `nav-multi` documents branch-per-run convention (`nav-multi/{SESSION_ID}`) for parallel workflow safety.

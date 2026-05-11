@@ -56,7 +56,7 @@
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1,
-    "last_check": "2026-05-11T22:01:56.966978"
+    "last_check": "2026-05-11T23:35:01.617694"
   },
   "compact_hook": {
     "enabled": true,
@@ -82,6 +82,7 @@
     "enabled": true,
     "warn_threshold": 3,
     "escalate_threshold": 5,
+    "strict_block": true,
     "allowlist": [
       "DEVELOPMENT-README.md",
       ".nav-config.json",

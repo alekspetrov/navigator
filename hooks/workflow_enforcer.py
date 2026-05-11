@@ -28,8 +28,20 @@ Output:
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
+
+# Sentinel wraps the stderr message so subsequent prompts that include the
+# block notice (Claude Code echoes blocked stderr into the next prompt's
+# context) can be stripped before trigger detection runs. Prevents the
+# recursive-block trap documented in mem-034.
+NAV_BLOCK_OPEN = "<nav-workflow-block>"
+NAV_BLOCK_CLOSE = "</nav-workflow-block>"
+NAV_BLOCK_PATTERN = re.compile(
+    re.escape(NAV_BLOCK_OPEN) + r".*?" + re.escape(NAV_BLOCK_CLOSE),
+    re.DOTALL,
+)
 
 # Import from nav-start functions
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "nav-start" / "functions"))
@@ -40,6 +52,21 @@ except ImportError:
     # Fallback if import fails
     def detect_workflow(msg):
         return {"loop_mode": False, "task_mode": False, "recommended_mode": "DIRECT"}
+
+
+def strip_block_messages(text: str) -> str:
+    """Strip prior Navigator block notices from the prompt before matching.
+
+    Claude Code echoes a blocked hook's stderr into the next prompt's context
+    (visible as 'Original prompt: ...'). If our own message mentioned a Loop
+    Mode trigger phrase, the next attempt would recursively re-trigger the
+    block. We wrap every block notice in <nav-workflow-block>...</nav-workflow-block>
+    sentinels so the next invocation can excise them before LOOP_TRIGGERS
+    matching runs. See mem-034.
+    """
+    if NAV_BLOCK_OPEN not in text:
+        return text
+    return NAV_BLOCK_PATTERN.sub("", text)
 
 
 def get_user_message() -> str:
@@ -54,14 +81,14 @@ def get_user_message() -> str:
                     data = json.loads(raw)
                     prompt = data.get("prompt") or data.get("user_message") or ""
                     if prompt:
-                        return prompt
+                        return strip_block_messages(prompt)
                 except json.JSONDecodeError:
-                    return raw
+                    return strip_block_messages(raw)
     except Exception:
         pass
 
     # Fallback to legacy env var
-    return os.environ.get("CLAUDE_USER_MESSAGE", "")
+    return strip_block_messages(os.environ.get("CLAUDE_USER_MESSAGE", ""))
 
 
 def check_config() -> dict:
@@ -107,52 +134,68 @@ def main():
     result = detect_workflow(message)
     task_mode_enabled = config.get("task_mode", {}).get("enabled", True)
 
-    warnings = []
-    if result["loop_mode"]:
-        trigger = result.get("loop_trigger", "unknown")
-        warnings.append(f"⚠️  LOOP MODE TRIGGER DETECTED: '{trigger}'")
-        warnings.append("   Show NAVIGATOR_STATUS blocks and use EXIT_SIGNAL.")
-
-    if result["task_mode"] and task_mode_enabled:
-        score = result.get("complexity", 0)
-        warnings.append(f"⚠️  TASK MODE RECOMMENDED: complexity={score}")
-        warnings.append("   Show phase tracking (RESEARCH → IMPL → VERIFY → COMPLETE).")
-
-    if warnings:
-        print("\n".join(warnings))
-        print("")
-        print("Remember to show WORKFLOW CHECK block!")
-        print("┌─────────────────────────────────────┐")
-        print("│ WORKFLOW CHECK                      │")
-        print("├─────────────────────────────────────┤")
-        print(f"│ Loop trigger: {'YES' if result['loop_mode'] else 'NO':17} │")
-        print(f"│ Complexity: {result.get('complexity', 0):<19} │")
-        print(f"│ Mode: {result['recommended_mode']:<24} │")
-        print("└─────────────────────────────────────┘")
-
-    # Hard-block gate (TASK-38 Phase 2). Only fires when:
-    #   - strict_block enabled
-    #   - current prompt has a Loop trigger
-    #   - prior turn state file confirms WORKFLOW CHECK was NOT shown
+    # Decide block first; soft-warn output is suppressed when blocking so the
+    # only echoed text is the sentinel-wrapped stderr (avoids leaking trigger
+    # substrings back into the next prompt). See mem-034.
+    will_block = False
     if strict_block and result["loop_mode"]:
         state = read_prior_turn_state()
         last_turn = state.get("last_turn") or {}
         check_shown = last_turn.get("check_shown")
-        # Only block when we have a definitive prior-turn signal saying "missed".
-        # Missing state file or unset value → soft warn (Phase 1 projects unaffected).
-        if check_shown is False:
+        will_block = check_shown is False
+
+    if not will_block:
+        warnings = []
+        if result["loop_mode"]:
             trigger = result.get("loop_trigger", "unknown")
-            sys.stderr.write(
-                "Navigator workflow_enforcer: blocked.\n"
-                f"  Reason: loop trigger '{trigger}' detected, but the prior "
-                "assistant turn did not show a WORKFLOW CHECK block "
-                "(.agent/.nav-workflow-state.json: check_shown=false).\n"
-                "  Action: emit the WORKFLOW CHECK block at the top of the next "
-                "response, then continue with NAVIGATOR_STATUS for Loop Mode.\n"
-                "  Opt-out: set workflow_enforcer_hook.strict_block=false in "
-                ".agent/.nav-config.json.\n"
-            )
-            sys.exit(2)
+            warnings.append(f"⚠️  LOOP MODE TRIGGER DETECTED: '{trigger}'")
+            warnings.append("   Show NAVIGATOR_STATUS blocks and use EXIT_SIGNAL.")
+
+        if result["task_mode"] and task_mode_enabled:
+            score = result.get("complexity", 0)
+            warnings.append(f"⚠️  TASK MODE RECOMMENDED: complexity={score}")
+            warnings.append("   Show phase tracking (RESEARCH → IMPL → VERIFY → COMPLETE).")
+
+        if warnings:
+            print("\n".join(warnings))
+            print("")
+            print("Remember to show WORKFLOW CHECK block!")
+            print("┌─────────────────────────────────────┐")
+            print("│ WORKFLOW CHECK                      │")
+            print("├─────────────────────────────────────┤")
+            print(f"│ Loop trigger: {'YES' if result['loop_mode'] else 'NO':17} │")
+            print(f"│ Complexity: {result.get('complexity', 0):<19} │")
+            print(f"│ Mode: {result['recommended_mode']:<24} │")
+            print("└─────────────────────────────────────┘")
+
+    # Hard-block gate (TASK-38 Phase 2). Fires only when state file confirms
+    # the prior assistant turn skipped the WORKFLOW CHECK block.
+    if will_block:
+        # Important: this message addresses the USER, not the assistant.
+        # UserPromptSubmit exit-2 blocks the prompt before the model runs,
+        # so any instruction here that asks Claude to "do X" is dead text.
+        # Avoid quoting any LOOP_TRIGGERS substring verbatim — Claude Code
+        # echoes blocked stderr into the next prompt context, which would
+        # recursively re-trigger the block. The sentinel below lets the
+        # next invocation strip this message before matching. See mem-034.
+        sys.stderr.write(
+            NAV_BLOCK_OPEN + "\n"
+            "Navigator workflow_enforcer: blocked.\n"
+            "  Why: the prior assistant turn skipped its required workflow "
+            "check block, but your prompt requests autonomous iteration.\n"
+            "  State: .agent/.nav-workflow-state.json check_shown=false\n"
+            "  How to proceed (your choice):\n"
+            "    1. Send any different prompt that does not request "
+            "autonomous iteration. The next assistant response will "
+            "restore state; then retry your original prompt.\n"
+            "    2. Edit .agent/.nav-workflow-state.json and set "
+            "last_turn.check_shown=true.\n"
+            "    3. Disable strict enforcement: set "
+            "workflow_enforcer_hook.strict_block=false in "
+            ".agent/.nav-config.json.\n"
+            + NAV_BLOCK_CLOSE + "\n"
+        )
+        sys.exit(2)
 
     sys.exit(0)
 

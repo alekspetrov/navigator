@@ -1090,5 +1090,5 @@ falls back to its manual marker-creation flow automatically.
 
 ---
 
-**Last Updated**: 2026-05-11 (v6.10.0 — PreCompact + PostCompact hooks)
+**Last Updated**: 2026-05-11 (v6.10.1 — generator + hook filename fixes)
 **Powered By**: Navigator (Complete Framework)

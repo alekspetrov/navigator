@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.10.1] — 2026-05-11
+
+**Bug fixes for code generators + hook filename.** Four fixes surfaced by a full workshop-prep audit. `frontend-component` template no longer leaves a bare interface identifier in generated TSX — `${PROPS_INTERFACE}` placeholder split into `${PROPS_INTERFACE_BLOCK}` (full body, with a sensible default) and `${PROPS_INTERFACE}` (name only for the `React.FC<>` type ref). `backend-endpoint` template no longer leaks an unevaluated JS ternary into generated Express routes — `${MIDDLEWARE_CHAIN ? MIDDLEWARE_CHAIN + ',' : ''}` replaced with a `${MIDDLEWARE_BLOCK}` that the generator pre-computes as either a clean middleware line or an empty string. `hooks/monitor-tokens.py` renamed to `hooks/token_monitor.py` so the filename matches both the in-tree settings template and the rest of the hook directory (`workflow_enforcer.py`, `nav_session_start.py`, `nav_pre_compact.py`, `nav_post_compact.py`) — previously, fresh installs configured Claude Code to call a file that didn't exist and token monitoring silently never ran. `nav-loop` `test_exit_gate.test_empty_dict` assertion synced with `TOTAL_INDICATORS=6` (was stale at 5). No new features, no behavior changes for working flows.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.10.1.md)
+
 ## [v6.10.0] — 2026-05-11
 
 **PreCompact + PostCompact hooks — compact-resilient markers.** Pairs with v6.9.0 SessionStart to close the session-lifecycle loop. Navigator state now survives every compact, including silent auto-compacts that users previously didn't even notice happening. New `hooks/nav_pre_compact.py` fires on every manual `/compact` or auto-compact: reads the JSONL transcript, runs the same heuristic summarizer as `marker_compressor.py`, captures git state + active tasks, writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md` and sets `.active`. The trigger token in the filename makes silent auto-compacts visible. New `hooks/nav_post_compact.py` appends Claude Code's official `compact_summary` to the same marker after compact completes, so restores get both heuristic and authoritative summaries. `nav-compact` skill Step 0 detects the hook and skips manual marker creation when installed (single source of truth). Opt-out via `compact_hook.enabled: false`; legacy projects fall back to manual nav-compact flow automatically.

@@ -339,10 +339,14 @@ settings.json.
 ```bash
 mkdir -p .claude
 
-# Backup existing settings (safety net)
+# Timestamped backup — never overwrites a prior backup. v6.10.2+
+# The first-ever upgrade's backup may contain the user's pre-Navigator hook
+# configuration; keep it around as the "pristine" restore point.
 if [ -f ".claude/settings.json" ]; then
-  cp .claude/settings.json .claude/settings.json.backup
-  echo "✓ Backed up .claude/settings.json → .claude/settings.json.backup"
+  BACKUP=".claude/settings.json.pre-upgrade.$(date +%Y%m%d-%H%M%S)"
+  cp .claude/settings.json "$BACKUP"
+  echo "✓ Backed up .claude/settings.json → $BACKUP"
+  echo "  (the first-ever pre-upgrade backup is your pristine pre-Navigator state — keep it)"
 fi
 
 # Resolve plugin dir

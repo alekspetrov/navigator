@@ -175,15 +175,78 @@ if [ ! -d "$PLUGIN_DIR" ]; then
   PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
 fi
 
-# Idempotent merge — preserves any existing user hooks
+# Safety: if user already has .claude/settings.json, surface any foreign hooks
+# and back up before merging. v6.10.2+
+if [ -f .claude/settings.json ]; then
+  FOREIGN_HOOKS=$(python3 - <<'PY' 2>/dev/null || true
+import json, sys
+try:
+    d = json.load(open(".claude/settings.json"))
+except Exception:
+    print(""); sys.exit(0)
+nav_marks = {"nav_session_start", "nav_pre_compact", "nav_post_compact",
+             "workflow_enforcer", "token_monitor", "monitor-tokens"}
+foreign = []
+for event, entries in (d.get("hooks") or {}).items():
+    if not isinstance(entries, list):
+        continue
+    for entry in entries:
+        for h in (entry.get("hooks") or []):
+            cmd = (h or {}).get("command", "")
+            if cmd and not any(m in cmd for m in nav_marks):
+                foreign.append(f"  {event}: {cmd[:80]}")
+print("\n".join(foreign))
+PY
+)
+  if [ -n "$FOREIGN_HOOKS" ]; then
+    echo "⚠️  Existing .claude/settings.json has hooks Navigator doesn't recognize:"
+    echo "$FOREIGN_HOOKS"
+    echo ""
+    echo "Navigator's merger preserves these (dedupe is by command string),"
+    echo "but back up first if anything looks off."
+    echo ""
+    # Skill should call AskUserQuestion here:
+    #   "Proceed with hook merge? Existing user hooks will be preserved."
+    #   [1] Yes, merge (timestamped backup will be created)
+    #   [2] No, abort init
+  fi
+
+  # Timestamped backup — never collides with prior backups
+  BACKUP=".claude/settings.json.pre-nav-init.$(date +%Y%m%d-%H%M%S)"
+  cp .claude/settings.json "$BACKUP"
+  echo "✓ Backed up existing settings → $BACKUP"
+fi
+
+# Idempotent atomic merge — preserves any existing user hooks
 python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
     .claude/settings.json \
     "$PLUGIN_DIR/templates/claude-settings-hooks.json"
 
-echo "✓ Claude Code hooks configured (SessionStart + token monitor)"
+echo "✓ Claude Code hooks configured (SessionStart + PreCompact + PostCompact + token monitor)"
 echo ""
-echo "⚠️  RESTART REQUIRED to activate SessionStart hook"
+echo "⚠️  RESTART REQUIRED to activate hooks"
 echo "   Claude Code caches hook definitions at session start."
+```
+
+**Skill orchestration** (the bash block above is illustrative — the skill
+should actually use AskUserQuestion when foreign hooks are detected):
+
+1. Run the foreign-hook detector silently.
+2. If output is non-empty: invoke AskUserQuestion with the detected hooks
+   listed in the question text. Options: `[1] Merge (recommended, backup
+   will be created)` / `[2] Abort init`.
+3. On confirm: take the timestamped backup, then run `settings_merger.py`.
+4. On abort: exit cleanly without touching `settings.json`.
+
+**Preview mode (optional)**: users who want to see the merged result before
+applying can pass `--preview` to nav-init, which dry-runs the merger:
+
+```bash
+python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
+    --dry-run .claude/settings.json \
+    "$PLUGIN_DIR/templates/claude-settings-hooks.json" \
+    > /tmp/nav-init-preview.json
+diff -u .claude/settings.json /tmp/nav-init-preview.json | head -80
 ```
 
 **What this does**:

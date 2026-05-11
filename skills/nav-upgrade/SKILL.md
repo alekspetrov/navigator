@@ -324,59 +324,71 @@ git commit -m "chore: update CLAUDE.md to Navigator v4.3.0"
 
 ---
 
-### Step 5: Setup Token Monitoring Hooks
+### Step 5: Install/Update Claude Code Hooks
 
-**Install or update project hooks** for token budget monitoring:
+**Install or merge Navigator hooks** into the project's `.claude/settings.json`.
+
+**v6.9.0+ adds the SessionStart hook** — auto-injects Navigator context at
+session start, eliminating ~6 Read tool calls. Existing projects must opt in
+the first time we touch their settings.json.
 
 ```bash
-# Create .claude directory if not exists
 mkdir -p .claude
 
-# Check if settings.json exists
+# Backup existing settings (safety net)
 if [ -f ".claude/settings.json" ]; then
-  # Backup existing settings
   cp .claude/settings.json .claude/settings.json.backup
-  echo "✓ Backed up existing .claude/settings.json"
+  echo "✓ Backed up .claude/settings.json → .claude/settings.json.backup"
 fi
 
-# Write hook configuration
-cat > .claude/settings.json << 'EOF'
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|Bash|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/monitor-tokens.py\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  }
-}
-EOF
-
-echo "✓ Token monitoring hook installed"
+# Resolve plugin dir
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
+if [ ! -d "$PLUGIN_DIR" ]; then
+  PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
+fi
 ```
+
+**Ask user once** (only if SessionStart hook not already installed):
+
+Use AskUserQuestion:
+```
+Activate zero-Read session start hook? (v6.9.0+)
+
+This injects Navigator context (navigator + active marker + config + graph)
+directly into your session, so the nav-start skill doesn't need to Read 6
+files. Eliminates ~1.5-2k tokens of tool-call ceremony per session start.
+
+Idempotent — preserves your existing hooks. Requires a Claude Code restart
+to take effect.
+
+[1] Yes, install SessionStart hook (recommended)
+[2] No, keep PostToolUse only
+```
+
+**If user accepts** (or this is a fresh init):
+
+```bash
+python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
+    .claude/settings.json \
+    "$PLUGIN_DIR/templates/claude-settings-hooks.json"
+
+echo ""
+echo "✓ SessionStart hook + token monitor installed"
+echo ""
+echo "⚠️  RESTART REQUIRED to activate SessionStart hook"
+echo "   Claude Code caches hook definitions at session start."
+echo "   Restart Claude Code, then 'Start my Navigator session' to verify."
+```
+
+**If user declines**: write a fragment containing only the PostToolUse block
+(strip the SessionStart entry before merging).
 
 **What this enables**:
-- Monitors context usage after each tool call
-- Warns at 70% usage, critical alert at 85%
-- Suggests `/nav:compact` when approaching limits
-- Prevents context crashes during long sessions
+- **SessionStart hook**: zero-Read session start, ~6 Read calls eliminated
+- **PostToolUse hook**: context budget monitoring (warn at 70%, alert at 85%)
+- **PreToolUse hook**: workflow enforcer (WORKFLOW CHECK block on every task)
 
-**Output**:
-```
-✓ Token monitoring hook installed
-
-New in v4.6.0:
-  - Automatic context budget monitoring
-  - Warns before you hit context limits
-  - Suggests compact at optimal times
-```
+**Idempotent**: `settings_merger.py` dedupes by command string. Safe to re-run.
 
 ---
 

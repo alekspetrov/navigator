@@ -52,7 +52,7 @@ Creates the Navigator documentation structure (`.agent/`) in a new project, copi
 3. **Creates `.claude/` directory with hooks**:
    ```
    .claude/
-   └── settings.json    # Token monitoring hook configuration
+   └── settings.json    # SessionStart context injection + token monitor
    ```
 4. **Copies templates**: DEVELOPMENT-README.md, config, Grafana setup
 5. **Auto-detects project info**: Name, tech stack (from package.json if available)
@@ -157,39 +157,43 @@ If `CLAUDE.md` doesn't exist:
 - Copy `templates/CLAUDE.md` to project root
 - Customize with project info
 
-### 6. Setup Token Monitoring Hook
+### 6. Setup Claude Code Hooks (SessionStart + Token Monitor)
 
-Create `.claude/settings.json` for token budget monitoring:
+Merge Navigator's hook configuration into `.claude/settings.json`. This installs:
+
+1. **SessionStart hook** — injects Navigator context (navigator + active marker + config + graph + profile) directly into the session, eliminating ~6 Read tool calls at session start (v6.9.0+)
+2. **PostToolUse token monitor** — warns at 70% / 85% context usage
 
 ```bash
 mkdir -p .claude
 
-cat > .claude/settings.json << 'EOF'
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|Bash|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/monitor-tokens.py\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  }
-}
-EOF
+# Resolve plugin dir (provides templates/ + skills/nav-init/functions/)
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
+if [ ! -d "$PLUGIN_DIR" ]; then
+  PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
+fi
 
-echo "✓ Token monitoring hook configured"
+# Idempotent merge — preserves any existing user hooks
+python3 "$PLUGIN_DIR/skills/nav-init/functions/settings_merger.py" \
+    .claude/settings.json \
+    "$PLUGIN_DIR/templates/claude-settings-hooks.json"
+
+echo "✓ Claude Code hooks configured (SessionStart + token monitor)"
+echo ""
+echo "⚠️  RESTART REQUIRED to activate SessionStart hook"
+echo "   Claude Code caches hook definitions at session start."
 ```
 
 **What this does**:
-- Monitors context usage after each tool call
-- Warns at 70% usage, critical alert at 85%
-- Suggests `/nav:compact` when approaching limits
+- **SessionStart hook**: Auto-injects Navigator state on every session start. The `nav-start` skill becomes a display-only renderer over already-loaded context (saves ~1.5-2k tokens of tool-call ceremony per session).
+- **PostToolUse hook**: Monitors context usage after each tool call. Warns at 70%, critical alert at 85%, suggests compact when approaching limits.
+
+**Idempotent**: Safe to re-run — `settings_merger.py` deduplicates by command string and never clobbers user-defined hooks.
+
+**Opt-out**: Users can disable the SessionStart injection via `.agent/.nav-config.json`:
+```json
+{ "session_start_hook": { "enabled": false } }
+```
 
 ### 7. Create .gitignore Entries
 
@@ -215,7 +219,7 @@ Created structure:
   📁 .agent/grafana/            Metrics dashboard
   📄 .agent/.nav-config.json    Configuration
   📁 .claude/                   Claude Code hooks
-  📄 .claude/settings.json      Token monitoring config
+  📄 .claude/settings.json      SessionStart context injection + token monitor
   📄 CLAUDE.md                  Updated with Navigator workflow
 
 Next steps:
@@ -282,6 +286,27 @@ def customize_template(template_content: str, project_info: dict) -> str:
     Returns customized template content.
     """
 ```
+
+### `settings_merger.py`
+
+```python
+def merge(target_path: Path, fragment: dict) -> dict:
+    """
+    Idempotent JSON merge for .claude/settings.json.
+
+    - If target doesn't exist: create from fragment.
+    - If target exists: deep-merge `hooks` arrays by event name; dedupe entries
+      by command string. Preserves user-defined hooks and other top-level keys.
+    - Refuses to clobber invalid JSON (exits 2).
+
+    CLI:
+        python3 settings_merger.py .claude/settings.json fragment.json
+        python3 settings_merger.py .claude/settings.json -  # fragment on stdin
+    """
+```
+
+Used by nav-init Step 6 and nav-upgrade Step 5 to install the SessionStart
+hook + PostToolUse token monitor without clobbering existing user config.
 
 ## Examples
 

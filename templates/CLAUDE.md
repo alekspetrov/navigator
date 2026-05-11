@@ -149,6 +149,11 @@ Navigator config in `.agent/.nav-config.json`:
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1
+  },
+  "session_start_hook": {
+    "enabled": true,
+    "include_sections": ["navigator", "marker", "config", "graph", "profile", "tasks", "auto_update"],
+    "char_budget": 9500
   }
 }
 ```

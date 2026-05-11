@@ -25,6 +25,40 @@ Invoke this skill when the user:
 
 ## Execution Steps
 
+### Step 0: Detect SessionStart Hook Injection (Fast Path) [v6.9.0+]
+
+**Before doing anything else**, check whether the SessionStart hook has already
+injected Navigator context into this session. The hook emits a sentinel string
+on success:
+
+```
+<!-- nav-session-start-injected:v1 -->
+```
+
+**If the sentinel is present in your system context** (it appears inside a
+SessionStart system reminder block at the very top of the conversation):
+
+→ **Fast path activated**. Do NOT execute Steps 1–7. The data those steps
+  would Read is already in your context window. Skip directly to **Step 8
+  (Display Session Summary)** and render it using the injected data.
+
+  This eliminates ~6 Read tool invocations per session start and saves
+  ~1.5-2k tokens of tool-call ceremony. The user-visible output must be
+  **byte-identical** to the legacy path — they should not be able to tell
+  which mode produced it.
+
+**If the sentinel is absent** (legacy project without the hook, hook disabled
+in `.agent/.nav-config.json`, or hook crashed):
+
+→ **Legacy path**. Execute Steps 1–7 as documented below. Same behavior as
+  pre-v6.9.0.
+
+**Detection rule of thumb**: If you can read the string `nav-session-start-injected`
+anywhere in the system reminders that opened this conversation, you are on the
+fast path.
+
+---
+
 ### Step 1: Check Navigator Version
 
 Check if user is running latest Navigator version:
@@ -534,6 +568,10 @@ This skill uses:
 - **.agent/DEVELOPMENT-README.md**: Navigator content
 - **.agent/.nav-config.json**: Configuration
 - **.agent/.context-markers/.active**: Active marker check
+
+**Fast-path source** (v6.9.0+): SessionStart hook at `hooks/nav_session_start.py`
+pre-loads all of the above into the session before the skill runs. See
+`nav-init` Step 6 for how it's wired into `.claude/settings.json`.
 
 ## Error Handling
 

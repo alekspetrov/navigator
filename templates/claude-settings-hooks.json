@@ -1,13 +1,24 @@
 {
   "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/settings.json",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR}/hooks/nav_session_start.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write|Bash|Task",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PROJECT_ROOT}/hooks/workflow_enforcer.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/workflow_enforcer.py\"",
             "timeout": 5
           }
         ]
@@ -19,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PROJECT_ROOT}/hooks/token_monitor.py\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/token_monitor.py\"",
             "timeout": 5
           }
         ]

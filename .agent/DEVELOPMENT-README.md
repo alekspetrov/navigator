@@ -998,7 +998,46 @@ Navigator v5.3 uses natural language - no commands needed!
 
 ---
 
+## 🚄 SessionStart Hook (v6.9.0+)
+
+Navigator now ships a Claude Code `SessionStart` hook that **injects** navigator
+content into the session at startup instead of having the LLM `Read` it.
+
+**What it does**:
+- Runs `hooks/nav_session_start.py` automatically when Claude Code opens the project
+- Reads `.agent/DEVELOPMENT-README.md`, `.context-markers/.active`, `.nav-config.json`,
+  knowledge graph stats, user profile, auto-update status, open tasks
+- Emits a JSON payload with `additionalContext` — Claude Code injects it as a
+  system reminder before the first user turn
+- Emits sentinel `<!-- nav-session-start-injected:v1 -->` so `nav-start` can detect it
+  and skip its own Reads
+
+**Effect on token budget**:
+- ~6 fewer `Read` tool invocations per session start
+- ~1.5–2k tokens of tool-call ceremony eliminated
+- User-visible session summary is byte-identical to legacy nav-start output
+
+**Configuration** (`.agent/.nav-config.json`):
+```json
+"session_start_hook": {
+  "enabled": true,
+  "include_sections": ["navigator", "marker", "config", "graph", "profile", "tasks", "auto_update"],
+  "char_budget": 9500
+}
+```
+
+**Wiring**:
+- `.claude/settings.json` registers the hook (created/merged by `nav-init` and `nav-upgrade`)
+- Plugin path resolved via `${CLAUDE_PLUGIN_DIR}` — no per-project script copy needed
+- Idempotent: `skills/nav-init/functions/settings_merger.py` dedupes by command string
+
+**Disable**:
+Set `session_start_hook.enabled: false` in `.agent/.nav-config.json` — `nav-start`
+will fall back to the legacy Read-based path automatically.
+
+---
+
 **This documentation system keeps plugin development context-efficient while maintaining comprehensive knowledge.**
 
-**Last Updated**: 2026-05-11 (v6.3.0)
+**Last Updated**: 2026-05-11 (v6.9.0 — SessionStart hook)
 **Powered By**: Navigator (Complete Framework)

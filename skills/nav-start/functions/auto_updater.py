@@ -30,7 +30,17 @@ from urllib import request
 # --- Version Detection (from nav-upgrade/version_detector.py) ---
 
 def get_current_version() -> Optional[str]:
-    """Get currently installed Navigator version from plugin list."""
+    """Get currently installed Navigator version from plugin list.
+
+    `claude plugin list` outputs a multi-line block per plugin:
+        ❯ navigator@navigator-marketplace
+          Version: 6.10.1
+          Scope: user
+          Status: ✔ enabled
+
+    The plugin name and version are on separate lines, so scan forward
+    after finding the navigator entry until a Version: line appears.
+    """
     try:
         result = subprocess.run(
             ['claude', 'plugin', 'list'],
@@ -39,11 +49,18 @@ def get_current_version() -> Optional[str]:
             timeout=10
         )
 
-        for line in result.stdout.split('\n'):
-            if 'navigator' in line.lower():
-                match = re.search(r'v?(\d+\.\d+\.\d+)', line)
+        lines = result.stdout.split('\n')
+        in_navigator_block = False
+        for line in lines:
+            if 'navigator' in line.lower() and '@' in line:
+                in_navigator_block = True
+                continue
+            if in_navigator_block:
+                match = re.search(r'Version:\s*v?(\d+\.\d+\.\d+)', line)
                 if match:
                     return match.group(1)
+                if line.strip().startswith('❯'):
+                    in_navigator_block = False
         return None
     except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
         return None
@@ -95,11 +112,50 @@ def compare_versions(current: str, latest: str) -> int:
 
 # --- Plugin Update (from nav-upgrade/plugin_updater.py) ---
 
-def update_plugin_via_claude() -> Dict:
-    """Execute plugin update command."""
+MARKETPLACE_NAME = 'navigator-marketplace'
+PLUGIN_QUALIFIED = f'navigator@{MARKETPLACE_NAME}'
+
+
+def refresh_marketplace() -> Dict:
+    """Refresh local marketplace cache so `plugin update` can see new releases.
+
+    Without this step, Claude Code's marketplace cache stays stale and
+    `claude plugin update` reports "no update available" even when a new
+    release is published on GitHub.
+    """
     try:
         result = subprocess.run(
-            ['claude', 'plugin', 'update', 'navigator'],
+            ['claude', 'plugin', 'marketplace', 'update', MARKETPLACE_NAME],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+        return {
+            'success': result.returncode == 0,
+            'output': result.stdout,
+            'error': result.stderr,
+        }
+    except subprocess.TimeoutExpired:
+        return {'success': False, 'error': 'Marketplace refresh timed out (30s)'}
+    except FileNotFoundError:
+        return {'success': False, 'error': 'claude command not found'}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
+def update_plugin_via_claude() -> Dict:
+    """Refresh marketplace cache, then execute plugin update."""
+    refresh = refresh_marketplace()
+    if not refresh['success']:
+        return {
+            'success': False,
+            'error': f"Marketplace refresh failed: {refresh.get('error', 'unknown')}",
+            'method': 'update'
+        }
+
+    try:
+        result = subprocess.run(
+            ['claude', 'plugin', 'update', PLUGIN_QUALIFIED],
             capture_output=True,
             text=True,
             timeout=60
@@ -121,9 +177,8 @@ def update_plugin_via_claude() -> Dict:
 def reinstall_plugin() -> Dict:
     """Fallback: uninstall and reinstall Navigator."""
     try:
-        # Uninstall
         uninstall_result = subprocess.run(
-            ['claude', 'plugin', 'uninstall', 'navigator'],
+            ['claude', 'plugin', 'uninstall', PLUGIN_QUALIFIED],
             capture_output=True,
             text=True,
             timeout=30
@@ -137,7 +192,6 @@ def reinstall_plugin() -> Dict:
 
         time.sleep(2)
 
-        # Add from marketplace
         add_result = subprocess.run(
             ['claude', 'plugin', 'marketplace', 'add', 'alekspetrov/navigator'],
             capture_output=True,
@@ -153,9 +207,8 @@ def reinstall_plugin() -> Dict:
 
         time.sleep(2)
 
-        # Install
         install_result = subprocess.run(
-            ['claude', 'plugin', 'install', 'navigator'],
+            ['claude', 'plugin', 'install', PLUGIN_QUALIFIED],
             capture_output=True,
             text=True,
             timeout=60

@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.11.1] — 2026-05-11
+
+**Phase 2 lifecycle hook — first blocking hook in Navigator (TASK-38).** `hooks/workflow_enforcer.py` upgraded from soft-warn (`exit 0`) to hard-block (`exit 2`) when (a) prompt contains a Loop Mode trigger, (b) `.agent/.nav-workflow-state.json` shows prior-turn `check_shown=false`, and (c) `workflow_enforcer_hook.strict_block=true` (default). Gated on the state file written by v6.11.0's Opp 2 writer — the block fires only when the prior turn empirically skipped the WORKFLOW CHECK block, keeping false-positive rate near zero. Missing state file falls back to soft-warn (Phase 1 projects unaffected by upgrade). Stderr message surfaced to Claude includes reason + recovery action + opt-out path. New config section `workflow_enforcer_hook.{enabled, strict_block}` in `.agent/.nav-config.json`. 5/5 smoke-test scenarios pass. Architectural precedent established: Navigator hooks may block, but only when a deterministic state file confirms the violation.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.11.1.md)
+
 ## [v6.11.0] — 2026-05-11
 
 **Phase 1 lifecycle hooks — TASK-38 hook-migration roadmap kickoff.** Three new silent side-effect hooks migrate "model, remember to..." rules from CLAUDE.md prose into deterministic Python. `hooks/nav_task_graph_sync.py` (Opp 4) fires `PostToolUse` on `Write|Edit` matching `.agent/tasks/TASK-*.md` — runs `task_to_graph.py --action add` to upsert the task into the knowledge graph. `hooks/nav_workflow_state.py` (Opp 2) fires every `Stop` — reads the last assistant message, records `check_shown`/`nav_status_shown`/`loop_phase` into `.agent/.nav-workflow-state.json`. Silent infrastructure for the Phase 2 blocking workflow_enforcer. `hooks/nav_profile_sync.py` (Opp 3) fires `PostToolUse` on writes to `.user-profile.json` — diffs corrections array against `last_synced_count`, runs `correction_to_memory.py` only when array grew. Zero injected tokens across all three hooks. Q1 verified: `add_node` upserts by node_id (no duplicates). All 11 settings_merger tests still pass. Smoke-tested live: Opp 3 synced 4 backlogged corrections to the graph as a side effect of being wired up.

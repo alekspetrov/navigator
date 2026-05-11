@@ -1,5 +1,5 @@
 {
-  "version": "6.11.0",
+  "version": "6.11.1",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -73,6 +73,10 @@
   },
   "profile_sync_hook": {
     "enabled": true
+  },
+  "workflow_enforcer_hook": {
+    "enabled": true,
+    "strict_block": true
   },
   "knowledge_graph": {
     "enabled": true,

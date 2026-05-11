@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T22:11:30.534514Z",
+  "last_updated": "2026-05-11T22:37:54.167698Z",
   "stats": {
-    "total_nodes": 121,
-    "total_edges": 823,
-    "memory_count": 31
+    "total_nodes": 123,
+    "total_edges": 825,
+    "memory_count": 33
   },
   "nodes": {
     "tasks": {
@@ -1636,6 +1636,36 @@
         "confidence": 0.9,
         "concepts": [
           "general"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-032": {
+        "type": "pitfall",
+        "summary": "Next.js 15+ fetch() is uncached by default \u2014 the opposite of v14. Pages re-render on every request unless you opt into caching with { next: { revalidate: N } } or { cache: 'force-cache' }. Most blog posts and muscle memory predate this flip. Lead templates with explicit { cache: 'no-store' } when SSR is the intent. See .agent/philosophy/NEXTJS-PATTERNS.md \u00a7D.",
+        "path": "memories/pitfalls/mem-032.md",
+        "confidence": 0.95,
+        "concepts": [
+          "nextjs",
+          "fetch",
+          "caching",
+          "ssr",
+          "workshop"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-033": {
+        "type": "pitfall",
+        "summary": "Next.js 16 renames middleware.ts to proxy.ts at project root. Same matcher API and NextRequest/NextResponse, but middleware.ts is deprecated. Codemod: npx @next/codemod@canary middleware-to-proxy . Also in v15+: params and searchParams are Promises \u2014 must await them in pages, layouts, and route handlers. Route Handler context type is inferred from the file path: collection routes get Promise<{}>, dynamic routes get Promise<{id: string}>. Hardcoding the dynamic shape on a collection route fails  type-check. See .agent/philosophy/NEXTJS-PATTERNS.md \u00a7A, \u00a7E, \u00a7H.",
+        "path": "memories/pitfalls/mem-033.md",
+        "confidence": 0.95,
+        "concepts": [
+          "nextjs",
+          "middleware",
+          "proxy",
+          "routing",
+          "workshop"
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
@@ -6280,6 +6310,16 @@
       "from": "TASK-38",
       "to": "workflow",
       "type": "implements"
+    },
+    {
+      "from": "mem-032",
+      "to": "TASK-39",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-033",
+      "to": "TASK-39",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -6977,6 +7017,32 @@
       "mem-029",
       "mem-030",
       "mem-031"
+    ],
+    "nextjs": [
+      "mem-032",
+      "mem-033"
+    ],
+    "fetch": [
+      "mem-032"
+    ],
+    "caching": [
+      "mem-032"
+    ],
+    "ssr": [
+      "mem-032"
+    ],
+    "workshop": [
+      "mem-032",
+      "mem-033"
+    ],
+    "middleware": [
+      "mem-033"
+    ],
+    "proxy": [
+      "mem-033"
+    ],
+    "routing": [
+      "mem-033"
     ]
   }
 }

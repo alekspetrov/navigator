@@ -1,5 +1,5 @@
 {
-  "version": "6.11.2",
+  "version": "6.12.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -77,6 +77,17 @@
   "workflow_enforcer_hook": {
     "enabled": true,
     "strict_block": true
+  },
+  "read_guard_hook": {
+    "enabled": true,
+    "warn_threshold": 3,
+    "escalate_threshold": 5,
+    "allowlist": [
+      "DEVELOPMENT-README.md",
+      ".nav-config.json",
+      ".user-profile.json",
+      "knowledge/graph.json"
+    ]
   },
   "knowledge_graph": {
     "enabled": true,

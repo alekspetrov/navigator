@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.12.0] — 2026-05-11
+
+**Phase 3 of TASK-38 begins — `.agent/` bulk-read guard (Opp 6).** New `hooks/nav_read_guard.py` fires on `PreToolUse` Read, counts non-allowlisted `.agent/` reads per turn in `.agent/.nav-read-counter.json`. Warns at 3+ ("use a Task or Explore agent"), escalates at 5+ ("matches the bulk-load anti-pattern, risk: 50k+ tokens"). Allowlist exempts the four files Navigator itself reads on legitimate session start: `DEVELOPMENT-README.md`, `.nav-config.json`, `.user-profile.json`, `knowledge/graph.json`. `hooks/nav_workflow_state.py` extended with `_reset_read_counter()` so the counter clears every turn. Ships warn-only — a raw read count fails mem-027's three-condition gate (no state-file confirmation of "model is actively bulk-loading"); a blocking variant is deferred behind a future `strict_block` flag if telemetry shows warnings are ignored. Dual-channel output (`hookSpecificOutput.additionalContext` + plain stdout) for OQ-2 defensive. 7/7 smoke-test scenarios pass including the recursive-trigger check (warn messages contain no LOOP_TRIGGERS). Opp 5 (commit reminder) targets v6.12.1.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.12.0.md)
+
 ## [v6.11.2] — 2026-05-11
 
 **workflow_enforcer UX fixes after live verification.** Shipped right after v6.11.1 once the first real block surfaced two issues. (1) The stderr "Action:" line addressed Claude — but `UserPromptSubmit` exit 2 blocks the prompt *before* the model runs, so any instruction to Claude was dead text. Message rewritten to address the user with three concrete recovery options. (2) The stderr quoted the matched trigger phrase verbatim (e.g., `loop trigger 'run until done' detected`). Claude Code echoes blocked stderr into the next prompt's context — so the next prompt re-matched the same trigger and re-blocked. Observed live as nested blocks. Fix: wrap stderr in `<nav-workflow-block>...</nav-workflow-block>` sentinel; hook strips sentinel-wrapped sections from incoming prompts before LOOP_TRIGGERS matching runs. Soft-warn stdout suppressed when blocking (was leaking the trigger phrase). Pitfall captured at `mem-034`. 3/3 scenarios green including the explicit recursive-block case.

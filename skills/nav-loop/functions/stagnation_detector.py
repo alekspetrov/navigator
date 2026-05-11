@@ -83,10 +83,16 @@ def detect_stagnation(
     files_changed: List[str],
     history: List[str],
     threshold: int = 3,
-    error_state: str = None
+    error_state: str = None,
+    autonomous: bool = False,
+    diversify_strategy: str = "combine"
 ) -> dict:
     """
     Full stagnation detection.
+
+    When `autonomous=True`, the recommendation directs the caller to auto-diversify
+    using `diversify_strategy` (combine/radical/reread) rather than pausing for
+    user intervention. This matches the `never_pause_on_stagnation` config flag.
 
     Returns dict with:
         - current_hash: str
@@ -94,6 +100,8 @@ def detect_stagnation(
         - consecutive_count: int
         - threshold: int
         - recommendation: str
+        - autonomous: bool
+        - diversify_strategy: str (only meaningful when autonomous=True and is_stagnant=True)
     """
     current_hash = calculate_state_hash(
         phase=phase,
@@ -110,7 +118,10 @@ def detect_stagnation(
 
     # Generate recommendation
     if is_stagnant:
-        recommendation = "PAUSE: Same state detected. User intervention needed."
+        if autonomous:
+            recommendation = f"AUTO-DIVERSIFY: Same state detected. Apply '{diversify_strategy}' strategy and continue."
+        else:
+            recommendation = "PAUSE: Same state detected. User intervention needed."
     elif consecutive >= threshold - 1:
         recommendation = "WARNING: Approaching stagnation threshold."
     else:
@@ -123,6 +134,8 @@ def detect_stagnation(
         "consecutive_count": consecutive,
         "threshold": threshold,
         "recommendation": recommendation,
+        "autonomous": autonomous,
+        "diversify_strategy": diversify_strategy if autonomous else None,
         "state_components": {
             "phase": phase,
             "met_indicators": [k for k, v in indicators.items() if v],
@@ -147,6 +160,12 @@ def main():
                         help="Stagnation threshold (default: 3)")
     parser.add_argument("--error-state", default=None,
                         help="Current error state if any")
+    parser.add_argument("--autonomous", action="store_true",
+                        help="Autonomous mode: emit AUTO-DIVERSIFY instead of PAUSE on stagnation")
+    parser.add_argument("--diversify-strategy",
+                        choices=["combine", "radical", "reread"],
+                        default="combine",
+                        help="Strategy to suggest when autonomous + stagnant (default: combine)")
     parser.add_argument("--output", choices=["json", "text"], default="json",
                         help="Output format")
 
@@ -166,7 +185,9 @@ def main():
         files_changed=files_changed,
         history=history,
         threshold=args.threshold,
-        error_state=args.error_state
+        error_state=args.error_state,
+        autonomous=args.autonomous,
+        diversify_strategy=args.diversify_strategy
     )
 
     if args.output == "json":

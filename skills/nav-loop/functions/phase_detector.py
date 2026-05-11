@@ -25,6 +25,12 @@ import json
 import sys
 from typing import List, Optional
 
+# Shared constants — keep in sync with exit_gate.py and SKILL.md "Completion indicators" list.
+# Documented indicators: code_committed, tests_passing, code_simplified, docs_updated,
+# ticket_closed, marker_created.
+TOTAL_INDICATORS = 6
+COMPLETE_THRESHOLD = 4  # Strong-signal threshold for COMPLETE phase (higher than exit_gate's min)
+
 
 def detect_phase(
     files_read: List[str],
@@ -45,13 +51,14 @@ def detect_phase(
     """
     indicators = indicators or {}
     met_count = sum(1 for v in indicators.values() if v)
+    total = len(indicators) if indicators else TOTAL_INDICATORS
 
     # COMPLETE: Exit conditions met
-    if met_count >= 4 and exit_signal:
+    if met_count >= COMPLETE_THRESHOLD and exit_signal:
         return {
             "phase": "COMPLETE",
             "confidence": 1.0,
-            "reason": f"Exit conditions met ({met_count}/5 indicators + EXIT_SIGNAL)",
+            "reason": f"Exit conditions met ({met_count}/{total} indicators + EXIT_SIGNAL)",
             "next_expected": "Execute autonomous completion protocol"
         }
 

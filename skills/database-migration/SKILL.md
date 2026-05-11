@@ -9,6 +9,8 @@ version: 2.0.0
 
 Generate database migrations with rollback capability for schema changes, with built-in ToM verification for safe database operations.
 
+> **Implementation note**: This skill uses direct `Write()` calls with inline templates (see Steps 3–4 and "Schema Change Templates" section below). Unlike `frontend-component` and `backend-endpoint`, there are no Python helper functions — the skill is prose-driven by design, since migration generation is highly schema-specific and benefits from inline framework templates. Future work (tracked for v6.6.0) may extract a timestamp generator and per-framework templates.
+
 ## When to Invoke
 
 Auto-invoke when user mentions:

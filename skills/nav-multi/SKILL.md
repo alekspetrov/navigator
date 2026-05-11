@@ -110,7 +110,9 @@ Which workflow type?
 
 ```bash
 TASK_NUM=$(echo "$TASK_ID" | grep -oE '[0-9]+' || echo "0")
-SESSION_ID="task-${TASK_NUM}-$(date +%s)"
+# Append PID to prevent collision when two parallel runs start in the same second
+# without a TASK_ID (both would resolve to TASK_NUM=0).
+SESSION_ID="task-${TASK_NUM}-$(date +%s)-$$"
 echo "📌 Session: $SESSION_ID"
 ```
 

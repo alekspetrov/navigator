@@ -11,21 +11,19 @@ The hard enforcement is in CLAUDE.md requiring WORKFLOW CHECK block.
 Usage (in .claude/settings.json):
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [{
-          "type": "command",
-          "command": "python3 hooks/workflow_enforcer.py",
-          "timeout": 5
-        }]
-      }
-    ]
+    "UserPromptSubmit": [{
+      "hooks": [{
+        "type": "command",
+        "command": "python3 hooks/workflow_enforcer.py",
+        "timeout": 5
+      }]
+    }]
   }
 }
 
-Environment:
-    CLAUDE_USER_MESSAGE: The user's original message (if available)
+Input (from Claude Code):
+    stdin JSON: {"prompt": "..."} for UserPromptSubmit
+    Fallback: CLAUDE_USER_MESSAGE env var (legacy)
 
 Output:
     Prints warning if workflow mode should be active but wasn't detected.
@@ -48,21 +46,25 @@ except ImportError:
 
 
 def get_user_message() -> str:
-    """Get user message from environment or stdin."""
-    # Try environment variable first
-    msg = os.environ.get("CLAUDE_USER_MESSAGE", "")
-    if msg:
-        return msg
-
-    # Try stdin (non-blocking)
+    """Get user message from stdin JSON (UserPromptSubmit) or env (legacy)."""
+    # Try stdin JSON first (Claude Code UserPromptSubmit format)
     try:
         import select
         if select.select([sys.stdin], [], [], 0)[0]:
-            return sys.stdin.read().strip()
-    except:
+            raw = sys.stdin.read().strip()
+            if raw:
+                try:
+                    data = json.loads(raw)
+                    prompt = data.get("prompt") or data.get("user_message") or ""
+                    if prompt:
+                        return prompt
+                except json.JSONDecodeError:
+                    return raw
+    except Exception:
         pass
 
-    return ""
+    # Fallback to legacy env var
+    return os.environ.get("CLAUDE_USER_MESSAGE", "")
 
 
 def check_config() -> dict:

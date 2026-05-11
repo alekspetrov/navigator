@@ -21,11 +21,17 @@ import json
 import sys
 from typing import Tuple
 
+# Shared constants — keep in sync with phase_detector.py and SKILL.md.
+# Documented indicators: code_committed, tests_passing, code_simplified, docs_updated,
+# ticket_closed, marker_created.
+TOTAL_INDICATORS = 6
+MIN_HEURISTICS_DEFAULT = 2  # Minimum indicators to allow exit (lower than COMPLETE_THRESHOLD)
+
 
 def count_indicators(indicators: dict) -> Tuple[int, int]:
     """Count met indicators vs total."""
     if not indicators:
-        return 0, 5
+        return 0, TOTAL_INDICATORS
 
     met = sum(1 for v in indicators.values() if v)
     total = len(indicators)
@@ -35,7 +41,7 @@ def count_indicators(indicators: dict) -> Tuple[int, int]:
 def evaluate_exit(
     indicators: dict,
     exit_signal: bool,
-    min_heuristics: int = 2,
+    min_heuristics: int = MIN_HEURISTICS_DEFAULT,
     require_explicit: bool = True
 ) -> dict:
     """
@@ -99,8 +105,8 @@ def main():
                         help="JSON object of indicator states")
     parser.add_argument("--exit-signal", action="store_true",
                         help="Whether EXIT_SIGNAL was explicitly set")
-    parser.add_argument("--min-heuristics", type=int, default=2,
-                        help="Minimum indicators required (default: 2)")
+    parser.add_argument("--min-heuristics", type=int, default=MIN_HEURISTICS_DEFAULT,
+                        help=f"Minimum indicators required (default: {MIN_HEURISTICS_DEFAULT})")
     parser.add_argument("--no-require-explicit", action="store_true",
                         help="Don't require explicit EXIT_SIGNAL")
     parser.add_argument("--output", choices=["json", "text"], default="json",

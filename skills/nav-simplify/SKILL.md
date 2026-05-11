@@ -63,7 +63,7 @@ Check for project-specific configuration:
 
 ```bash
 if [ -f ".agent/.nav-config.json" ]; then
-  cat .agent/.nav-config.json | grep -A 10 '"simplification"'
+  python3 -c "import json; c=json.load(open('.agent/.nav-config.json')); s=c.get('simplification',{}); print('auto_apply=' + str(s.get('auto_apply', False)).lower()); print('enabled=' + str(s.get('enabled', True)).lower())"
 fi
 ```
 
@@ -72,14 +72,45 @@ Default configuration:
 {
   "simplification": {
     "enabled": true,
-    "trigger": "manual",
+    "trigger": "post-implementation",
     "scope": "modified",
     "model": "opus",
     "skip_patterns": ["*.test.*", "*.spec.*", "*.md", "*.json", "*.yaml"],
     "max_file_size": 50000,
+    "auto_apply": false,
     "preserve_comments": true
   }
 }
+```
+
+#### Autonomous context check (CRITICAL)
+
+After loading config, determine the invocation mode:
+
+**Autonomous** (no human in the loop):
+- Invoked from `nav-loop` VERIFY or COMPLETE phase
+- Invoked from `nav-task-mode` COMPLETE phase
+- `NAV_AUTONOMOUS=1` env var set
+- Triggered by autonomous-completion protocol
+
+**Interactive** (human reviewing):
+- Direct user request ("simplify this code")
+- Mid-implementation manual invocation
+
+**Decision matrix**:
+
+| `auto_apply` | Context | Action |
+|---|---|---|
+| `true` | autonomous | Apply directly (Step 7 silent) |
+| `true` | interactive | Apply directly, show summary |
+| `false` | autonomous | **SKIP simplification entirely** — emit warning, return to caller. Never pause an autonomous flow waiting for approval. |
+| `false` | interactive | Show diff per file, prompt for approval |
+
+When skipping in autonomous-mode-with-false, emit:
+```
+⚠️  nav-simplify skipped: auto_apply=false but invoked autonomously.
+   To enable: set simplification.auto_apply=true in .agent/.nav-config.json
+   To disable cleanly: set simplification.enabled=false
 ```
 
 ### Step 3: Read Project Standards
@@ -113,8 +144,8 @@ For each modified file, analyze for simplification opportunities:
 
 **Run analysis**:
 ```bash
-# Use predefined function
-python3 "$SKILL_BASE_DIR/scripts/code_analyzer.py" --file "$file"
+# Project-relative path (resolved from repo root)
+python3 skills/nav-simplify/scripts/code_analyzer.py --file "$file"
 ```
 
 ### Step 5: Apply Simplification Rules
@@ -182,8 +213,17 @@ Diff:
 
 ### Step 7: Apply Changes
 
-If user approves (or auto mode enabled):
+Branch on the decision matrix from Step 2:
 
+**Autonomous + `auto_apply: false`**: skip entirely, emit the warning, return.
+
+**Autonomous + `auto_apply: true`**: apply each change directly with `Edit()`. Do not prompt.
+
+**Interactive + `auto_apply: true`**: apply directly, show summary at end.
+
+**Interactive + `auto_apply: false`**: show diff per file, prompt `Apply this change? [y/N]`, apply only on yes.
+
+When applying:
 ```
 Edit(
   file_path: "{file}",

@@ -181,12 +181,27 @@ def resolve_concept_alias(graph: dict, query: str) -> str:
         "task-mode": "workflow",
         "task_mode": "workflow",
         "loop": "workflow",
+        "loop-mode": "workflow",
+        "iteration": "workflow",
         "perf": "performance",
         "latency": "performance",
         "sec": "security",
         "vuln": "security",
         "config": "configuration",
         "env": "configuration",
+        # Execution-layer aliases (v6.4.0)
+        "execution": "skills",
+        "implementation": "skills",
+        "code-generation": "skills",
+        "code-writing": "skills",
+        "autonomous": "workflow",
+        "autonomous-completion": "workflow",
+        "autonomous-mode": "workflow",
+        "finish-protocol": "workflow",
+        "verify": "testing",
+        "verification": "testing",
+        "workflow-orchestration": "workflow",
+        "orchestration": "workflow",
     }
     if query_lower in abbreviations:
         canonical = abbreviations[query_lower]

@@ -65,17 +65,30 @@ jobs:
           fi
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: "Navigator ${{ steps.version.outputs.tag }}"
-          body_path: ${{ steps.check_notes.outputs.path }}
-          body: ${{ steps.check_notes.outputs.exists == 'false' && format('Release {0}\n\nSee commit history for changes.', steps.version.outputs.tag) || '' }}
-          draft: false
-          prerelease: ${{ steps.prerelease.outputs.is_prerelease }}
-          files: ${{ steps.check_notes.outputs.path }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          NOTES_PATH: ${{ steps.check_notes.outputs.path }}
+          NOTES_EXISTS: ${{ steps.check_notes.outputs.exists }}
+          IS_PRERELEASE: ${{ steps.prerelease.outputs.is_prerelease }}
+        run: |
+          ARGS=(
+            "$TAG"
+            --title "Navigator $TAG"
+          )
+
+          if [ "$NOTES_EXISTS" = "true" ]; then
+            ARGS+=(--notes-file "$NOTES_PATH")
+            ARGS+=("$NOTES_PATH")
+          else
+            ARGS+=(--notes "Release $TAG"$'\n\n'"See commit history for changes.")
+          fi
+
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            ARGS+=(--prerelease)
+          fi
+
+          gh release create "${ARGS[@]}"
 
       - name: Verify marketplace compatibility
         run: |

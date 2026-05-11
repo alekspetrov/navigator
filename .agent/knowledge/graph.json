@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-01-23T16:36:29.981280Z",
+  "last_updated": "2026-05-11T16:37:12.604721Z",
   "stats": {
-    "total_nodes": 91,
+    "total_nodes": 99,
     "total_edges": 813,
-    "memory_count": 2
+    "memory_count": 10
   },
   "nodes": {
     "tasks": {
@@ -1262,6 +1262,102 @@
         ],
         "created": "2026-01-23",
         "last_validated": "2026-01-23"
+      },
+      "mem-003": {
+        "type": "pitfall",
+        "summary": "graph_manager.add_memory() generates IDs by counting existing memory nodes \u2014 deleting any memory resets the counter and will silently overwrite the re-generated ID on the next insert [skills/nav-graph/functions/graph_manager.py:272]",
+        "path": "memories/pitfalls/mem-003.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge-graph",
+          "memory-id"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-004": {
+        "type": "pitfall",
+        "summary": "correction_to_memory.py calls load_graph/save_graph inside the per-item loop, causing N file I/O cycles for N corrections; load once before the loop and save once after (see research_to_graph.py for the correct pattern) [skills/nav-graph/functions/correction_to_memory.py:88]",
+        "path": "memories/pitfalls/mem-004.md",
+        "confidence": 0.9,
+        "concepts": [
+          "knowledge-graph",
+          "performance"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-005": {
+        "type": "pitfall",
+        "summary": "resolve_concept_alias() in graph_manager.py has no entries for 'performance', 'security', or 'configuration' \u2014 memories ingested by research_to_graph.py under those concepts are invisible to graph queries [skills/nav-graph/functions/graph_manager.py:169]",
+        "path": "memories/pitfalls/mem-005.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge-graph",
+          "concept-aliases"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-006": {
+        "type": "pattern",
+        "summary": "all three ingestion converters share the same sys.path.insert + from graph_manager import pattern for sibling-module resolution; new converters should follow this to stay consistent [skills/nav-graph/functions/research_to_graph.py:33]",
+        "path": "memories/patterns/mem-006.md",
+        "confidence": 0.85,
+        "concepts": [
+          "knowledge-graph",
+          "module-imports"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-007": {
+        "type": "decision",
+        "summary": "research_to_graph.py sets DEFAULT_CONFIDENCE=0.7 (vs 0.8 for corrections, 0.95 for task decisions) \u2014 intentionally lower because agent inference is less authoritative than user-confirmed corrections [skills/nav-graph/functions/research_to_graph.py:37]",
+        "path": "memories/decisions/mem-007.md",
+        "confidence": 0.9,
+        "concepts": [
+          "knowledge-graph",
+          "confidence-defaults"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-008": {
+        "type": "learning",
+        "summary": "concept-extraction logic is duplicated in four places (correction_to_memory.py, task_to_graph.py, research_to_graph.py, graph_builder.py) with diverging keyword sets; research_to_graph.py's module-level KEYWORD_MAP is the most complete and the best candidate for extraction into a shared concept_extractor.py [skills/nav-graph/functions/research_to_graph.py:40]",
+        "path": "memories/learnings/mem-008.md",
+        "confidence": 0.9,
+        "concepts": [
+          "knowledge-graph",
+          "refactoring"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-009": {
+        "type": "pitfall",
+        "summary": "add_memory() stores a path like 'memories/pitfalls/mem-001.md' in the graph node but does not create the file \u2014 memory_writer.py must be called separately; research-ingested and correction-ingested memories will have dangling paths unless the caller explicitly invokes memory_writer.py [skills/nav-graph/functions/graph_manager.py:276]",
+        "path": "memories/pitfalls/mem-009.md",
+        "confidence": 0.85,
+        "concepts": [
+          "knowledge-graph",
+          "memory-files"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-010": {
+        "type": "learning",
+        "summary": "All 4 fixes applied: mem-005 aliases, mem-003 ID gen, mem-004 batch I/O, mem-009 file creation [skills/nav-graph/functions/graph_manager.py:296]",
+        "path": "memories/learnings/mem-010.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge-graph",
+          "testing"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
       }
     },
     "files": {}
@@ -5951,7 +6047,8 @@
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
-      "mem-001"
+      "mem-001",
+      "mem-010"
     ],
     "context": [
       "TASK-32",
@@ -6418,6 +6515,37 @@
       "TASK-10",
       "SOP-autonomous_completion",
       "2025-10-19-221758-v3.0.0-complete"
+    ],
+    "knowledge-graph": [
+      "mem-003",
+      "mem-004",
+      "mem-005",
+      "mem-006",
+      "mem-007",
+      "mem-008",
+      "mem-009",
+      "mem-010"
+    ],
+    "memory-id": [
+      "mem-003"
+    ],
+    "performance": [
+      "mem-004"
+    ],
+    "concept-aliases": [
+      "mem-005"
+    ],
+    "module-imports": [
+      "mem-006"
+    ],
+    "confidence-defaults": [
+      "mem-007"
+    ],
+    "refactoring": [
+      "mem-008"
+    ],
+    "memory-files": [
+      "mem-009"
     ]
   }
 }

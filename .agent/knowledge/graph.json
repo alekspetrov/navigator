@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T16:37:12.604721Z",
+  "last_updated": "2026-05-11T17:30:31.577228Z",
   "stats": {
-    "total_nodes": 99,
+    "total_nodes": 109,
     "total_edges": 813,
-    "memory_count": 10
+    "memory_count": 20
   },
   "nodes": {
     "tasks": {
@@ -1355,6 +1355,131 @@
         "concepts": [
           "knowledge-graph",
           "testing"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-011": {
+        "type": "pitfall",
+        "summary": "backend-test and frontend-test skill triggers ('add test', 'test this', 'test this component') were not matched by skill_detector.py patterns \u2014 they fell through to Task Mode with no output. Fixed in v6.4.0 by adding 6 missing patterns. [skills/nav-task-mode/functions/skill_detector.py:76-97]",
+        "path": "memories/pitfalls/mem-011.md",
+        "confidence": 0.98,
+        "concepts": [
+          "testing",
+          "skills",
+          "workflow"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-012": {
+        "type": "pitfall",
+        "summary": "database-migration SKILL.md had empty functions/, templates/, examples/ subdirectories inconsistent with peer skills (frontend-component, backend-endpoint). SKILL.md uses inline templates with direct Write() calls \u2014 by design. Empty dirs removed in v6.4.0; added clarifying note. [skills/database-migration/SKILL.md:10]",
+        "path": "memories/pitfalls/mem-012.md",
+        "confidence": 1.0,
+        "concepts": [
+          "database",
+          "skills",
+          "execution"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-013": {
+        "type": "pitfall",
+        "summary": "nav-simplify with auto_apply=false in autonomous flow (Loop Mode VERIFY/COMPLETE, Task Mode COMPLETE) silently pauses for per-file approval, breaking the 'no human prompts needed' guarantee. Fixed in v6.4.0: skill detects autonomous context and skips with warning instead of pausing. [skills/nav-simplify/SKILL.md:88-115]",
+        "path": "memories/pitfalls/mem-013.md",
+        "confidence": 0.95,
+        "concepts": [
+          "simplification",
+          "workflow",
+          "autonomous"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-014": {
+        "type": "pitfall",
+        "summary": "workflow_enforcer.py hook was dead code \u2014 not registered in .claude/settings.json. The CLAUDE.md 'WORKFLOW CHECK block' had zero runtime enforcement. Wired into UserPromptSubmit in v6.4.0; hook updated to parse stdin JSON. [hooks/workflow_enforcer.py:12]",
+        "path": "memories/pitfalls/mem-014.md",
+        "confidence": 1.0,
+        "concepts": [
+          "workflow",
+          "context",
+          "skills"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-015": {
+        "type": "pitfall",
+        "summary": "code_analyzer.py (nav-simplify) assumes 2-space indentation: depth = indent // 2. Any 4-space code (Python, Go, Java, common TypeScript) at nesting level 2 falsely reported as deep_nesting (depth=4 > threshold of 3). Open for v6.5.0 fix. [skills/nav-simplify/scripts/code_analyzer.py:33-44]",
+        "path": "memories/pitfalls/mem-015.md",
+        "confidence": 1.0,
+        "concepts": [
+          "simplification",
+          "code quality"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-016": {
+        "type": "pitfall",
+        "summary": "nav-loop had three inconsistent numbers governing completion: phase_detector COMPLETE_THRESHOLD=4 with reason string '/5 indicators' (wrong \u2014 6 indicators documented), exit_gate min_heuristics=2 default. Aligned in v6.4.0 via shared constants TOTAL_INDICATORS=6 and COMPLETE_THRESHOLD=4. [skills/nav-loop/functions/phase_detector.py:28-32]",
+        "path": "memories/pitfalls/mem-016.md",
+        "confidence": 0.95,
+        "concepts": [
+          "loop",
+          "workflow"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-017": {
+        "type": "pattern",
+        "summary": "nav-task (Step 4.5) is the only execution skill that writes to the knowledge graph via task_to_graph.py. Code-writing skills (frontend-component, backend-endpoint, database-migration) record nothing post-generation. execution_to_graph.py is the parity gap vs research_to_graph.py \u2014 planned for v6.5.0. [skills/nav-task/SKILL.md:363-389]",
+        "path": "memories/patterns/mem-017.md",
+        "confidence": 0.98,
+        "concepts": [
+          "knowledge",
+          "skills",
+          "execution"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-018": {
+        "type": "pitfall",
+        "summary": "nav-simplify Step 4 referenced $SKILL_BASE_DIR which is not a Claude Code built-in and not set by any hook. Path resolved to '/scripts/code_analyzer.py' (empty var) and failed silently. Fixed in v6.4.0 to use project-relative path 'skills/nav-simplify/scripts/code_analyzer.py'. [skills/nav-simplify/SKILL.md:139]",
+        "path": "memories/pitfalls/mem-018.md",
+        "confidence": 1.0,
+        "concepts": [
+          "simplification",
+          "skills"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-019": {
+        "type": "pitfall",
+        "summary": "stagnation_detector.py always returned 'PAUSE: ... User intervention needed' regardless of never_pause_on_stagnation config. Fixed in v6.4.0 by adding --autonomous flag and --diversify-strategy parameter that emit 'AUTO-DIVERSIFY: {strategy}' instead. [skills/nav-loop/functions/stagnation_detector.py:113-119]",
+        "path": "memories/pitfalls/mem-019.md",
+        "confidence": 0.95,
+        "concepts": [
+          "loop",
+          "autonomous"
+        ],
+        "created": "2026-05-11",
+        "last_validated": "2026-05-11"
+      },
+      "mem-020": {
+        "type": "pitfall",
+        "summary": "nav-multi SESSION_ID collision: TASK_NUM=0 + epoch seconds collides for parallel no-task-ID runs in the same second. Fixed in v6.4.0 by appending $$ (PID) to SESSION_ID. [skills/nav-multi/SKILL.md:111-115]",
+        "path": "memories/pitfalls/mem-020.md",
+        "confidence": 1.0,
+        "concepts": [
+          "workflow",
+          "skills"
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
@@ -5979,7 +6104,8 @@
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
-      "2025-10-20-092541-v3.0.0-migration-complete"
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "mem-012"
     ],
     "testing": [
       "TASK-32",
@@ -6048,7 +6174,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
       "mem-001",
-      "mem-010"
+      "mem-010",
+      "mem-011"
     ],
     "context": [
       "TASK-32",
@@ -6119,7 +6246,8 @@
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
-      "mem-002"
+      "mem-002",
+      "mem-014"
     ],
     "skills": [
       "TASK-32",
@@ -6187,7 +6315,13 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
+      "2025-10-31-2116_phase2-parallel-complete",
+      "mem-011",
+      "mem-012",
+      "mem-014",
+      "mem-017",
+      "mem-018",
+      "mem-020"
     ],
     "session": [
       "TASK-32",
@@ -6310,7 +6444,12 @@
       "before-compact-2025-11-02-1533",
       "2025-01-20-repositioning-finish-what-you-start",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "2025-10-31-2116_phase2-parallel-complete"
+      "2025-10-31-2116_phase2-parallel-complete",
+      "mem-011",
+      "mem-013",
+      "mem-014",
+      "mem-016",
+      "mem-020"
     ],
     "backend": [
       "TASK-16",
@@ -6479,7 +6618,8 @@
       "task-22-simple-console-logger-1761948433-plan",
       "TASK-12",
       "project-architecture",
-      "SOP-multi_claude_orchestration"
+      "SOP-multi_claude_orchestration",
+      "mem-015"
     ],
     "knowledge": [
       "TASK-19",
@@ -6497,7 +6637,8 @@
       "2025-10-19-185900-v2.2-release-complete",
       "before-compact-2025-01-23-task35-knowledge-graph",
       "mem-001",
-      "mem-002"
+      "mem-002",
+      "mem-017"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6514,7 +6655,10 @@
       "TASK-31",
       "TASK-10",
       "SOP-autonomous_completion",
-      "2025-10-19-221758-v3.0.0-complete"
+      "2025-10-19-221758-v3.0.0-complete",
+      "mem-013",
+      "mem-015",
+      "mem-018"
     ],
     "knowledge-graph": [
       "mem-003",
@@ -6546,6 +6690,18 @@
     ],
     "memory-files": [
       "mem-009"
+    ],
+    "execution": [
+      "mem-012",
+      "mem-017"
+    ],
+    "autonomous": [
+      "mem-013",
+      "mem-019"
+    ],
+    "loop": [
+      "mem-016",
+      "mem-019"
     ]
   }
 }

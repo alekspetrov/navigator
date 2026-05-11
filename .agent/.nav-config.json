@@ -24,7 +24,10 @@
     "max_iterations": 5,
     "stagnation_threshold": 3,
     "exit_requires_explicit_signal": true,
-    "show_status_block": true
+    "show_status_block": true,
+    "iteration_approval": "none",
+    "never_pause_on_stagnation": false,
+    "stagnation_diversify_strategy": "combine"
   },
   "simplification": {
     "enabled": true,

@@ -265,10 +265,19 @@ Navigator v5.1.0 introduces **Loop Mode** - structured completion with "run unti
     "enabled": false,
     "max_iterations": 5,
     "stagnation_threshold": 3,
-    "exit_requires_explicit_signal": true
+    "exit_requires_explicit_signal": true,
+    "iteration_approval": "none",
+    "never_pause_on_stagnation": false,
+    "stagnation_diversify_strategy": "combine"
   }
 }
 ```
+
+**Autonomous overnight mode** (v6.2.2+):
+- `iteration_approval`: `"none"` | `"strict"` | `"periodic"` — when to prompt the user between iterations
+- `never_pause_on_stagnation`: when `true`, stagnation triggers auto-diversification instead of an `AskUserQuestion` pause (inspired by autoresearch's NEVER STOP directive)
+- `stagnation_diversify_strategy`: `"combine"` | `"radical"` | `"reread"` — recovery to attempt
+- See `skills/nav-loop/SKILL.md` for full behavior
 
 #### NAVIGATOR_STATUS Block
 

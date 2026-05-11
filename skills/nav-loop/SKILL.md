@@ -44,16 +44,33 @@ Loop mode settings in `.agent/.nav-config.json`:
     "max_iterations": 5,
     "stagnation_threshold": 3,
     "exit_requires_explicit_signal": true,
-    "show_status_block": true
+    "show_status_block": true,
+    "iteration_approval": "none",
+    "never_pause_on_stagnation": false,
+    "stagnation_diversify_strategy": "combine"
   }
 }
 ```
 
-**Options**:
+**Core options**:
 - `enabled`: Default state for new tasks
 - `max_iterations`: Hard cap to prevent infinite loops (1-20)
 - `stagnation_threshold`: Same-state count before pause (2-5)
 - `exit_requires_explicit_signal`: Require EXIT_SIGNAL alongside heuristics
+- `show_status_block`: Render NAVIGATOR_STATUS each iteration
+
+**Autonomous / overnight options** (v6.2.2+):
+- `iteration_approval`: When to prompt the user for accept/reject between iterations.
+  - `"none"` (default) — never prompt; loop runs uninterrupted
+  - `"strict"` — prompt after every iteration
+  - `"periodic"` — prompt every 3 iterations (good for overnight check-ins)
+- `never_pause_on_stagnation`: If `true`, stagnation triggers **auto-diversification** instead of an `AskUserQuestion` pause. Required for true overnight runs. Inspired by karpathy/autoresearch's NEVER STOP directive.
+- `stagnation_diversify_strategy`: Which recovery to attempt when `never_pause_on_stagnation` fires.
+  - `"combine"` — combine previous near-misses / partially-met indicators
+  - `"radical"` — try a substantially different approach (re-architect, swap library)
+  - `"reread"` — re-read the in-scope task/system docs for missed signals
+
+**Safety guard**: Setting `never_pause_on_stagnation: true` REQUIRES `max_iterations` to be set explicitly (the default of 5 is fine; the point is — no infinite default). Without a max, an autonomous loop can spin forever on a fundamentally broken task.
 
 ## Execution Steps
 
@@ -149,6 +166,35 @@ Next Action: {NEXT_ACTION}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
+### Step 3.5: Per-Iteration Approval Gate (optional)
+
+**Skip this step if** `config.loop_mode.iteration_approval == "none"` (default).
+
+**Run this step if** the user wants oversight between iterations — for risky changes, learning the loop's behavior, or sanity-checking before a long run.
+
+| Setting | Behavior |
+|---------|----------|
+| `"none"` | Never prompt. Loop continues to Step 4. |
+| `"strict"` | Prompt after every iteration. |
+| `"periodic"` | Prompt every 3rd iteration (iter 3, 6, 9, ...). |
+
+**When prompting**, use AskUserQuestion immediately after the status block:
+
+```
+Question: "Accept iteration {N} and continue?"
+Options:
+  1. [Continue] - Iteration accepted, proceed to next
+  2. [Adjust]   - Provide feedback, incorporate into next iteration
+  3. [Abort]    - End loop, create partial-completion marker
+```
+
+**Decision handling**:
+- **Continue**: Proceed to Step 4 normally.
+- **Adjust**: Capture the user's feedback into a transient note, do NOT advance hash history (so the next iteration is judged as fresh progress), continue to Step 4.
+- **Abort**: Jump to Step 8 (Cleanup) with `status: "user_aborted"`.
+
+This gate runs BEFORE stagnation detection so that a rejected iteration doesn't accidentally accumulate stagnation count.
+
 ### Step 4: Check Stagnation
 
 **Calculate state hash**:
@@ -160,7 +206,11 @@ python3 functions/stagnation_detector.py \
   --history "{hash_history_json}"
 ```
 
-**If stagnation detected** (same hash for N iterations):
+**If stagnation detected** (same hash for N iterations), the response depends on `never_pause_on_stagnation`.
+
+#### Default behavior (`never_pause_on_stagnation: false`)
+
+Prompt the user:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -192,6 +242,35 @@ Options:
 - Continue: Reset stagnation counter, continue loop
 - Clarify: User explains blocker, incorporate and continue
 - Abort: Exit loop with partial completion marker
+
+#### Autonomous behavior (`never_pause_on_stagnation: true`)
+
+The loop is running unattended (overnight, CI, etc.). Do NOT prompt — auto-diversify based on `stagnation_diversify_strategy`:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STAGNATION → AUTO-DIVERSIFY ({STRATEGY})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Same state for {N} iterations. Auto-recovery: {STRATEGY}
+Stagnation counter reset.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+| Strategy   | What to attempt next iteration |
+|------------|--------------------------------|
+| `combine`  | Re-examine partially-met indicators; combine 2 near-miss approaches from previous iterations |
+| `radical` | Discard the current approach; try a substantially different design (different library, different architecture, different algorithm) |
+| `reread`   | Re-read the in-scope task doc + relevant system docs; look for a missed signal or constraint |
+
+**After diversifying**:
+- Reset stagnation counter to 0
+- Record the diversification in the iteration's notes (so the next status block reflects it)
+- Continue to Step 5
+
+**Hard stop**: Even in autonomous mode, the loop still terminates on `max_iterations`. If diversification has been triggered ≥3 times within a single run, escalate to the abort path (creates a `loop-aborted` marker and exits) — repeated diversification is itself a signal that the task is fundamentally stuck.
+
+Inspired by karpathy/autoresearch's NEVER STOP directive: *"If you run out of ideas, think harder — read papers, re-read in-scope files for new angles, try combining previous near-misses, try more radical architectural changes."*
 
 ### Step 5: Check Exit Conditions
 

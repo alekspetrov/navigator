@@ -158,30 +158,18 @@ git tag -l | tail -3
 - Visit: https://github.com/alekspetrov/nav-plugin/tags
 - Confirm new tag appears
 
-### 5. Create GitHub Release
+### 5. GitHub Release (CI-owned)
 
-**Using gh CLI**:
+The tag push from step 4 triggers `.github/workflows/release.yml`, which
+publishes the GitHub release from `releases/RELEASE-NOTES-vX.Y.Z.md`. Do
+NOT run `gh release create` locally — it races the workflow.
+
+**Wait for the workflow run**:
 ```bash
-gh release create v1.3.0 \
-  --title "Navigator v1.3.0: Session Start Command & PM Integration" \
-  --notes "$(cat <<'EOF'
-# Navigator v1.3.0: Session Start Command & PM Integration
-
-## 🎯 What's New
-
-[Detailed release notes with sections:]
-- What's new
-- Why it matters
-- Upgrade instructions
-- Documentation links
-- Feedback section
-
-**Full Changelog**: https://github.com/alekspetrov/nav-plugin/compare/v1.2.3...v1.3.0
-EOF
-)"
+gh run watch --exit-status "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 ```
 
-**Release notes structure**:
+**Release notes file** (`releases/RELEASE-NOTES-v1.3.0.md`) structure:
 1. **Title** with version and key feature
 2. **What's New** - Feature highlights with examples
 3. **Why This Matters** - Problem solved, benefits
@@ -262,15 +250,16 @@ git push origin :refs/tags/v1.3.0
 git tag -a v1.3.0 -m "..."
 ```
 
-### Issue: GitHub Release Fails
+### Issue: Publish Release Workflow Fails
 
-**Symptoms**: `gh release create` errors
+**Symptoms**: `gh run list --workflow=release.yml` shows the most recent run failed.
 
 **Solutions**:
-1. Check gh CLI authentication: `gh auth status`
-2. Verify tag exists: `git tag -l | grep v1.3.0`
-3. Check if release already exists: `gh release list`
-4. Re-authenticate: `gh auth login`
+1. Inspect the failure: `gh run view --log-failed <run-id>`
+2. Verify tag exists on remote: `git ls-remote --tags origin v1.3.0`
+3. Confirm `releases/RELEASE-NOTES-vX.Y.Z.md` was committed before the tag
+4. The workflow is idempotent — re-running it (`gh run rerun <run-id>`) is safe
+5. Do NOT fall back to `gh release create` locally; the workflow owns publication
 
 ### Issue: GitHub CDN Cache
 
@@ -352,7 +341,7 @@ Complete release checklist:
 **Issues Encountered**: None
 
 **Lessons Learned**:
-- Using `gh release create` with heredoc for notes is much cleaner than web UI
+- Letting `.github/workflows/release.yml` publish from `releases/RELEASE-NOTES-v*.md` is much cleaner than web UI or local `gh release create`
 - Documenting with `/nav:update-doc` immediately after saves time
 - Testing in nav-test project catches issues early
 

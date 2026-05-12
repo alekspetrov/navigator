@@ -376,19 +376,22 @@ When you push a git tag (Step 8), GitHub Actions automatically:
 5. Attaches release notes file
 6. Notifies watchers
 
-**Manual alternative** (if automation fails):
-```bash
-# For stable release
-gh release create v{VERSION} \
-  --title "Navigator v{VERSION}: {Feature Title}" \
-  --notes-file RELEASE-NOTES-v{VERSION}.md
+**If the workflow fails**: re-run it instead of falling back to local
+`gh release create` (which races the workflow and breaks idempotency).
+The workflow is idempotent — both create and edit paths handle pre-existing
+releases.
 
-# For experimental/pre-release
-gh release create v{VERSION} \
-  --title "Navigator v{VERSION}: {Feature Title}" \
-  --notes-file RELEASE-NOTES-v{VERSION}.md \
-  --prerelease
+```bash
+# Inspect failure
+gh run view --log-failed "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
+
+# Re-run after fixing
+gh run rerun "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 ```
+
+Pre-release detection is automatic: tags containing `alpha`/`beta`/`rc`,
+or repos whose `marketplace.json` description contains "Experimental",
+get `--prerelease`. No manual flag needed.
 
 **Why automated**:
 - Zero manual steps after tag push
@@ -646,25 +649,19 @@ cd /tmp/navigator-test
 
 ## Troubleshooting
 
-### Issue: GitHub release creation fails
+### Issue: Publish Release workflow fails with "release already exists"
 
-**Symptoms**:
-```
-Error: release already exists
-```
+**Symptoms**: Workflow run fails with `release with the same tag name already exists`
 
-**Cause**: Tag exists but release wasn't created, then retrying
+**Cause**: Someone (or a stale skill version) ran `gh release create` locally before the tag was pushed, racing the workflow.
 
-**Fix**:
+**Fix**: Re-run the workflow. Since `bfe3b26` it's idempotent — it will detect the existing release and update it via `gh release edit` + `gh release upload --clobber` instead of failing.
+
 ```bash
-# Delete existing release (if incorrect)
-gh release delete v{VERSION}
-
-# Recreate
-gh release create v{VERSION} \
-  --title "..." \
-  --notes-file RELEASE-NOTES-v{VERSION}.md
+gh run rerun "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 ```
+
+**Prevention**: Never run `gh release create` locally. The workflow owns release publication.
 
 ### Issue: Version mismatch discovered after release
 

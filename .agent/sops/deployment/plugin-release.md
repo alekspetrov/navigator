@@ -78,10 +78,19 @@ git tag -a vX.Y.Z -m "Navigator vX.Y.Z: Release description"
 git push origin vX.Y.Z
 ```
 
-### Step 4: Create GitHub Release
+### Step 4: GitHub Release (CI-owned)
+
+Pushing the `vX.Y.Z` tag in Step 3 triggers `.github/workflows/release.yml`,
+which publishes the GitHub release from `releases/RELEASE-NOTES-vX.Y.Z.md`.
+
+**Do NOT run `gh release create` locally** — it races the workflow and
+historically caused "release with the same tag name already exists" CI
+failures (v6.11.2 → v6.13.0).
+
+Wait for and verify the workflow:
 
 ```bash
-gh release create vX.Y.Z --title "Navigator vX.Y.Z: Title" --notes-file RELEASE-NOTES-vX.Y.Z.md
+gh run watch --exit-status "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 ```
 
 ### Step 5: Verify Release
@@ -89,6 +98,9 @@ gh release create vX.Y.Z --title "Navigator vX.Y.Z: Title" --notes-file RELEASE-
 ```bash
 # Check tag contains all files
 git ls-tree vX.Y.Z skills/ | grep -E "nav-profile|nav-loop|nav-diagnose"
+
+# Confirm release published with notes asset attached
+gh release view vX.Y.Z --json tagName,name,isDraft,assets
 ```
 
 ---
@@ -158,14 +170,14 @@ gh release edit vX.Y.Z --notes-file RELEASE-NOTES-vX.Y.Z.md
 ## Quick Reference
 
 ```bash
-# Full release sequence
+# Full release sequence — workflow publishes the release on tag push
 git add . && git commit -m "feat(vX.Y.Z): description"
 git push origin main
 git tag -a vX.Y.Z -m "Navigator vX.Y.Z"
 git push origin vX.Y.Z
-gh release create vX.Y.Z --generate-notes
+gh run watch --exit-status "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 
-# Fix tag after release
+# Fix tag after release (workflow's idempotent path will re-publish)
 git tag -d vX.Y.Z
 git tag -a vX.Y.Z -m "Navigator vX.Y.Z"
 git push origin --force vX.Y.Z

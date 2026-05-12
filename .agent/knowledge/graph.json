@@ -1378,7 +1378,7 @@
       },
       "mem-011": {
         "type": "pitfall",
-        "summary": "backend-test and frontend-test skill triggers ('add test', 'test this', 'test this component') were not matched by skill_detector.py patterns \u2014 they fell through to Task Mode with no output. Fixed in v6.4.0 by adding 6 missing patterns. [skills/nav-task-mode/functions/skill_detector.py:76-97]",
+        "summary": "backend-test and frontend-test skill triggers ('add test', 'test this', 'test this component') were not matched by skill_detector.py patterns \u2014 they fell through to Task Mode with no output. Fixed in v6.4.0 by adding 6 missing patterns. [skills/nav-workflow/functions/skill_detector.py:76-97]",
         "path": "memories/pitfalls/mem-011.md",
         "confidence": 0.98,
         "concepts": [

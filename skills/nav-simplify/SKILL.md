@@ -89,7 +89,7 @@ After loading config, determine the invocation mode:
 
 **Autonomous** (no human in the loop):
 - Invoked from `nav-loop` VERIFY or COMPLETE phase
-- Invoked from `nav-task-mode` COMPLETE phase
+- Invoked from `nav-workflow` COMPLETE phase
 - `NAV_AUTONOMOUS=1` env var set
 - Triggered by autonomous-completion protocol
 

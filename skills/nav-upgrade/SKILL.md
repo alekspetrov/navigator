@@ -25,7 +25,7 @@ Auto-invoke when user says:
 1. **Version Detection**: Check current Navigator version vs latest
 2. **Plugin Update**: Execute `/plugin update navigator`
 3. **Verification**: Confirm update succeeded
-4. **CLAUDE.md Update**: Update project configuration (via nav-update-claude)
+4. **CLAUDE.md Update**: Update project configuration (via nav-sync-claude)
 5. **Hooks Setup**: Install/update token monitoring hooks in project
 6. **Feature Discovery**: Show new features available
 
@@ -289,7 +289,7 @@ This is a Claude Code behavior, not a Navigator issue. The plugin files update c
 
 ### Step 4: Update Project CLAUDE.md (Automatic)
 
-**After plugin update, automatically invoke**: `nav-update-claude` skill
+**After plugin update, automatically invoke**: `nav-sync-claude` skill
 
 ```
 🔄 Syncing project CLAUDE.md with updated plugin...
@@ -320,7 +320,7 @@ git add CLAUDE.md
 git commit -m "chore: update CLAUDE.md to Navigator v4.3.0"
 ```
 
-**See**: `nav-update-claude` skill for details.
+**See**: `nav-sync-claude` skill for details.
 
 ---
 
@@ -658,9 +658,9 @@ This will:
 
 ## Integration Points
 
-### With nav-update-claude
+### With nav-sync-claude
 
-After plugin update, automatically invokes `nav-update-claude` to sync project configuration.
+After plugin update, automatically invokes `nav-sync-claude` to sync project configuration.
 
 ### With nav-start
 

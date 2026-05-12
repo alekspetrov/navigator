@@ -428,7 +428,7 @@ cd /tmp/test-project
 /plugin list | grep navigator  # Verify version updated
 
 # Verify CLAUDE.md sync
-# nav-upgrade should auto-invoke nav-update-claude
+# nav-upgrade should auto-invoke nav-sync-claude
 # Template should match new plugin version
 ```
 
@@ -466,7 +466,7 @@ cd /tmp/navigator-v4.3.0 && git checkout v4.3.0
 
 **Verify template sync**:
 ```bash
-# nav-update-claude should fetch from GitHub
+# nav-sync-claude should fetch from GitHub
 # Check output:
 ✓ Using template from GitHub (v4.3.0)  # Not "bundled"
 
@@ -568,7 +568,7 @@ https://github.com/alekspetrov/navigator/releases/tag/v4.3.0
 **Step 10: Improved Upgrade Experience**
 ```bash
 # Fixed template drift issue (v4.3.1)
-# Updated nav-update-claude to fetch from GitHub:
+# Updated nav-sync-claude to fetch from GitHub:
 # - Detects plugin version
 # - Fetches matching template from GitHub
 # - Falls back to bundled if offline
@@ -577,7 +577,7 @@ https://github.com/alekspetrov/navigator/releases/tag/v4.3.0
 # Updated nav-upgrade with pre-release choice:
 # - Detects stable + pre-release versions
 # - Presents interactive choice
-# - Auto-invokes nav-update-claude after update
+# - Auto-invokes nav-sync-claude after update
 # Result: Professional pre-release opt-in flow
 ```
 

@@ -53,7 +53,7 @@ Before responding to ANY task request, you MUST:
 
 2. **Check task complexity**:
    - Multi-file changes, refactoring, new features → complexity > 0.5
-   - If substantial → Invoke nav-task-mode, show phase tracking
+   - If substantial → Invoke nav-workflow, show phase tracking
 
 3. **Never skip these checks**
    - This is NOT optional
@@ -75,7 +75,7 @@ WORKFLOW ENFORCEMENT ACTIVE
 
 Before responding to tasks, CHECK:
 □ Loop trigger? → nav-loop
-□ Substantial? → nav-task-mode
+□ Substantial? → nav-workflow
 □ Neither? → Direct execution OK
 
 Show this check in your response.
@@ -118,7 +118,7 @@ def check_workflow(user_message):
     # Check complexity indicators
     complexity_indicators = ["refactor", "implement", "add feature", "fix all", "update all"]
     if any(ind in user_message.lower() for ind in complexity_indicators):
-        return {"action": "invoke_skill", "skill": "nav-task-mode"}
+        return {"action": "invoke_skill", "skill": "nav-workflow"}
 
     return {"action": "proceed"}
 ```

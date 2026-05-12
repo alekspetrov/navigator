@@ -80,7 +80,7 @@ Make auto-update behave like nav-upgrade - update both plugin AND project files.
 | Decision | Options Considered | Chosen | Reasoning |
 |----------|-------------------|--------|-----------|
 | Sync trigger | Always / On update only | On update only | Don't slow down normal session starts |
-| CLAUDE.md sync | Full replace / Merge | Invoke nav-update-claude | Preserves customizations, reuses existing logic |
+| CLAUDE.md sync | Full replace / Merge | Invoke nav-sync-claude | Preserves customizations, reuses existing logic |
 | Config migration | Manual / Automatic | Automatic with defaults | Zero friction for users |
 
 ---

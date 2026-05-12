@@ -28,7 +28,7 @@
   ],
   "skills": [
     "./skills/nav-graph",
-    "./skills/nav-task-mode",
+    "./skills/nav-workflow",
     "./skills/nav-features",
     "./skills/nav-simplify",
     "./skills/nav-onboard",
@@ -38,7 +38,7 @@
     "./skills/nav-profile",
     "./skills/nav-diagnose",
     "./skills/nav-loop",
-    "./skills/nav-update-claude",
+    "./skills/nav-sync-claude",
     "./skills/nav-upgrade",
     "./skills/nav-install-multi-claude",
     "./skills/nav-multi",

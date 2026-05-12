@@ -1,6 +1,6 @@
 ---
-name: nav-update-claude
-description: Update project CLAUDE.md to latest Navigator version, preserving customizations. Use when user says "update CLAUDE.md", "migrate to v3", or when detecting outdated Navigator configuration.
+name: nav-sync-claude
+description: Sync project CLAUDE.md to the installed Navigator version, preserving customizations. Use when user says "sync CLAUDE.md", "update CLAUDE.md", or when detecting outdated Navigator configuration.
 allowed-tools: Read, Write, Edit, Bash
 version: 1.0.0
 ---

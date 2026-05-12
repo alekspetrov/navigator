@@ -402,7 +402,7 @@ Next: "Clear context and preserve markers" to compact
 **Completed**: 2025-10-20
 
 **What was built**:
-- nav-update-claude skill for automated CLAUDE.md migration
+- nav-sync-claude skill for automated CLAUDE.md migration
 - version_detector.py to identify outdated configurations
 - claude_updater.py to extract customizations and generate updated files
 - Non-destructive migration (creates backup before changes)

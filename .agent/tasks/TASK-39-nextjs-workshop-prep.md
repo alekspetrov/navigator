@@ -115,7 +115,7 @@ The workshop pitches Navigator's value as **"deep preparation → fast execution
 - [ ] `NEXTJS-PATTERNS.md` exists, ≥12 patterns, each cites a `nextjs.org` URL
 - [ ] `workshop/QUICKSTART.md` walks fresh folder → working conference-app skeleton in <10 minutes
 - [ ] End-to-end dry run produces a `next dev` server that serves a mobile-responsive page
-- [ ] All Navigator unit tests still pass (`nav-task-mode` 91 tests, `nav-simplify` 20 tests)
+- [ ] All Navigator unit tests still pass (`nav-workflow` 91 tests, `nav-simplify` 20 tests)
 - [ ] No regression in non-Next.js component/endpoint generation (React + Express still work)
 
 ---

@@ -1,5 +1,5 @@
 ---
-name: nav-task-mode
+name: nav-workflow
 description: Unified workflow orchestration for substantial tasks. Auto-detects complexity, defers to matching skills, or provides phase-based execution. Solves workflow conflicts between skills, loop mode, and CLAUDE.md.
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
 version: 1.0.0

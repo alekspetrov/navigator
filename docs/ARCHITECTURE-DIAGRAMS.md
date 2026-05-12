@@ -40,7 +40,7 @@ Visual representations of Navigator's core components and workflows.
 │  nav-task               backend-test                                 │
 │  nav-sop                frontend-test                    tasks/      │
 │  nav-skill-creator      plugin-slash-command             system/     │
-│  nav-update-claude                                        sops/      │
+│  nav-sync-claude                                        sops/      │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 

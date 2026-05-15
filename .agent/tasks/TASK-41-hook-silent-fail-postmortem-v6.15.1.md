@@ -76,13 +76,25 @@ Plus follow-up doc sweep (this task):
 
 ---
 
-## Open Follow-Ups
+## Follow-Ups
 
-1. **`skills/nav-sync-claude/skill.md` lowercase filename** — surfaced by `release_validator.py --verify-tag v6.15.1` as a false-positive "missing skill." Pre-existing since the v6.14.0 rename from `nav-update-claude`. Convention is `SKILL.md` (uppercase). Functional but inconsistent. Pure file rename, defer to next patch.
+### ✅ Resolved in v6.15.2 (commits `2515215`, `999907b`, `7e53db1`, `94a7edc`)
 
-2. **`nav-release` smoke-test gap** — `release_validator.py --check-all` doesn't exercise hook commands. Add a `--verify-hooks` mode that runs each plugin manifest hook command under `env -u CLAUDE_PLUGIN_DIR bash -c "$CMD"` and asserts at least one of (stdout non-empty, exit code != 0). Would have caught the v6.14.0 silent-fail at pre-release time.
+1. **`skills/nav-sync-claude/skill.md` lowercase filename** — renamed to `SKILL.md` in commit `7e53db1`. Required `git mv -f` because macOS APFS is case-insensitive (`core.ignorecase=true`); the first attempt appeared to land but was silently un-committed against the index entry. `release_validator.py --verify-tag` false-positive cleared.
 
-3. **`gitnation-companion` config schema drift** — `.agent/.nav-config.json` there is missing keys a fresh v6.15.x `nav-init` produces (`loop_mode`, `task_mode`, `knowledge_graph`, `tom_features`, `simplification`). Plus `.agent/grafana/` is non-standard for `nav-init`. None of this blocked v6.15.1 injection (smaller payload than navigator source repo, but functional). If richer injection desired there, run `nav-sync-claude` once it's pointed at the right schema.
+2. **`nav-release` smoke-test gap** — `--verify-hooks` mode shipped in commit `999907b`. Detects the v6.14.0 silent-fail signature (payload-emitting hook exits 0 with no stdout, no stderr) by executing each manifest hook command via `bash -c` with both `$CLAUDE_PLUGIN_DIR` bound and explicitly unset. Coverage limited to `HOOK_EMITS_PAYLOAD = {SessionStart, PreCompact, PostCompact}` — other events are silent by design and not flagged. Verified end-to-end by re-applying the v6.14.0 guard to `SessionStart` in a temp manifest and confirming the check fires.
+
+3. **Two related bugs surfaced and fixed alongside #2** in commit `2515215`:
+   - `nav-graph add-memory` CLI was silently overwriting on-disk memory files when graph and disk drifted (`_next_memory_id` only scanned graph nodes, `--node-id` was ignored, `create_memory_file` had no existence check). Caught when `mem-034.md` was nearly destroyed during v6.15.1 work. Fixed: union-scan disk + graph for next ID, honor `--node-id` when supplied, refuse to overwrite.
+   - Graph and disk drifted: `mem-034` and `mem-035` existed on disk but weren't registered as graph nodes. Reconciled — both now at 36 memories with zero drift.
+
+### 🚧 Still open
+
+1. **`gitnation-companion` config schema drift** — `.agent/.nav-config.json` there is missing keys a fresh v6.15.x `nav-init` produces (`loop_mode`, `task_mode`, `knowledge_graph`, `tom_features`, `simplification`). Plus `.agent/grafana/` is non-standard for `nav-init`. None of this blocked v6.15.1 injection (smaller payload than navigator source repo, but functional). If richer injection desired there, run `nav-sync-claude` once it's pointed at the right schema.
+
+2. **`nav-graph add-memory` CLI doesn't ingest existing files** — the bug fixed in `2515215` is in the write path. The CLI still has no `--action reconcile` to scan `memories/**/mem-*.md` and add missing nodes. Today's reconciliation of `mem-034` and `mem-035` was done by hand via `add-memory --node-id`. A reconcile action would be ~30 lines and would prevent future graph/disk drift from accumulating. Not urgent.
+
+3. **APFS case-insensitive `git mv` gotcha** — the `skill.md` → `SKILL.md` rename in commit `7e53db1` required two attempts. The first `git mv skill.md skill.md.tmp && git mv skill.md.tmp SKILL.md` appeared to succeed but `core.ignorecase=true` silently un-staged the rename when the commit was created. Worth capturing as a pitfall memory if a similar rename comes up again. Not blocking anything today.
 
 ---
 

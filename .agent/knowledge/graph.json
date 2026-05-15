@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-15T21:33:26.216831Z",
+  "last_updated": "2026-05-15T21:50:45.014103Z",
   "stats": {
     "total_nodes": 127,
-    "total_edges": 838,
+    "total_edges": 839,
     "memory_count": 36
   },
   "nodes": {
@@ -511,17 +511,18 @@
         "title": "Hook Silent-Fail Postmortem \u2014 v6.15.1",
         "status": "completed",
         "concepts": [
-          "deployment",
           "api",
           "tom",
-          "workflow",
-          "context",
-          "knowledge",
-          "testing",
           "skills",
-          "simplification",
           "authentication",
-          "database"
+          "testing",
+          "markers",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "database",
+          "simplification",
+          "context"
         ]
       }
     },
@@ -6462,6 +6463,11 @@
       "from": "mem-035",
       "to": "TASK-40",
       "type": "learned-from"
+    },
+    {
+      "from": "TASK-41",
+      "to": "markers",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6997,7 +7003,8 @@
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "deployment": [
       "TASK-11",

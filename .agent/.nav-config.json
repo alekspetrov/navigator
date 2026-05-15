@@ -1,5 +1,5 @@
 {
-  "version": "6.15.1",
+  "version": "6.15.2",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -56,7 +56,7 @@
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1,
-    "last_check": "2026-05-15T20:38:26.749135"
+    "last_check": "2026-05-15T21:39:44.060976"
   },
   "compact_hook": {
     "enabled": true,

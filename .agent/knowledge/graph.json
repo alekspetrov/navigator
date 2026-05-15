@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-15T21:25:22.197818Z",
+  "last_updated": "2026-05-15T21:33:26.216831Z",
   "stats": {
-    "total_nodes": 125,
-    "total_edges": 836,
-    "memory_count": 34
+    "total_nodes": 127,
+    "total_edges": 838,
+    "memory_count": 36
   },
   "nodes": {
     "tasks": {
@@ -1707,6 +1707,45 @@
         "confidence": 0.95,
         "path": ".agent/knowledge/memories/pitfalls/mem-036.md",
         "source_task": "TASK-41"
+      },
+      "mem-034": {
+        "type": "pitfall",
+        "summary": "Hook that exits 2 on UserPromptSubmit blocks the model entirely; stderr goes to the user not Claude. Compounding bug: if stderr echoes the original trigger phrase verbatim, the next prompt re-triggers the block recursively. Captured during v6.11.1 verification 2026-05-11.",
+        "path": "memories/pitfalls/mem-034.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "claude-code",
+          "user-prompt-submit",
+          "exit-2",
+          "blocking-hooks",
+          "recursive-block",
+          "stderr",
+          "model-bypass",
+          "harness-level-enforcement"
+        ],
+        "created": "2026-05-15",
+        "last_validated": "2026-05-15"
+      },
+      "mem-035": {
+        "type": "pitfall",
+        "summary": "Claude Code PreToolUse hook stdout AND hookSpecificOutput.additionalContext JSON produce zero visible output in model context. Only exit 2 (refuse tool) and accompanying stderr affect behavior. Captured during v6.12.0 live verification 2026-05-11.",
+        "path": "memories/pitfalls/mem-035.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "claude-code",
+          "pretooluse",
+          "output-channels",
+          "stdout",
+          "additional-context",
+          "blocking-hooks",
+          "harness-behavior",
+          "dead-code",
+          "model-bypass"
+        ],
+        "created": "2026-05-15",
+        "last_validated": "2026-05-15"
       }
     },
     "files": {}
@@ -6413,6 +6452,16 @@
       "from": "TASK-41",
       "to": "database",
       "type": "implements"
+    },
+    {
+      "from": "mem-034",
+      "to": "TASK-38",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-035",
+      "to": "TASK-40",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -7086,7 +7135,9 @@
       "mem-026",
       "mem-027",
       "TASK-38",
-      "mem-036"
+      "mem-036",
+      "mem-034",
+      "mem-035"
     ],
     "session-lifecycle": [
       "mem-026",
@@ -7100,7 +7151,9 @@
     "claude-code": [
       "mem-027",
       "TASK-38",
-      "mem-036"
+      "mem-036",
+      "mem-034",
+      "mem-035"
     ],
     "policy-vs-judgment": [
       "mem-027"
@@ -7169,10 +7222,49 @@
       "mem-036"
     ],
     "harness-behavior": [
-      "mem-036"
+      "mem-036",
+      "mem-035"
     ],
     "sessionstart": [
       "mem-036"
+    ],
+    "user-prompt-submit": [
+      "mem-034"
+    ],
+    "exit-2": [
+      "mem-034"
+    ],
+    "blocking-hooks": [
+      "mem-034",
+      "mem-035"
+    ],
+    "recursive-block": [
+      "mem-034"
+    ],
+    "stderr": [
+      "mem-034"
+    ],
+    "model-bypass": [
+      "mem-034",
+      "mem-035"
+    ],
+    "harness-level-enforcement": [
+      "mem-034"
+    ],
+    "pretooluse": [
+      "mem-035"
+    ],
+    "output-channels": [
+      "mem-035"
+    ],
+    "stdout": [
+      "mem-035"
+    ],
+    "additional-context": [
+      "mem-035"
+    ],
+    "dead-code": [
+      "mem-035"
     ]
   }
 }

@@ -285,24 +285,37 @@ def query_related(graph: dict, node_id: str, max_depth: int = 2) -> list:
     return list(related)
 
 
-def _next_memory_id(memories: dict) -> str:
-    """Generate the next memory ID by scanning existing IDs.
+def _next_memory_id(memories: dict, base_dir: str = ".agent/knowledge") -> str:
+    """Generate the next memory ID by scanning both graph nodes AND on-disk files.
 
-    Uses max(existing numeric suffix) + 1 instead of len(memories) + 1.
-    Prevents the collision that occurs when a memory is deleted and the
-    counter resets to an already-used ID.
+    Uses max(existing numeric suffix) + 1 across the union of graph IDs and
+    on-disk `memories/**/mem-*.md` files. The disk scan prevents overwriting
+    memory files that exist on disk but aren't yet registered in the graph
+    (e.g., when a file was authored manually or the graph drifted out of sync
+    via a partial reconciliation).
     """
+    from pathlib import Path
+
     max_n = 0
-    for mid in memories:
-        # Expected form: 'mem-NNN' (zero-padded), but be lenient
-        if mid.startswith("mem-"):
-            tail = mid[4:]
+
+    def _consume(stem: str) -> None:
+        nonlocal max_n
+        if stem.startswith("mem-"):
             try:
-                n = int(tail)
+                n = int(stem[4:])
             except ValueError:
-                continue
+                return
             if n > max_n:
                 max_n = n
+
+    for mid in memories:
+        _consume(mid)
+
+    mem_root = Path(base_dir) / "memories"
+    if mem_root.is_dir():
+        for f in mem_root.glob("**/mem-*.md"):
+            _consume(f.stem)
+
     return f"mem-{max_n + 1:03d}"
 
 
@@ -310,7 +323,8 @@ def add_memory(graph: dict, memory_type: str, summary: str,
                concepts: list, confidence: float = 0.8,
                source_task: Optional[str] = None,
                base_dir: str = ".agent/knowledge",
-               create_file: bool = True) -> str:
+               create_file: bool = True,
+               memory_id: Optional[str] = None) -> str:
     """Add a memory node to the graph.
 
     Also creates the backing markdown file at
@@ -318,10 +332,19 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     field in the graph node always resolves to a real file. Pass
     `create_file=False` to skip file creation (e.g. when ingesting into a
     transient/test graph that isn't on disk).
+
+    If `memory_id` is provided, that ID is used directly (after collision
+    check against the graph). If omitted, the next free ID is computed via
+    `_next_memory_id` which scans both graph nodes and on-disk files.
     """
-    # Generate memory ID via max-existing + 1 (collision-safe across deletes)
     memories = graph["nodes"].get("memories", {})
-    memory_id = _next_memory_id(memories)
+    if memory_id is None:
+        memory_id = _next_memory_id(memories, base_dir)
+    elif memory_id in memories:
+        raise ValueError(
+            f"Memory ID {memory_id} already exists in graph. "
+            f"Use a different --node-id or omit it to auto-assign."
+        )
 
     # Determine path (relative; resolves to {base_dir}/{path})
     path = f"memories/{memory_type}s/{memory_id}.md"
@@ -547,10 +570,15 @@ def main():
 
         graph = load_graph(args.graph_path)
         concepts = [c.strip().lower() for c in args.concepts.split(',')]
-        memory_id = add_memory(
-            graph, args.memory_type, args.summary, concepts,
-            args.confidence, args.source_task
-        )
+        try:
+            memory_id = add_memory(
+                graph, args.memory_type, args.summary, concepts,
+                args.confidence, args.source_task,
+                memory_id=args.node_id,
+            )
+        except (ValueError, FileExistsError) as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
         if save_graph(args.graph_path, graph):
             print(f"Added memory: {memory_id}")

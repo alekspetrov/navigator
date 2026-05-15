@@ -78,6 +78,11 @@ def create_memory_file(
 **Concepts**: {", ".join(concepts) if concepts else "general"}
 """
 
+    if output_path.exists():
+        raise FileExistsError(
+            f"Memory file already exists: {output_path}. "
+            f"Use a different --memory-id or delete the existing file first."
+        )
     output_path.write_text(content)
     return str(output_path)
 

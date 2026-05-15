@@ -283,11 +283,124 @@ def print_validation_report(
     return passed
 
 
+HOOK_STDIN_FIXTURES = {
+    "SessionStart": '{"cwd": "."}',
+    "PreCompact": '{"cwd": ".", "trigger": "manual"}',
+    "PostCompact": '{"cwd": ".", "compact_summary": ""}',
+    "Stop": '{"cwd": "."}',
+    "UserPromptSubmit": '{"prompt": "hello", "cwd": "."}',
+    "PreToolUse": '{"tool_name": "Read", "tool_input": {"file_path": "/tmp/_release_validator_noop"}, "cwd": "."}',
+    "PostToolUse": '{"tool_name": "Edit", "tool_input": {}, "tool_response": {}, "cwd": "."}',
+}
+
+# Events whose hooks are expected to emit visible payload on a normal invocation.
+# Silent exit 0 on these is the v6.14.0 regression signature.
+# Other events (Stop, UserPromptSubmit, PreToolUse, PostToolUse) are side-effect-only
+# or blocking-only by design — silent exit 0 is correct behavior there.
+HOOK_EMITS_PAYLOAD = {"SessionStart", "PreCompact", "PostCompact"}
+
+
+def _resolve_plugin_dir_for_test() -> str:
+    """Find the latest cached plugin install dir for use as CLAUDE_PLUGIN_DIR in smoke tests."""
+    cache_root = Path.home() / ".claude" / "plugins" / "cache" / "navigator-marketplace" / "navigator"
+    if not cache_root.is_dir():
+        return ""
+    versions = sorted(
+        (p for p in cache_root.iterdir() if (p / "hooks").is_dir()),
+        key=lambda p: [int(x) for x in re.findall(r"\d+", p.name)],
+        reverse=True,
+    )
+    return str(versions[0]) if versions else ""
+
+
+def verify_hooks(root: Path, plugin: dict) -> Tuple[List[Dict], List[Dict]]:
+    """
+    Smoke-test every plugin manifest hook command end-to-end under both
+    set and unset $CLAUDE_PLUGIN_DIR.
+
+    Detects the v6.14.0 class of bug where a manifest shell guard silently
+    short-circuits (exit 0, no stdout, no stderr) when the variable is
+    not bound by Claude Code in the hook spawn environment.
+
+    Returns:
+        (passed_checks, failed_checks) — each check is a dict with keys
+        event, command_summary, env_state, exit_code, stdout_len,
+        stderr_len, status, and (on failure) reason.
+    """
+    hooks = plugin.get("hooks", {})
+    plugin_dir = _resolve_plugin_dir_for_test()
+    passed: List[Dict] = []
+    failed: List[Dict] = []
+
+    base_env = {k: v for k, v in os.environ.items() if k != "CLAUDE_PLUGIN_DIR"}
+    set_env = {**base_env, "CLAUDE_PLUGIN_DIR": plugin_dir} if plugin_dir else base_env
+
+    for event, entries in hooks.items():
+        fixture = HOOK_STDIN_FIXTURES.get(event, '{"cwd": "."}')
+        for entry in entries:
+            for hook in entry.get("hooks", []):
+                cmd = hook.get("command", "")
+                if not cmd:
+                    continue
+                summary = cmd[:80] + ("..." if len(cmd) > 80 else "")
+
+                for env_state, env in (("set", set_env), ("unset", base_env)):
+                    try:
+                        result = subprocess.run(
+                            ["bash", "-c", cmd],
+                            input=fixture,
+                            capture_output=True,
+                            text=True,
+                            timeout=15,
+                            env=env,
+                            cwd=root,
+                        )
+                        stdout_len = len(result.stdout.strip())
+                        stderr_len = len(result.stderr.strip())
+                        exit_code = result.returncode
+                        # v6.14.0 regression signature: a payload-emitting hook
+                        # silently exits 0 with no output on either channel.
+                        # Side-effect-only hooks (Stop, PreToolUse counter, PostToolUse
+                        # sync) are silent by design — don't flag those.
+                        is_silent_failure = (
+                            event in HOOK_EMITS_PAYLOAD
+                            and exit_code == 0
+                            and stdout_len == 0
+                            and stderr_len == 0
+                        )
+                        if is_silent_failure:
+                            failed.append({
+                                "event": event, "command_summary": summary,
+                                "env_state": env_state, "exit_code": exit_code,
+                                "stdout_len": stdout_len, "stderr_len": stderr_len,
+                                "status": "fail",
+                                "reason": "silent exit 0 — payload-emitting hook produced no output",
+                            })
+                        else:
+                            passed.append({
+                                "event": event, "command_summary": summary,
+                                "env_state": env_state, "exit_code": exit_code,
+                                "stdout_len": stdout_len, "stderr_len": stderr_len,
+                                "status": "pass",
+                            })
+                    except subprocess.TimeoutExpired:
+                        failed.append({
+                            "event": event, "command_summary": summary,
+                            "env_state": env_state, "exit_code": -1,
+                            "stdout_len": 0, "stderr_len": 0,
+                            "status": "fail", "reason": "timeout (>15s)",
+                        })
+
+    return passed, failed
+
+
 def main():
     parser = argparse.ArgumentParser(description="Validate Navigator plugin for release")
     parser.add_argument("--check-all", action="store_true", help="Run all validation checks")
     parser.add_argument("--check-version", type=str, help="Verify specific version")
     parser.add_argument("--verify-tag", type=str, help="Verify tag contains all skills")
+    parser.add_argument("--verify-hooks", action="store_true",
+                        help="Smoke-test plugin manifest hook commands under set/unset CLAUDE_PLUGIN_DIR")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     args = parser.parse_args()
@@ -298,6 +411,22 @@ def main():
     if not plugin:
         print("Error: plugin.json not found", file=sys.stderr)
         return 1
+
+    if args.verify_hooks:
+        passed, failed = verify_hooks(root, plugin)
+        if args.json:
+            print(json.dumps({"passed": passed, "failed": failed}, indent=2))
+        else:
+            total = len(passed) + len(failed)
+            print(f"Hook smoke-test: {len(passed)}/{total} passed, {len(failed)} failed")
+            print()
+            for chk in failed:
+                print(f"  ❌ {chk['event']:18} [{chk['env_state']:5}] {chk['reason']}")
+                print(f"     {chk['command_summary']}")
+            for chk in passed:
+                print(f"  ✓  {chk['event']:18} [{chk['env_state']:5}] "
+                      f"exit={chk['exit_code']} out={chk['stdout_len']}B err={chk['stderr_len']}B")
+        return 0 if not failed else 1
 
     if args.verify_tag:
         found, missing = verify_tag_contents(root, args.verify_tag)

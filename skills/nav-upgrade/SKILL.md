@@ -337,9 +337,9 @@ with the plugin from v6.13.0 onwards.
 `.claude/settings.json` and must be removed to prevent double-firing:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 if [ ! -d "$PLUGIN_DIR" ]; then
-  PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/jitd-marketplace"
+  PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 fi
 
 python3 "$PLUGIN_DIR/skills/nav-upgrade/functions/migrate_hooks_out_of_settings.py" \
@@ -396,7 +396,7 @@ The product-design skill (v3.4.0+) requires Python dependencies:
 
 **One-time setup** (30 seconds):
 ```bash
-cd ~/.claude/plugins/marketplaces/jitd-marketplace/skills/product-design
+cd ~/.claude/plugins/marketplaces/navigator-marketplace/skills/product-design
 ./setup.sh
 ```
 

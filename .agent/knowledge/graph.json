@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-11T22:37:54.167698Z",
+  "last_updated": "2026-05-15T21:25:22.197818Z",
   "stats": {
-    "total_nodes": 123,
-    "total_edges": 825,
-    "memory_count": 33
+    "total_nodes": 125,
+    "total_edges": 836,
+    "memory_count": 34
   },
   "nodes": {
     "tasks": {
@@ -504,6 +504,24 @@
           "markers",
           "database",
           "workflow"
+        ]
+      },
+      "TASK-41": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-41-hook-silent-fail-postmortem-v6.15.1.md",
+        "title": "Hook Silent-Fail Postmortem \u2014 v6.15.1",
+        "status": "completed",
+        "concepts": [
+          "deployment",
+          "api",
+          "tom",
+          "workflow",
+          "context",
+          "knowledge",
+          "testing",
+          "skills",
+          "simplification",
+          "authentication",
+          "database"
         ]
       }
     },
@@ -1669,6 +1687,26 @@
         ],
         "created": "2026-05-11",
         "last_validated": "2026-05-11"
+      },
+      "mem-036": {
+        "type": "pitfall",
+        "title": "Plugin manifest hooks fail silently when $CLAUDE_PLUGIN_DIR unset",
+        "summary": "v6.14.0 shell guard (if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then ... fi) exits 0 with no output when CC does not bind the variable \u2014 every hook becomes invisible no-op. Projects with project-local .claude/settings.json hardcoded entries mask the failure; manifest-only projects get zero injection and zero error signal. Fixed v6.15.1 via shell parameter-expansion fallback to flat marketplaces path.",
+        "concepts": [
+          "hooks",
+          "claude-code",
+          "claude-plugin-dir",
+          "plugin-manifest",
+          "silent-fail",
+          "env-var",
+          "shell-expansion",
+          "fallback-path",
+          "harness-behavior",
+          "sessionstart"
+        ],
+        "confidence": 0.95,
+        "path": ".agent/knowledge/memories/pitfalls/mem-036.md",
+        "source_task": "TASK-41"
       }
     },
     "files": {}
@@ -6320,6 +6358,61 @@
       "from": "mem-033",
       "to": "TASK-39",
       "type": "learned-from"
+    },
+    {
+      "from": "TASK-41",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-41",
+      "to": "database",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6352,7 +6445,8 @@
       "2025-01-21-task30-verification-plan",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "mem-012",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "testing": [
       "TASK-32",
@@ -6424,7 +6518,8 @@
       "mem-010",
       "mem-011",
       "mem-025",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "context": [
       "TASK-32",
@@ -6497,7 +6592,8 @@
       "2025-10-31-2116_phase2-parallel-complete",
       "mem-002",
       "mem-014",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "skills": [
       "TASK-32",
@@ -6576,7 +6672,8 @@
       "mem-022",
       "mem-025",
       "mem-026",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "session": [
       "TASK-32",
@@ -6646,7 +6743,8 @@
       "SOP-opentelemetry_setup",
       "youtube-video-production-complete",
       "before-compact-2025-01-23-task35-knowledge-graph",
-      "2025-01-21-task30-verification-plan"
+      "2025-01-21-task30-verification-plan",
+      "TASK-41"
     ],
     "workflow": [
       "TASK-33",
@@ -6706,7 +6804,8 @@
       "mem-016",
       "mem-020",
       "mem-026",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "backend": [
       "TASK-16",
@@ -6791,7 +6890,8 @@
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "markers": [
       "TASK-18",
@@ -6870,7 +6970,8 @@
       "SOP-visual_regression_setup",
       "v4.1-multi-claude-automation-proven",
       "2025-10-13_task04-complete",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "code quality": [
       "TASK-19",
@@ -6903,7 +7004,8 @@
       "mem-021",
       "mem-022",
       "mem-023",
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6924,7 +7026,8 @@
       "mem-013",
       "mem-015",
       "mem-018",
-      "mem-024"
+      "mem-024",
+      "TASK-41"
     ],
     "knowledge-graph": [
       "mem-003",
@@ -6982,7 +7085,8 @@
     "hooks": [
       "mem-026",
       "mem-027",
-      "TASK-38"
+      "TASK-38",
+      "mem-036"
     ],
     "session-lifecycle": [
       "mem-026",
@@ -6995,7 +7099,8 @@
     ],
     "claude-code": [
       "mem-027",
-      "TASK-38"
+      "TASK-38",
+      "mem-036"
     ],
     "policy-vs-judgment": [
       "mem-027"
@@ -7010,7 +7115,8 @@
       "mem-027"
     ],
     "tom": [
-      "TASK-38"
+      "TASK-38",
+      "TASK-41"
     ],
     "general": [
       "mem-028",
@@ -7043,6 +7149,30 @@
     ],
     "routing": [
       "mem-033"
+    ],
+    "claude-plugin-dir": [
+      "mem-036"
+    ],
+    "plugin-manifest": [
+      "mem-036"
+    ],
+    "silent-fail": [
+      "mem-036"
+    ],
+    "env-var": [
+      "mem-036"
+    ],
+    "shell-expansion": [
+      "mem-036"
+    ],
+    "fallback-path": [
+      "mem-036"
+    ],
+    "harness-behavior": [
+      "mem-036"
+    ],
+    "sessionstart": [
+      "mem-036"
     ]
   }
 }

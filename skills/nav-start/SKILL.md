@@ -87,7 +87,7 @@ If auto_update is enabled in config AND an update is available, automatically up
 
 ```bash
 # Get the skill's base directory
-SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace/skills/nav-start}"
 
 # Run auto-updater
 AUTO_UPDATE_RESULT=$(python3 "$SKILL_DIR/functions/auto_updater.py" 2>/dev/null)
@@ -214,7 +214,7 @@ Parse:
 **Check if project config version matches plugin version**:
 
 ```bash
-SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace/skills/nav-start}"
 DRIFT_RESULT=$(python3 "$SKILL_DIR/functions/auto_updater.py" --check-drift 2>/dev/null || echo '{"has_drift": false}')
 HAS_DRIFT=$(echo "$DRIFT_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('has_drift', False))" 2>/dev/null)
 
@@ -246,7 +246,7 @@ This helps users understand why skills may behave unexpectedly.
 ```bash
 if [ -f ".agent/knowledge/graph.json" ]; then
   # Get graph stats
-  SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/cache/jitd-marketplace/navigator}"
+  SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
   GRAPH_STATS=$(python3 "$SKILL_DIR/skills/nav-graph/functions/graph_manager.py" --action stats --graph-path .agent/knowledge/graph.json 2>/dev/null)
   echo "$GRAPH_STATS"
 fi
@@ -351,7 +351,7 @@ Run the OpenTelemetry session statistics script:
 
 ```bash
 # Get the skill's base directory (passed via SKILL_BASE_DIR)
-SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace/skills/nav-start}"
 python3 "$SKILL_DIR/scripts/otel_session_stats.py"
 ```
 
@@ -545,7 +545,7 @@ No active tasks found. What would you like to work on?
 
 **Execution**:
 ```bash
-SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/jitd-marketplace/skills/nav-start}"
+SKILL_DIR="${SKILL_BASE_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace/skills/nav-start}"
 python3 "$SKILL_DIR/scripts/otel_session_stats.py"
 ```
 

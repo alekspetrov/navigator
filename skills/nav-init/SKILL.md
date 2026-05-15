@@ -123,7 +123,7 @@ Copy all Grafana dashboard files to enable metrics visualization:
 
 ```bash
 # Find plugin installation directory
-PLUGIN_DIR="${HOME}/.claude/plugins/marketplaces/jitd-marketplace"
+PLUGIN_DIR="${HOME}/.claude/plugins/marketplaces/navigator-marketplace"
 
 # Copy Grafana files if plugin has them
 if [ -d "${PLUGIN_DIR}/.agent/grafana" ]; then

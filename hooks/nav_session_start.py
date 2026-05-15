@@ -238,8 +238,8 @@ def _resolve_plugin_dir() -> Path | None:
         if p.is_dir():
             return p
     candidates = [
-        Path.home() / ".claude" / "plugins" / "cache" / "jitd-marketplace" / "navigator",
-        Path.home() / ".claude" / "plugins" / "marketplaces" / "jitd-marketplace",
+        Path.home() / ".claude" / "plugins" / "cache" / "navigator-marketplace" / "navigator",
+        Path.home() / ".claude" / "plugins" / "marketplaces" / "navigator-marketplace",
     ]
     for c in candidates:
         if (c / "skills" / "nav-start").is_dir():

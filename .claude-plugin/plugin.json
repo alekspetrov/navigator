@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_session_start.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_session_start.py\"",
             "timeout": 10
           }
         ]
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_pre_compact.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_pre_compact.py\"",
             "timeout": 30
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_post_compact.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_post_compact.py\"",
             "timeout": 10
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_workflow_state.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_workflow_state.py\"",
             "timeout": 5
           }
         ]
@@ -107,7 +107,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/workflow_enforcer.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/workflow_enforcer.py\"",
             "timeout": 5
           }
         ]
@@ -119,7 +119,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_read_guard.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_read_guard.py\"",
             "timeout": 5
           }
         ]
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/token_monitor.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/token_monitor.py\"",
             "timeout": 5
           }
         ]
@@ -141,7 +141,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_commit_reminder.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_commit_reminder.py\"",
             "timeout": 3
           }
         ]
@@ -151,7 +151,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_task_graph_sync.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_task_graph_sync.py\"",
             "timeout": 10
           }
         ]
@@ -161,7 +161,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_PLUGIN_DIR\" ]; then python3 \"$CLAUDE_PLUGIN_DIR/hooks/nav_profile_sync.py\"; fi",
+            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_profile_sync.py\"",
             "timeout": 10
           }
         ]

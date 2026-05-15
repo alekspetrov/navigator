@@ -59,7 +59,7 @@ FEATURES = {
         "short_desc": "Automatic code clarity improvements",
         "config_key": "simplification",
         "enabled_key": "enabled",
-        "default": False,
+        "default": True,
         "type": "config"
     },
     "auto_update": {
@@ -73,17 +73,105 @@ FEATURES = {
         "default": True,
         "type": "config"
     },
-    "multi_claude": {
-        "name": "multi_claude",
-        "display_name": "Multi-Claude",
+    "knowledge_graph": {
+        "name": "knowledge_graph",
+        "display_name": "Knowledge Graph",
+        "version": "6.0.0",
+        "description": "Unified project knowledge + experiential memories",
+        "short_desc": "Project knowledge graph with memories",
+        "config_key": "knowledge_graph",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "multi_agent": {
+        "name": "multi_agent",
+        "display_name": "Multi-Agent",
+        "version": "6.0.0",
+        "description": "Parallel agent orchestration (nav-multi skill)",
+        "short_desc": "Parallel agent workflows",
+        "config_key": "multi_agent",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "multi_claude_scripts": {
+        "name": "multi_claude_scripts",
+        "display_name": "Multi-Claude Scripts",
         "version": "4.3.0",
-        "description": "Parallel AI execution for complex tasks",
-        "short_desc": "Multi-Claude workflow orchestration",
+        "description": "External shell scripts for multi-Claude workflows",
+        "short_desc": "navigator-multi-claude.sh on PATH",
         "config_key": None,
         "enabled_key": None,
         "default": False,
         "type": "installed",
         "check_command": "command -v navigator-multi-claude.sh"
+    },
+    "compact_hook": {
+        "name": "compact_hook",
+        "display_name": "Compact Hook",
+        "version": "6.x",
+        "description": "Injects rich summary into compacted sessions",
+        "short_desc": "Pre-compact summary injection",
+        "config_key": "compact_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "workflow_enforcer_hook": {
+        "name": "workflow_enforcer_hook",
+        "display_name": "Workflow Enforcer",
+        "version": "6.x",
+        "description": "Enforces WORKFLOW CHECK block before task responses",
+        "short_desc": "Mandatory workflow gate",
+        "config_key": "workflow_enforcer_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "read_guard_hook": {
+        "name": "read_guard_hook",
+        "display_name": "Read Guard",
+        "version": "6.x",
+        "description": "Warns on excessive Reads (push to agents)",
+        "short_desc": "Anti upfront-loading guard",
+        "config_key": "read_guard_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "workflow_state_hook": {
+        "name": "workflow_state_hook",
+        "display_name": "Workflow State",
+        "version": "6.x",
+        "description": "Tracks current task/phase across the session",
+        "short_desc": "Session state persistence",
+        "config_key": "workflow_state_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "task_graph_sync_hook": {
+        "name": "task_graph_sync_hook",
+        "display_name": "Task Graph Sync",
+        "version": "6.x",
+        "description": "Auto-syncs task files into the knowledge graph",
+        "short_desc": "Tasks → knowledge graph",
+        "config_key": "task_graph_sync_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "profile_sync_hook": {
+        "name": "profile_sync_hook",
+        "display_name": "Profile Sync",
+        "version": "6.x",
+        "description": "Auto-captures preferences/corrections into profile",
+        "short_desc": "Profile auto-learning",
+        "config_key": "profile_sync_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
     }
 }
 
@@ -176,9 +264,9 @@ def show_features(config: Dict, first_session: bool = False) -> str:
     lines.append("")
 
     # Table header
-    lines.append("┌─────────────────┬────────┬───────────────────────────────────────────────┐")
-    lines.append("│ Feature         │ Status │ Description                                   │")
-    lines.append("├─────────────────┼────────┼───────────────────────────────────────────────┤")
+    lines.append("┌─────────────────────────┬────────┬───────────────────────────────────────────────┐")
+    lines.append("│ Feature                 │ Status │ Description                                   │")
+    lines.append("├─────────────────────────┼────────┼───────────────────────────────────────────────┤")
 
     # Feature rows
     for feature_name, feature in FEATURES.items():
@@ -192,13 +280,13 @@ def show_features(config: Dict, first_session: bool = False) -> str:
             desc = desc[:42] + "..."
 
         # Format with padding
-        name_col = feature_name.ljust(15)
+        name_col = feature_name.ljust(23)
         status_col = status.ljust(6)
         desc_col = desc.ljust(45)
 
         lines.append(f"│ {name_col} │ {status_col} │ {desc_col} │")
 
-    lines.append("└─────────────────┴────────┴───────────────────────────────────────────────┘")
+    lines.append("└─────────────────────────┴────────┴───────────────────────────────────────────────┘")
     lines.append("")
     lines.append(f"All v{version} features configured.")
 

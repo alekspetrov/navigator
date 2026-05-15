@@ -30,21 +30,31 @@ Invoke this skill when the user:
 python3 "$SKILL_BASE_DIR/functions/feature_manager.py" show
 ```
 
-This displays the feature table:
+This displays the feature table (one row per configurable Navigator feature, current version's number in the header):
+
 ```
-v5.6.0 Features:
+v<version> Features:
 
-┌─────────────────┬────────┬─────────────────────────────────────────────────┐
-│ Feature         │ Status │ Description                                     │
-├─────────────────┼────────┼─────────────────────────────────────────────────┤
-│ task_mode       │ ✅     │ Auto-detects task complexity, defers to skills  │
-│ tom_features    │ ✅     │ Verification checkpoints, user profile, diag... │
-│ loop_mode       │ ⏸ Off  │ Autonomous loop execution (enable when needed)  │
-│ simplification  │ ✅     │ Post-implementation code cleanup with Opus      │
-│ auto_update     │ ✅     │ Auto-updates on session start                   │
-└─────────────────┴────────┴─────────────────────────────────────────────────┘
+┌─────────────────────────┬────────┬───────────────────────────────────────────────┐
+│ Feature                 │ Status │ Description                                   │
+├─────────────────────────┼────────┼───────────────────────────────────────────────┤
+│ task_mode               │ [x]    │ Auto-detects task complexity, defers to sk... │
+│ tom_features            │ [x]    │ Verification checkpoints, user profile, di... │
+│ loop_mode               │ [ ]    │ Autonomous loop execution (enable when nee... │
+│ simplification          │ [x]    │ Post-implementation code cleanup with Opus    │
+│ auto_update             │ [x]    │ Auto-updates on session start                 │
+│ knowledge_graph         │ [x]    │ Unified project knowledge + experiential m... │
+│ multi_agent             │ [x]    │ Parallel agent orchestration (nav-multi sk... │
+│ multi_claude_scripts    │ [*]    │ External shell scripts for multi-Claude wo... │
+│ compact_hook            │ [x]    │ Injects rich summary into compacted sessions  │
+│ workflow_enforcer_hook  │ [x]    │ Enforces WORKFLOW CHECK block before task ... │
+│ read_guard_hook         │ [x]    │ Warns on excessive Reads (push to agents)     │
+│ workflow_state_hook     │ [x]    │ Tracks current task/phase across the session  │
+│ task_graph_sync_hook    │ [x]    │ Auto-syncs task files into the knowledge g... │
+│ profile_sync_hook       │ [x]    │ Auto-captures preferences/corrections into... │
+└─────────────────────────┴────────┴───────────────────────────────────────────────┘
 
-All v5.6.0 features configured.
+All v<version> features configured.
 ```
 
 ### Step 2: Handle Toggle Request (If Applicable)
@@ -60,11 +70,26 @@ python3 "$SKILL_BASE_DIR/functions/feature_manager.py" disable loop_mode
 ```
 
 **Supported features**:
+
+Core (config-toggled):
 - `task_mode` - Unified workflow orchestration
 - `tom_features` - Theory of Mind (verification checkpoints, profile, diagnostics)
 - `loop_mode` - Autonomous loop execution
 - `simplification` - Code cleanup before commit
 - `auto_update` - Auto-update on session start
+- `knowledge_graph` - Unified project knowledge + memories (v6.0.0)
+- `multi_agent` - Parallel agent orchestration via `nav-multi` (v6.0.0)
+
+Hooks (config-toggled, edit with caution):
+- `compact_hook` - Pre-compact summary injection
+- `workflow_enforcer_hook` - Mandatory WORKFLOW CHECK block (disabling weakens guardrails)
+- `read_guard_hook` - Anti upfront-loading guard
+- `workflow_state_hook` - Tracks task/phase across the session
+- `task_graph_sync_hook` - Auto-syncs tasks into knowledge graph
+- `profile_sync_hook` - Auto-captures profile corrections
+
+Install-based:
+- `multi_claude_scripts` - External shell scripts (`navigator-multi-claude.sh` on PATH)
 
 **After toggle, show updated table**.
 
@@ -169,13 +194,7 @@ python3 feature_manager.py info task_mode
 Run "Initialize Navigator in this project" first.
 ```
 
-**Unknown feature**:
-```
-❌ Unknown feature: xyz
-
-Available features:
-  task_mode, tom_features, loop_mode, simplification, auto_update
-```
+**Unknown feature**: lists all available feature names (see Supported features section above). The error message is generated dynamically from the FEATURES dict, so it stays current as features are added.
 
 ## Success Criteria
 

@@ -6,9 +6,11 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
-## [Unreleased]
+## [v6.15.3] — 2026-05-18
 
 **`workflow_enforcer` deadlock on question/non-task turns fixed.** `nav_workflow_state.py` (Stop hook) previously stamped `check_shown=false` on every assistant turn that didn't contain the "WORKFLOW CHECK" string — including `AskUserQuestion`-only turns and pure-text replies (session-start summaries, clarifiers). If the next user prompt contained a Loop Mode trigger (`"run until done"`), `workflow_enforcer.py` (UserPromptSubmit) blocked with exit 2 and the only recovery paths were the three manual escape hatches in the block message. Reproduced in the wild: assistant asked a resume-or-review clarifier via `AskUserQuestion`, user declined, user typed `"Run until done via loop mode"` → block. Fix: tristate `check_shown` — `True` when CHECK block present, `False` only when the prior turn used a codebase-mutating tool (`Edit`, `Write`, `MultiEdit`, `NotebookEdit`, `Bash`, `Task`/`Agent`) without showing it, `None` ("n/a") otherwise. Enforcer already gates on `check_shown is False`, so `None` falls through to soft-warn cleanly. State file gains a `tools_used` field for transparency. Four-case smoke test passes: question-only → null, edit-without-check → false (still blocks), edit-with-check → true, pure-text-reply → null.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.15.3.md)
 
 ## [v6.15.2] — 2026-05-15
 

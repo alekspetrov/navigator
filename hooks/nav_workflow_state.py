@@ -38,7 +38,7 @@ LOOP_PHASE_RE = re.compile(r"\bPhase:\s*(INIT|RESEARCH|IMPL|VERIFY|COMPLETE)\b")
 # when one of these appears (and no CHECK block is shown) do we record
 # check_shown=False. Question-only or conversational turns leave the field
 # as None ("not applicable") so the enforcer doesn't block the next prompt.
-# See mem-035 / TASK-41-followup.
+# v6.15.3 fix — see RELEASE-NOTES-v6.15.3.md.
 TASK_ACTION_TOOLS = frozenset({
     "Edit",
     "Write",
@@ -193,7 +193,7 @@ def main() -> int:
     # showing it; None ("n/a") for conversational/question-only turns so the
     # enforcer doesn't block the next prompt. Fixes the AskUserQuestion
     # deadlock where declining a clarifier + a loop-trigger prompt left no
-    # way out. See mem-035.
+    # way out. See releases/RELEASE-NOTES-v6.15.3.md.
     if check_present:
         check_shown: bool | None = True
     elif tools & TASK_ACTION_TOOLS:

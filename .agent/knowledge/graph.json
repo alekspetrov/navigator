@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-15T21:50:45.014103Z",
+  "last_updated": "2026-05-18T18:32:04.738549Z",
   "stats": {
-    "total_nodes": 127,
-    "total_edges": 839,
-    "memory_count": 36
+    "total_nodes": 128,
+    "total_edges": 843,
+    "memory_count": 37
   },
   "nodes": {
     "tasks": {
@@ -1747,6 +1747,28 @@
         ],
         "created": "2026-05-15",
         "last_validated": "2026-05-15"
+      },
+      "mem-037": {
+        "type": "pitfall",
+        "summary": "Stop hook nav_workflow_state.py stamped check_shown=false on every assistant turn missing the literal WORKFLOW CHECK string, including AskUserQuestion-only and pure-text turns. workflow_enforcer.py then deadlocked the next loop-trigger prompt. Fixed in v6.15.3 by tristating check_shown \u2014 True if CHECK present, False only when prior turn used a codebase-mutating tool without showing it, None otherwise.",
+        "path": "memories/pitfalls/mem-037.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "claude-code",
+          "stop-hook",
+          "workflow-enforcer",
+          "state-files",
+          "cooperating-hooks",
+          "false-positives",
+          "deadlock",
+          "tristate",
+          "ask-user-question",
+          "loop-mode",
+          "harness-behavior"
+        ],
+        "created": "2026-05-18",
+        "last_validated": "2026-05-18"
       }
     },
     "files": {}
@@ -6468,6 +6490,26 @@
       "from": "TASK-41",
       "to": "markers",
       "type": "implements"
+    },
+    {
+      "from": "mem-037",
+      "to": "RELEASE-v6.15.3",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-037",
+      "to": "mem-027",
+      "type": "relates-to"
+    },
+    {
+      "from": "mem-037",
+      "to": "mem-034",
+      "type": "relates-to"
+    },
+    {
+      "from": "mem-037",
+      "to": "mem-035",
+      "type": "relates-to"
     }
   ],
   "concept_index": {
@@ -7144,7 +7186,8 @@
       "TASK-38",
       "mem-036",
       "mem-034",
-      "mem-035"
+      "mem-035",
+      "mem-037"
     ],
     "session-lifecycle": [
       "mem-026",
@@ -7160,7 +7203,8 @@
       "TASK-38",
       "mem-036",
       "mem-034",
-      "mem-035"
+      "mem-035",
+      "mem-037"
     ],
     "policy-vs-judgment": [
       "mem-027"
@@ -7230,7 +7274,8 @@
     ],
     "harness-behavior": [
       "mem-036",
-      "mem-035"
+      "mem-035",
+      "mem-037"
     ],
     "sessionstart": [
       "mem-036"
@@ -7272,6 +7317,33 @@
     ],
     "dead-code": [
       "mem-035"
+    ],
+    "stop-hook": [
+      "mem-037"
+    ],
+    "workflow-enforcer": [
+      "mem-037"
+    ],
+    "state-files": [
+      "mem-037"
+    ],
+    "cooperating-hooks": [
+      "mem-037"
+    ],
+    "false-positives": [
+      "mem-037"
+    ],
+    "deadlock": [
+      "mem-037"
+    ],
+    "tristate": [
+      "mem-037"
+    ],
+    "ask-user-question": [
+      "mem-037"
+    ],
+    "loop-mode": [
+      "mem-037"
     ]
   }
 }

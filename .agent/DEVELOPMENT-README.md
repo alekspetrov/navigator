@@ -51,1110 +51,241 @@ Strategic loading beats bulk loading.
 
 ## Understanding Context Efficiency
 
-### Philosophy & Principles
+**Philosophy & Principles**:
+- [Context Efficiency Manifesto](./philosophy/CONTEXT-EFFICIENCY.md) — Why Navigator exists
+- [Anti-Patterns](./philosophy/ANTI-PATTERNS.md) — Common mistakes (upfront loading, etc.)
+- [Success Patterns](./philosophy/PATTERNS.md) — What works and why
 
-**New to this approach?** Start with the philosophy:
-- [Context Efficiency Manifesto](./philosophy/CONTEXT-EFFICIENCY.md) - Why Navigator exists
-- [Anti-Patterns](./philosophy/ANTI-PATTERNS.md) - Common mistakes (upfront loading, etc.)
-- [Success Patterns](./philosophy/PATTERNS.md) - What works and why
+**Learning Guides**:
+- [Context Budgets](./learning/CONTEXT-BUDGETS.md) — Token allocation
+- [Preprocessing vs LLM](./learning/PREPROCESSING-VS-LLM.md) — Tool selection
+- [Progressive Refinement](./learning/PROGRESSIVE-REFINEMENT.md) — Metadata → details
+- [Token Optimization](./learning/TOKEN-OPTIMIZATION.md) — Complete strategy
 
-### Learning Guides (New in v4.0)
+**Hands-on**:
+- [TRY-THIS-LAZY-LOADING.md](./learning/examples/TRY-THIS-LAZY-LOADING.md)
+- [TRY-THIS-AGENT-SEARCH.md](./learning/examples/TRY-THIS-AGENT-SEARCH.md)
+- [TRY-THIS-MARKERS.md](./learning/examples/TRY-THIS-MARKERS.md)
 
-**Master the principles** with comprehensive guides:
-- [Context Budgets](./learning/CONTEXT-BUDGETS.md) - How to think about token allocation
-- [Preprocessing vs LLM](./learning/PREPROCESSING-VS-LLM.md) - When to use which tool
-- [Progressive Refinement](./learning/PROGRESSIVE-REFINEMENT.md) - Metadata → details on-demand
-- [Token Optimization](./learning/TOKEN-OPTIMIZATION.md) - Complete strategy guide
-
-### Interactive Examples
-
-**Try it yourself** with hands-on exercises:
-- [TRY-THIS-LAZY-LOADING.md](./learning/examples/TRY-THIS-LAZY-LOADING.md) - Experience 90%+ token savings
-- [TRY-THIS-AGENT-SEARCH.md](./learning/examples/TRY-THIS-AGENT-SEARCH.md) - Agent-assisted exploration
-- [TRY-THIS-MARKERS.md](./learning/examples/TRY-THIS-MARKERS.md) - 97% context compression
-
-### Decision Frameworks
-
-**Quick reference** for common decisions:
-- [When to Compact](./learning/frameworks/WHEN-TO-COMPACT.md) - Context management flowchart
-- [Agent vs Manual Read](./learning/frameworks/AGENT-VS-MANUAL.md) - File reading decisions
-- [Preprocessing Decision Tree](./learning/frameworks/PREPROCESSING-DECISION-TREE.md) - Right tool selection
-
-**Quick start?** Jump to [Development Workflow](#-development-workflow)
+**Decision frameworks**:
+- [When to Compact](./learning/frameworks/WHEN-TO-COMPACT.md)
+- [Agent vs Manual Read](./learning/frameworks/AGENT-VS-MANUAL.md)
+- [Preprocessing Decision Tree](./learning/frameworks/PREPROCESSING-DECISION-TREE.md)
 
 ---
 
-## 🚀 Quick Start for Development
+## Project Quick Start
 
 **Project**: Claude Code plugin for Navigator
-**Tech Stack**: Markdown templates, JSON configuration, Bash slash commands, Python functions
-**Updated**: 2025-10-23
+**Tech**: Markdown skills, JSON manifests, Python hook scripts
+**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.3)
 
-### New to This Project?
-**Read in this order:**
-1. [Project Architecture](./system/project-architecture.md) - Plugin structure, templates
-2. [Plugin Development Patterns](./system/plugin-patterns.md) - Claude Code plugin best practices
+**New here?** Read in order:
+1. [Project Architecture](./system/project-architecture.md) — plugin structure, manifest, hook wiring
+2. [Plugin Patterns](./system/plugin-patterns.md) — skill / hook / function design
 
-### Working on Plugin Features?
-1. Check if similar task exists in [`tasks/`](#implementation-plans-tasks)
-2. Read relevant system docs from [`system/`](#system-architecture-system)
-3. Check for integration SOPs in [`sops/`](#standard-operating-procedures-sops)
-4. Test changes in `/Users/aleks.petrov/Projects/tmp/nav-test`
+**Working on a feature**:
+1. Check `.agent/tasks/` for in-flight work
+2. Read the relevant system doc
+3. Check `.agent/sops/` for a matching procedure
+4. Test in `/Users/aleks.petrov/Projects/tmp/nav-test`
 
-### Fixing a Bug?
-1. Check [`sops/debugging/`](#debugging) for known issues
-2. Review relevant system docs for context
-3. After fixing, create SOP: "Create an SOP for debugging [issue-name]"
-
----
-
-## 📊 Session Statistics & Grafana Dashboard (New in v3.1)
-
-Navigator uses **OpenTelemetry** for real-time session metrics with visual dashboards.
-
-### Quick Setup (2 minutes)
-
-**1. Enable metrics**:
-```bash
-# Add to ~/.zshrc or ~/.bashrc
-export CLAUDE_CODE_ENABLE_TELEMETRY=1
-export OTEL_METRICS_EXPORTER=prometheus
-
-# Reload shell
-source ~/.zshrc  # or source ~/.bashrc
-```
-
-**2. Start Grafana dashboard** (optional):
-```bash
-cd .agent/grafana
-docker compose up -d
-```
-
-Access at **http://localhost:3333** (admin/admin)
-
-### What You Get
-
-**Console metrics** (terminal output):
-- ✅ Real token usage (not file-size estimates)
-- ✅ Cache hit rates (CLAUDE.md caching performance)
-- ✅ Session costs (actual USD spent)
-- ✅ Active time tracking
-
-**Grafana dashboard** (visual monitoring):
-- ✅ 10-panel dashboard with all metrics
-- ✅ Token usage trends (cumulative & rate)
-- ✅ Cache hit rate gauge (validates optimization)
-- ✅ Cost tracking (USD/hour, total cost)
-- ✅ Model distribution (Haiku vs Sonnet)
-- ✅ Auto-refresh every 10 seconds
-
-**See**:
-- [OpenTelemetry Setup Guide](./sops/integrations/opentelemetry-setup.md)
-- [Grafana Dashboard README](./grafana/README.md)
+**Fixing a bug**:
+1. Check `.agent/sops/debugging/` for known issues
+2. Query the knowledge graph: `"What do we know about <topic>?"` — `mem-*` pitfalls cover hook composition, blocking semantics, output channels, recursive-block traps
+3. After fixing, capture the lesson as a memory or SOP if novel
 
 ---
 
-## 🤖 Task Completion Protocol (CRITICAL)
+## Task Completion Protocol (Autonomous)
 
-### Autonomous Completion Expected
+When implementation is complete, run these without prompting:
 
-Navigator projects run in **full autonomy mode**. When task implementation is complete:
+1. **Simplify** code (if enabled and code was modified)
+2. **Commit** with conventional message
+3. **Archive** the task doc into `.agent/tasks/archive/`
+4. **Close** the PM ticket (if configured)
+5. **Create** a completion marker
+6. **Suggest** a compact
 
-✅ **Execute automatically** (no human prompt needed):
-1. **Commit changes** with conventional commit message
-2. **Archive implementation plan** ("Archive TASK-XX documentation")
-3. **Close ticket** in PM tool (if configured)
-4. **Create completion marker** (`TASK-XX-complete`)
-5. **Suggest compact** for next task
-
-❌ **Don't wait for**:
-- "Please commit now"
-- "Close the ticket"
-- "Update documentation"
-- "Create a marker"
-
-### Exception Cases (Ask First)
-
-Only interrupt autonomous flow if:
-- Uncommitted files contain secrets (.env, credentials, API keys)
-- Multiple unrelated tasks modified (unclear which to close)
-- No task context loaded (ambiguous TASK-XX)
+**Exception cases — ask first**:
+- Secrets in uncommitted files
+- Multiple unrelated tasks modified
 - Tests failing or implementation incomplete
 
-### Completion Summary Template
-
-```
-✅ TASK-XX Complete
-
-Automated actions:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Committed: [hash] [message]
-✅ Documentation: Implementation plan archived
-✅ Ticket: Closed in [PM tool]
-✅ Marker: TASK-XX-complete created
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Next: "Clear context and preserve markers" to compact
-```
-
-**For detailed protocol**: See [`sops/development/autonomous-completion.md`](#autonomous-completion)
-
 ---
 
-## 📂 Documentation Structure
+## Documentation Structure
 
 ```
 .agent/
-├── DEVELOPMENT-README.md     ← You are here (navigator)
-│
-├── tasks/                    ← Implementation plans
-│   └── TASK-01-session-start-pm-integration.md
-│
-├── system/                   ← Living architecture documentation
-│   ├── project-architecture.md
-│   └── plugin-patterns.md
-│
-└── sops/                     ← Standard Operating Procedures
-    ├── integrations/         # (Not applicable for this project)
-    ├── debugging/            # Plugin issues and solutions (none yet)
-    ├── development/          # Development workflows
-    │   └── plugin-release-workflow.md
-    └── deployment/           # Publishing to GitHub (none yet)
+├── DEVELOPMENT-README.md     ← this navigator
+├── tasks/                    ← in-flight implementation plans (archive/ for shipped)
+├── system/                   ← architecture documentation
+├── sops/                     ← Standard Operating Procedures
+│   ├── development/
+│   ├── deployment/
+│   ├── integrations/
+│   └── debugging/
+├── philosophy/               ← context-efficiency manifesto + patterns
+├── learning/                 ← guides, examples, decision frameworks
+├── knowledge/                ← project knowledge graph (graph.json + memories/)
+└── examples/                 ← real workflow case studies
 ```
 
 ---
 
-## 📖 Documentation Index
-
-### Implementation Plans (`tasks/`)
-
-#### [TASK-01: Session Start Command and PM Integration](./tasks/TASK-01-session-start-pm-integration.md)
-**Status**: ✅ Completed (v1.3.0)
-**Completed**: 2025-10-12
-
-**What was built**:
-- New `/nav:start` command for session initialization
-- Enhanced `/nav:init` with PM tool auto-configuration (Step 6.5)
-- Linear MCP and GitHub CLI detection with setup guidance
-- Auto-generated integration SOPs
-- Stronger CLAUDE.md enforcement of Navigator workflow
-
-**Impact**: Dramatically improved onboarding UX and consistent Navigator adoption
-
-#### [TASK-02: README Overhaul & Context Markers](./tasks/TASK-02-readme-markers-v1.4.0.md)
-**Status**: ✅ Completed (v1.4.0)
-**Completed**: 2025-10-12
-
-**What was built**:
-- New `/nav:marker` command for on-demand conversation save points
-- Updated `/nav:init` with `.context-markers/` setup and .gitignore
-- Comprehensive README.md rewrite with clear feature explanations
-- Token optimization strategy documented step-by-step
-- Context markers explained with examples (97.7% compression)
-
-**Impact**: Crystal-clear plugin value proposition, users understand Navigator in 30 seconds
-
-#### [TASK-03: Interactive Marker Management + Auto-Resume](./tasks/TASK-03-markers-management-auto-resume.md)
-**Status**: ✅ Completed (v1.5.0)
-**Completed**: 2025-10-12
-
-**What was built**:
-- New `/nav:markers` command for interactive marker management (list, load, clean)
-- Active marker auto-resume system (.active file + /nav:start detection)
-- Performance optimizations (<1s for 50+ markers)
-- Updated `/nav:compact` to create active markers
-- Updated `/nav:start` to auto-detect and load active markers
-
-**Impact**: One-command resume after compact (vs 3 manual steps), visual marker selection
-
-#### [TASK-04: Version Sync Fix & Release Process](./tasks/TASK-04-version-sync-release-process.md)
-**Status**: ✅ Completed (v1.5.0 docs)
-**Completed**: 2025-10-13
-
-**What was built**:
-- Fixed README.md version references (1.4.0 → 1.5.0)
-- Created Version Management SOP with audit script
-- Enhanced Plugin Release Workflow with mandatory version sync step
-- Created missing GitHub releases (v1.3.0, v1.4.0, v1.5.0)
-- Systematic checklist to prevent future version drift
-
-**Impact**: Zero version drift prevention, professional release quality, clear process for contributors
-
-#### [TASK-05: Autonomous Task Completion](./tasks/TASK-05-autonomous-completion.md)
-**Status**: ✅ Completed (v1.5.1)
-**Completed**: 2025-10-13
-
-**What was built**:
-- Updated CLAUDE.md with autonomous completion protocol
-- Updated DEVELOPMENT-README.md with Task Completion Protocol
-- Created Autonomous Completion SOP (sops/development/)
-- Modified Development Workflow to show [AUTONOMOUS] completion
-- Enforced "no wait for prompts" behavior via Forbidden Actions
-
-**Impact**: Fully autonomous task completion - no more "please commit" or "close ticket" prompts needed
-
-#### [TASK-06: Real Session Statistics from Claude Code Internals](./tasks/TASK-06-session-statistics.md)
-**Status**: ✅ Completed (v1.6.0)
-**Completed**: 2025-10-16
-
-**What was built**:
-- session_stats.py script to extract real token usage from Claude Code internals
-- Proof of Navigator efficiency with actual measurements (not estimates)
-- Integration with /nav:start command to show cache performance
-- Real-world validation of 92% token reduction claim
-
-**Impact**: Concrete proof of Navigator's token efficiency, verified cache performance metrics
-
-#### [TASK-07: Skills Migration Strategy](./tasks/TASK-07-skills-migration.md)
-**Status**: ✅ Completed (v2.0.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- 5 core Navigator skills (nav-start, nav-marker, nav-compact, nav-task, nav-sop)
-- Skills registered in plugin.json with auto-invocation capability
-- Hybrid architecture: Both commands and skills work simultaneously
-- Foundation for progressive disclosure (250 token overhead)
-
-**Impact**: Natural language invocation, auto-detection, zero breaking changes for v1.x users
-
-#### [TASK-08: Skills Enhancements & Hybrid Architecture](./tasks/TASK-08-skills-enhancements-v2.1.md)
-**Status**: ✅ Completed (v2.1.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- Predefined functions for nav-task (task_id_generator.py, task_formatter.py, index_updater.py)
-- Predefined functions for nav-sop (sop_formatter.py)
-- Predefined functions for nav-marker (marker_compressor.py)
-- nav-skill-creator skill (self-improving capability)
-- Functions execute with 0 tokens (no context pollution)
-
-**Impact**: Consistent output via templates, self-improving system, foundation for v2.2 project-specific skills
-
-#### [TASK-09: Plugin Update Migration System](./tasks/TASK-09-migration-system.md)
-**Status**: ✅ Completed (v2.0.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- Backward compatibility commands (_jitd_*.md) for smooth v1→v2 transition
-- Post-install script for automatic project migration discovery
-- Config migration (.jitd-config.json → .nav-config.json)
-- Zero breaking changes for existing users
-
-**Impact**: Smooth migration path, old commands work with warnings, automatic upgrade detection
-
-#### [TASK-10: Project-Specific Skills Generation](./tasks/TASK-10-project-skills-v2.2.md)
-**Status**: ✅ Completed (v2.2.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- Completed nav-skill-creator implementation (531 lines with comprehensive instructions)
-- Generated plugin-slash-command skill (first project-specific skill)
-- Predefined functions: command_generator.py, command_validator.py
-- Templates and examples for slash command generation
-- Self-improving capability validated on Navigator codebase
-
-**Impact**: Self-improving plugin that generates its own tools, 80% token reduction for command creation, repeatable pattern for any project
-
-#### [TASK-11: Project-Specific Skills Generation v2.3](./tasks/TASK-11-project-skills-generation-v2.3.md)
-**Status**: ✅ Completed (v2.3.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- Generated 5 project-specific skills for common development patterns
-- frontend-component skill (React/Vue components with tests and styles)
-- backend-endpoint skill (REST/GraphQL APIs with validation)
-- database-migration skill (Schema changes with rollbacks)
-- backend-test skill (Unit/integration tests with mocks)
-- frontend-test skill (Component tests with RTL)
-- Total: 12 skills (7 core + 5 project-specific)
-
-**Impact**: 80% token reduction for common dev patterns (15k → 3k tokens), validates self-improving capability at scale, proven repeatable skill generation process
-
-#### [TASK-12: v3.0 Skills-Only Migration](./tasks/TASK-12-v3.0-skills-only.md)
-**Status**: ✅ Completed (v3.0.0)
-**Completed**: 2025-10-19
-
-**What was built**:
-- Removed all slash commands (/nav:* deleted - 13 files)
-- Skills-only architecture (natural language interface)
-- Breaking change migration (v3.0 major version)
-- 11k token reduction (commands overhead eliminated)
-- Cleaner architecture (no hybrid complexity)
-- Updated all documentation (README, templates, CLAUDE.md)
-
-**Impact**: Natural language only, 50% simpler UX, 97% total token reduction, future-proof architecture
-
-#### [TASK-13: OpenTelemetry Session Statistics](./tasks/archive/TASK-13-otel-session-statistics.md)
-**Status**: ✅ Completed (v3.1.0)
-**Completed**: 2025-10-20
-
-**What was built**:
-- OpenTelemetry integration for real-time session metrics
-- Replaced file-size estimation with official Claude Code metrics
-- Auto-enablement via post-install hook
-- Comprehensive OpenTelemetry setup SOP
-- Zero-config upgrade experience
-
-**Impact**: Real token usage validation, cache performance tracking, session cost monitoring, ROI measurement with hard data
-
-#### [TASK-14: CLAUDE.md Updater Skill](./tasks/archive/TASK-14-claude-md-updater.md)
-**Status**: ✅ Completed (v3.1.1)
-**Completed**: 2025-10-20
-
-**What was built**:
-- nav-sync-claude skill for automated CLAUDE.md migration
-- version_detector.py to identify outdated configurations
-- claude_updater.py to extract customizations and generate updated files
-- Non-destructive migration (creates backup before changes)
-- Preserves project-specific customizations (tech stack, standards, forbidden actions)
-- Updated README.md with shorter marketplace installation format
-- Added SECURITY.md policy
-
-**Impact**: Users can upgrade to v3.1 natural language without losing customizations, solves "Claude doesn't understand Navigator" issues in migrated projects
-
-#### [TASK-16: Product Design Skill with Figma MCP Integration](./tasks/TASK-16-product-design-skill.md)
-**Status**: ✅ Completed (v3.2.0)
-**Completed**: 2025-10-21
-
-**What was built**:
-- product-design skill for automated design handoff
-- 5 predefined functions (design_analyzer, token_extractor, component_mapper, design_system_auditor, implementation_planner)
-- DTCG format support for design tokens (W3C standard)
-- Figma MCP integration (local and remote server support)
-- Component similarity matching for reuse detection
-- Design system drift detection and audit reports
-- Automated implementation plan generation with phased breakdown
-- Templates for design reviews and token diffs
-
-**Impact**: Reduces design handoff time from 6-10 hours to 15-20 minutes (95% reduction), automates token extraction, prevents design system drift, generates Navigator task docs from Figma analysis
-
-#### [TASK-17: Visual Regression Integration Skill](./tasks/TASK-17-visual-regression-skill.md)
-**Status**: ✅ Completed (v3.3.0)
-**Completed**: 2025-10-21
-
-**What was built**:
-- visual-regression skill for automated visual regression testing setup
-- 4 predefined functions (vr_setup_validator, story_generator, chromatic_config_generator, ci_workflow_generator)
-- Support for Chromatic, Percy, and BackstopJS
-- Storybook story generation with component variants
-- CI/CD workflow generation (GitHub Actions, GitLab CI, CircleCI)
-- Templates for stories, configs, and CI workflows
-- Integration with product-design skill for complete design→code→testing workflow
-- Visual regression setup SOP
-
-**Impact**: Reduces visual regression setup from 2-3 hours to 5 minutes (96% reduction), automates Storybook story generation, ensures pixel-perfect component implementation, integrates with design workflow for end-to-end validation
-
-#### [TASK-18: Principle to Product - Philosophy, Metrics, Education](./tasks/TASK-18-principle-to-product-v3.5.md)
-**Status**: ✅ Completed (v4.0.0)
-**Completed**: 2025-01-24
-
-**What was built**:
-
-**Phase 1: Philosophy Foundation (v3.5.0)**
-- Context Efficiency Manifesto (`.agent/philosophy/CONTEXT-EFFICIENCY.md`)
-- Anti-Patterns documentation (`.agent/philosophy/ANTI-PATTERNS.md`)
-- Success Patterns documentation (`.agent/philosophy/PATTERNS.md`)
-- Narrative transformation of DEVELOPMENT-README, CLAUDE.md, README.md
-- Vulnerability-driven voice and movement positioning
-
-**Phase 2: Metrics & Proof (v3.5.0)**
-- nav-stats skill with real efficiency scoring (0-100)
-- Actual baseline calculations from `.agent/` markdown
-- OpenTelemetry-verified metrics
-- 3 real workflow case studies (`.agent/examples/`)
-- Shareable ROI reports
-
-**Phase 3: Education Layer (v4.0.0)**
-- 4 comprehensive learning guides (69k tokens total):
-  - Context Budgets (token allocation strategies)
-  - Preprocessing vs LLM (tool selection principles)
-  - Progressive Refinement (metadata → details pattern)
-  - Token Optimization (complete strategy guide)
-- 3 interactive examples (hands-on practice):
-  - TRY-THIS-LAZY-LOADING (90%+ savings experience)
-  - TRY-THIS-AGENT-SEARCH (60-80% agent savings)
-  - TRY-THIS-MARKERS (97% compression experience)
-- 3 decision frameworks (quick reference):
-  - When to Compact (flowchart)
-  - Agent vs Manual Read (decision tree)
-  - Preprocessing Decision Tree (tool selection)
-
-**Impact**: Transforms Navigator from "tool with good docs" to "complete framework with philosophy, proof, and education." Users go from copying patterns to mastering principles. Typical learning: 30 min philosophy → 40 min practice → ongoing framework reference → 90%+ efficiency scores in 2-4 weeks.
-
-#### [TASK-25: Multi-Claude Workflow Reliability Fixes](./tasks/TASK-25-fix-multi-claude-reliability.md)
-**Status**: ✅ Completed (v4.5.0)
-**Completed**: 2025-11-02
-
-**What was built**:
-- Automatic retry logic for failed phase markers
-- Sub-Claude timeout monitoring (sub-claude-monitor.sh)
-- Phase state persistence and recovery
-- Workflow resume capability (resume-workflow.sh)
-- Enhanced marker verification with central logging
-- Improved sub-Claude prompts with explicit marker instructions
-- Test suite (test-retry-logic.sh, test-monitor.sh)
-
-**Impact**: Multi-Claude workflow success rate increased from 30% to 90%+ through automatic retry, timeout detection, and recovery mechanisms
-
-#### [TASK-19: Multi-Claude Agentic Workflow Automation](./tasks/TASK-19-multi-claude-agentic-workflow.md)
-**Status**: ✅ Completed (v4.3.0 - foundation), 🚧 Ongoing improvements
-**Created**: 2025-10-31
-**Foundation Complete**: 2025-10-31
-
-**What we're building**:
-
-**Automated multi-Claude orchestration system** leveraging:
-- Claude Code's headless mode (`-p` flag) + streaming JSON I/O
-- Session management (`--resume`) for multi-turn conversations
-- Git worktrees for isolated parallel workspaces
-- Navigator's marker system for cross-instance communication
-- Role-specific CLAUDE.md templates (5k tokens vs 50k per instance)
-
-**10-Phase Implementation**:
-1. **Core Automation Scripts** - Bash orchestrator with marker detection
-2. **Role-Specific Templates** - Minimal context CLAUDE.md per worktree (orchestrator, impl, test, docs, review)
-3. **Skill Integration** - Natural language setup: "Setup multi-Claude workflow"
-4. **Enhanced Markers** - Rich context transfer (2k vs 15k handoffs)
-5. **Subagent Patterns** - 8x multiplier per terminal (40x total parallelism)
-6. **Status Monitoring** - Real-time dashboard showing all phases
-7. **Error Handling** - Recovery paths + automatic retry
-8. **CI/CD Integration** - GitHub Actions workflow for automated features
-9. **Documentation** - Complete SOP + walkthrough examples
-10. **Benchmarking** - Validate 3x speedup + 92% efficiency claims
-
-**Key Innovation**: Parallel execution with Navigator efficiency
-- 5 Claude instances (orchestrator, impl, test, docs, review)
-- Each maintains 92% token efficiency (role-specific minimal context)
-- Subagents per instance (8x research capacity each)
-- Total throughput: 32x single Claude baseline
-
-**Expected Impact**:
-- **Time**: 3x faster (parallel vs sequential phases)
-- **Tokens**: 35k across 5 sessions vs 70k single session crash
-- **Quality**: 95% success rate (fresh contexts prevent crashes)
-- **Throughput**: 40x parallel research/verification capacity
-
-**Technical Foundation**: Streaming JSON + session persistence enables full automation without manual coordination.
-
-#### [TASK-30: Task Verification Enhancement](./tasks/TASK-30-task-verification-enhancement.md)
-**Status**: ✅ Completed
-**Created**: 2025-01-21
-**Completed**: 2025-01-21
-**Version**: v5.3.0
-
-**What was built**:
-
-**Verify/Done sections** for Navigator task system:
-- `## Verify` - Executable commands to validate implementation
-- `## Done` - Observable outcomes that prove completion
-- `verify_extractor.py` - Utility to parse verification data
-- Markdown format (consistent, not XML)
-- Backward compatible (existing tasks unaffected)
-
-**Inspiration**: GSD (Get Shit Done) spec-driven system with structured verification.
-
-**Expected Impact**:
-- Machine-parseable completion requirements
-- Multi-Claude Review phase can execute verify commands
-- Clearer definition of "done"
+## In-Flight Tasks
+
+See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
+
+Current active threads (as of 2026-05-18):
+- **TASK-05** — landing page content
+- **TASK-13** — web documentation site (planning)
+- **TASK-15** — marketing strategy & community adoption
+- **TASK-25** — multi-Claude reliability fixes (planning, follow-up to v6.1.x)
+- **TASK-35** — project memory (research)
+- **TASK-37** — nav-simplify complexity / cost scoring (design)
+- **TASK-39** — Next.js workshop prep
+- **TASK-40** — Phase 3 hook migration v6.12 (partial — v6.12.0 + v6.12.1 shipped; v6.12.2 pending)
+
+For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `releases/RELEASE-NOTES-*.md`.
 
 ---
 
-#### [TASK-31: Code Simplification Integration](./tasks/TASK-31-code-simplification-integration.md)
-**Status**: ✅ Completed
-**Created**: 2025-01-22
-**Completed**: 2025-01-22
-**Version**: v5.4.0
+## System Architecture
 
-**What was built**:
-
-**Code simplification system** based on Anthropic's internal code-simplifier pattern:
-- `nav-simplify` skill with natural language invocation
-- Predefined functions (code_analyzer.py, simplification_rules.py, change_reporter.py)
-- Multi-Claude "simplifier" role template
-- Autonomous completion integration (Step 2: Simplify Code)
-- Loop Mode VERIFY phase integration (code_simplified indicator)
-- Configuration in `.nav-config.json`
-
-**Core principle**: Clarity over brevity. Functionality preserved absolutely.
-
-**Simplification rules**:
-- Flatten nested ternaries to if-else/switch
-- Extract deeply nested code to helper functions
-- Use early returns to reduce nesting
-- Rename unclear variables to descriptive names
-- Remove redundant boolean comparisons
-
-**Expected Impact**:
-- Cleaner code before every commit
-- Consistent clarity standards across projects
-- Automatic post-implementation refinement
-- Opus-quality judgment for simplification decisions
+- [Project Architecture](./system/project-architecture.md) — plugin file layout, skill manifest, hook registration, settings flow
+- [Plugin Patterns](./system/plugin-patterns.md) — skill design, predefined functions, hook lifecycle, three-layer Model/Hooks/Harness discipline
 
 ---
 
-#### [TASK-35: Project Knowledge Graph](./tasks/TASK-35-project-memory.md)
-**Status**: ✅ Completed
-**Created**: 2025-01-23
-**Completed**: 2025-01-23
-**Version**: v6.0.0
+## Standard Operating Procedures
 
-**What was built**:
+**Development**:
+- [Version Management](./sops/development/version-management.md) — single source of truth, 6-file bump checklist
+- [Complete Release Workflow](./sops/development/complete-release-workflow.md) — current canonical guide
+- [Plugin Release Workflow](./sops/development/plugin-release-workflow.md) — Step 0 version sync, semantic versioning
+- [Autonomous Completion](./sops/development/autonomous-completion.md) — what to do without being asked
 
-**Phase 1-2: Foundation + Core Skill**
-- `.agent/knowledge/` directory structure (graph.json, concepts/, memories/)
-- `graph_manager.py` - CRUD operations, query, relationship traversal
-- `graph_builder.py` - One-time construction from existing docs
-- `nav-graph` skill with natural language triggers
-- Configuration in `.nav-config.json` (knowledge_graph section)
+**Integrations**:
+- [OpenTelemetry Setup](./sops/integrations/opentelemetry-setup.md) — real-time session metrics, ROI measurement
 
-**Phase 3: Memory Capture from Corrections**
-- `correction_to_memory.py` - Converts profile corrections to memories
-- nav-profile integration (auto-sync corrections to graph)
-- Concept extraction from correction context
+**Deployment**:
+- [Plugin Release](./sops/deployment/plugin-release.md) — pre-release checklist, tag → CI workflow, post-release verification
 
-**Phase 4: Full Integration**
-- `task_to_graph.py` - Syncs tasks with graph, extracts decisions
-- nav-task integration (Step 4.5 syncs to graph)
-- nav-marker integration (captures graph state for restoration)
-
-**Phase 5: Polish**
-- `graph_maintenance.py` - Health checks, conflict detection, staleness
-- Confidence decay system
-- Low-confidence pruning (dry-run by default)
-
-**Memory types**:
-- **Patterns**: "We use X for Y in this project"
-- **Pitfalls**: "Watch out for X when touching auth/"
-- **Decisions**: "We chose JWT over sessions because Z"
-- **Learnings**: "This error usually means X"
-
-**Impact**:
-- Unified search across all knowledge types
-- Experiential memory persists across sessions
-- <1.5k token overhead per session (verified: 94 nodes = ~2k tokens)
-- Concept indexing links related items automatically
-- Health score monitoring (100/100 on clean graph)
+**Debugging**:
+- Document as discovered. Capture novel diagnoses as memories in the knowledge graph (`mem-XXX.md` under `.agent/knowledge/memories/`).
 
 ---
 
-#### [TASK-36: Multi-Agent Production Polish](./tasks/TASK-36-multi-agent-production.md)
-**Status**: ✅ Completed
-**Created**: 2025-01-23
-**Completed**: 2025-01-23
-**Version**: v6.1.0
-
-**What was built**:
-
-Production-ready multi-Claude orchestration with one-command setup, visual dashboard, and reliable coordination.
-
-**Components**:
-- **Role templates** (5 files): orchestrator, implementer, tester, reviewer, documenter
-- **Visual dashboard**: `scripts/multi-claude-dashboard.sh` with real-time progress
-- **nav-multi skill**: Natural language trigger for workflows
-- **Configuration**: `multi_agent` section in `.nav-config.json`
-
-**Key features**:
-- Natural language: "Run multi-agent workflow for TASK-XX"
-- 3 workflow types: POC (2-phase), Standard (4-phase), Full (6-phase)
-- Real-time terminal dashboard with progress bars
-- Role-specific CLAUDE.md templates (~4-5k tokens each)
-
-**Impact**:
-- 3x throughput for feature development
-- Token-efficient (27k total across 6 roles vs 50k+ per role)
-- Visual feedback throughout workflow
-- 90%+ success rate with retry/recovery (from TASK-25)
-
----
-
-#### [TASK-29: Theory of Mind v5.0.0 Release](./tasks/TASK-29-tom-v5-release.md)
-**Status**: ✅ Completed
-**Created**: 2025-12-11
-**Completed**: 2025-01-13
-**Version**: v5.0.0
-
-**What was built**:
-
-**Theory of Mind features** based on Riedl & Weidmann 2025 research:
-- **nav-profile**: Bilateral modeling - Claude learns user preferences across sessions
-- **nav-diagnose**: Quality detection - catches collaboration drift, prompts re-anchoring
-- **Verification checkpoints**: Confirms understanding before generating high-stakes code
-- **Auto-learn corrections**: Silently captures correction patterns
-- **Enhanced markers**: Intent and belief state capture
-
-**Two-layer positioning**:
-```
-Navigator = Context Engineering + Human-AI Collaboration
-
-Layer 1: Context Efficiency (v1-v4) - proven, 92% savings
-Layer 2: Theory of Mind (v5.0.0) - bilateral modeling, quality detection
-```
-
-**Expected Impact**:
-- 23-29% performance boost from ToM alignment (per research)
-- Fewer repeated corrections (auto-learn)
-- Better restoration from markers (intent preserved)
-- Clearer Claude Code differentiation (complementary, not competing)
-
----
-
-### System Architecture (`system/`)
-
-#### [Project Architecture](./system/project-architecture.md)
-**When to read**: Starting work on plugin, understanding structure
-
-**Contains**:
-- Plugin file structure
-- Template system organization
-- Slash command implementations
-- Configuration schema
-- Development workflow
-
-**Updated**: Every major architecture change
-
-#### [Plugin Development Patterns](./system/plugin-patterns.md)
-**When to read**: Adding new features or commands
-
-**Contains**:
-- Claude Code plugin best practices
-- Template design patterns
-- Slash command patterns
-- Testing strategies
-
-**Updated**: When adding new patterns
-
----
-
-### Standard Operating Procedures (`sops/`)
-
-#### Development
-
-##### [Version Management](./sops/development/version-management.md)
-**When to use**: Before every release, auditing version consistency
-
-**Contains**:
-- Single source of truth (marketplace.json)
-- Version reference map (9 locations)
-- Pre-release checklist with audit script
-- Semantic versioning guide
-- Troubleshooting version mismatches
-
-**Last Updated**: 2025-10-13
-
-##### [Complete Release Workflow](./sops/development/complete-release-workflow.md)
-**When to use**: Releasing new Navigator version (comprehensive guide)
-
-**Contains**:
-- Step-by-step release process (10 steps)
-- Version file updates (marketplace.json, plugin.json, README.md)
-- Release notes creation
-- GitHub release automation (via GitHub Actions)
-- Pre-release vs stable release handling
-- Troubleshooting common issues
-- Real example: v4.3.0 release walkthrough
-
-**Created**: 2025-10-31
-**Last Updated**: 2025-10-31
-
-##### [Navigator Plugin Release Workflow](./sops/development/navigator-plugin-release-workflow.md)
-**When to use**: Legacy release guide (use Complete Release Workflow instead)
-
-**Contains**:
-- Preparing release materials (release notes, upgrade guides)
-- Updating plugin metadata (.claude-plugin/plugin.json)
-- Updating skill versions (SKILL.md)
-- Commit and push workflow (feature, version, docs)
-- Git tagging and GitHub releases
-- Testing upgrade paths
-- Release checklist
-- Example: v3.4.0 release walkthrough
-
-**Created**: 2025-10-22
-**Last Updated**: 2025-10-22
-**Status**: Superseded by Complete Release Workflow
-
-##### [Plugin Release Workflow](./sops/development/plugin-release-workflow.md)
-**When to use**: Releasing new plugin version
-
-**Contains**:
-- **Step 0: Pre-Release Version Sync (MANDATORY)**
-- Semantic versioning guide
-- Step-by-step release process
-- Git tag and GitHub release creation
-- Troubleshooting common issues
-- Complete release checklist
-
-**Last Used**: v1.5.0 (2025-10-13)
-
-##### [Autonomous Completion](./sops/development/autonomous-completion.md)
-**When to use**: Understanding how to complete tasks autonomously
-
-**Contains**:
-- Autonomous completion protocol (7 steps)
-- Exception handling (secrets, multiple tasks, no context, test failures)
-- Completion summary template
-- Integration with PM tools and markers
-- Best practices for fully autonomous workflow
-
-**Last Updated**: 2025-10-13
-
-#### Integrations
-
-##### [OpenTelemetry Setup](./sops/integrations/opentelemetry-setup.md)
-**When to use**: Enabling real-time session statistics, ROI measurement
-
-**Contains**:
-- Quick start setup (2 minutes)
-- Configuration options (console, OTLP, Prometheus)
-- Navigator-specific setup recommendations
-- ROI measurement strategies
-- Troubleshooting guide
-- Enterprise deployment patterns
-
-**Last Updated**: 2025-10-20
-
-#### Debugging
-*No SOPs yet - document issues as they're discovered*
-
-#### Deployment
-
-##### [Plugin Release](./sops/deployment/plugin-release.md)
-**When to use**: Releasing new plugin version to marketplace
-
-**Contains**:
-- Pre-release checklist (verify all skills committed)
-- Release process (commit → push → tag → release)
-- Post-release verification (cache clearing, test install)
-- Emergency tag fixes (update tag after release)
-- Common mistakes and prevention
-
-**Created**: 2025-01-13 (after v5.1.0 missing nav-profile incident)
-
----
-
-## 🔄 When to Read What
-
-### Scenario: Adding New Slash Command
-
-**Read order**:
-1. This navigator (DEVELOPMENT-README.md)
-2. `system/plugin-patterns.md` → Command structure
-3. Check existing commands in `.claude/commands/`
-4. Implement new command
-5. Test in nav-test project
-6. Document: `/nav:update-doc feature TASK-XX`
-
-### Scenario: Adding New Template
-
-**Read order**:
-1. This navigator
-2. `system/project-architecture.md` → Template location
-3. Check existing templates in `templates/`
-4. Create new template
-5. Update `/nav:init` command to copy it
-6. Test in nav-test project
-7. Document: `/nav:update-doc feature TASK-XX`
-
-### Scenario: Fixing Plugin Installation Issues
-
-**Read order**:
-1. Check `sops/debugging/` → Known installation issues?
-2. `system/project-architecture.md` → Plugin manifest
-3. Debug issue
-4. Create SOP: `/nav:update-doc sop debugging [issue-name]`
-
-### Scenario: Releasing New Plugin Version
-
-**Read order**:
-1. This navigator (DEVELOPMENT-README.md)
-2. `sops/development/plugin-release-workflow.md` → Complete process
-3. Follow checklist step-by-step
-4. Document: `/nav:update-doc feature TASK-XX`
-5. Update SOP with lessons learned
-
----
-
-## 🛠️ Development Workflow
-
-### Local Development Setup
-
-```bash
-# 1. Clone repo
-git clone https://github.com/alekspetrov/navigator.git
-cd navigator
-
-# 2. Create test project
-mkdir -p ~/Projects/tmp/nav-test
-cd ~/Projects/tmp/nav-test
-
-# 3. Point to local plugin (for testing)
-# In Claude Code:
-/plugin marketplace add file:///Users/aleks.petrov/Projects/startups/navigator
-/plugin install navigator
-```
-
-### Making Changes
-
-```bash
-# 1. Read navigator first
-Read .agent/DEVELOPMENT-README.md
-
-# 2. Make changes to plugin files
-# - Templates: templates/
-# - Commands: .claude/commands/
-# - Config: .claude-plugin/marketplace.json
-
-# 3. Test in nav-test project
-cd ~/Projects/tmp/nav-test
-/nav:init  # or other command you're testing
-
-# 4. Verify changes work
-ls .agent/  # Check structure created
-cat CLAUDE.md  # Check file generated
-
-# 5. Document changes
-/nav:update-doc feature TASK-XX
-```
-
-### Release Process
-
-```bash
-# 1. Update version in marketplace.json
-# - Patch: 1.0.1 (bug fix)
-# - Minor: 1.1.0 (new feature)
-# - Major: 2.0.0 (breaking change)
-
-# 2. Commit changes
-git add -A
-git commit -m "feat: description"
-
-# 3. Push to GitHub
-git push origin main
-
-# 4. Tag release
-git tag -a v1.1.0 -m "Version 1.1.0: Feature X"
-git push origin v1.1.0
-
-# 5. Create GitHub release (optional)
-gh release create v1.1.0 --title "Navigator v1.1.0" --notes "..."
-```
-
----
-
-## 📊 Token Optimization Strategy
-
-**This repo follows Navigator principles**:
-
-1. **Always load**: `DEVELOPMENT-README.md` (~2k tokens)
-2. **Load for current work**: Specific system doc (~3k tokens)
-3. **Load if needed**: Specific SOP (~2k tokens)
-4. **Never load**: All templates at once (~20k tokens)
-
-**Total**: ~7k tokens vs ~35k (80% savings)
-
----
-
-## 🎯 Success Metrics
-
-### Plugin Quality
-- [ ] All templates follow universal pattern
-- [ ] Slash commands work in test project
-- [ ] Documentation is accurate
-- [ ] Examples provided for common use cases
-
-### Token Efficiency
-- [ ] <30k tokens per development session
-- [ ] Navigator-first loading practiced
-- [ ] Compact used between tasks
-
-### User Experience
-- [ ] `/nav:init` creates complete structure
-- [ ] Templates easy to customize
-- [ ] Documentation clear and helpful
-
----
-
-## 🚀 Quick Natural Language Reference
-
-Navigator v5.3 uses natural language - no commands needed!
-
-**Initialize Navigator**:
-```
-"Initialize Navigator in this project"
-```
-
-**Update documentation**:
-```
-"Archive TASK-XX documentation"
-"Create an SOP for debugging [issue]"
-"Update system architecture documentation"
-```
-
-**Smart compact**:
-```
-"Clear context and preserve markers"
-```
-
----
-
-## 🚄 SessionStart Hook (v6.9.0+)
-
-Navigator now ships a Claude Code `SessionStart` hook that **injects** navigator
-content into the session at startup instead of having the LLM `Read` it.
-
-**What it does**:
-- Runs `hooks/nav_session_start.py` automatically when Claude Code opens the project
-- Reads `.agent/DEVELOPMENT-README.md`, `.context-markers/.active`, `.nav-config.json`,
-  knowledge graph stats, user profile, auto-update status, open tasks
-- Emits a JSON payload with `additionalContext` — Claude Code injects it as a
-  system reminder before the first user turn
-- Emits sentinel `<!-- nav-session-start-injected:v1 -->` so `nav-start` can detect it
-  and skip its own Reads
-
-**Effect on token budget**:
-- ~6 fewer `Read` tool invocations per session start
-- ~1.5–2k tokens of tool-call ceremony eliminated
-- User-visible session summary is byte-identical to legacy nav-start output
-
-**Configuration** (`.agent/.nav-config.json`):
-```json
-"session_start_hook": {
-  "enabled": true,
-  "include_sections": ["navigator", "marker", "config", "graph", "profile", "tasks", "auto_update"],
-  "char_budget": 9500
-}
-```
-
-**Wiring**:
-- `.claude/settings.json` registers the hook (created/merged by `nav-init` and `nav-upgrade`)
-- Plugin path resolved via `${CLAUDE_PLUGIN_DIR}` — no per-project script copy needed
-- Idempotent: `skills/nav-init/functions/settings_merger.py` dedupes by command string
-
-**Disable**:
-Set `session_start_hook.enabled: false` in `.agent/.nav-config.json` — `nav-start`
-will fall back to the legacy Read-based path automatically.
-
----
-
-**This documentation system keeps plugin development context-efficient while maintaining comprehensive knowledge.**
-
----
-
-## 🗜️ PreCompact + PostCompact Hooks (v6.10.0+)
-
-Pairs with the v6.9.0 SessionStart hook to close the session-lifecycle loop:
-Navigator state survives every compact, including silent auto-compacts.
-
-**Problem solved**: Claude Code can **auto-compact** when the context window
-approaches its limit. The user doesn't see it happen — they just discover
-the conversation has been summarized, and the previous `nav-compact` skill
-flow (which required manual invocation) never fired. State is lost.
-
-**What ships**:
-- `hooks/nav_pre_compact.py` — fires on every manual `/compact` or auto-compact.
-  Reads the JSONL transcript, runs the same heuristic summarizer as
-  `skills/nav-marker/functions/marker_compressor.py`, captures git state +
-  active tasks, writes `.agent/.context-markers/before-compact-{manual,auto}-{ts}.md`,
-  and sets `.active` to point at it.
-- `hooks/nav_post_compact.py` — fires after compact finishes. Appends a
-  `## Compact Summary (Claude Code)` section to the marker using the
-  `compact_summary` field from stdin, so the restore gets both the heuristic
-  pre-compact extract AND Claude Code's own post-compact summary.
-- `skills/nav-compact/SKILL.md` Step 0 — detects the hook and skips manual
-  marker creation when it's installed (single source of truth).
-
-**Filename convention**: `before-compact-{trigger}-{YYYY-MM-DD-HHmm}.md`. The
-trigger token (`manual` / `auto`) makes silent auto-compacts visible in marker
-listings.
-
-**Effect**: combined with SessionStart, no state is lost across:
-- Manual `/compact`
-- Silent auto-compact
-- New session start (the SessionStart hook surfaces the marker via `.active`)
-
-**Configuration** (`.agent/.nav-config.json`):
-```json
-"compact_hook": {
-  "enabled": true,
-  "include_transcript_summary": true,
-  "include_git_state": true,
-  "char_budget": 8000,
-  "append_post_compact_summary": true
-}
-```
-
-**Disable**:
-Set `compact_hook.enabled: false` — both hooks become no-ops, `nav-compact`
-falls back to its manual marker-creation flow automatically.
-
----
-
-## 🪝 Phase 1 Lifecycle Hooks (v6.11.0+)
-
-Three new silent side-effect hooks complete the v6.11 "policy in hooks" roadmap
-(TASK-38, Phase 1). All deterministic, zero-injection, autonomous. Each replaces
-a "model, remember to..." rule that previously depended on attention.
-
-### `hooks/nav_task_graph_sync.py` — PostToolUse on Write/Edit
-
-When the touched file matches `.agent/tasks/TASK-*.md`, runs
-`task_to_graph.py --action add` to upsert the task node into the knowledge
-graph. `add_node` assigns by `node_id`, so re-running is effectively upsert.
-
-**Replaces**: `nav-task` Step "If knowledge graph exists, sync task to graph".
-
-### `hooks/nav_workflow_state.py` — Stop (every assistant turn)
-
-Reads the last assistant message (from stdin's `last_assistant_message` or
-the JSONL transcript) and writes `.agent/.nav-workflow-state.json` with:
-- `check_shown` — was `WORKFLOW CHECK` block emitted this turn?
-- `nav_status_shown` — was `NAVIGATOR_STATUS` block emitted (loop mode)?
-- `loop_phase` — INIT / RESEARCH / IMPL / VERIFY / COMPLETE if detected
-- `assistant_text_chars` — rough size signal
-
-Silent infrastructure for the **Phase 2 workflow_enforcer hard-block** (Opp 1
-in TASK-38) — that hook will read this state file to decide whether a
-UserPromptSubmit should be blocked when a loop trigger appears but no
-WORKFLOW CHECK was shown.
-
-**Never sets `decision: "block"`** — protects against the `stop_hook_active`
-infinite-loop trap. Also early-exits when `stop_hook_active=true`.
-
-### `hooks/nav_profile_sync.py` — PostToolUse on Write/Edit
-
-When the touched file is `.user-profile.json`, diffs the corrections array
-against `.agent/.nav-profile-sync-state.json`'s `last_synced_count`. If the
-array grew, runs `correction_to_memory.py --action sync --last-synced N`
-to convert new corrections into graph memories. Counter only advances on
-successful sync — failed runs retry next time.
-
-**Replaces**: `nav-profile` "monitor ALL conversations for corrections" prose.
+## Lifecycle Hooks (v6.9.0 → v6.15.3)
+
+Navigator ships ten Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
+
+### What ships
+
+| Hook | Event | Purpose |
+| --- | --- | --- |
+| `nav_session_start.py` | SessionStart | Inject navigator + active marker + config + graph stats + profile into context; emit `<!-- nav-session-start-injected:v1 -->` sentinel so `nav-start` skips re-Reads |
+| `nav_pre_compact.py` | PreCompact | Snapshot conversation + git state + active tasks into `before-compact-{manual,auto}-{ts}.md`; set `.active` marker |
+| `nav_post_compact.py` | PostCompact | Append Claude Code's compact summary to the marker |
+| `nav_task_graph_sync.py` | PostToolUse (Write/Edit on `.agent/tasks/TASK-*.md`) | Upsert task node into the knowledge graph |
+| `nav_workflow_state.py` | Stop | Record per-turn signal (`check_shown`, `nav_status_shown`, `loop_phase`, `tools_used`) into `.agent/.nav-workflow-state.json` |
+| `nav_profile_sync.py` | PostToolUse (Write/Edit on `.user-profile.json`) | Convert new corrections into graph memories |
+| `workflow_enforcer.py` | UserPromptSubmit | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` |
+| `nav_read_guard.py` | PreToolUse (Read on `.agent/`) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`) |
+| `nav_commit_reminder.py` | PostToolUse (Bash matching commit patterns) | Side-effect reminder for archival after commits |
+| `token_monitor.py` | (legacy) | OpenTelemetry token counter; superseded by official metrics on most installs |
+
+### Composition lessons captured
+
+- **mem-027** — three-layer Model / Hooks / Harness architecture; blocking-hook gating discipline
+- **mem-034** — UserPromptSubmit exit-2 bypasses the model; stderr addresses the user; recursive-block trap via echoed trigger phrases
+- **mem-035** — PreToolUse `stdout` and `hookSpecificOutput.additionalContext` are silently dropped; only `exit 2` + stderr affect behavior
+- **mem-037** — Stop hook emitting state on non-task turns deadlocks the next loop-trigger prompt; emit conditionally (v6.15.3 tristate fix)
+
+Query: `"What do we know about hooks?"` returns the full memory set + their cross-edges.
 
 ### Configuration
 
-`.agent/.nav-config.json` — all three default to enabled:
-
-```json
-"task_graph_sync_hook": { "enabled": true },
-"workflow_state_hook":  { "enabled": true },
-"profile_sync_hook":    { "enabled": true }
-```
-
-### State files (gitignored)
-
-- `.agent/.nav-workflow-state.json` — regenerated every Stop
-- `.agent/.nav-profile-sync-state.json` — `{"last_synced_count": N}`
-
-Both under `.agent/` per project convention, gitignored at the repo level.
-
-### What's still in Phase 2 / 3
-
-Per TASK-38:
-- **Phase 2** (v6.11.1+): Opp 1 — `workflow_enforcer.py` upgraded to exit 2 (block) when loop trigger appears with no WORKFLOW CHECK in prior turn (reads workflow_state file written here). First blocking hook in the codebase — explicit design decision required.
-- **Phase 3** (v6.12.x): Opp 6 (`.agent/` bulk-read guard, PreToolUse counter) + Opp 5 (commit archival reminder, PostToolUse Bash with strict gating).
+Each hook has an `<event>_hook.enabled` toggle in `.agent/.nav-config.json`. Defaults are all `true`. The two blocking hooks (`workflow_enforcer`, `nav_read_guard`) additionally take `strict_block`. See `nav-features` skill for the interactive toggle UI.
 
 ---
 
-**Last Updated**: 2026-05-11 (v6.11.0 — Phase 1 lifecycle hooks)
+## When to Read What
+
+**Scenario: adding a new skill**
+1. This navigator
+2. `system/plugin-patterns.md` → skill structure
+3. Look at a similar shipped skill in `skills/`
+4. Use `nav-skill-creator` skill or hand-author
+5. Register in `.claude-plugin/plugin.json` skills array
+
+**Scenario: changing hook behavior**
+1. Read the relevant hook in `hooks/`
+2. Check `mem-027/034/035/037` for composition constraints
+3. If changing a blocking hook: explicit design review against three-layer architecture
+4. Add an end-to-end smoke test that covers the cooperating-hook composition, not just unit behavior
+
+**Scenario: releasing a new version**
+1. `sops/development/complete-release-workflow.md`
+2. Run `release_validator.py --check-all` and `--verify-hooks`
+3. Bump 6 files (marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json, RELEASE-NOTES-*.md)
+4. Tag → CI publishes via `release.yml`
+5. Verify with `release_validator.py --verify-tag vX.Y.Z`
+
+**Scenario: investigating a session deadlock or unexpected block**
+1. Read `.agent/.nav-workflow-state.json` — what did the Stop hook record?
+2. Read `.agent/.nav-read-counter.json` — read guard state
+3. Query `"What do we know about hooks?"` for known pitfalls
+4. If novel, capture as `mem-XXX.md` under `.agent/knowledge/memories/pitfalls/`
+
+---
+
+## Token Optimization Strategy
+
+**Per session**:
+- Always: `DEVELOPMENT-README.md` (~2k tokens) — injected by SessionStart hook, not Read
+- Current work: task doc (~3k)
+- As needed: system doc (~4-6k)
+- If helpful: SOP (~2k)
+- **Total**: ~9-13k vs ~150k loading everything (90%+ savings)
+
+The SessionStart hook itself eliminates ~6 Read calls and ~1.5-2k tokens of tool-call ceremony per session boot.
+
+---
+
+## Development Workflow
+
+```bash
+# Local plugin testing
+/plugin marketplace add file:///Users/aleks.petrov/Projects/startups/navigator
+/plugin install navigator
+
+# Test changes in nav-test
+cd ~/Projects/tmp/nav-test
+# invoke skill or hook via natural language
+```
+
+**Release**: see `sops/development/complete-release-workflow.md`.
+
+---
+
+## Natural Language Reference
+
+```
+"Start my Navigator session"
+"Initialize Navigator in this project"
+"Archive TASK-XX documentation"
+"Create an SOP for debugging [issue]"
+"Update system architecture documentation"
+"What do we know about <topic>?"
+"Clear context and preserve markers"
+"Release plugin"
+```
+
+---
+
+**Last Updated**: 2026-05-18 (v6.15.3 — workflow_enforcer deadlock fix; mem-037 captured)
 **Powered By**: Navigator (Complete Framework)

@@ -34,6 +34,21 @@ WORKFLOW_CHECK_RE = re.compile(r"WORKFLOW\s+CHECK", re.IGNORECASE)
 NAV_STATUS_RE = re.compile(r"NAVIGATOR_STATUS", re.IGNORECASE)
 LOOP_PHASE_RE = re.compile(r"\bPhase:\s*(INIT|RESEARCH|IMPL|VERIFY|COMPLETE)\b")
 
+# Tool names that indicate the assistant turn acted on the codebase. Only
+# when one of these appears (and no CHECK block is shown) do we record
+# check_shown=False. Question-only or conversational turns leave the field
+# as None ("not applicable") so the enforcer doesn't block the next prompt.
+# See mem-035 / TASK-41-followup.
+TASK_ACTION_TOOLS = frozenset({
+    "Edit",
+    "Write",
+    "MultiEdit",
+    "NotebookEdit",
+    "Bash",
+    "Task",
+    "Agent",
+})
+
 
 def _safe_read(path: Path, max_bytes: int = 200_000) -> str | None:
     try:
@@ -92,23 +107,27 @@ def _reset_read_counter(root: Path, session_id: str | None) -> None:
         print(f"nav_workflow_state: counter reset failed: {e}", file=sys.stderr)
 
 
-def _last_assistant_text(stdin_data: dict) -> str:
-    """Prefer the inline last_assistant_message if Claude Code provides it;
-    otherwise scan the JSONL transcript for the most recent assistant entry."""
+def _last_assistant_turn(stdin_data: dict) -> tuple[str, set[str]]:
+    """Return (text, tool_names) for the most recent assistant turn.
+
+    Falls back to inline `last_assistant_message` when Claude Code provides
+    it (text only, no tool info available in that path).
+    """
     inline = stdin_data.get("last_assistant_message")
     if isinstance(inline, str) and inline.strip():
-        return inline
+        return inline, set()
 
     tpath = stdin_data.get("transcript_path")
     if not tpath:
-        return ""
+        return "", set()
     p = Path(tpath).expanduser()
     raw = _safe_read(p, max_bytes=500_000)
     if not raw:
-        return ""
+        return "", set()
 
     # Scan from the end backward for the last assistant message.
     chunks: list[str] = []
+    tools: set[str] = set()
     for line in reversed(raw.splitlines()):
         line = line.strip()
         if not line:
@@ -127,11 +146,15 @@ def _last_assistant_text(stdin_data: dict) -> str:
             chunks.append(content)
         elif isinstance(content, list):
             for block in content:
-                if isinstance(block, dict) and isinstance(block.get("text"), str):
+                if not isinstance(block, dict):
+                    continue
+                if isinstance(block.get("text"), str):
                     chunks.append(block["text"])
-        if chunks:
+                if block.get("type") == "tool_use" and isinstance(block.get("name"), str):
+                    tools.add(block["name"])
+        if chunks or tools:
             break
-    return "\n".join(chunks)
+    return "\n".join(chunks), tools
 
 
 def main() -> int:
@@ -159,11 +182,24 @@ def main() -> int:
         print(json.dumps({}))
         return 0
 
-    text = _last_assistant_text(stdin_data)
-    check_shown = bool(WORKFLOW_CHECK_RE.search(text))
+    text, tools = _last_assistant_turn(stdin_data)
+    check_present = bool(WORKFLOW_CHECK_RE.search(text))
     nav_status = bool(NAV_STATUS_RE.search(text))
     phase_match = LOOP_PHASE_RE.search(text)
     phase = phase_match.group(1) if phase_match else None
+
+    # Tristate check_shown: True if CHECK block emitted; False only when the
+    # turn actually attempted task work (codebase-mutating tools) without
+    # showing it; None ("n/a") for conversational/question-only turns so the
+    # enforcer doesn't block the next prompt. Fixes the AskUserQuestion
+    # deadlock where declining a clarifier + a loop-trigger prompt left no
+    # way out. See mem-035.
+    if check_present:
+        check_shown: bool | None = True
+    elif tools & TASK_ACTION_TOOLS:
+        check_shown = False
+    else:
+        check_shown = None
 
     state = {
         "schema": 1,
@@ -174,6 +210,7 @@ def main() -> int:
             "nav_status_shown": nav_status,
             "loop_phase": phase,
             "assistant_text_chars": len(text),
+            "tools_used": sorted(tools),
         },
     }
 

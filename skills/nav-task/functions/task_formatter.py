@@ -42,7 +42,17 @@ def format_task(title, task_id, priority="Medium", complexity="Medium", status="
 
 ---
 
-## Implementation Plan
+## Acceptance Criteria
+
+Concrete, checkable outcomes — written so anyone (human or AI) can verify them.
+
+- [ ] [Specific, observable outcome]
+- [ ] [Another outcome]
+- [ ] [Edge case handled]
+
+---
+
+## Implementation
 
 ### Phase 1: [Phase Name]
 
@@ -55,30 +65,12 @@ def format_task(title, task_id, priority="Medium", complexity="Medium", status="
 
 ---
 
-## Success Metrics
+## Out of Scope
 
-**Functionality**:
-- [ ] Feature works as expected
-- [ ] Edge cases handled
-- [ ] Error handling implemented
+Explicit non-goals — what this task deliberately does not address.
 
-**Quality**:
-- [ ] Tests written and passing
-- [ ] Documentation updated
-- [ ] Code reviewed
-
-**Token Efficiency** (if applicable):
-- [ ] Token usage measured
-- [ ] Optimization targets met
-- [ ] No context pollution
-
----
-
-## Testing Plan
-
-1. **Unit tests**: [What to test]
-2. **Integration tests**: [What to test]
-3. **Manual testing**: [Steps to verify]
+- [What's deferred to a future task]
+- [Adjacent change being avoided]
 
 ---
 
@@ -107,6 +99,13 @@ Observable outcomes that prove completion:
 - [ ] [Tests pass - specify count or coverage target]
 - [ ] [Build succeeds without errors]
 - [ ] [User-observable behavior works as specified]
+
+---
+
+## Refs
+
+- [Source plan / design doc / parent issue]
+- [Related ticket]
 
 ---
 

@@ -72,13 +72,19 @@ Generate task document from template:
 **Goal**:
 [What are we building?]
 
-**Success Criteria**:
-- [ ] [Specific measurable outcome]
+---
+
+## Acceptance Criteria
+
+Concrete, checkable outcomes — written so anyone (human or AI) can verify them.
+
+- [ ] [Specific, observable outcome]
 - [ ] [Another outcome]
+- [ ] [Edge case handled]
 
 ---
 
-## Implementation Plan
+## Implementation
 
 ### Phase 1: {Name}
 **Goal**: [What this phase accomplishes]
@@ -95,21 +101,20 @@ Generate task document from template:
 
 ---
 
+## Out of Scope
+
+Explicit non-goals — what this task deliberately does not address.
+
+- [What's deferred to a future task]
+- [Adjacent change being avoided]
+
+---
+
 ## Technical Decisions
 
 | Decision | Options Considered | Chosen | Reasoning |
 |----------|-------------------|--------|-----------|
 | [What] | [Option A, B, C] | [Chosen] | [Why] |
-
----
-
-## Dependencies
-
-**Requires**:
-- [ ] {prerequisite task or setup}
-
-**Blocks**:
-- [ ] {tasks waiting on this}
 
 ---
 
@@ -141,20 +146,16 @@ Observable outcomes that prove completion:
 
 ---
 
-## Notes
+## Refs
 
-[Any additional context, links, references]
+- [Source plan / design doc / parent issue]
+- [Related ticket]
 
 ---
 
-## Completion Checklist
+## Notes
 
-Before marking complete:
-- [ ] Implementation finished
-- [ ] Tests written and passing
-- [ ] Documentation updated
-- [ ] Code reviewed (if team)
-- [ ] Deployed/merged
+[Any additional context, links, references]
 
 ---
 
@@ -437,10 +438,12 @@ Read .agent/tasks/TASK-{XX}-{slug}.md
 
 ### For New Tasks (Planning)
 1. Context (problem/goal)
-2. Implementation plan (phases)
-3. Technical decisions (to be made)
-4. Dependencies
-5. Completion checklist
+2. Acceptance criteria (`- [ ]` checkable outcomes)
+3. Implementation (phases)
+4. Out of scope (explicit non-goals)
+5. Technical decisions (to be made)
+6. Verify + Done (validation + completion)
+7. Refs (sources/related)
 
 ### For Completed Tasks (Archive)
 1. What was built (summary)

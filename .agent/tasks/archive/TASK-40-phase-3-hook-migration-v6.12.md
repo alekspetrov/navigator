@@ -1,6 +1,6 @@
 # TASK-40: Phase 3 Hook Migration — v6.12.x
 
-**Status**: 🚧 v6.12.0 shipped (Opp 6 warn-only), v6.12.1 shipped (strict_block + course correction), v6.12.2 pending (full Opp 5 after PostToolUse probe)
+**Status**: ✅ Closed 2026-05-26 — v6.12.0 shipped (Opp 6 warn-only), v6.12.1 shipped (strict_block + course correction + Opp 5 probe), v6.12.2 cancelled (Opp 5 dropped — PostToolUse channels confirmed silent, SessionStart task list is sufficient coverage). Closes TASK-38 Phase 3.
 **Created**: 2026-05-11
 **Builds on**: TASK-38 Phase 1 (v6.11.0), Phase 2 (v6.11.1 + v6.11.2 UX patch)
 **Architectural pattern**: mem-027 (three-layer), mem-034 (blocking-hook discipline)
@@ -192,6 +192,43 @@ After live session surfaces probe result:
 3. If neither surfaces: redesign Opp 5 as a Stop hook that diffs git log vs in-progress task statuses (different mechanism, separate ticket)
 4. Update mem-027 examples list with read guard + commit reminder
 5. Ship v6.12.2 → TASK-38 closed
+
+---
+
+## v6.12.2 Closeout — Opp 5 Cancelled (2026-05-26)
+
+### OQ-3 resolution
+
+The `nav_commit_reminder.py` probe shipped in v6.12.1 was wired to PostToolUse `Bash` and fired on every Bash invocation across a full live session (2026-05-26). Both sentinels were emitted on stdout and stderr from the probe (verified by manual invocation: `echo '{"tool_name":"Bash",...}' | python3 hooks/nav_commit_reminder.py` prints both lines, exit 0). Neither sentinel ever appeared in the model's visible context across 8+ Bash calls in the session.
+
+**Conclusion**: PostToolUse stdout and stderr are silent to the model, matching PreToolUse (mem-035). The `hookSpecificOutput.additionalContext` JSON shape on PostToolUse was not separately probed; given parity with PreToolUse (also silent), the working assumption is no JSON shape will work either. Exit 2 on PostToolUse is semantically wrong (tool already ran) and not a viable alternative.
+
+mem-035 has been updated to reflect the PostToolUse finding.
+
+### Why Opp 5 is cancelled, not redesigned as a Stop hook
+
+The natural fallback (TASK-40 line 192) was "Stop hook diffs git log vs in-progress task statuses." Two problems killed this:
+
+1. **Stop hooks have no model-visible output channel either** (mem-035 line 38). A Stop hook can write a pending-reminder state file but cannot itself surface anything.
+2. **The only proven surfacing channel is SessionStart `additionalContext`**, which already runs `_section_open_tasks` (see `hooks/nav_session_start.py:316`). The next session start already lists every in-progress task. Opp 5's incremental value would have been "cross-reference the most recent completion-signal commit against in-progress tasks" — marginal gain over the existing list, since users see the same task names either way.
+
+Cost/benefit doesn't justify the implementation. The probe was wired locally only, no templates touched, no public API exposed. Removal is clean.
+
+### Cleanup actions
+
+- `hooks/nav_commit_reminder.py` deleted
+- PostToolUse `Bash` entry pointing at the probe removed from `.claude/settings.json`
+- `templates/claude-settings-hooks.json` was never modified (probe was local-only) — verified
+- mem-035 updated with PostToolUse finding and TASK-40 cross-reference
+- Concepts list extended with `posttooluse`, `stderr`
+
+### Phase 3 net delivery (v6.12.x)
+
+- **Opp 6 (read guard)**: shipped in v6.12.0 + v6.12.1 (strict_block default + sentinel-wrapped stderr). Production hook.
+- **Opp 5 (commit reminder)**: cancelled. Use cases handled adequately by SessionStart open-tasks section.
+- **Composition fixes**: v6.12.1 also corrected template wiring of `workflow_enforcer` (PreToolUse → UserPromptSubmit) and synced `.claude/settings.json` with the corrected template.
+
+TASK-38 Phase 3 is closed.
 
 ---
 

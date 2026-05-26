@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-18T18:32:04.738549Z",
+  "last_updated": "2026-05-26T12:04:20.594798Z",
   "stats": {
-    "total_nodes": 128,
-    "total_edges": 843,
+    "total_nodes": 129,
+    "total_edges": 852,
     "memory_count": 37
   },
   "nodes": {
@@ -523,6 +523,22 @@
           "database",
           "simplification",
           "context"
+        ]
+      },
+      "TASK-40": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-40-phase-3-hook-migration-v6.12.md",
+        "title": "Phase 3 Hook Migration \u2014 v6.12.x",
+        "status": "completed",
+        "concepts": [
+          "markers",
+          "api",
+          "testing",
+          "database",
+          "context",
+          "deployment",
+          "skills",
+          "knowledge",
+          "tom"
         ]
       }
     },
@@ -6510,6 +6526,51 @@
       "from": "mem-037",
       "to": "mem-035",
       "type": "relates-to"
+    },
+    {
+      "from": "TASK-40",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-40",
+      "to": "api",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6543,7 +6604,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "mem-012",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "testing": [
       "TASK-32",
@@ -6616,7 +6678,8 @@
       "mem-011",
       "mem-025",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "context": [
       "TASK-32",
@@ -6690,7 +6753,8 @@
       "mem-002",
       "mem-014",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "skills": [
       "TASK-32",
@@ -6770,7 +6834,8 @@
       "mem-025",
       "mem-026",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "session": [
       "TASK-32",
@@ -6988,7 +7053,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "markers": [
       "TASK-18",
@@ -7046,7 +7112,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "2025-10-31-2116_phase2-parallel-complete",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "deployment": [
       "TASK-11",
@@ -7069,7 +7136,8 @@
       "v4.1-multi-claude-automation-proven",
       "2025-10-13_task04-complete",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "code quality": [
       "TASK-19",
@@ -7103,7 +7171,8 @@
       "mem-022",
       "mem-023",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7220,7 +7289,8 @@
     ],
     "tom": [
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-40"
     ],
     "general": [
       "mem-028",

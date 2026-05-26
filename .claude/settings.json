@@ -80,16 +80,6 @@
         ]
       },
       {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/nav_commit_reminder.py\"",
-            "timeout": 3
-          }
-        ]
-      },
-      {
         "matcher": "Edit|Write",
         "hooks": [
           {

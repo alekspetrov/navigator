@@ -234,14 +234,17 @@ Your workflow becomes a reusable tool
 
 ### Navigator vs Alternatives
 
-| Feature | Navigator | Custom Docs | No System |
-|---------|-----------|-------------|-----------|
-| On-demand loading | ✅ | ❌ | ❌ |
-| Auto-invoking skills | ✅ | ❌ | ❌ |
-| Context compression | ✅ | ❌ | ❌ |
-| Self-improving | ✅ | ❌ | ❌ |
-| Token reduction | 92% | ~50% | 0% |
-| Setup time | 5 min | Days | N/A |
+| Feature | Navigator | Custom Docs | No System | Graphify |
+|---------|-----------|-------------|-----------|----------|
+| On-demand loading | ✅ | ❌ | ❌ | ❌ |
+| Auto-invoking skills | ✅ | ❌ | ❌ | ❌ |
+| Context compression | ✅ | ❌ | ❌ | ❌ |
+| Self-improving | ✅ | ❌ | ❌ | ❌ |
+| Knowledge graph | ✅ experiential | ❌ | ❌ | ✅ AST-extracted |
+| Token reduction | 92% | ~50% | 0% | indirect |
+| Setup time | 5 min | Days | N/A | CLI install |
+
+**On Graphify** ([graphify.net](https://graphify.net/graphify-vs-alternatives.html)): a local code knowledge graph extractor — Tree-sitter AST + Leiden community detection + provenance-tagged edges, shipped as a slash command for Claude Code / Codex / OpenCode. **Different layer of the stack**: Graphify maps *codebase structure* (what calls what, what's a god node); Navigator manages *session context* (what docs to load, when to compact, how to resume). They're complementary — Graphify answers "where does this concept live in the code?", Navigator answers "what context do I need loaded for this exchange?". Navigator's v6.0 knowledge graph stores experiential memory (patterns, pitfalls, decisions across sessions), not AST-derived structure.
 
 ---
 

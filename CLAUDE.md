@@ -744,6 +744,23 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 
 ---
 
+## Workflow Discipline
+
+- **Research before scaffolding**: For new projects/features, state phase
+  (research / design / decomposition / implementation) in your first message
+  and wait for confirmation before writing code.
+- **Parallel for fan-out**: When the task is "apply pattern to N similar
+  files", dispatch N parallel Task agents up front — do not start sequentially
+  and wait to be corrected. (Proven: workshop restyle = 41% line reduction.)
+- **Reframe, don't re-litigate**: When the user corrects with "No X, we are
+  doing Y", drop X entirely from outputs. Do not include the rejected framing
+  in new artifacts.
+- **State hypothesis before exploring**: For debugging, name the suspected
+  failure mode and the file/artifact you'll inspect first. If the user
+  pinned a specific failure, do not wander into adjacent systems.
+
+---
+
 ## Code Standards
 
 - **Architecture**: KISS, DRY, SOLID principles
@@ -947,4 +964,4 @@ Navigator config in `.agent/.nav-config.json`:
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2026-05-18
-**Navigator Version**: 6.15.4
+**Navigator Version**: 6.15.5

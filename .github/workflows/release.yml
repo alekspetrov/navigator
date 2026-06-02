@@ -88,16 +88,18 @@ jobs:
       - name: Determine if pre-release
         id: prerelease
         run: |
+          # Pre-release is driven solely by the tag suffix (alpha/beta/rc).
+          # The previous marketplace.json `grep -q "Experimental"` branch was
+          # dead: marketplace.json only ever contains lowercase "experimental"
+          # inside the historical breaking_changes changelog array — never a
+          # status field — so the case-sensitive grep matched zero on every
+          # normal release, and would false-fire *every* release if a changelog
+          # entry were ever capitalized. Tag suffix is the single source of truth.
           VERSION="${{ steps.version.outputs.version }}"
           if [[ "$VERSION" == *"alpha"* ]] || [[ "$VERSION" == *"beta"* ]] || [[ "$VERSION" == *"rc"* ]]; then
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
           else
-            # Check marketplace.json description for "Experimental"
-            if grep -q "Experimental" .claude-plugin/marketplace.json; then
-              echo "is_prerelease=true" >> $GITHUB_OUTPUT
-            else
-              echo "is_prerelease=false" >> $GITHUB_OUTPUT
-            fi
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create or update Release

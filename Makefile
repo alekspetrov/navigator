@@ -26,7 +26,11 @@ TEST_DIRS := \
 	skills/nav-loop/functions \
 	skills/nav-release/functions
 
-# Test target - run all Python unit tests via per-directory discovery
+# Standalone shell test scripts (each exits non-zero on failure).
+SHELL_TESTS := \
+	tests/test-check-version.sh
+
+# Test target - run all Python unit tests (per-directory discovery) + shell tests
 test:
 	@echo "Running unit tests..."
 	@fail=0; \
@@ -35,6 +39,10 @@ test:
 			echo "--- $$d ---"; \
 			( cd $$d && python3 -m unittest discover -p "test_*.py" ) || fail=1; \
 		fi; \
+	done; \
+	for t in $(SHELL_TESTS); do \
+		echo "--- $$t ---"; \
+		bash $$t || fail=1; \
 	done; \
 	if [ $$fail -ne 0 ]; then echo "TESTS FAILED"; exit 1; fi; \
 	echo "All unit tests passed."

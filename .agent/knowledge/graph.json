@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-05-26T12:04:20.594798Z",
+  "last_updated": "2026-06-02T21:50:07.789359Z",
   "stats": {
-    "total_nodes": 129,
-    "total_edges": 852,
+    "total_nodes": 130,
+    "total_edges": 860,
     "memory_count": 37
   },
   "nodes": {
@@ -539,6 +539,21 @@
           "skills",
           "knowledge",
           "tom"
+        ]
+      },
+      "TASK-44": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-44-version-tooling.md",
+        "title": "Version & release tooling correctness",
+        "status": "completed",
+        "concepts": [
+          "skills",
+          "testing",
+          "context",
+          "api",
+          "tom",
+          "knowledge",
+          "authentication",
+          "deployment"
         ]
       }
     },
@@ -6571,6 +6586,46 @@
       "from": "TASK-40",
       "to": "api",
       "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-44",
+      "to": "authentication",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6679,7 +6734,8 @@
       "mem-025",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "context": [
       "TASK-32",
@@ -6754,7 +6810,8 @@
       "mem-014",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "skills": [
       "TASK-32",
@@ -6835,7 +6892,8 @@
       "mem-026",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "session": [
       "TASK-32",
@@ -6906,7 +6964,8 @@
       "youtube-video-production-complete",
       "before-compact-2025-01-23-task35-knowledge-graph",
       "2025-01-21-task30-verification-plan",
-      "TASK-41"
+      "TASK-41",
+      "TASK-44"
     ],
     "workflow": [
       "TASK-33",
@@ -7054,7 +7113,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "markers": [
       "TASK-18",
@@ -7137,7 +7197,8 @@
       "2025-10-13_task04-complete",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "code quality": [
       "TASK-19",
@@ -7172,7 +7233,8 @@
       "mem-023",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7290,7 +7352,8 @@
     "tom": [
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-44"
     ],
     "general": [
       "mem-028",

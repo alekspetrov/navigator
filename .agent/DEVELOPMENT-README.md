@@ -78,7 +78,7 @@ Strategic loading beats bulk loading.
 
 **Project**: Claude Code plugin for Navigator
 **Tech**: Markdown skills, JSON manifests, Python hook scripts
-**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.3)
+**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.6)
 
 **New here?** Read in order:
 1. [Project Architecture](./system/project-architecture.md) — plugin structure, manifest, hook wiring
@@ -179,9 +179,9 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 
 ---
 
-## Lifecycle Hooks (v6.9.0 → v6.15.3)
+## Lifecycle Hooks (v6.9.0 → v6.15.6)
 
-Navigator ships ten Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
+Navigator ships nine Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
 
 ### What ships
 
@@ -195,7 +195,6 @@ Navigator ships ten Claude Code hooks via the plugin manifest (`.claude-plugin/p
 | `nav_profile_sync.py` | PostToolUse (Write/Edit on `.user-profile.json`) | Convert new corrections into graph memories |
 | `workflow_enforcer.py` | UserPromptSubmit | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` |
 | `nav_read_guard.py` | PreToolUse (Read on `.agent/`) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`) |
-| `nav_commit_reminder.py` | PostToolUse (Bash matching commit patterns) | Side-effect reminder for archival after commits |
 | `token_monitor.py` | (legacy) | OpenTelemetry token counter; superseded by official metrics on most installs |
 
 ### Composition lessons captured
@@ -287,5 +286,5 @@ cd ~/Projects/tmp/nav-test
 
 ---
 
-**Last Updated**: 2026-05-18 (v6.15.3 — workflow_enforcer deadlock fix; mem-037 captured)
+**Last Updated**: 2026-06-02 (v6.15.6 — removed deleted nav_commit_reminder.py from public manifest; hook count corrected to nine)
 **Powered By**: Navigator (Complete Framework)

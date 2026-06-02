@@ -6,6 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v6.15.6] — 2026-06-02
+
+**Critical hook-manifest fix — every installed user hit a per-Bash-call error.** `.claude-plugin/plugin.json` still registered a `PostToolUse(Bash)` hook pointing at `hooks/nav_commit_reminder.py`, a file deleted in `a2b4e59` (v6.15.5) when the commit-reminder probe was retired. That cleanup touched `.claude/settings.json` and `templates/` but missed the canonical published manifest — `plugin.json` is what ships to every installed user, while `.claude/settings.json` is only the dev backstop, so the source repo masked the regression locally. Effect on installed users: every `Bash` tool call invoked `python3 .../hooks/nav_commit_reminder.py` and failed with `can't open file … No such file or directory`. Fix removes the dead block (`PostToolUse` is now `token_monitor` on `Edit|Write|Bash`, plus `nav_task_graph_sync` and `nav_profile_sync` on `Edit|Write`). Also corrected `.agent/DEVELOPMENT-README.md`, which still documented "ten hooks" and listed `nav_commit_reminder.py` as live — now nine, table row removed, version references synced to 6.15.6. Surfaced by a 10-dimension, adversarially-verified project audit. Follow-up (not in this patch): a release-time validator step that asserts every hook command path in `plugin.json` resolves to an existing `hooks/` file, so a deleted hook can never ship registered again.
+
+→ [Full release notes](./releases/RELEASE-NOTES-v6.15.6.md)
+
 ## [v6.15.5] — 2026-05-26
 
 **Workflow Discipline section added to CLAUDE.md**, codifying four interruption-reducing rules surfaced by the 2026-05-25 Claude Code Insights audit (428 messages, 25 sessions, 5-day window). Rules: (1) research before scaffolding — state phase in first message and wait for confirmation, (2) parallel for fan-out — dispatch N parallel Task agents up front when applying a pattern to N similar files (proven 41% line reduction in workshop restyle), (3) reframe don't re-litigate — drop rejected framings entirely from outputs, (4) state hypothesis before exploring — name suspected failure mode before tool use during debugging. Docs-only patch, zero code paths affected. Section inserted before existing `## Code Standards` (~line 747). Also gitignores `.agent/.marker-log` (Navigator marker-creation log file that was unnecessarily showing as untracked in repo status). Smoke-tests the post-bfe3b26 / 25614fc `release.yml` pipeline on a low-risk patch.

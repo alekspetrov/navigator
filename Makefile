@@ -12,14 +12,32 @@ build:
 	@python3 -m py_compile skills/nav-loop/functions/status_generator.py && echo "status_generator.py: OK"
 	@echo "Build validation complete."
 
-# Test target - run Jest tests for TypeScript and Python unit tests
+# Directories with genuine unittest suites. Each test_*.py imports its sibling
+# module by bare name, so discovery must run per-directory (from inside each dir).
+# Deliberately EXCLUDES two files that match test_*.py but are NOT unit tests:
+#   skills/frontend-component/functions/test_generator.py  (an argparse CLI generator)
+#   skills/product-design/functions/test_mcp_connection.py (a live Figma MCP probe)
+TEST_DIRS := \
+	skills/nav-upgrade/functions \
+	skills/nav-sync-claude/functions \
+	skills/nav-simplify/scripts \
+	skills/nav-workflow/functions \
+	skills/nav-init/functions \
+	skills/nav-loop/functions \
+	skills/nav-release/functions
+
+# Test target - run all Python unit tests via per-directory discovery
 test:
-	@echo "Running tests..."
-	@if [ -f "package-lock.json" ] || [ -d "node_modules" ]; then \
-		npx jest --passWithNoTests 2>/dev/null || true; \
-	fi
-	@python3 -c "exec(open('skills/nav-loop/functions/status_generator.py').read())" 2>/dev/null && echo "Python module loads: OK"
-	@echo "Tests complete."
+	@echo "Running unit tests..."
+	@fail=0; \
+	for d in $(TEST_DIRS); do \
+		if ls $$d/test_*.py >/dev/null 2>&1; then \
+			echo "--- $$d ---"; \
+			( cd $$d && python3 -m unittest discover -p "test_*.py" ) || fail=1; \
+		fi; \
+	done; \
+	if [ $$fail -ne 0 ]; then echo "TESTS FAILED"; exit 1; fi; \
+	echo "All unit tests passed."
 
 # Lint target - check code style
 lint:

@@ -394,6 +394,59 @@ def verify_hooks(root: Path, plugin: dict) -> Tuple[List[Dict], List[Dict]]:
     return passed, failed
 
 
+def verify_hook_paths(root: Path, plugin: dict) -> Tuple[List[str], List[str]]:
+    """
+    Statically assert every hook command in plugin.json references a
+    hooks/<name>.py file that exists on disk.
+
+    Catches the v6.15.5/v6.15.6 regression class: a deleted hook left
+    registered in the published manifest. verify_hooks() runs the command,
+    but a missing-file PostToolUse hook exits 2 and is classified 'pass'
+    (PostToolUse is silent-by-design), so a static existence check is a
+    required separate gate.
+
+    Returns:
+        (resolved, missing) — resolved are "event: hooks/<name>" strings;
+        missing are the offending full command strings.
+    """
+    hooks = plugin.get("hooks", {})
+    resolved: List[str] = []
+    missing: List[str] = []
+
+    for event, entries in hooks.items():
+        for entry in entries:
+            for hook in entry.get("hooks", []):
+                cmd = hook.get("command", "")
+                match = re.search(r"/hooks/(\w+\.py)", cmd)
+                if not match:
+                    continue
+                name = match.group(1)
+                if (root / "hooks" / name).exists():
+                    resolved.append(f"{event}: hooks/{name}")
+                else:
+                    missing.append(f"{event}: {cmd}")
+
+    return resolved, missing
+
+
+def check_version_match(root: Path, expected: str) -> Tuple[Dict[str, str], List[str]]:
+    """
+    Compare an expected version (e.g. a release tag) against every
+    version-bearing file. Strips a single leading 'v' from the tag.
+
+    Returns:
+        (versions, mismatches) — mismatches are "file=found" strings for any
+        file whose version != expected.
+    """
+    if expected.startswith("v"):
+        expected = expected[1:]
+    versions = check_version_consistency(root)
+    mismatches = [
+        f"{name}={ver}" for name, ver in versions.items() if ver != expected
+    ]
+    return versions, mismatches
+
+
 def main():
     parser = argparse.ArgumentParser(description="Validate Navigator plugin for release")
     parser.add_argument("--check-all", action="store_true", help="Run all validation checks")
@@ -401,6 +454,8 @@ def main():
     parser.add_argument("--verify-tag", type=str, help="Verify tag contains all skills")
     parser.add_argument("--verify-hooks", action="store_true",
                         help="Smoke-test plugin manifest hook commands under set/unset CLAUDE_PLUGIN_DIR")
+    parser.add_argument("--verify-hook-paths", action="store_true",
+                        help="Statically assert every plugin.json hook command resolves to an existing hooks/<name>.py file")
     parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     args = parser.parse_args()
@@ -427,6 +482,37 @@ def main():
                 print(f"  ✓  {chk['event']:18} [{chk['env_state']:5}] "
                       f"exit={chk['exit_code']} out={chk['stdout_len']}B err={chk['stderr_len']}B")
         return 0 if not failed else 1
+
+    if args.verify_hook_paths:
+        resolved, missing = verify_hook_paths(root, plugin)
+        if args.json:
+            print(json.dumps({"resolved": resolved, "missing": missing}, indent=2))
+        else:
+            total = len(resolved) + len(missing)
+            print(f"Hook-path check: {len(resolved)}/{total} resolve to an existing file")
+            for r in resolved:
+                print(f"  ✓  {r}")
+            for m in missing:
+                print(f"  ❌ MISSING FILE — {m}")
+            if missing:
+                print(f"\nVALIDATION: FAILED ✗ — {len(missing)} hook command(s) reference a deleted/missing script")
+        return 0 if not missing else 1
+
+    if args.check_version:
+        versions, mismatches = check_version_match(root, args.check_version)
+        expected = args.check_version.lstrip("v") if args.check_version.startswith("v") else args.check_version
+        if args.json:
+            print(json.dumps({"expected": expected, "versions": versions, "mismatches": mismatches}, indent=2))
+        else:
+            print(f"Version-match check (expected {expected}):")
+            for name, ver in versions.items():
+                indicator = "✓" if ver == expected else "← MISMATCH"
+                print(f"  {name:<20} {ver} {indicator}")
+            if mismatches:
+                print(f"\nVALIDATION: FAILED ✗ — {len(mismatches)} file(s) disagree with {expected}: {', '.join(mismatches)}")
+            else:
+                print(f"\nVALIDATION: PASSED ✓ — all files at {expected}")
+        return 0 if not mismatches else 1
 
     if args.verify_tag:
         found, missing = verify_tag_contents(root, args.verify_tag)

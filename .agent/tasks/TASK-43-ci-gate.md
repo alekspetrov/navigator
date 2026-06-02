@@ -1,6 +1,6 @@
 # TASK-43: CI test + pre-publish validation gate
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented (CI run pending branch push) — 2026-06-02
 **Created**: 2026-06-02
 **Work-package**: `wp1-ci-gate`
 **Phase**: 1 — Gate + zero-dep quick wins

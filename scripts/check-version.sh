@@ -62,16 +62,19 @@ get_latest_version() {
 
 # Compare versions (returns 0 if v1 < v2, 1 otherwise)
 version_lt() {
-    local v1=$1
-    local v2=$2
-
     # Remove 'v' prefix if present
-    v1=${v1#v}
-    v2=${v2#v}
+    local v1=${1#v}
+    local v2=${2#v}
 
-    # Use sort -V for version comparison
-    printf '%s\n%s\n' "$v1" "$v2" | sort -V -C || return 0
-    return 1
+    # Equal versions are never "less than".
+    [ "$v1" = "$v2" ] && return 1
+
+    # v1 < v2 iff v1 sorts first under version ordering (sort -V handles
+    # numeric segments correctly, e.g. 6.9.0 < 6.10.0). Returns the exit
+    # status of the final test: 0 when v1 sorts first, 1 otherwise.
+    local first
+    first=$(printf '%s\n%s\n' "$v1" "$v2" | sort -V | head -n1)
+    [ "$first" = "$v1" ]
 }
 
 # Main execution
@@ -87,7 +90,11 @@ main() {
     echo -e "${BLUE}🔍 Checking Navigator version...${NC}"
     echo -e "   Current: ${GREEN}v$current_version${NC}"
 
-    local latest_version=$(get_latest_version)
+    # Split declaration from assignment so $? reflects get_latest_version's
+    # exit status, not `local`'s (which is almost always 0 and masked the
+    # network-failure guard below).
+    local latest_version
+    latest_version=$(get_latest_version)
 
     if [ $? -ne 0 ] || [ -z "$latest_version" ]; then
         echo -e "${YELLOW}⚠️  Cannot check for updates (network issue or GitHub API limit)${NC}"
@@ -120,5 +127,8 @@ main() {
     fi
 }
 
-# Execute
-main "$@"
+# Execute only when run directly, not when sourced (lets tests exercise
+# version_lt() without triggering the network check in main).
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+    main "$@"
+fi

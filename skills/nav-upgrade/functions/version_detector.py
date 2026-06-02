@@ -20,13 +20,22 @@ from urllib import request
 
 def get_current_version() -> Optional[str]:
     """
-    Get currently installed Navigator version from /plugin list.
+    Get currently installed Navigator version from `claude plugin list`.
+
+    `claude plugin list` prints a multi-line block per plugin:
+        ❯ navigator@navigator-marketplace
+          Version: 6.15.6
+          Scope: user
+          Status: ✔ enabled
+
+    The plugin name and version sit on separate lines, so a single-line
+    regex never matched the version. Scan forward from the navigator entry
+    until a Version: line appears, resetting at the next plugin's `❯` row.
 
     Returns:
-        Version string (e.g., "3.3.0") or None if not found
+        Version string (e.g., "6.15.6") or None if not found
     """
     try:
-        # Try to run claude plugin list command
         result = subprocess.run(
             ['claude', 'plugin', 'list'],
             capture_output=True,
@@ -34,13 +43,17 @@ def get_current_version() -> Optional[str]:
             timeout=10
         )
 
-        # Parse output for navigator version
+        in_navigator_block = False
         for line in result.stdout.split('\n'):
-            if 'navigator' in line.lower():
-                # Extract version (e.g., "navigator (v3.3.0)" or "navigator (3.3.0)")
-                match = re.search(r'v?(\d+\.\d+\.\d+)', line)
+            if 'navigator' in line.lower() and '@' in line:
+                in_navigator_block = True
+                continue
+            if in_navigator_block:
+                match = re.search(r'Version:\s*v?(\d+\.\d+\.\d+)', line)
                 if match:
                     return match.group(1)
+                if line.strip().startswith('❯'):
+                    in_navigator_block = False
 
         return None
     except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
@@ -49,26 +62,36 @@ def get_current_version() -> Optional[str]:
 
 def get_plugin_json_version() -> Optional[str]:
     """
-    Fallback: Get version from plugin.json in Navigator plugin directory.
+    Fallback: read the version from the highest-versioned cached plugin install.
+
+    Claude Code installs plugins under a version-keyed cache layout:
+        ~/.claude/plugins/cache/<marketplace>/navigator/<version>/.claude-plugin/plugin.json
+
+    The previous static path list (~/.config/claude/..., flat
+    ~/.claude/plugins/navigator/...) never matched this layout, so the
+    fallback always returned None. Glob the cache and pick the newest
+    version directory (mirrors release_validator._resolve_plugin_dir_for_test).
 
     Returns:
         Version string or None
     """
-    # Common plugin installation paths
-    possible_paths = [
-        Path.home() / '.config' / 'claude' / 'plugins' / 'navigator' / '.claude-plugin' / 'plugin.json',
-        Path.home() / '.claude' / 'plugins' / 'navigator' / '.claude-plugin' / 'plugin.json',
-        Path.home() / 'Library' / 'Application Support' / 'Claude' / 'plugins' / 'navigator' / '.claude-plugin' / 'plugin.json',
-    ]
+    cache_root = Path.home() / '.claude' / 'plugins' / 'cache'
+    candidates = list(cache_root.glob('*/navigator/*/.claude-plugin/plugin.json'))
 
-    for path in possible_paths:
-        if path.exists():
-            try:
-                with open(path, 'r') as f:
-                    data = json.load(f)
-                    return data.get('version')
-            except (json.JSONDecodeError, FileNotFoundError, PermissionError):
-                continue
+    def _version_key(plugin_json: Path):
+        # The version directory is two levels above .claude-plugin/plugin.json.
+        version_dir = plugin_json.parent.parent.name
+        return [int(x) for x in re.findall(r'\d+', version_dir)]
+
+    for plugin_json in sorted(candidates, key=_version_key, reverse=True):
+        try:
+            with open(plugin_json, 'r') as f:
+                data = json.load(f)
+                version = data.get('version')
+                if version:
+                    return version
+        except (json.JSONDecodeError, OSError):
+            continue
 
     return None
 

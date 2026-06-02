@@ -2,7 +2,7 @@
 
 **Category**: Development
 **Created**: 2025-10-31
-**Last Updated**: 2025-10-31
+**Last Updated**: 2026-06-02
 
 ---
 
@@ -95,41 +95,40 @@ NEW_VERSION="5.0.0"
 
 ### Step 3: Update Version Files
 
-**Do this**:
+**Do this** — one command bumps all five version locations:
 ```bash
-# 1. Update marketplace.json
-# Find the version line and update
-vim .claude-plugin/marketplace.json
-# Change: "version": "4.0.0" → "version": "4.3.0"
-
-# 2. Update plugin.json
-vim .claude-plugin/plugin.json
-# Change: "version": "4.0.0" → "version": "4.3.0"
-# Update description if new major features added
-
-# 3. Update README.md badges
-vim README.md
-# Change: version-4.0.0-blue.svg → version-4.3.0-blue.svg
-# Add experimental badge if pre-release:
-# [![Status](https://img.shields.io/badge/status-experimental-yellow.svg)](...)
+./scripts/bump-version.sh 4.3.0
 ```
 
-**Why**:
-All three files are version sources:
-- `marketplace.json`: Claude Code marketplace reads this
-- `plugin.json`: Plugin metadata and npm-style versioning
-- `README.md`: User-facing version display
+`bump-version.sh` updates every version-bearing file from a single argument,
+then runs `release_validator.py --check-version` to assert they all agree:
+- `.claude-plugin/plugin.json` — top-level `"version"`
+- `.claude-plugin/marketplace.json` — `metadata.version`
+- `README.md` — `version-X.Y.Z-blue` badge
+- `CLAUDE.md` — `**Navigator Version**:` line
+- `.agent/.nav-config.json` — top-level `"version"`
 
-**Verification**:
+The edits are format-preserving (no JSON reformatting); if any expected token
+is missing the script exits non-zero so drift can't slip through.
+
+**Why**:
+The bump used to be a manual, vim-driven edit across five files, which routinely
+left one behind (the exact version-drift this SOP exists to prevent). A single
+scripted bump plus the validator makes the whole set atomic and self-checking.
+
+> Pre-release? There is no version-file change for that — pre-release status is
+> driven purely by the git tag suffix (`alpha`/`beta`/`rc`), see Step 9.
+
+**Verification** (the bump script already runs this; re-run any time):
 ```bash
-grep -r "\"version\"" .claude-plugin/
-grep "version-" README.md
+python3 skills/nav-release/functions/release_validator.py --check-version 4.3.0
 ```
 
 ### Step 4: Write Comprehensive Release Notes
 
 **Do this**:
-Create `RELEASE-NOTES-v{VERSION}.md` with this structure:
+Create `releases/RELEASE-NOTES-v{VERSION}.md` (the canonical location the
+release workflow reads) with this structure:
 
 ```markdown
 # Navigator v{VERSION}: {Feature Name}
@@ -273,7 +272,7 @@ Add new version section after "Getting Started":
 # Quick start commands
 \`\`\`
 
-[Full v{VERSION} release notes](RELEASE-NOTES-v{VERSION}.md)
+[Full v{VERSION} release notes](releases/RELEASE-NOTES-v{VERSION}.md)
 ```
 
 **Why**:
@@ -288,17 +287,12 @@ git add -A
 git commit -m "$(cat <<'EOF'
 chore(v{VERSION}): bump version and add release notes
 
-- Updated marketplace.json version: {OLD} → {NEW}
-- Updated plugin.json version: {OLD} → {NEW}
-- Created comprehensive RELEASE-NOTES-v{VERSION}.md
+- Bumped all five version files via scripts/bump-version.sh: {OLD} → {NEW}
+- Created comprehensive releases/RELEASE-NOTES-v{VERSION}.md
 - Updated README.md with v{VERSION} section
 - {Additional changes, e.g., bug fixes}
 
 Breaking changes: {None or list}
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -331,7 +325,7 @@ Bug fixes:
 - {Fix 1}
 
 Documentation:
-- Complete RELEASE-NOTES-v{VERSION}.md
+- Complete releases/RELEASE-NOTES-v{VERSION}.md
 - Updated README.md
 
 Breaking changes: {None or list}"
@@ -370,8 +364,8 @@ To https://github.com/alekspetrov/navigator.git
 
 When you push a git tag (Step 8), GitHub Actions automatically:
 1. Detects the tag push
-2. Reads `RELEASE-NOTES-v{VERSION}.md`
-3. Determines if pre-release (checks marketplace.json for "Experimental")
+2. Reads `releases/RELEASE-NOTES-v{VERSION}.md` (legacy fallback: repo-root `RELEASE-NOTES-v{VERSION}.md`)
+3. Determines if pre-release **from the tag suffix only** (`alpha`/`beta`/`rc`)
 4. Creates GitHub release
 5. Attaches release notes file
 6. Notifies watchers
@@ -389,9 +383,10 @@ gh run view --log-failed "$(gh run list --workflow=release.yml --limit=1 --json 
 gh run rerun "$(gh run list --workflow=release.yml --limit=1 --json databaseId --jq '.[0].databaseId')"
 ```
 
-Pre-release detection is automatic: tags containing `alpha`/`beta`/`rc`,
-or repos whose `marketplace.json` description contains "Experimental",
-get `--prerelease`. No manual flag needed.
+Pre-release detection is automatic and tag-driven: only tags containing
+`alpha`/`beta`/`rc` get `--prerelease`. No manual flag, and no marketplace.json
+field involved — the old "Experimental" grep was dead code (it matched a
+historical lowercase changelog entry, never a status field) and has been removed.
 
 **Why automated**:
 - Zero manual steps after tag push
@@ -600,8 +595,8 @@ v4.3.0
 ### Verify Release Checklist
 
 **Before pushing**:
-- [ ] All version files updated (marketplace.json, plugin.json, README.md)
-- [ ] Release notes created (RELEASE-NOTES-v{VERSION}.md)
+- [ ] All five version files bumped via `./scripts/bump-version.sh {VERSION}` (validator passed)
+- [ ] Release notes created at `releases/RELEASE-NOTES-v{VERSION}.md`
 - [ ] README has new version section
 - [ ] Commit message follows convention
 - [ ] Git tag created with descriptive message
@@ -641,9 +636,9 @@ cd /tmp/navigator-test
 - README showing old version after release
 
 **Automation opportunities**:
-- Version bump script (updates all files)
+- ✅ Version bump script (`scripts/bump-version.sh` — updates all five files + validates)
+- ✅ Pre-publish version-consistency gate (release.yml `validate` job runs `--check-version <tag>`)
 - Release notes template generator
-- Pre-push hook to verify version consistency
 
 ---
 
@@ -709,10 +704,10 @@ gh release edit v{VERSION} --prerelease
 gh release view v{VERSION}
 
 # Edit release notes
-vim RELEASE-NOTES-v{VERSION}.md
+vim releases/RELEASE-NOTES-v{VERSION}.md
 
 # Update GitHub release
-gh release edit v{VERSION} --notes-file RELEASE-NOTES-v{VERSION}.md
+gh release edit v{VERSION} --notes-file releases/RELEASE-NOTES-v{VERSION}.md
 ```
 
 ---
@@ -760,6 +755,6 @@ Release is successful when:
 
 ---
 
-**Last Updated**: 2025-10-31
-**Tested With**: Navigator v4.3.0 release (2025-10-31)
+**Last Updated**: 2026-06-02
+**Tested With**: Navigator v4.3.0 release (2025-10-31); Step 3/4/9 + checklist updated for scripts/bump-version.sh and releases/ path (TASK-44, 2026-06-02)
 **Process validated**: Successfully released v4.3.0 using this workflow

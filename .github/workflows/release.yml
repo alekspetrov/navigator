@@ -9,8 +9,44 @@ permissions:
   contents: write
 
 jobs:
+  validate:
+    name: Validate release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Run unit tests
+        run: make test
+
+      - name: Validate plugin integrity (skills exist, committed, versions consistent)
+        run: python3 skills/nav-release/functions/release_validator.py --check-all
+
+      - name: Verify every manifest hook path resolves to a file
+        # Guards the v6.15.6 regression class: a deleted hook left registered in plugin.json.
+        run: python3 skills/nav-release/functions/release_validator.py --verify-hook-paths
+
+      - name: Verify all version files match the pushed tag
+        run: python3 skills/nav-release/functions/release_validator.py --check-version "${{ steps.version.outputs.version }}"
+
+      - name: Verify tag contains all skills
+        run: python3 skills/nav-release/functions/release_validator.py --verify-tag "${GITHUB_REF#refs/tags/}"
+
   release:
     name: Create GitHub Release
+    needs: validate
     runs-on: ubuntu-latest
 
     steps:

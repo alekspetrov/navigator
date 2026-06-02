@@ -548,3 +548,23 @@ navigator-multi-claude.sh "Implement v4.5.0 multi-Claude reliability fixes from 
 4. Iterate on fixes based on real failure modes
 
 **Ready to execute?** 🚀
+
+---
+
+## Roadmap linkage (2026-06-02)
+
+This task is **work-package wp10** of the audit remediation roadmap (**TASK-42**). The 2026-06-02 project audit (`wf_0dc1b9ce-7d8`) independently confirmed 12 multi-Claude reliability findings that this task should absorb:
+
+- `set -e` aborts before per-phase error handlers run (graceful-failure code is dead)
+- `wait_for_file` hardcodes timeout=300, ignores its argument (per-phase tuning void)
+- retry loop re-polls disk instead of re-launching Claude
+- killing the background subshell PID orphans the spawned `claude` child
+- parallel phases launched together but waited on serially (parallelism defeated)
+- dashboard reads marker filenames the workflow never writes (loops forever)
+- `grep -q APPROVED` matches "not APPROVED" → auto-merges unreviewed work
+- `git add .` commits stray markers/.bak/unrelated changes
+- `scripts/lib/` is empty → helpers copy-pasted, bug duplicated
+- session state never records `started_at` (dashboard elapsed timer wrong)
+- `resume-workflow.sh` sets status 'resumed' without verifying the new marker
+
+**Decision pending** (see TASK-42): genuine repair vs mark-experimental/deprecate. Effort L, risk med.

@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T12:08:43.170749Z",
+  "last_updated": "2026-06-03T10:41:10.574127+00:00",
   "stats": {
     "total_nodes": 133,
-    "total_edges": 886,
+    "total_edges": 706,
     "memory_count": 37
   },
   "nodes": {
@@ -1663,7 +1663,7 @@
         "type": "pattern",
         "summary": "Navigator user-facing flows map (v6.8.0): ~28 flows across 8 categories. Canonical path: start\u2192task-mode\u2192impl-skill\u2192simplify\u2192commit\u2192compact",
         "path": "memories/patterns/mem-026.md",
-        "confidence": 90.0,
+        "confidence": 0.9,
         "concepts": [
           "navigator-flows",
           "user-experience",
@@ -1914,24 +1914,6 @@
     },
     {
       "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 0.8
@@ -1969,12 +1951,6 @@
     {
       "from": "SOP-navigator_plugin_release_workflow",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2034,12 +2010,6 @@
     },
     {
       "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -2058,31 +2028,7 @@
     },
     {
       "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-navigator_plugin_release_workflow",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2148,24 +2094,6 @@
     },
     {
       "from": "SOP-plugin_release_workflow",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -2203,12 +2131,6 @@
     {
       "from": "SOP-plugin_release_workflow",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2262,12 +2184,6 @@
     },
     {
       "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -2286,33 +2202,9 @@
     },
     {
       "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
       "to": "TASK-10",
       "type": "relates-to",
       "weight": 0.8
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-plugin_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
     },
     {
       "from": "SOP-multi_claude_troubleshooting",
@@ -2376,24 +2268,6 @@
     },
     {
       "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -2433,12 +2307,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 0.8
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
     },
     {
       "from": "SOP-multi_claude_troubleshooting",
@@ -2496,12 +2364,6 @@
     },
     {
       "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -2520,31 +2382,7 @@
     },
     {
       "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_troubleshooting",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2610,24 +2448,6 @@
     },
     {
       "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -2665,12 +2485,6 @@
     {
       "from": "SOP-multi_claude_orchestration",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2730,12 +2544,6 @@
     },
     {
       "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -2754,31 +2562,7 @@
     },
     {
       "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-multi_claude_orchestration",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -2844,24 +2628,6 @@
     },
     {
       "from": "SOP-version_management",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-version_management",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 0.8
@@ -2899,12 +2665,6 @@
     {
       "from": "SOP-version_management",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 0.8
     },
@@ -2964,12 +2724,6 @@
     },
     {
       "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-version_management",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -2988,31 +2742,7 @@
     },
     {
       "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-version_management",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-version_management",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -3078,24 +2808,6 @@
     },
     {
       "from": "SOP-complete_release_workflow",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-complete_release_workflow",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -3135,12 +2847,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 1.0
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
     },
     {
       "from": "SOP-complete_release_workflow",
@@ -3198,12 +2904,6 @@
     },
     {
       "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-complete_release_workflow",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -3222,31 +2922,7 @@
     },
     {
       "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-complete_release_workflow",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-complete_release_workflow",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -3312,24 +2988,6 @@
     },
     {
       "from": "SOP-autonomous_completion",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-autonomous_completion",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -3369,12 +3027,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 0.8
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
     },
     {
       "from": "SOP-autonomous_completion",
@@ -3432,12 +3084,6 @@
     },
     {
       "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-autonomous_completion",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -3456,31 +3102,7 @@
     },
     {
       "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-autonomous_completion",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-autonomous_completion",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -3517,12 +3139,6 @@
     {
       "from": "SOP-test_failures",
       "to": "TASK-13",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-test_failures",
-      "to": "TASK-19",
       "type": "relates-to",
       "weight": 0.8
     },
@@ -3611,12 +3227,6 @@
       "weight": 0.6000000000000001
     },
     {
-      "from": "SOP-test_failures",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
       "from": "SOP-grafana_dashboard_empty_data",
       "to": "TASK-32",
       "type": "relates-to",
@@ -3678,24 +3288,6 @@
     },
     {
       "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 0.8
@@ -3733,12 +3325,6 @@
     {
       "from": "SOP-grafana_dashboard_empty_data",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 0.8
     },
@@ -3798,12 +3384,6 @@
     },
     {
       "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -3822,33 +3402,9 @@
     },
     {
       "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
       "to": "TASK-10",
       "type": "relates-to",
       "weight": 1.0
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-grafana_dashboard_empty_data",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
     },
     {
       "from": "SOP-opentelemetry_setup",
@@ -3912,24 +3468,6 @@
     },
     {
       "from": "SOP-opentelemetry_setup",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -3963,12 +3501,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 0.8
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
     },
     {
       "from": "SOP-opentelemetry_setup",
@@ -4014,12 +3546,6 @@
     },
     {
       "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 0.8
@@ -4038,33 +3564,9 @@
     },
     {
       "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
       "to": "TASK-10",
       "type": "relates-to",
       "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-opentelemetry_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
     },
     {
       "from": "SOP-visual_regression_setup",
@@ -4128,24 +3630,6 @@
     },
     {
       "from": "SOP-visual_regression_setup",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-visual_regression_setup",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 0.8
@@ -4185,12 +3669,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 1.0
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
     },
     {
       "from": "SOP-visual_regression_setup",
@@ -4242,12 +3720,6 @@
     },
     {
       "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-visual_regression_setup",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -4266,33 +3738,9 @@
     },
     {
       "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-visual_regression_setup",
       "to": "TASK-10",
       "type": "relates-to",
       "weight": 1.0
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-visual_regression_setup",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
     },
     {
       "from": "SOP-plugin_release",
@@ -4350,24 +3798,6 @@
     },
     {
       "from": "SOP-plugin_release",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
-      "from": "SOP-plugin_release",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 0.6000000000000001
@@ -4401,12 +3831,6 @@
       "to": "TASK-17",
       "type": "relates-to",
       "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
     },
     {
       "from": "SOP-plugin_release",
@@ -4464,12 +3888,6 @@
     },
     {
       "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-plugin_release",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 0.8
@@ -4488,31 +3906,7 @@
     },
     {
       "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
-      "from": "SOP-plugin_release",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 0.6000000000000001
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.4
-    },
-    {
-      "from": "SOP-plugin_release",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 0.6000000000000001
     },
@@ -4578,24 +3972,6 @@
     },
     {
       "from": "plugin-patterns",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "plugin-patterns",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -4633,12 +4009,6 @@
     {
       "from": "plugin-patterns",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -4698,12 +4068,6 @@
     },
     {
       "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "plugin-patterns",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -4722,31 +4086,7 @@
     },
     {
       "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "plugin-patterns",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "plugin-patterns",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -4812,24 +4152,6 @@
     },
     {
       "from": "project-architecture",
-      "to": "TASK-19",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
       "to": "TASK-03",
       "type": "relates-to",
       "weight": 1.0
@@ -4867,12 +4189,6 @@
     {
       "from": "project-architecture",
       "to": "TASK-17",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -4932,12 +4248,6 @@
     },
     {
       "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
       "to": "TASK-29",
       "type": "relates-to",
       "weight": 1.0
@@ -4956,31 +4266,7 @@
     },
     {
       "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 0.8
-    },
-    {
-      "from": "project-architecture",
       "to": "TASK-10",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
-      "type": "relates-to",
-      "weight": 1.0
-    },
-    {
-      "from": "project-architecture",
-      "to": "TASK-18",
       "type": "relates-to",
       "weight": 1.0
     },
@@ -5346,27 +4632,7 @@
     },
     {
       "from": "TASK-19",
-      "to": "database",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
       "to": "backend",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "code quality",
       "type": "implements"
     },
     {
@@ -5381,37 +4647,7 @@
     },
     {
       "from": "TASK-19",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
       "to": "authentication",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-19",
-      "to": "session",
       "type": "implements"
     },
     {
@@ -5421,32 +4657,12 @@
     },
     {
       "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "markers",
       "type": "implements"
     },
     {
       "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
       "type": "implements"
     },
     {
@@ -5457,26 +4673,6 @@
     {
       "from": "TASK-18",
       "to": "deployment",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
       "type": "implements"
     },
     {
@@ -5720,31 +4916,6 @@
       "type": "implements"
     },
     {
-      "from": "TASK-18",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
       "from": "TASK-06",
       "to": "api",
       "type": "implements"
@@ -6100,31 +5271,6 @@
       "type": "implements"
     },
     {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
       "from": "TASK-29",
       "to": "database",
       "type": "implements"
@@ -6266,27 +5412,7 @@
     },
     {
       "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "frontend",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
       "type": "implements"
     },
     {
@@ -6341,105 +5467,10 @@
     },
     {
       "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
       "to": "database",
       "type": "implements"
     },
     {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "testing",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "context",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "workflow",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-18",
-      "to": "session",
-      "type": "implements"
-    },
-    {
       "from": "TASK-38",
       "to": "skills",
       "type": "implements"
@@ -6447,11 +5478,6 @@
     {
       "from": "TASK-38",
       "to": "knowledge",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-38",
-      "to": "tom",
       "type": "implements"
     },
     {
@@ -6490,16 +5516,6 @@
       "type": "implements"
     },
     {
-      "from": "mem-032",
-      "to": "TASK-39",
-      "type": "learned-from"
-    },
-    {
-      "from": "mem-033",
-      "to": "TASK-39",
-      "type": "learned-from"
-    },
-    {
       "from": "TASK-41",
       "to": "deployment",
       "type": "implements"
@@ -6507,11 +5523,6 @@
     {
       "from": "TASK-41",
       "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-41",
-      "to": "tom",
       "type": "implements"
     },
     {
@@ -6571,11 +5582,6 @@
     },
     {
       "from": "mem-037",
-      "to": "RELEASE-v6.15.3",
-      "type": "learned-from"
-    },
-    {
-      "from": "mem-037",
       "to": "mem-027",
       "type": "relates-to"
     },
@@ -6611,11 +5617,6 @@
     },
     {
       "from": "TASK-40",
-      "to": "tom",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-40",
       "to": "skills",
       "type": "implements"
     },
@@ -6647,11 +5648,6 @@
     {
       "from": "TASK-44",
       "to": "skills",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-44",
-      "to": "tom",
       "type": "implements"
     },
     {
@@ -6711,22 +5707,12 @@
     },
     {
       "from": "TASK-50",
-      "to": "tom",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-50",
       "to": "api",
       "type": "implements"
     },
     {
       "from": "TASK-45",
       "to": "markers",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-45",
-      "to": "tom",
       "type": "implements"
     },
     {
@@ -6767,11 +5753,6 @@
     {
       "from": "TASK-46",
       "to": "api",
-      "type": "implements"
-    },
-    {
-      "from": "TASK-46",
-      "to": "tom",
       "type": "implements"
     },
     {

@@ -17,6 +17,10 @@ from graph_manager import (
     add_node,
     remove_node,
     add_edge,
+    add_memory,
+    query_by_concept,
+    format_query_results,
+    _clamp_confidence,
 )
 
 EMPTY_GRAPH_KEYS = {
@@ -240,6 +244,58 @@ class TestAddEdge(unittest.TestCase):
 
         self.assertNotIn("weight", graph["edges"][0])
         self.assertEqual(graph["edges"][1]["weight"], 0.5)
+
+
+class TestQueryByConcept(unittest.TestCase):
+    """query_by_concept must surface markers and concepts, not silently drop them."""
+
+    def test_markers_are_returned(self):
+        graph = create_empty_graph()
+        graph = add_node(
+            graph, "markers", "marker-1",
+            {"title": "My Marker", "concepts": ["auth"]},
+        )
+        results = query_by_concept(graph, "auth")
+        ids = [m["id"] for m in results["markers"]]
+        self.assertIn("marker-1", ids)
+
+    def test_markers_render_in_output(self):
+        graph = create_empty_graph()
+        graph = add_node(
+            graph, "markers", "marker-1",
+            {"title": "Release Marker", "concepts": ["auth"]},
+        )
+        rendered = format_query_results(query_by_concept(graph, "auth"))
+        self.assertIn("MARKERS", rendered)
+        self.assertIn("Release Marker", rendered)
+
+    def test_tasks_still_returned(self):
+        graph = create_empty_graph()
+        graph = add_node(
+            graph, "tasks", "TASK-01", {"title": "T", "concepts": ["auth"]},
+        )
+        results = query_by_concept(graph, "auth")
+        self.assertEqual([t["id"] for t in results["tasks"]], ["TASK-01"])
+
+
+class TestConfidenceClamp(unittest.TestCase):
+    """Confidence must be coerced to [0,1] on input (mem-026 was 90.0)."""
+
+    def test_clamp_bounds(self):
+        self.assertEqual(_clamp_confidence(90.0), 1.0)
+        self.assertEqual(_clamp_confidence(-0.5), 0.0)
+        self.assertEqual(_clamp_confidence(0.7), 0.7)
+
+    def test_clamp_non_numeric_falls_back(self):
+        self.assertEqual(_clamp_confidence("oops"), 0.8)
+
+    def test_add_memory_clamps_out_of_range(self):
+        graph = create_empty_graph()
+        mem_id = add_memory(
+            graph, "pattern", "summary", ["auth"],
+            confidence=5.0, create_file=False,
+        )
+        self.assertLessEqual(graph["nodes"]["memories"][mem_id]["confidence"], 1.0)
 
 
 if __name__ == "__main__":

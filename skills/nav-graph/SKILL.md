@@ -410,6 +410,12 @@ In `.agent/.nav-config.json`:
 }
 ```
 
+**Note**: `confidence_decay_rate` and `staleness_threshold_days` are consumed
+only by the manual `graph_maintenance` commands (`--action decay` /
+`--action stale`). They are **not** applied automatically on session start —
+decaying a git-tracked file every session would create constant churn. Run
+decay/staleness manually when curating the graph.
+
 ---
 
 ## Graph Maintenance
@@ -423,16 +429,40 @@ Output:
 ```
 Knowledge Graph Health Check
 ========================================
-Total Nodes: 94
-Total Edges: 819
-Memories: 2 (2 high confidence)
+Total Nodes: 133
+Total Edges: 706
+Memories: 37 (37 high confidence)
+Tasks: 38
+Concepts: 16
+Orphan Nodes: 0
+Duplicate Edges: 0
+Dangling Edges: 0
+Confidence Out-of-Range: 0
+
 Health Score: 100/100
 
-No issues detected!
+No integrity issues detected!
+
+Advisory (not scored):
+  - 8 potential memory conflicts (heuristic, advisory)
+  - 3 stale memories (not validated in 90+ days)
+```
+
+`Duplicate Edges`, `Dangling Edges`, and `Confidence Out-of-Range` are the
+integrity gate — all three should read `0` on a healthy graph. If they don't,
+run `--action repair` (below).
+
+### Repair Integrity Defects
+Idempotently dedupe `(from, to, type)` edge rows, drop edges that reference a
+missing node id, and normalize out-of-range memory confidences (a value like
+`90.0` is treated as `90%` → `0.9`). Safe to re-run:
+```bash
+python3 skills/nav-graph/functions/graph_maintenance.py --action repair
 ```
 
 ### Conflict Detection
-Find memories that may contradict each other:
+Find memories that may contradict each other. **Advisory only** — a
+high-false-positive keyword heuristic that does **not** affect the health score:
 ```bash
 python3 skills/nav-graph/functions/graph_maintenance.py --action conflicts
 ```
@@ -453,10 +483,13 @@ python3 skills/nav-graph/functions/graph_maintenance.py --action prune --thresho
 python3 skills/nav-graph/functions/graph_maintenance.py --action prune --threshold 0.3 --execute
 ```
 
-### Apply Decay
-Reduce confidence of stale memories:
+### Apply Decay (experimental, manual-only)
+Reduce confidence based on time since each memory's last decay. **Idempotent** —
+running it twice on the same day is a no-op (each memory tracks `last_decayed`).
+The rate defaults to `knowledge_graph.confidence_decay_rate` when `--decay-rate`
+is omitted. This is **not** wired to any hook; run it manually when curating:
 ```bash
-python3 skills/nav-graph/functions/graph_maintenance.py --action decay --decay-rate 0.01
+python3 skills/nav-graph/functions/graph_maintenance.py --action decay
 ```
 
 ---

@@ -357,7 +357,8 @@ def add_memory(graph: dict, memory_type: str, summary: str,
                source_task: Optional[str] = None,
                base_dir: str = ".agent/knowledge",
                create_file: bool = True,
-               memory_id: Optional[str] = None) -> str:
+               memory_id: Optional[str] = None,
+               source: Optional[str] = None) -> str:
     """Add a memory node to the graph.
 
     Also creates the backing markdown file at
@@ -369,6 +370,10 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     If `memory_id` is provided, that ID is used directly (after collision
     check against the graph). If omitted, the next free ID is computed via
     `_next_memory_id` which scans both graph nodes and on-disk files.
+
+    `source` tags the origin of the memory (e.g. 'correction' for memories
+    derived from profile corrections). It is persisted on the node only when
+    provided, so nodes created without it keep their existing shape.
     """
     confidence = _clamp_confidence(confidence)
     memories = graph["nodes"].get("memories", {})
@@ -392,6 +397,8 @@ def add_memory(graph: dict, memory_type: str, summary: str,
         "created": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "last_validated": datetime.now(timezone.utc).strftime("%Y-%m-%d")
     }
+    if source:
+        memory_data["source"] = source
 
     graph = add_node(graph, "memories", memory_id, memory_data)
 

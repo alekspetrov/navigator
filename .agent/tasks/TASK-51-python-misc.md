@@ -1,6 +1,6 @@
 # TASK-51: Misc Python correctness fixes
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-03
 **Created**: 2026-06-02
 **Work-package**: `wp11-python-misc`
 **Phase**: 4 — Independent tracks (parallel)
@@ -61,14 +61,30 @@ Tests: there is no pytest run in CI (release.yml has no test step) but sibling s
 
 ## Acceptance Criteria
 
-- [ ] correction_to_memory.py: after sync_corrections_to_graph adds N memories, check_for_new_corrections reports synced_memories == N and pending == 0 (test asserts this on a temp profile+graph)
-- [ ] Existing non-correction memories (no source field) are NOT counted as synced
-- [ ] task_id_generator: get_next_task_id counts both TASK-09.md and TASK-09-name.md (test or manual: a dir with only TASK-09.md returns TASK-10, not TASK-01)
-- [ ] progress_tracker: update_progress/get_progress/get_next_task on a corrupt or partial .progress-data.json return an {"error":...} dict (or None for get_next_task) instead of raising JSONDecodeError/KeyError
-- [ ] feature_manager: check_installed uses no shell=True; KeyboardInterrupt is no longer swallowed; multi_claude_scripts feature still reports installed/not-installed correctly
-- [ ] release_validator: _strip_dot_slash('./skills/x')=='skills/x', ('skills/x')=='skills/x', ('./a/.b')=='a/.b'; --check-all still passes against current plugin.json
-- [ ] profile_manager: add_goal with a goal dict lacking 'name' returns/raises a clear error and does not crash; legacy goals without 'name' do not break dedup
-- [ ] All new test_*.py files pass via `python3 <test_file>`
+- [x] correction_to_memory.py: after sync_corrections_to_graph adds N memories, check_for_new_corrections reports synced_memories == N and pending == 0 (test asserts this on a temp profile+graph)
+- [x] Existing non-correction memories (no source field) are NOT counted as synced
+- [x] task_id_generator: get_next_task_id counts both TASK-09.md and TASK-09-name.md (verified: a dir with only TASK-09.md returns TASK-10)
+- [x] progress_tracker: update_progress/get_progress/get_next_task on a corrupt or partial .progress-data.json return an {"error":...} dict (or None for get_next_task) instead of raising JSONDecodeError/KeyError
+- [x] feature_manager: check_installed uses no shell=True; KeyboardInterrupt is no longer swallowed; multi_claude_scripts feature still reports installed/not-installed correctly (shutil.which)
+- [x] release_validator: _strip_dot_slash('./skills/x')=='skills/x', ('skills/x')=='skills/x', ('./a/.b')=='a/.b'; --check-all passes on a clean tree
+- [x] profile_manager: add_goal with a goal dict lacking 'name' returns the profile unchanged with a clear stderr error and does not crash; legacy goals without 'name' do not break dedup
+- [x] All new test_*.py files pass via `make test`
+
+## Implementation Notes (2026-06-03)
+
+- `add_memory` gained an optional `source` param (persisted on the node only
+  when provided → backward-compatible); `correction_to_memory` tags its memories
+  `source='correction'` and counts those.
+- `feature_manager.check_installed` rewritten to `shutil.which` (no subprocess,
+  no `shell=True`, no bare `except:`) — resolves the final token of the probe.
+- **Stale-assumption catch**: the plan said to create
+  `test_release_validator.py`, but wp1/wp2 already created it — appended a
+  `StripDotSlashTest` class instead of overwriting.
+- Added `skills/nav-onboard/functions` to the Makefile `TEST_DIRS` (it was
+  absent, so the new progress_tracker test would not have run in CI).
+- Verified out of scope and left untouched: `release_validator.py` main()'s
+  `args.check_version.lstrip("v")` (display-only, guarded) is a separate
+  latent bug not in this work-package's findings.
 
 ## Technical Decisions
 
@@ -90,6 +106,6 @@ Tests: there is no pytest run in CI (release.yml has no test step) but sibling s
 
 ## Done
 
-- [ ] All acceptance criteria checked
-- [ ] Tests pass in CI (once TASK-43 gate exists)
-- [ ] Committed + roadmap (TASK-42) status updated
+- [x] All acceptance criteria checked
+- [x] Tests pass in CI (TASK-43 gate runs `make test`)
+- [x] Committed + roadmap (TASK-42) status updated

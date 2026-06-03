@@ -12,6 +12,8 @@ Usage:
 
 import sys
 import json
+import shlex
+import shutil
 import argparse
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
@@ -203,18 +205,18 @@ def save_config(config: Dict) -> Optional[str]:
 
 
 def check_installed(check_command: str) -> bool:
-    """Check if a command/script is installed."""
-    import subprocess
-    try:
-        result = subprocess.run(
-            check_command,
-            shell=True,
-            capture_output=True,
-            timeout=5
-        )
-        return result.returncode == 0
-    except:
+    """Return True if the feature's executable resolves on PATH.
+
+    The only installed-type feature probes with `command -v <script>`. We
+    resolve the final token (the script name) via shutil.which rather than
+    spawning `shell=True` under a bare `except:`, so KeyboardInterrupt and
+    SystemExit are never swallowed and no shell parsing is involved.
+    """
+    if not check_command:
         return False
+    tokens = shlex.split(check_command)
+    executable = tokens[-1] if tokens else ""
+    return bool(executable) and shutil.which(executable) is not None
 
 
 def is_feature_enabled(config: Dict, feature_name: str) -> bool:

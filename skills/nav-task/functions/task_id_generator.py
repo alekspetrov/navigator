@@ -23,8 +23,8 @@ def get_next_task_id(agent_dir=".agent", prefix="TASK"):
     if not os.path.exists(tasks_dir):
         return f"{prefix}-01"
 
-    # Find all task files matching pattern TASK-XX-*.md
-    task_pattern = re.compile(rf"{prefix}-(\d+)-.*\.md")
+    # Find all task files matching TASK-XX.md or TASK-XX-name.md
+    task_pattern = re.compile(rf"{prefix}-(\d+)(?:-.*)?\.md")
     task_numbers = []
 
     for filename in os.listdir(tasks_dir):

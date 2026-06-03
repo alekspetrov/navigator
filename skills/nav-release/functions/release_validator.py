@@ -26,6 +26,16 @@ from pathlib import Path
 from typing import List, Tuple, Dict
 
 
+def _strip_dot_slash(path: str) -> str:
+    """Strip a single leading './' from a path.
+
+    `str.lstrip("./")` strips ANY leading '.' and '/' characters, so it would
+    mangle a path whose first segment begins with a dot (e.g. './.config' →
+    'config'). This removes only the literal './' prefix.
+    """
+    return path[2:] if path.startswith("./") else path
+
+
 def get_project_root() -> Path:
     """Find project root (contains .claude-plugin/)."""
     current = Path.cwd()
@@ -58,7 +68,7 @@ def check_skills_exist(root: Path, plugin: dict) -> Tuple[List[str], List[str]]:
 
     for skill_path in skills:
         # Normalize path (remove ./ prefix)
-        clean_path = skill_path.lstrip("./")
+        clean_path = _strip_dot_slash(skill_path)
         skill_dir = root / clean_path
         skill_md = skill_dir / "SKILL.md"
 
@@ -109,7 +119,7 @@ def check_skills_committed(root: Path, plugin: dict) -> Tuple[List[str], List[st
 
     # Check each skill
     for skill_path in skills:
-        clean_path = skill_path.lstrip("./")
+        clean_path = _strip_dot_slash(skill_path)
 
         # Check if any file in skill dir is modified/untracked
         is_modified = any(p.startswith(clean_path) for p in modified_paths)
@@ -192,7 +202,7 @@ def verify_tag_contents(root: Path, tag: str) -> Tuple[List[str], List[str]]:
     missing = []
 
     for skill_path in skills:
-        clean_path = skill_path.lstrip("./")
+        clean_path = _strip_dot_slash(skill_path)
         skill_md_path = f"{clean_path}/SKILL.md"
 
         # Check if file exists in tag

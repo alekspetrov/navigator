@@ -27,7 +27,9 @@ Invoke this skill when the user:
 ### Step 1: Read Current Configuration
 
 ```bash
-python3 "$SKILL_BASE_DIR/functions/feature_manager.py" show
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-features/functions/feature_manager.py" show
 ```
 
 This displays the feature table (one row per configurable Navigator feature, current version's number in the header):
@@ -62,11 +64,13 @@ All v<version> features configured.
 If user requested to enable/disable a feature:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Enable a feature
-python3 "$SKILL_BASE_DIR/functions/feature_manager.py" enable task_mode
+python3 "$PLUGIN_DIR/skills/nav-features/functions/feature_manager.py" enable task_mode
 
 # Disable a feature
-python3 "$SKILL_BASE_DIR/functions/feature_manager.py" disable loop_mode
+python3 "$PLUGIN_DIR/skills/nav-features/functions/feature_manager.py" disable loop_mode
 ```
 
 **Supported features**:

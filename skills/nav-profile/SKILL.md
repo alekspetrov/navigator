@@ -243,10 +243,12 @@ if (profile.corrections.length > 20) {
 
 **Sync to Knowledge Graph** (if enabled in config):
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Check if knowledge graph integration is enabled
 if [ -f ".agent/knowledge/graph.json" ]; then
   # Convert correction to memory
-  python3 skills/nav-graph/functions/correction_to_memory.py \
+  python3 "$PLUGIN_DIR/skills/nav-graph/functions/correction_to_memory.py" \
     --action convert-one \
     --correction-json '{"pattern": "{pattern}", "context": "{context}", "confidence": "{confidence}"}' \
     --graph-path .agent/knowledge/graph.json

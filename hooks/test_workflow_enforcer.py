@@ -172,6 +172,31 @@ class WorkflowEnforcerTest(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertIn(SENTINEL_OPEN, result.stderr)
 
+    # (g) wp3/TASK-49: config+state resolve from the stdin `cwd`, NOT the process
+    # cwd. Run from a NEUTRAL dir with no .agent; the blocking state lives under
+    # the stdin-cwd project. Pre-fix this exited 0 (cwd-relative Path looked in
+    # the neutral process cwd and found nothing); post-fix it blocks. This is the
+    # cwd!=root case the old cwd==root tests could never exercise.
+    def test_resolves_state_from_stdin_cwd(self):
+        write_state(self.agent, check_shown=False)
+        with tempfile.TemporaryDirectory() as neutral:
+            neutral = os.path.realpath(neutral)
+            raw = json.dumps({"prompt": "run until done: ship it", "cwd": self.project})
+            result = run_hook(neutral, raw_stdin=raw)
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn(SENTINEL_OPEN, result.stderr)
+
+    # (g-invariant) same neutral process cwd + stdin-cwd project, but NO state
+    # file -> the never-block-on-missing-state contract still holds (exit 0).
+    def test_no_block_when_state_absent_under_stdin_cwd(self):
+        self.assertFalse((self.agent / ".nav-workflow-state.json").exists())
+        with tempfile.TemporaryDirectory() as neutral:
+            neutral = os.path.realpath(neutral)
+            raw = json.dumps({"prompt": "run until done: ship it", "cwd": self.project})
+            result = run_hook(neutral, raw_stdin=raw)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn(SENTINEL_OPEN, result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

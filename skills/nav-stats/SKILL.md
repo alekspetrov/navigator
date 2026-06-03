@@ -42,15 +42,18 @@ fi
 Execute the enhanced session statistics script:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
 # Check if enhanced script exists
-if [ ! -f "scripts/session-stats.sh" ]; then
+if [ ! -f "$PLUGIN_DIR/scripts/session-stats.sh" ]; then
   echo "❌ Session stats script not found"
   echo "Reinstall or update Navigator to restore scripts/session-stats.sh"
   exit 1
 fi
 
 # Run stats script
-bash scripts/session-stats.sh
+bash "$PLUGIN_DIR/scripts/session-stats.sh"
 ```
 
 This script outputs shell-parseable variables:
@@ -68,11 +71,14 @@ This script outputs shell-parseable variables:
 Use predefined function to calculate score:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
 # Extract metrics from session-stats.sh
-source <(bash scripts/session-stats.sh)
+source <(bash "$PLUGIN_DIR/scripts/session-stats.sh")
 
 # Calculate efficiency score using predefined function
-EFFICIENCY_SCORE=$(python3 skills/nav-stats/functions/efficiency_scorer.py \
+EFFICIENCY_SCORE=$(python3 "$PLUGIN_DIR/skills/nav-stats/functions/efficiency_scorer.py" \
   --tokens-saved-percent ${SAVINGS_PERCENT} \
   --cache-efficiency ${CACHE_EFFICIENCY} \
   --context-usage ${CONTEXT_USAGE_PERCENT})
@@ -83,8 +89,11 @@ EFFICIENCY_SCORE=$(python3 skills/nav-stats/functions/efficiency_scorer.py \
 Use predefined function to format visual report:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
 # Generate formatted report
-python3 skills/nav-stats/functions/report_formatter.py \
+python3 "$PLUGIN_DIR/skills/nav-stats/functions/report_formatter.py" \
   --baseline ${BASELINE_TOKENS} \
   --loaded ${LOADED_TOKENS} \
   --saved ${TOKENS_SAVED} \
@@ -181,7 +190,10 @@ Calculate Navigator efficiency score (0-100) based on:
 
 **Usage**:
 ```bash
-python3 skills/nav-stats/functions/efficiency_scorer.py \
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
+python3 "$PLUGIN_DIR/skills/nav-stats/functions/efficiency_scorer.py" \
   --tokens-saved-percent 92 \
   --cache-efficiency 100 \
   --context-usage 35
@@ -195,7 +207,10 @@ Format efficiency metrics into visual, shareable report.
 
 **Usage**:
 ```bash
-python3 skills/nav-stats/functions/report_formatter.py \
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
+python3 "$PLUGIN_DIR/skills/nav-stats/functions/report_formatter.py" \
   --baseline 150000 \
   --loaded 12000 \
   --saved 138000 \

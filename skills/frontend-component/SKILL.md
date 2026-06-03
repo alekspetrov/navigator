@@ -34,7 +34,9 @@ Auto-invoke when user mentions:
 Before gathering requirements, query the knowledge graph for what we already know about frontend/component work in this project. This mirrors `navigator-research`'s Phase 0 and prevents re-deriving patterns we've already decided on.
 
 ```bash
-python3 skills/nav-graph/functions/graph_manager.py \
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
   --action query --concept frontend \
   --graph-path .agent/knowledge/graph.json 2>/dev/null | head -40
 ```
@@ -347,7 +349,9 @@ After Step 7, emit an `execution_summary` JSON block that captures patterns/deci
 **Ingestion** (run from project root):
 
 ```bash
-echo '<execution_summary JSON>' | python3 skills/nav-graph/functions/execution_to_graph.py -
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+echo '<execution_summary JSON>' | python3 "$PLUGIN_DIR/skills/nav-graph/functions/execution_to_graph.py" -
 ```
 
 **Rules**:

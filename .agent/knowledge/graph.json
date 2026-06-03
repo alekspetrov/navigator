@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T14:01:02.781501Z",
+  "last_updated": "2026-06-03T14:24:09.338264Z",
   "stats": {
-    "total_nodes": 135,
-    "total_edges": 720,
+    "total_nodes": 136,
+    "total_edges": 731,
     "memory_count": 37
   },
   "nodes": {
@@ -630,6 +630,24 @@
           "knowledge",
           "workflow",
           "simplification"
+        ]
+      },
+      "TASK-49": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-49-plugin-paths.md",
+        "title": "Plugin-relative path resolution (skills + hooks work outside the source repo)",
+        "status": "completed",
+        "concepts": [
+          "markers",
+          "tom",
+          "testing",
+          "simplification",
+          "deployment",
+          "frontend",
+          "skills",
+          "context",
+          "knowledge",
+          "api",
+          "database"
         ]
       }
     },
@@ -5883,6 +5901,61 @@
       "from": "TASK-48",
       "to": "workflow",
       "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-49",
+      "to": "context",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -5919,7 +5992,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-50",
-      "TASK-47"
+      "TASK-47",
+      "TASK-49"
     ],
     "testing": [
       "TASK-32",
@@ -5999,7 +6073,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "context": [
       "TASK-32",
@@ -6079,7 +6154,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "skills": [
       "TASK-32",
@@ -6166,7 +6242,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "session": [
       "TASK-32",
@@ -6357,7 +6434,8 @@
       "2025-10-19-200824-v2.3.0-complete",
       "2025-10-20-092541-v3.0.0-migration-complete",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-49"
     ],
     "api": [
       "TASK-01",
@@ -6394,7 +6472,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-46"
+      "TASK-46",
+      "TASK-49"
     ],
     "markers": [
       "TASK-18",
@@ -6456,7 +6535,8 @@
       "TASK-40",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-49"
     ],
     "deployment": [
       "TASK-11",
@@ -6486,7 +6566,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "code quality": [
       "TASK-19",
@@ -6527,7 +6608,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6550,7 +6632,8 @@
       "mem-018",
       "mem-024",
       "TASK-41",
-      "TASK-48"
+      "TASK-48",
+      "TASK-49"
     ],
     "knowledge-graph": [
       "mem-003",
@@ -6651,7 +6734,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-49"
     ],
     "general": [
       "mem-028",

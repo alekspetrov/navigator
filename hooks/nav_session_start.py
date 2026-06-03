@@ -57,7 +57,7 @@ def _safe_json(path: Path) -> dict | None:
 
 
 def _project_root(stdin_data: dict) -> Path:
-    cwd = stdin_data.get("cwd") or os.environ.get("CLAUDE_PROJECT_ROOT") or os.getcwd()
+    cwd = stdin_data.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
     return Path(cwd)
 
 

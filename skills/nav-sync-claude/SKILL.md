@@ -40,7 +40,9 @@ fi
 Use `version_detector.py` to analyze CLAUDE.md:
 
 ```bash
-python3 "$SKILL_BASE_DIR/functions/version_detector.py" CLAUDE.md
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/version_detector.py" CLAUDE.md
 ```
 
 This script checks for:
@@ -86,7 +88,9 @@ echo "📦 Backup created: CLAUDE.md.backup"
 Use `claude_updater.py` to parse current CLAUDE.md:
 
 ```bash
-python3 "$SKILL_BASE_DIR/functions/claude_updater.py" extract CLAUDE.md > /tmp/nav-customizations.json
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/claude_updater.py" extract CLAUDE.md > /tmp/nav-customizations.json
 ```
 
 This extracts:
@@ -103,12 +107,14 @@ This extracts:
 Apply latest template with extracted customizations:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Template fetching now automatic via get_template_path():
 # 1. Tries GitHub (version-matched)
 # 2. Falls back to bundled if offline
-python3 "$SKILL_BASE_DIR/functions/claude_updater.py" generate \
+python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/claude_updater.py" generate \
   --customizations /tmp/nav-customizations.json \
-  --template "$SKILL_BASE_DIR/../../templates/CLAUDE.md" \
+  --template "$PLUGIN_DIR/templates/CLAUDE.md" \
   --output CLAUDE.md
 ```
 
@@ -180,8 +186,10 @@ Rollback if needed: mv CLAUDE.md.backup CLAUDE.md
 If config exists, migrate to latest version with new sections:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 if [ -f ".agent/.nav-config.json" ]; then
-  python3 "$SKILL_BASE_DIR/functions/config_migrator.py" .agent/.nav-config.json
+  python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/config_migrator.py" .agent/.nav-config.json
 fi
 ```
 
@@ -205,7 +213,9 @@ Changes:
 
 **Dry run** (preview changes without applying):
 ```bash
-python3 "$SKILL_BASE_DIR/functions/config_migrator.py" .agent/.nav-config.json --dry-run
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/config_migrator.py" .agent/.nav-config.json --dry-run
 ```
 
 ## Predefined Functions

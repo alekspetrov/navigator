@@ -194,8 +194,10 @@ Create marker document with this structure:
 
 **Check if graph exists**:
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 if [ -f ".agent/knowledge/graph.json" ]; then
-  python3 skills/nav-graph/functions/graph_manager.py --action stats --graph-path .agent/knowledge/graph.json
+  python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" --action stats --graph-path .agent/knowledge/graph.json
 fi
 ```
 

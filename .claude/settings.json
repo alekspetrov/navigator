@@ -70,16 +70,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PROJECT_DIR}/hooks/token_monitor.py\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
         "matcher": "Edit|Write",
         "hooks": [
           {

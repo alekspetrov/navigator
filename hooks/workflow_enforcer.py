@@ -48,8 +48,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "nav-start" / "
 
 try:
     from workflow_detector import detect_workflow
-except ImportError:
-    # Fallback if import fails
+except ImportError as exc:
+    # Surface the failure on stderr so a silently-disabled enforcer is
+    # diagnosable (CC logs hook stderr). Then degrade to a permissive stub:
+    # never block when detection is unavailable.
+    print(
+        f"workflow_enforcer: workflow_detector import failed ({exc}); "
+        "enforcement disabled this invocation.",
+        file=sys.stderr,
+    )
+
     def detect_workflow(msg):
         return {"loop_mode": False, "task_mode": False, "recommended_mode": "DIRECT"}
 

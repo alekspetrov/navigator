@@ -21,6 +21,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 HOOK = str(Path(__file__).resolve().parent / "nav_read_guard.py")
@@ -172,6 +173,40 @@ class NavReadGuardTest(unittest.TestCase):
             r = run_hook(bare, file_path=str(Path(bare) / "anything.md"), cwd=bare)
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertEqual(r.stderr.strip(), "")
+
+    def _seed_counter(self, turn_count, updated_at, session_id="sess-1"):
+        (self.agent / ".nav-read-counter.json").write_text(json.dumps({
+            "schema": 1,
+            "session_id": session_id,
+            "turn_count": turn_count,
+            "updated_at": updated_at,
+        }))
+
+    # (h) a stale counter resets even within the SAME session (missed Stop).
+    def test_stale_counter_resets_within_session(self):
+        # Near-threshold count, but last update is ancient. Same session, so the
+        # session-change path does not fire; without the staleness guard this
+        # would be count 5 -> block. With it, the counter resets to 1.
+        self._seed_counter(4, "2000-01-01T00:00:00+00:00")
+        r = run_hook(self.project, file_path=str(self.target), session_id="sess-1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        state = json.loads((self.agent / ".nav-read-counter.json").read_text())
+        self.assertEqual(state["turn_count"], 1)
+
+    # (h-variant) a FRESH near-threshold counter still blocks (guard inert).
+    def test_fresh_counter_still_blocks(self):
+        self._seed_counter(4, datetime.now(timezone.utc).isoformat())
+        r = run_hook(self.project, file_path=str(self.target), session_id="sess-1")
+        self.assertEqual(r.returncode, 2, r.stderr)  # count -> 5 == escalate
+        self.assertIn(SENTINEL_OPEN, r.stderr)
+
+    # (h-variant) stale_after_seconds=0 disables the staleness guard.
+    def test_stale_guard_disabled_by_zero(self):
+        write_config(self.agent, warn_threshold=3, escalate_threshold=5,
+                     strict_block=True, stale_after_seconds=0)
+        self._seed_counter(4, "2000-01-01T00:00:00+00:00")
+        r = run_hook(self.project, file_path=str(self.target), session_id="sess-1")
+        self.assertEqual(r.returncode, 2, r.stderr)  # ancient ts ignored -> block
 
 
 if __name__ == "__main__":

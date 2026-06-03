@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -107,22 +108,32 @@ def _flatten_transcript(transcript_path: Path) -> str:
     return "\n".join(lines_out)
 
 
+# Path-shaped token: a slash/word run ending in a known source extension at a
+# word boundary. Real path characters must precede the dot, so prose like
+# "see the .py docs" is NOT captured while "hooks/token_monitor.py" is.
+_PATH_RE = re.compile(r"[\w./-]+\.(?:tsx|json|md|ts|py|sh|js)\b")
+
+
 def _compress_context(text: str, max_length: int = 5000) -> str:
     """Heuristic compressor — files/code/errors/recent context. Mirrors
-    skills/nav-marker/functions/marker_compressor.py:10-84."""
+    skills/nav-marker/functions/marker_compressor.py."""
     if not text:
         return "_[transcript unavailable]_"
 
     lines = text.split("\n")
+    # Sample head + tail so paths/markers from both the conversation's start
+    # (task setup) and end (recent work) survive; only the mid-section is
+    # dropped when the transcript is long.
+    scan_lines = lines[:100] + lines[-100:] if len(lines) > 200 else lines
+
     code_blocks: list[str] = []
     file_paths: list[str] = []
     errors: list[str] = []
-    recent_context: list[str] = []
 
     in_code_block = False
     code_buffer: list[str] = []
 
-    for line in lines[-200:]:
+    for line in scan_lines:
         stripped = line.strip()
         if stripped.startswith("```"):
             if in_code_block:
@@ -132,15 +143,14 @@ def _compress_context(text: str, max_length: int = 5000) -> str:
         elif in_code_block:
             code_buffer.append(line)
 
-        if any(ext in line for ext in (".md", ".py", ".json", ".sh", ".ts", ".tsx", ".js")):
-            file_paths.append(stripped)
+        file_paths.extend(_PATH_RE.findall(line))
 
         low = line.lower()
         if "error" in low or "failed" in low or "traceback" in low:
             errors.append(stripped)
 
-        if len(recent_context) < 50:
-            recent_context.append(line)
+    # "Recent" = the true tail of the transcript, independent of sampling.
+    recent_context = lines[-20:]
 
     parts: list[str] = []
     if file_paths:
@@ -151,7 +161,7 @@ def _compress_context(text: str, max_length: int = 5000) -> str:
     if errors:
         unique_err = list(dict.fromkeys(errors))[:5]
         parts.append("**Errors / issues**:\n" + "\n".join(unique_err))
-    parts.append("**Recent conversation**:\n" + "\n".join(recent_context[-20:]))
+    parts.append("**Recent conversation**:\n" + "\n".join(recent_context))
 
     compressed = "\n\n---\n\n".join(parts)
     if len(compressed) > max_length:

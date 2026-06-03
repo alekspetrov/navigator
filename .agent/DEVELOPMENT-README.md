@@ -181,7 +181,7 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 
 ## Lifecycle Hooks (v6.9.0 → v6.15.6)
 
-Navigator ships nine Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
+Navigator ships eight Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
 
 ### What ships
 
@@ -195,7 +195,6 @@ Navigator ships nine Claude Code hooks via the plugin manifest (`.claude-plugin/
 | `nav_profile_sync.py` | PostToolUse (Write/Edit on `.user-profile.json`) | Convert new corrections into graph memories |
 | `workflow_enforcer.py` | UserPromptSubmit | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` |
 | `nav_read_guard.py` | PreToolUse (Read on `.agent/`) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`) |
-| `token_monitor.py` | (legacy) | OpenTelemetry token counter; superseded by official metrics on most installs |
 
 ### Composition lessons captured
 

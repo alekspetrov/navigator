@@ -53,6 +53,10 @@ DEFAULT_ALLOWLIST = frozenset({
 
 DEFAULT_WARN_THRESHOLD = 3
 DEFAULT_ESCALATE_THRESHOLD = 5
+# Primary counter reset is the Stop hook; if Stop did not fire (mem-036), a
+# stale counter from a prior turn must not block this turn's legitimate reads.
+# Treat the counter as fresh-from-zero once its last update predates this window.
+DEFAULT_STALE_AFTER_SECONDS = 300
 
 
 def _safe_read(path: Path, max_bytes: int = 200_000) -> str | None:
@@ -128,11 +132,35 @@ def _save_counter(root: Path, data: dict) -> None:
         print(f"nav_read_guard: counter write failed: {e}", file=sys.stderr)
 
 
-def _increment_counter(root: Path, session_id: str | None) -> int:
+def _is_stale(updated_at: str | None, stale_after_s: int) -> bool:
+    """True when the counter's last update predates the staleness window.
+
+    Guards against a missed Stop reset (mem-036): a stale counter would
+    otherwise persist into the next turn and falsely block. Missing or
+    unparseable timestamps are treated as NOT stale (preserve prior behavior).
+    """
+    if not updated_at or stale_after_s <= 0:
+        return False
+    try:
+        ts = datetime.fromisoformat(updated_at)
+    except (ValueError, TypeError):
+        return False
+    if ts.tzinfo is None:
+        ts = ts.replace(tzinfo=timezone.utc)
+    age = (datetime.now(timezone.utc) - ts).total_seconds()
+    return age > stale_after_s
+
+
+def _increment_counter(
+    root: Path, session_id: str | None, stale_after_s: int = DEFAULT_STALE_AFTER_SECONDS
+) -> int:
     state = _load_counter(root)
     prior_session = state.get("session_id")
-    # Session change → reset (secondary reset path; primary is Stop hook).
+    # Reset when the session changed (secondary path; primary is the Stop hook)
+    # or when the prior count is stale (Stop may not have fired — mem-036).
     if session_id and prior_session and prior_session != session_id:
+        state = {}
+    elif _is_stale(state.get("updated_at"), stale_after_s):
         state = {}
     new_count = int(state.get("turn_count", 0)) + 1
     state.update({
@@ -234,9 +262,10 @@ def main() -> int:
     warn_at = int(cfg.get("warn_threshold", DEFAULT_WARN_THRESHOLD))
     escalate_at = int(cfg.get("escalate_threshold", DEFAULT_ESCALATE_THRESHOLD))
     strict_block = cfg.get("strict_block", True)
+    stale_after = int(cfg.get("stale_after_seconds", DEFAULT_STALE_AFTER_SECONDS))
 
     session_id = stdin_data.get("session_id")
-    count = _increment_counter(root, session_id)
+    count = _increment_counter(root, session_id, stale_after)
 
     if count >= escalate_at and strict_block:
         _block(count, escalate_at)

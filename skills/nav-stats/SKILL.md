@@ -45,7 +45,7 @@ Execute the enhanced session statistics script:
 # Check if enhanced script exists
 if [ ! -f "scripts/session-stats.sh" ]; then
   echo "❌ Session stats script not found"
-  echo "This feature requires Navigator v3.5.0+"
+  echo "Reinstall or update Navigator to restore scripts/session-stats.sh"
   exit 1
 fi
 

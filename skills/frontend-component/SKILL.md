@@ -2,7 +2,7 @@
 name: frontend-component
 description: Create React/Vue component with TypeScript, tests, and styles. Auto-invoke when user says "create component", "add component", "new component", or "build component".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Frontend Component Generator
@@ -161,14 +161,11 @@ interface UserProfileProps {
 Use template: templates/component-simple-template.tsx
 ```
 
-**Component with hooks**:
+**Component with hooks** / **Container component**:
 ```
-Use template: templates/component-with-hooks-template.tsx
-```
-
-**Container component**:
-```
-Use template: templates/component-container-template.tsx
+Start from templates/component-simple-template.tsx and add the hook
+declarations (useState/useEffect) or data-fetching logic inline — there is
+no separate with-hooks/container template file; the simple template is the base.
 ```
 
 **Next.js App Router variants** (use when `"next"` is in `package.json`):
@@ -485,22 +482,10 @@ Basic functional component template.
 - `${STYLE_IMPORT}` - CSS import statement
 - `${DESCRIPTION}` - Component description
 
-### component-with-hooks-template.tsx
-
-Component template with useState, useEffect examples.
-
-**Additional placeholders**:
-- `${HOOKS}` - Hook declarations
-- `${HANDLERS}` - Event handler functions
-
-### component-container-template.tsx
-
-Container component template with data fetching.
-
-**Additional placeholders**:
-- `${API_IMPORT}` - API function import
-- `${DATA_TYPE}` - Data type definition
-- `${FETCH_LOGIC}` - Data fetching implementation
+> Components needing hooks or data fetching start from
+> `component-simple-template.tsx` (above) and the model adds the
+> `useState`/`useEffect` declarations or fetch logic inline — no dedicated
+> with-hooks/container template ships.
 
 ### test-template.test.tsx
 
@@ -527,7 +512,6 @@ See `examples/` directory for reference implementations:
 
 1. **Button.tsx** - Simple component with variants
 2. **SearchBar.tsx** - Component with hooks (useState, useEffect)
-3. **UserProfile.tsx** - Container component with data fetching
 
 Each example includes:
 - Component implementation

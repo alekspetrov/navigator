@@ -2,7 +2,7 @@
 name: backend-endpoint
 description: Create REST/GraphQL API endpoint with validation, error handling, and tests. Auto-invoke when user says "add endpoint", "create API", "new route", or "add route".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Backend API Endpoint Generator
@@ -214,36 +214,22 @@ export type CreateUserInput = z.infer<typeof createUserSchema>;
 
 ### Step 4: Generate Error Handling Middleware
 
-**Use predefined function**: `functions/error_handler_generator.py`
+**Write the error handler inline** (no generator script ships for this — author it directly to match the project's existing error-handling pattern).
 
-```bash
-python3 functions/error_handler_generator.py \
-  --framework "express" \
-  --template "templates/error-handler-template.ts" \
-  --output "src/middleware/errorHandler.ts"
-```
-
-**Error handler includes**:
+Write to `src/middleware/errorHandler.ts` an error handler that includes:
 - HTTP status code mapping
 - Error response formatting
 - Logging integration
 - Development vs production modes
 - Validation error handling
 
+Follow the framework's idiom (Express error middleware `(err, req, res, next)`; Next.js route-level `try/catch` returning `NextResponse.json`).
+
 ### Step 5: Generate Test File
 
-**Use predefined function**: `functions/test_generator.py`
+**Write the test inline**, using `templates/endpoint-test-template.spec.ts` as the reference shape (it ships as a reference template; no generator script drives it). Output to `tests/routes/users.test.ts`.
 
-```bash
-python3 functions/test_generator.py \
-  --endpoint "/api/users/:id" \
-  --method "GET" \
-  --framework "express" \
-  --template "templates/endpoint-test-template.spec.ts" \
-  --output "tests/routes/users.test.ts"
-```
-
-**Test template includes**:
+**The test should cover**:
 - Success case (200/201)
 - Validation errors (400)
 - Not found (404)
@@ -438,42 +424,8 @@ python3 functions/validation_generator.py \
 
 ---
 
-### 4. error_handler_generator.py
-
-Generates error handling middleware.
-
-**Usage**:
-```bash
-python3 functions/error_handler_generator.py \
-  --framework "express" \
-  --template "templates/error-handler-template.ts"
-```
-
-**Returns**: Error handler middleware code
-
----
-
-### 5. test_generator.py
-
-Generates endpoint integration tests.
-
-**Usage**:
-```bash
-python3 functions/test_generator.py \
-  --endpoint "/api/users/:id" \
-  --method "GET" \
-  --framework "express" \
-  --template "templates/endpoint-test-template.spec.ts"
-```
-
-**Generates tests for**:
-- Success responses
-- Validation errors
-- Authentication errors
-- Not found errors
-- Server errors
-
-**Returns**: Generated test code
+> **Error handling and tests are written inline** (Steps 4–5) — no
+> `error_handler_generator.py` / `test_generator.py` ship with this skill.
 
 ---
 
@@ -483,12 +435,13 @@ python3 functions/test_generator.py \
 
 Express.js route handler template.
 
-**Placeholders**:
+**Placeholders** (exactly those present in `templates/express-route-template.ts`):
 - `${ROUTE_PATH}` - API endpoint path
-- `${HTTP_METHOD}` - HTTP method (lowercase)
+- `${HTTP_METHOD}` - HTTP method (uppercase)
+- `${HTTP_METHOD_LOWER}` - HTTP method (lowercase, for the router call)
 - `${RESOURCE_NAME}` - Resource name (PascalCase)
-- `${VALIDATION_MIDDLEWARE}` - Validation middleware
-- `${AUTH_MIDDLEWARE}` - Authentication middleware
+- `${RESOURCE_NAME_LOWER}` - Resource name (lowercase)
+- `${MIDDLEWARE_BLOCK}` - Auth + validation middleware chain (built by `endpoint_generator.py` from the `--auth`/`--validation` flags)
 
 ### nextjs-route-template.ts (collection)
 
@@ -517,21 +470,14 @@ Next.js App Router Route Handler for a **single resource** endpoint with a dynam
 
 **Prefer Server Actions** over Route Handlers for **mutations from your own UI** (forms, buttons). Use Route Handlers for webhooks, third-party callers, and public REST endpoints. See `NEXTJS-PATTERNS.md` §F.
 
-### fastify-route-template.ts
-
-Fastify route handler template (alternative).
-
-### graphql-resolver-template.ts
-
-GraphQL resolver template (alternative).
-
-### validation-zod-template.ts
-
-Zod validation schema template.
+> Fastify, GraphQL, and Zod-schema generation are produced **inline** by the
+> model / `validation_generator.py` (Zod is built via its `ZOD_TYPE_MAP`, no
+> template file). Only the Express + Next.js route templates and the test
+> template below ship on disk.
 
 ### endpoint-test-template.spec.ts
 
-Integration test template with supertest.
+Integration test template with supertest (reference shape — written inline in Step 5).
 
 **Placeholders**:
 - `${ENDPOINT_PATH}` - Endpoint to test
@@ -546,7 +492,6 @@ See `examples/` directory for reference implementations:
 
 1. **users-get.ts** - GET endpoint with auth
 2. **users-post.ts** - POST endpoint with validation
-3. **graphql-resolver.ts** - GraphQL mutation example
 
 Each example includes:
 - Route/resolver implementation

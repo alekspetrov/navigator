@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-02T21:50:07.789359Z",
+  "last_updated": "2026-06-03T10:53:49.138892Z",
   "stats": {
-    "total_nodes": 130,
-    "total_edges": 860,
+    "total_nodes": 131,
+    "total_edges": 869,
     "memory_count": 37
   },
   "nodes": {
@@ -554,6 +554,22 @@
           "knowledge",
           "authentication",
           "deployment"
+        ]
+      },
+      "TASK-50": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-50-skill-templates.md",
+        "title": "Skill template/reference integrity",
+        "status": "completed",
+        "concepts": [
+          "testing",
+          "knowledge",
+          "skills",
+          "api",
+          "frontend",
+          "deployment",
+          "tom",
+          "authentication",
+          "database"
         ]
       }
     },
@@ -6626,6 +6642,51 @@
       "from": "TASK-44",
       "to": "authentication",
       "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-50",
+      "to": "api",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6660,7 +6721,8 @@
       "mem-012",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-50"
     ],
     "testing": [
       "TASK-32",
@@ -6735,7 +6797,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "context": [
       "TASK-32",
@@ -6893,7 +6956,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "session": [
       "TASK-32",
@@ -6965,7 +7029,8 @@
       "before-compact-2025-01-23-task35-knowledge-graph",
       "2025-01-21-task30-verification-plan",
       "TASK-41",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "workflow": [
       "TASK-33",
@@ -7079,7 +7144,8 @@
       "2025-10-19T18-15-v2.0-foundation-complete",
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
-      "2025-10-20-092541-v3.0.0-migration-complete"
+      "2025-10-20-092541-v3.0.0-migration-complete",
+      "TASK-50"
     ],
     "api": [
       "TASK-01",
@@ -7114,7 +7180,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "markers": [
       "TASK-18",
@@ -7198,7 +7265,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "code quality": [
       "TASK-19",
@@ -7234,7 +7302,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7353,7 +7422,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-50"
     ],
     "general": [
       "mem-028",

@@ -1,6 +1,6 @@
 # TASK-47: Knowledge-graph data integrity + dormant maintenance wiring
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-03 (PR #16; Track B decay = idempotent + manual-only/experimental, not hook-wired)
 **Created**: 2026-06-02
 **Work-package**: `wp6-kg-integrity`
 **Phase**: 3 — Behavioral fixes (guarded)

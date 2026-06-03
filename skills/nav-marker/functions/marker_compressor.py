@@ -3,9 +3,16 @@
 Compress conversation context into a concise marker summary.
 """
 
+import re
 import sys
 import argparse
 from datetime import datetime
+
+# Path-shaped token: a slash/word run ending in a known source extension at a
+# word boundary. Real path characters must precede the dot, so prose like
+# "see the .py docs" is NOT captured while "hooks/token_monitor.py" is.
+_PATH_RE = re.compile(r"[\w./-]+\.(?:tsx|json|md|ts|py|sh|js)\b")
+
 
 def compress_context(context_text, max_length=5000):
     """
@@ -31,15 +38,18 @@ def compress_context(context_text, max_length=5000):
     # 4. Task descriptions
     # 5. Recent conversation
 
+    # Sample head + tail so paths/markers from both the start (task setup) and
+    # end (recent work) survive; only the mid-section is dropped when long.
+    scan_lines = lines[:100] + lines[-100:] if len(lines) > 200 else lines
+
     code_blocks = []
     file_paths = []
     errors = []
-    recent_context = []
 
     in_code_block = False
     code_buffer = []
 
-    for line in lines[-200:]:  # Focus on recent 200 lines
+    for line in scan_lines:
         # Extract code blocks
         if line.strip().startswith('```'):
             if in_code_block:
@@ -49,23 +59,22 @@ def compress_context(context_text, max_length=5000):
         elif in_code_block:
             code_buffer.append(line)
 
-        # Extract file paths
-        if '.md' in line or '.py' in line or '.json' in line or '.sh' in line:
-            file_paths.append(line.strip())
+        # Extract path-shaped tokens (not prose that merely mentions .py/.md)
+        file_paths.extend(_PATH_RE.findall(line))
 
         # Extract errors
         if 'error' in line.lower() or 'failed' in line.lower():
             errors.append(line.strip())
 
-        # Keep recent context
-        if len(recent_context) < 50:
-            recent_context.append(line)
+    # "Recent" = the true tail of the conversation, independent of sampling.
+    recent_context = lines[-20:]
 
     # Build compressed summary
     summary_parts = []
 
     if file_paths:
-        summary_parts.append("**Files Modified**:\n" + '\n'.join(set(file_paths[:10])))
+        unique_paths = list(dict.fromkeys(file_paths))[:10]
+        summary_parts.append("**Files Modified**:\n" + '\n'.join(unique_paths))
 
     if code_blocks:
         summary_parts.append("**Code Snippets**:\n```\n" + '\n\n'.join(code_blocks[:3]) + "\n```")

@@ -67,7 +67,6 @@ HOOK_PAYLOADS = {
     "nav_profile_sync.py": {"tool_name": "Edit", "tool_input": {}},
     "nav_task_graph_sync.py": {"tool_name": "Edit", "tool_input": {}},
     "nav_workflow_state.py": {},
-    "token_monitor.py": {"tool_name": "Edit", "tool_input": {}},
 }
 
 
@@ -144,16 +143,6 @@ class HooksSmokeTest(unittest.TestCase):
 
     def test_workflow_state_malformed(self) -> None:
         self._check_malformed("nav_workflow_state.py")
-
-    # ── token_monitor.py (PostToolUse) ──────────────────────────────────────
-    def test_token_monitor_valid(self) -> None:
-        self._check_valid("token_monitor.py")
-
-    def test_token_monitor_empty(self) -> None:
-        self._check_empty("token_monitor.py")
-
-    def test_token_monitor_malformed(self) -> None:
-        self._check_malformed("token_monitor.py")
 
 
 if __name__ == "__main__":

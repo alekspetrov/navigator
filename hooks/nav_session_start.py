@@ -159,15 +159,32 @@ def _section_graph_stats(root: Path, plugin_dir: Path | None) -> str | None:
         return None
 
 
-def _section_auto_update(plugin_dir: Path | None) -> str | None:
+def _section_auto_update(root: Path, plugin_dir: Path | None) -> str | None:
+    """Read-only version-drift notice for session start.
+
+    Historically this invoked auto_updater with no args, which triggered a
+    *mutating* `claude plugin update` (a 30s marketplace refresh + a 60s
+    update) from inside the SessionStart hook's 10s budget — the update could
+    never finish and the blocking hook risked timing out. We now run the
+    updater in read-only `--check-drift` mode: it only compares the installed
+    plugin version against the project config and reports drift. Performing the
+    actual update is left to nav-upgrade, which is off the session-start path.
+    """
     if plugin_dir is None:
         return None
     updater = plugin_dir / "skills" / "nav-start" / "functions" / "auto_updater.py"
     if not updater.is_file():
         return None
+    config_path = root / ".agent" / ".nav-config.json"
     try:
         out = subprocess.run(
-            [sys.executable, str(updater)],
+            [
+                sys.executable,
+                str(updater),
+                "--check-drift",
+                "--config-path",
+                str(config_path),
+            ],
             capture_output=True,
             text=True,
             timeout=4,
@@ -179,19 +196,12 @@ def _section_auto_update(plugin_dir: Path | None) -> str | None:
             data = json.loads(raw)
         except json.JSONDecodeError:
             return None
-        status = data.get("status")
-        if status in (None, "up-to-date", "disabled", "skipped"):
+        if not data.get("has_drift"):
             return None
-        if status == "updated":
-            note = f"Auto-updated to v{data.get('new_version', '?')}"
-            if data.get("requires_restart"):
-                note += " — RESTART REQUIRED"
-            return f"## Auto-Update\n\n{note}"
-        if status == "failed":
-            return "## Auto-Update\n\nAuto-update failed. Run nav-upgrade manually."
-        return None
+        message = data.get("message") or "Navigator version drift detected."
+        return f"## Auto-Update\n\n⚠️  {message}"
     except Exception as e:
-        print(f"nav_session_start: auto-update check failed: {e}", file=sys.stderr)
+        print(f"nav_session_start: drift check failed: {e}", file=sys.stderr)
         return None
 
 
@@ -310,7 +320,7 @@ def _build_payload(stdin_data: dict) -> str | None:
     if source == "resume":
         add("marker", lambda: _section_active_marker(root))
     add("config", lambda: _section_config(root))
-    add("auto_update", lambda: _section_auto_update(plugin_dir))
+    add("auto_update", lambda: _section_auto_update(root, plugin_dir))
     add("graph", lambda: _section_graph_stats(root, plugin_dir))
     add("profile", lambda: _section_user_profile(root))
     add("tasks", lambda: _section_open_tasks(root))

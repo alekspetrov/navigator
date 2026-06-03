@@ -51,8 +51,8 @@ def extract_concepts_from_task(content: str) -> list:
         'token': 'context',
         'memory': 'knowledge',
         'graph': 'knowledge',
-        'profile': 'tom',
-        'tom': 'tom',
+        'profile': 'theory of mind',
+        'tom': 'theory of mind',
         'loop': 'workflow',
         'task.mode': 'workflow',
         'simplif': 'simplification',
@@ -151,9 +151,16 @@ def add_task_to_graph(task_path: str, graph_path: str) -> dict:
 
     graph = add_node(graph, 'tasks', task_id, task_data)
 
-    # Add implements edges for concepts
+    # Add 'implements' edges only to concepts that exist as concept nodes
+    # (referential integrity — keyword_map may yield a concept with no
+    # canonical node, e.g. a fresh project that has not run a full build).
+    # Without this filter every task edit re-introduces a dangling edge that
+    # the wp6 repair then has to clean. The task is still indexed under every
+    # concept via add_node, so query_by_concept still finds it.
+    concept_nodes = graph.get('nodes', {}).get('concepts', {})
     for concept in concepts:
-        graph = add_edge(graph, task_id, concept, 'implements')
+        if concept in concept_nodes:
+            graph = add_edge(graph, task_id, concept, 'implements')
 
     # Extract and create decision memories (for completed tasks)
     memories_created = []

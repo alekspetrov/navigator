@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T10:41:10.574127+00:00",
+  "last_updated": "2026-06-03T10:47:04.742506+00:00",
   "stats": {
-    "total_nodes": 133,
-    "total_edges": 706,
+    "total_nodes": 134,
+    "total_edges": 713,
     "memory_count": 37
   },
   "nodes": {
@@ -601,6 +601,21 @@
           "markers",
           "context",
           "deployment"
+        ]
+      },
+      "TASK-47": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-47-kg-integrity.md",
+        "title": "Knowledge-graph data integrity + dormant maintenance wiring",
+        "status": "completed",
+        "concepts": [
+          "database",
+          "tom",
+          "deployment",
+          "knowledge",
+          "context",
+          "skills",
+          "markers",
+          "testing"
         ]
       }
     },
@@ -5784,6 +5799,41 @@
       "from": "TASK-46",
       "to": "deployment",
       "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-47",
+      "to": "testing",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -5819,7 +5869,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-50"
+      "TASK-50",
+      "TASK-47"
     ],
     "testing": [
       "TASK-32",
@@ -5897,7 +5948,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "context": [
       "TASK-32",
@@ -5975,7 +6027,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "skills": [
       "TASK-32",
@@ -6060,7 +6113,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "session": [
       "TASK-32",
@@ -6348,7 +6402,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "deployment": [
       "TASK-11",
@@ -6376,7 +6431,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "code quality": [
       "TASK-19",
@@ -6415,7 +6471,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6537,7 +6594,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-45",
-      "TASK-46"
+      "TASK-46",
+      "TASK-47"
     ],
     "general": [
       "mem-028",

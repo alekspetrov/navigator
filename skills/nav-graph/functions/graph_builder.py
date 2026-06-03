@@ -13,9 +13,12 @@ import json
 import re
 import sys
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+
+sys.path.insert(0, str(Path(__file__).parent))
+from graph_manager import add_edge
 
 
 def extract_concepts_from_text(text: str) -> list:
@@ -391,7 +394,7 @@ def build_graph(agent_dir: str) -> dict:
     # Build graph structure
     graph = {
         "version": "1.0.0",
-        "last_updated": datetime.now().isoformat() + "Z",
+        "last_updated": datetime.now(timezone.utc).isoformat(),
         "stats": {},
         "nodes": {
             "tasks": {t['id']: t for t in tasks},
@@ -402,9 +405,21 @@ def build_graph(agent_dir: str) -> dict:
             "memories": {},
             "files": {}
         },
-        "edges": infer_edges(tasks, sops, system_docs),
+        "edges": [],
         "concept_index": {}
     }
+
+    # Route inferred edges through add_edge so duplicate (from,to,type) rows are
+    # collapsed, and drop any edge whose endpoints are not real node ids
+    # (referential integrity — prevents the dangling 'tom'/TASK-* edges the
+    # audit found from being reintroduced on every rebuild).
+    node_ids = set()
+    for bucket in graph["nodes"].values():
+        node_ids.update(bucket.keys())
+    for edge in infer_edges(tasks, sops, system_docs):
+        if edge["from"] in node_ids and edge["to"] in node_ids:
+            graph = add_edge(graph, edge["from"], edge["to"], edge["type"],
+                             edge.get("weight", 1.0))
 
     # Build concept index
     for node_type, nodes in graph["nodes"].items():

@@ -8,7 +8,7 @@ Manages .agent/knowledge/graph.json for unified knowledge retrieval.
 import json
 import sys
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -36,7 +36,7 @@ def save_graph(graph_path: str, graph: dict) -> bool:
         path.parent.mkdir(parents=True, exist_ok=True)
 
         # Update metadata
-        graph["last_updated"] = datetime.now().isoformat() + "Z"
+        graph["last_updated"] = datetime.now(timezone.utc).isoformat()
         graph["stats"] = calculate_stats(graph)
 
         with open(path, 'w') as f:
@@ -51,7 +51,7 @@ def create_empty_graph() -> dict:
     """Create a new empty graph structure."""
     return {
         "version": "1.0.0",
-        "last_updated": datetime.now().isoformat() + "Z",
+        "last_updated": datetime.now(timezone.utc).isoformat(),
         "stats": {
             "total_nodes": 0,
             "total_edges": 0,
@@ -153,6 +153,28 @@ def add_edge(graph: dict, from_id: str, to_id: str,
     return graph
 
 
+def _clamp_confidence(confidence: float) -> float:
+    """Coerce a confidence to the valid [0.0, 1.0] range.
+
+    Memory confidence is a probability-like score. Callers passing values
+    outside [0,1] (e.g. a percentage like 90) are clamped rather than allowed
+    to poison the graph — mem-026 shipped at 90.0 and rendered as "9000%".
+    Out-of-range repair of *existing* data uses a percentage heuristic; this
+    input guard simply clamps.
+    """
+    try:
+        c = float(confidence)
+    except (TypeError, ValueError):
+        return 0.8
+    if c < 0.0:
+        return 0.0
+    if c > 1.0:
+        print(f"warning: confidence {c} out of range [0,1]; clamping to 1.0",
+              file=sys.stderr)
+        return 1.0
+    return c
+
+
 def resolve_concept_alias(graph: dict, query: str) -> str:
     """Resolve a query term to canonical concept name via aliases."""
     query_lower = query.lower()
@@ -229,7 +251,9 @@ def query_by_concept(graph: dict, concept: str) -> dict:
         "memories": "memories",
         "sops": "sops",
         "system": "system",
-        "files": "files"
+        "files": "files",
+        "markers": "markers",
+        "concepts": "concepts",
     }
 
     results = {
@@ -239,7 +263,9 @@ def query_by_concept(graph: dict, concept: str) -> dict:
         "memories": [],
         "sops": [],
         "system": [],
-        "files": []
+        "files": [],
+        "markers": [],
+        "concepts": [],
     }
 
     # Query using resolved concept
@@ -344,6 +370,7 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     check against the graph). If omitted, the next free ID is computed via
     `_next_memory_id` which scans both graph nodes and on-disk files.
     """
+    confidence = _clamp_confidence(confidence)
     memories = graph["nodes"].get("memories", {})
     if memory_id is None:
         memory_id = _next_memory_id(memories, base_dir)
@@ -362,8 +389,8 @@ def add_memory(graph: dict, memory_type: str, summary: str,
         "path": path,
         "confidence": confidence,
         "concepts": concepts,
-        "created": datetime.now().strftime("%Y-%m-%d"),
-        "last_validated": datetime.now().strftime("%Y-%m-%d")
+        "created": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "last_validated": datetime.now(timezone.utc).strftime("%Y-%m-%d")
     }
 
     graph = add_node(graph, "memories", memory_id, memory_data)
@@ -404,28 +431,27 @@ def update_confidence(graph: dict, memory_id: str,
         return 0.0
 
     memory = graph["nodes"]["memories"][memory_id]
-    confidence = memory.get("confidence", 0.8)
+    # Defensive: clamp any pre-existing out-of-range value before math so a
+    # poisoned node (e.g. 90.0) cannot propagate through decay/boost.
+    confidence = _clamp_confidence(memory.get("confidence", 0.8))
 
     # Apply decay (1% per week = ~0.14% per day)
     if decay_days > 0:
         decay_rate = 0.01 / 7  # 1% per week
         confidence -= decay_rate * decay_days
 
-    # Apply boost (5% per use, max +25%)
+    # Apply boost (5% per use), capped at the [0,1] ceiling. No fixed-0.8
+    # anchor — that broke for memories that had decayed or been elevated.
     if boost:
-        boost_amount = 0.05
-        max_boost = 0.25
-        current_boost = confidence - 0.8  # Assuming base 0.8
-        if current_boost < max_boost:
-            confidence = min(confidence + boost_amount, 0.8 + max_boost)
+        confidence = min(confidence + 0.05, 1.0)
 
     # Clamp to valid range
     confidence = max(0.0, min(1.0, confidence))
 
     memory["confidence"] = round(confidence, 2)
-    memory["last_validated"] = datetime.now().strftime("%Y-%m-%d")
+    memory["last_validated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    return confidence
+    return memory["confidence"]
 
 
 def _format_task(task: dict) -> str:
@@ -454,6 +480,16 @@ def _format_file(file_node: dict) -> str:
     return f"  - {file_node.get('path', file_node.get('id', 'Unknown'))}"
 
 
+def _format_marker(marker: dict) -> str:
+    """Format a single context marker for display."""
+    return f"  - {marker.get('title', marker.get('id', 'Unknown'))}"
+
+
+def _format_concept(concept: dict) -> str:
+    """Format a single concept node for display."""
+    return f"  - {concept.get('name', concept.get('id', 'Unknown'))}"
+
+
 def format_query_results(results: dict) -> str:
     """Format query results for display."""
     concept = results.get("concept", "Unknown")
@@ -468,6 +504,8 @@ def format_query_results(results: dict) -> str:
     memories = results.get("memories", [])
     sops = results.get("sops", [])
     files = results.get("files", [])
+    markers = results.get("markers", [])
+    concepts = results.get("concepts", [])
 
     if tasks:
         output.append(f"TASKS ({len(tasks)})")
@@ -486,7 +524,15 @@ def format_query_results(results: dict) -> str:
         output.append(f"\nFILES ({len(files)})")
         output.extend(_format_file(f) for f in files[:5])
 
-    if any([tasks, memories, sops, files]):
+    if markers:
+        output.append(f"\nMARKERS ({len(markers)})")
+        output.extend(_format_marker(m) for m in markers[:5])
+
+    if concepts:
+        output.append(f"\nCONCEPTS ({len(concepts)})")
+        output.extend(_format_concept(c) for c in concepts[:5])
+
+    if any([tasks, memories, sops, files, markers, concepts]):
         output.append("\nLoad details: \"Read TASK-XX\" or \"Show [concept] memories\"")
     else:
         output.append("No results found for this concept.")

@@ -1,6 +1,6 @@
 # TASK-48: Detection precision: token-boundary matching + consolidate complexity impls
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-03
 **Created**: 2026-06-02
 **Work-package**: `wp7-detection`
 **Phase**: 3 — Behavioral fixes (guarded)
@@ -49,14 +49,32 @@ Work, smallest-blast-radius first:
 
 ## Acceptance Criteria
 
-- [ ] detect_workflow('Please document everything we discussed') returns loop_mode=False, recommended_mode != 'LOOP'
-- [ ] detect_workflow('run until done: fix the bug') still returns loop_mode=True with trigger 'run until done'
-- [ ] calculate_complexity('fix the address field') does not match 'add' (no 'low:add' in matched); calculate_complexity('add a feature') does match 'add'
-- [ ] complexity_scorer.py is deleted and `grep -rn complexity_scorer` returns no live references
-- [ ] analyze_unclear_names flags 'const m = 1' and does NOT flag const i/j/k; existing test_roi_scoring.py 20 tests still pass
-- [ ] new skills/nav-start/functions/test_workflow_detector.py passes and covers loop-trigger boundaries + complexity word boundaries + detect_workflow contract keys
-- [ ] skills/nav-workflow/functions/test_complexity_detector.py 33 tests still pass unchanged
-- [ ] workflow_enforcer.py end-to-end smoke: innocuous 'everything' prompt exits 0 (no block)
+- [x] detect_workflow('Please document everything we discussed') returns loop_mode=False, recommended_mode != 'LOOP'
+- [x] detect_workflow('run until done: fix the bug') still returns loop_mode=True with trigger 'run until done'
+- [x] calculate_complexity('fix the address field') does not match 'add' (no 'low:add' in matched); calculate_complexity('add a feature') does match 'add'
+- [x] complexity_scorer.py is deleted and `grep -rn complexity_scorer` returns no live references (its wp4 test test_complexity_scorer.py deleted alongside — see note)
+- [x] analyze_unclear_names flags 'const m = 1' and does NOT flag const i/j/k; existing test_roi_scoring.py tests still pass (now 24, +4 added)
+- [x] new skills/nav-start/functions/test_workflow_detector.py passes and covers loop-trigger boundaries + complexity word boundaries + detect_workflow contract keys (43 tests; 30 pre-existing from wp4 + 13 added here)
+- [x] skills/nav-workflow/functions/test_complexity_detector.py still passes unchanged (101 tests — doc's "33" was stale)
+- [x] workflow_enforcer.py end-to-end smoke: innocuous 'everything' prompt exits 0 (no block)
+
+## Implementation Notes (deviations from plan)
+
+The plan was written 2026-06-02, before wp4/TASK-45 (hook tests) landed 2026-06-03.
+Two of its ground-truth assumptions were stale by the time this WP ran:
+
+1. **complexity_scorer.py "has no test file"** — false. wp4 added
+   `test_complexity_scorer.py` (8 tests) covering exactly the module this WP
+   deletes. Deleting the module orphaned the test, so **both** were removed via
+   `git rm`. Still satisfies "no live references" (the test was the only
+   remaining reference) and the consolidation goal (one fewer divergent impl).
+2. **test_workflow_detector.py "currently NONE"** — false. wp4 already created
+   it (30 tests). The TASK-48 cases were **appended** as three new classes
+   rather than overwriting. All 30 pre-existing tests still pass under the
+   word-boundary change (only impact: `test_all_known_triggers_match` iterates
+   the now-shorter LOOP_TRIGGERS list).
+
+`make test` green across the full suite after changes.
 
 ## Technical Decisions
 
@@ -79,6 +97,6 @@ Work, smallest-blast-radius first:
 
 ## Done
 
-- [ ] All acceptance criteria checked
-- [ ] Tests pass in CI (once TASK-43 gate exists)
-- [ ] Committed + roadmap (TASK-42) status updated
+- [x] All acceptance criteria checked
+- [x] Tests pass locally (`make test` green); CI gate (TASK-43) will run on branch push
+- [x] Committed + roadmap (TASK-42) status updated

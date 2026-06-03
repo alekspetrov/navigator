@@ -28,7 +28,11 @@ import sys
 from typing import Dict, List, Optional, Tuple
 
 
-# Loop Mode trigger phrases (case-insensitive)
+# Loop Mode trigger phrases (case-insensitive, matched on word boundaries).
+# Bare "everything" and "all of it" were removed: they fired Loop Mode on
+# innocuous prompts like "document everything we discussed", which feeds the
+# exit(2) workflow_enforcer block. Multi-word intents ("complete everything",
+# "do all") remain — they unambiguously request autonomous iteration.
 LOOP_TRIGGERS = [
     "run until done",
     "do all",
@@ -42,8 +46,6 @@ LOOP_TRIGGERS = [
     "until complete",
     "until finished",
     "until done",
-    "all of it",
-    "everything",
     "loop mode",
     "autonomous mode",
 ]
@@ -97,6 +99,17 @@ MULTI_FILE_INDICATORS = [
 ]
 
 
+def _contains_phrase(message_lower: str, phrase: str) -> bool:
+    """True if ``phrase`` occurs in ``message_lower`` on word boundaries.
+
+    Substring matching wrongly fired on word fragments — "add" inside
+    "address", "modify" inside "modifying", "all" inside "install". A
+    \\b...\\b anchor matches whole words/phrases only. re.escape keeps
+    internal spaces and apostrophes literal (e.g. "don't stop").
+    """
+    return re.search(r"\b" + re.escape(phrase) + r"\b", message_lower) is not None
+
+
 def detect_loop_trigger(message: str) -> Tuple[bool, Optional[str]]:
     """
     Check if message contains Loop Mode trigger phrases.
@@ -107,7 +120,7 @@ def detect_loop_trigger(message: str) -> Tuple[bool, Optional[str]]:
     message_lower = message.lower()
 
     for trigger in LOOP_TRIGGERS:
-        if trigger in message_lower:
+        if _contains_phrase(message_lower, trigger):
             return True, trigger
 
     return False, None
@@ -126,25 +139,25 @@ def calculate_complexity(message: str) -> Tuple[float, List[str]]:
 
     # Check high complexity indicators
     for indicator in COMPLEXITY_INDICATORS["high"]:
-        if indicator in message_lower:
+        if _contains_phrase(message_lower, indicator):
             score += 0.3
             matched.append(f"high:{indicator}")
 
     # Check medium complexity indicators
     for indicator in COMPLEXITY_INDICATORS["medium"]:
-        if indicator in message_lower:
+        if _contains_phrase(message_lower, indicator):
             score += 0.2
             matched.append(f"medium:{indicator}")
 
     # Check low complexity indicators
     for indicator in COMPLEXITY_INDICATORS["low"]:
-        if indicator in message_lower:
+        if _contains_phrase(message_lower, indicator):
             score += 0.1
             matched.append(f"low:{indicator}")
 
     # Check multi-file indicators
     for indicator in MULTI_FILE_INDICATORS:
-        if indicator in message_lower:
+        if _contains_phrase(message_lower, indicator):
             score += 0.2
             matched.append(f"multi-file:{indicator}")
             break  # Only count once

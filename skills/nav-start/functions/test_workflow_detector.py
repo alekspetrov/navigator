@@ -170,5 +170,69 @@ class TestDetectWorkflow(unittest.TestCase):
         self.assertFalse(below["task_mode"])
 
 
+class TestLoopTriggerBoundaries(unittest.TestCase):
+    """TASK-48: bare 'everything'/'all of it' removed; multi-word kept."""
+
+    def test_everything_removed_from_triggers(self):
+        self.assertNotIn("everything", LOOP_TRIGGERS)
+        self.assertNotIn("all of it", LOOP_TRIGGERS)
+
+    def test_document_everything_does_not_trigger(self):
+        triggered, phrase = detect_loop_trigger(
+            "Please document everything we discussed"
+        )
+        self.assertFalse(triggered)
+        self.assertIsNone(phrase)
+
+    def test_all_of_it_does_not_trigger(self):
+        triggered, _ = detect_loop_trigger("I have read all of it already")
+        self.assertFalse(triggered)
+
+    def test_complete_everything_still_triggers(self):
+        """Multi-word intent survives — only the bare word was removed."""
+        triggered, phrase = detect_loop_trigger("complete everything on the list")
+        self.assertTrue(triggered)
+        self.assertEqual(phrase, "complete everything")
+
+    def test_apostrophe_phrase_still_matches(self):
+        """re.escape keeps the internal apostrophe literal."""
+        triggered, phrase = detect_loop_trigger("don't stop until it works")
+        self.assertTrue(triggered)
+        self.assertEqual(phrase, "don't stop")
+
+
+class TestComplexityWordBoundaries(unittest.TestCase):
+    """TASK-48: complexity indicators match whole words, not substrings."""
+
+    def test_address_does_not_match_add(self):
+        _, matched = calculate_complexity("fix the address field")
+        self.assertNotIn("low:add", matched)
+
+    def test_add_still_matches(self):
+        _, matched = calculate_complexity("add a feature")
+        self.assertIn("low:add", matched)
+
+    def test_modifying_does_not_match_modify(self):
+        _, matched = calculate_complexity("we are modifying the layout")
+        self.assertNotIn("medium:modify", matched)
+
+    def test_modify_still_matches(self):
+        _, matched = calculate_complexity("modify the config")
+        self.assertIn("medium:modify", matched)
+
+    def test_substring_only_prompt_scores_below_threshold(self):
+        score, _ = calculate_complexity("the address and modifying notes")
+        self.assertLess(score, 0.5)
+
+
+class TestDetectWorkflowFalsePositive(unittest.TestCase):
+    """TASK-48 acceptance: innocuous 'everything' prompt is not LOOP."""
+
+    def test_document_everything_not_loop(self):
+        result = detect_workflow("Please document everything we discussed")
+        self.assertFalse(result["loop_mode"])
+        self.assertNotEqual(result["recommended_mode"], "LOOP")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

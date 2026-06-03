@@ -188,18 +188,24 @@ def analyze_unclear_names(content: str) -> list[dict[str, Any]]:
     issues = []
     lines = content.split('\n')
 
-    # Pattern for single-letter variables (excluding common loop vars i, j, k)
-    single_letter_pattern = r'\b(const|let|var)\s+([a-hln-z])\s*='
+    # Match any single-letter declaration, then skip the conventional loop
+    # counters explicitly. The old char class [a-hln-z] silently dropped 'm'
+    # alongside i/j/k, so single-letter 'm' names were never flagged.
+    single_letter_pattern = r'\b(const|let|var)\s+([a-z])\s*='
+    loop_counter_names = {"i", "j", "k"}
 
     for i, line in enumerate(lines, 1):
         matches = re.findall(single_letter_pattern, line)
         for match in matches:
+            var_name = match[1]
+            if var_name in loop_counter_names:
+                continue
             issues.append({
                 "line": i,
                 "type": "unclear_naming",
                 "severity": "low",
-                "variable": match[1],
-                "suggestion": f"Rename '{match[1]}' to a descriptive name"
+                "variable": var_name,
+                "suggestion": f"Rename '{var_name}' to a descriptive name"
             })
 
     return issues

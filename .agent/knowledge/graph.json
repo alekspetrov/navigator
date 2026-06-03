@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T10:47:04.742506+00:00",
+  "last_updated": "2026-06-03T14:01:02.781501Z",
   "stats": {
-    "total_nodes": 134,
-    "total_edges": 713,
+    "total_nodes": 135,
+    "total_edges": 720,
     "memory_count": 37
   },
   "nodes": {
@@ -616,6 +616,20 @@
           "skills",
           "markers",
           "testing"
+        ]
+      },
+      "TASK-48": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-48-detection-precision.md",
+        "title": "Detection precision: token-boundary matching + consolidate complexity impls",
+        "status": "completed",
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "deployment",
+          "knowledge",
+          "workflow",
+          "simplification"
         ]
       }
     },
@@ -5834,6 +5848,41 @@
       "from": "TASK-47",
       "to": "testing",
       "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-48",
+      "to": "workflow",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -5949,7 +5998,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-48"
     ],
     "context": [
       "TASK-32",
@@ -6028,7 +6078,8 @@
       "TASK-44",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-48"
     ],
     "skills": [
       "TASK-32",
@@ -6114,7 +6165,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-48"
     ],
     "session": [
       "TASK-32",
@@ -6249,7 +6301,8 @@
       "mem-026",
       "TASK-38",
       "TASK-41",
-      "TASK-45"
+      "TASK-45",
+      "TASK-48"
     ],
     "backend": [
       "TASK-16",
@@ -6432,7 +6485,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-48"
     ],
     "code quality": [
       "TASK-19",
@@ -6472,7 +6526,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-46",
-      "TASK-47"
+      "TASK-47",
+      "TASK-48"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6494,7 +6549,8 @@
       "mem-015",
       "mem-018",
       "mem-024",
-      "TASK-41"
+      "TASK-41",
+      "TASK-48"
     ],
     "knowledge-graph": [
       "mem-003",

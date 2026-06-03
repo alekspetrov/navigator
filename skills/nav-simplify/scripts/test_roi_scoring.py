@@ -8,6 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from code_analyzer import (
+    analyze_unclear_names,
     compute_benefit_score,
     compute_roi_score,
     roi_gate_action,
@@ -124,6 +125,30 @@ class TestROIGateAction(unittest.TestCase):
         self.assertEqual(roi_gate_action(0.5, custom), "skip")
         self.assertEqual(roi_gate_action(2.0, custom), "suggest")
         self.assertEqual(roi_gate_action(3.0, custom), "apply")
+
+
+class TestAnalyzeUnclearNames(unittest.TestCase):
+    """TASK-48: single-letter detection skips i/j/k only — 'm' must be flagged.
+
+    The old [a-hln-z] char class silently dropped 'm' along with i/j/k.
+    """
+
+    def _vars(self, content):
+        return {issue["variable"] for issue in analyze_unclear_names(content)}
+
+    def test_m_is_flagged(self):
+        self.assertIn("m", self._vars("const m = 1;"))
+
+    def test_loop_counters_skipped(self):
+        flagged = self._vars("const i = 0; let j = 1; var k = 2;")
+        self.assertEqual(flagged, set())
+
+    def test_other_single_letters_flagged(self):
+        flagged = self._vars("const x = 1; let q = 2; var z = 3;")
+        self.assertEqual(flagged, {"x", "q", "z"})
+
+    def test_multi_letter_names_not_flagged(self):
+        self.assertEqual(self._vars("const total = 1; let count = 2;"), set())
 
 
 class TestIntegrationOrdering(unittest.TestCase):

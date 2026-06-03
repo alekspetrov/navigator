@@ -319,7 +319,7 @@ cd skills/product-design
 **Requirements for issue reports**:
 - Python version: `python3 --version`
 - Figma version: Figma → Help → About Figma
-- Output from: `python3 functions/test_mcp_connection.py`
+- Output from: `python3 functions/check_mcp_connection.py`
 - Full error message and stack trace
 
 ---

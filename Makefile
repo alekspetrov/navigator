@@ -14,17 +14,22 @@ build:
 
 # Directories with genuine unittest suites. Each test_*.py imports its sibling
 # module by bare name, so discovery must run per-directory (from inside each dir).
-# Deliberately EXCLUDES two files that match test_*.py but are NOT unit tests:
-#   skills/frontend-component/functions/test_generator.py  (an argparse CLI generator)
-#   skills/product-design/functions/test_mcp_connection.py (a live Figma MCP probe)
+# (The two former non-test files that matched test_*.py — frontend-component's
+# test_generator.py and product-design's test_mcp_connection.py — were renamed to
+# file_generator.py / check_mcp_connection.py in TASK-45, so they no longer poison
+# discovery.)
 TEST_DIRS := \
+	hooks \
 	skills/nav-upgrade/functions \
 	skills/nav-sync-claude/functions \
 	skills/nav-simplify/scripts \
 	skills/nav-workflow/functions \
 	skills/nav-init/functions \
 	skills/nav-loop/functions \
-	skills/nav-release/functions
+	skills/nav-release/functions \
+	skills/nav-start/functions \
+	skills/nav-graph/functions \
+	skills/nav-profile/functions
 
 # Standalone shell test scripts (each exits non-zero on failure).
 SHELL_TESTS := \

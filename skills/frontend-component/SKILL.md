@@ -203,10 +203,10 @@ python3 functions/component_generator.py \
 
 ### Step 4: Generate Test File
 
-**Use predefined function**: `functions/test_generator.py`
+**Use predefined function**: `functions/file_generator.py`
 
 ```bash
-python3 functions/test_generator.py \
+python3 functions/file_generator.py \
   --component-name "UserProfile" \
   --component-path "src/components/UserProfile/UserProfile.tsx" \
   --template "templates/test-template.test.tsx" \
@@ -425,13 +425,13 @@ python3 functions/component_generator.py \
 
 ---
 
-### 4. test_generator.py
+### 4. file_generator.py
 
 Generates test file with React Testing Library.
 
 **Usage**:
 ```bash
-python3 functions/test_generator.py \
+python3 functions/file_generator.py \
   --component-name "UserProfile" \
   --component-path "src/components/UserProfile/UserProfile.tsx" \
   --template "templates/test-template.test.tsx" \

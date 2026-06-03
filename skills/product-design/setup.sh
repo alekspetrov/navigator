@@ -74,7 +74,7 @@ echo ""
 
 # Step 5: Test MCP connection
 echo "[5/5] Testing Figma MCP connection..."
-python3 "$FUNCTIONS_DIR/test_mcp_connection.py" 2>&1
+python3 "$FUNCTIONS_DIR/check_mcp_connection.py" 2>&1
 echo ""
 
 echo "=========================================="

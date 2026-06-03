@@ -13,11 +13,18 @@ from pathlib import Path
 
 
 def load_profile(profile_path: str) -> dict:
-    """Load profile from file, return empty dict if not exists."""
+    """Load profile from file, return empty dict if missing or corrupt."""
     path = Path(profile_path)
     if path.exists():
-        with open(path, 'r') as f:
-            return json.load(f)
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            # Corrupt profile — fall back to empty (same contract as a missing
+            # file) rather than crashing the ToM profile load path.
+            print(f"Warning: {profile_path} is not valid JSON; using empty profile",
+                  file=sys.stderr)
+            return {}
     return {}
 
 

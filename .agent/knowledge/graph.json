@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T10:53:49.138892Z",
+  "last_updated": "2026-06-03T11:12:30.251001Z",
   "stats": {
-    "total_nodes": 131,
-    "total_edges": 869,
+    "total_nodes": 132,
+    "total_edges": 878,
     "memory_count": 37
   },
   "nodes": {
@@ -570,6 +570,22 @@
           "tom",
           "authentication",
           "database"
+        ]
+      },
+      "TASK-45": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-45-hook-tests.md",
+        "title": "Test coverage for hooks & destructive/blocking paths",
+        "status": "completed",
+        "concepts": [
+          "testing",
+          "deployment",
+          "tom",
+          "context",
+          "markers",
+          "workflow",
+          "skills",
+          "knowledge",
+          "frontend"
         ]
       }
     },
@@ -6687,6 +6703,51 @@
       "from": "TASK-50",
       "to": "api",
       "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-45",
+      "to": "workflow",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6798,7 +6859,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "context": [
       "TASK-32",
@@ -6874,7 +6936,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-44"
+      "TASK-44",
+      "TASK-45"
     ],
     "skills": [
       "TASK-32",
@@ -6957,7 +7020,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "session": [
       "TASK-32",
@@ -7091,7 +7155,8 @@
       "mem-020",
       "mem-026",
       "TASK-38",
-      "TASK-41"
+      "TASK-41",
+      "TASK-45"
     ],
     "backend": [
       "TASK-16",
@@ -7145,7 +7210,8 @@
       "2025-10-19-195740-v2.3-release-complete",
       "2025-10-19-200824-v2.3.0-complete",
       "2025-10-20-092541-v3.0.0-migration-complete",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "api": [
       "TASK-01",
@@ -7240,7 +7306,8 @@
       "2025-10-31-2116_phase2-parallel-complete",
       "TASK-38",
       "TASK-41",
-      "TASK-40"
+      "TASK-40",
+      "TASK-45"
     ],
     "deployment": [
       "TASK-11",
@@ -7266,7 +7333,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "code quality": [
       "TASK-19",
@@ -7303,7 +7371,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7423,7 +7492,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-45"
     ],
     "general": [
       "mem-028",

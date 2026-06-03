@@ -366,8 +366,10 @@ Keep index organized (active tasks first, completed below).
 **If knowledge graph exists**, sync task to graph:
 
 ```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 if [ -f ".agent/knowledge/graph.json" ]; then
-  python3 skills/nav-graph/functions/task_to_graph.py \
+  python3 "$PLUGIN_DIR/skills/nav-graph/functions/task_to_graph.py" \
     --action add \
     --task-path ".agent/tasks/TASK-{XX}-{slug}.md" \
     --graph-path .agent/knowledge/graph.json

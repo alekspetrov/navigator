@@ -58,7 +58,9 @@ fi
 Run project analyzer to detect tech stack:
 
 ```bash
-python3 skills/nav-onboard/functions/project_analyzer.py
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/project_analyzer.py"
 ```
 
 **Output structure**:
@@ -79,7 +81,9 @@ python3 skills/nav-onboard/functions/project_analyzer.py
 Run skill recommender based on project analysis:
 
 ```bash
-python3 skills/nav-onboard/functions/skill_recommender.py
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/skill_recommender.py"
 ```
 
 **Output structure**:
@@ -140,9 +144,11 @@ Create onboarding directory and progress file:
 mkdir -p .agent/onboarding
 ```
 
-```python
+```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Run progress_tracker.py init
-python3 skills/nav-onboard/functions/progress_tracker.py init [flow_type] [project_type]
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/progress_tracker.py" init [flow_type] [project_type]
 ```
 
 Creates `.agent/onboarding/PROGRESS.md`:
@@ -223,7 +229,9 @@ User says "done" or similar when ready to continue.
 Run task validator:
 
 ```bash
-python3 skills/nav-onboard/functions/task_validator.py [skill_name]
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/task_validator.py" [skill_name]
 ```
 
 **Validation checks per skill**:
@@ -236,7 +244,9 @@ python3 skills/nav-onboard/functions/task_validator.py [skill_name]
 #### 6.4: Update Progress
 
 ```bash
-python3 skills/nav-onboard/functions/progress_tracker.py update [skill_name] completed "[notes]"
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/progress_tracker.py" update [skill_name] completed "[notes]"
 ```
 
 #### 6.5: Show Progress and Continue
@@ -262,7 +272,9 @@ Continue? [Y/n]
 After all tasks complete, generate workflow guide:
 
 ```bash
-python3 skills/nav-onboard/functions/workflow_generator.py
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-onboard/functions/workflow_generator.py"
 ```
 
 Creates `.agent/onboarding/MY-WORKFLOW.md` with:

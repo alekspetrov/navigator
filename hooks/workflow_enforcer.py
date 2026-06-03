@@ -77,31 +77,52 @@ def strip_block_messages(text: str) -> str:
     return NAV_BLOCK_PATTERN.sub("", text)
 
 
-def get_user_message() -> str:
-    """Get user message from stdin JSON (UserPromptSubmit) or env (legacy)."""
-    # Try stdin JSON first (Claude Code UserPromptSubmit format)
+def read_stdin_payload() -> dict:
+    """Read and parse the UserPromptSubmit stdin JSON exactly once.
+
+    stdin can only be consumed once, so parse it a single time and keep the
+    WHOLE payload — both the prompt and the `cwd` the other hooks use for
+    project-root resolution. Returns {} when stdin is absent/empty, or
+    {"prompt": raw} when the body is non-JSON text (legacy raw-prompt form).
+    """
     try:
         import select
         if select.select([sys.stdin], [], [], 0)[0]:
             raw = sys.stdin.read().strip()
             if raw:
                 try:
-                    data = json.loads(raw)
-                    prompt = data.get("prompt") or data.get("user_message") or ""
-                    if prompt:
-                        return strip_block_messages(prompt)
+                    return json.loads(raw)
                 except json.JSONDecodeError:
-                    return strip_block_messages(raw)
+                    return {"prompt": raw}
     except Exception:
         pass
+    return {}
 
+
+def get_user_message(stdin_data: dict) -> str:
+    """Extract the user message from the parsed stdin payload or legacy env."""
+    prompt = stdin_data.get("prompt") or stdin_data.get("user_message") or ""
+    if prompt:
+        return strip_block_messages(prompt)
     # Fallback to legacy env var
     return strip_block_messages(os.environ.get("CLAUDE_USER_MESSAGE", ""))
 
 
-def check_config() -> dict:
-    """Load Navigator config."""
-    config_path = Path(".agent/.nav-config.json")
+def _project_root(stdin_data: dict) -> Path:
+    """Resolve the project root the same way every other Navigator hook does.
+
+    Mirrors nav_workflow_state._project_root so the enforcer reads config and
+    state from the SAME absolute location the state writer uses. The previous
+    cwd-relative Path(".agent/...") disagreed with the writer's
+    stdin-cwd-derived absolute path whenever Claude Code's cwd != project root.
+    """
+    cwd = stdin_data.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+    return Path(cwd)
+
+
+def check_config(root: Path) -> dict:
+    """Load Navigator config from the project root."""
+    config_path = root / ".agent" / ".nav-config.json"
     if config_path.exists():
         try:
             with open(config_path) as f:
@@ -111,13 +132,13 @@ def check_config() -> dict:
     return {}
 
 
-def read_prior_turn_state() -> dict:
+def read_prior_turn_state(root: Path) -> dict:
     """Read .agent/.nav-workflow-state.json — written by hooks/nav_workflow_state.py.
 
     Returns {} when the file is missing or unreadable; callers must treat this
     as "no signal" and never block on it.
     """
-    state_path = Path(".agent/.nav-workflow-state.json")
+    state_path = root / ".agent" / ".nav-workflow-state.json"
     if not state_path.exists():
         return {}
     try:
@@ -134,11 +155,13 @@ def main():
     if os.environ.get("PILOT_EXECUTOR"):
         sys.exit(0)
 
-    message = get_user_message()
+    stdin_data = read_stdin_payload()
+    message = get_user_message(stdin_data)
     if not message:
         sys.exit(0)
 
-    config = check_config()
+    root = _project_root(stdin_data)
+    config = check_config(root)
     enforcer_cfg = config.get("workflow_enforcer_hook", {})
     if enforcer_cfg.get("enabled", True) is False:
         sys.exit(0)
@@ -152,7 +175,7 @@ def main():
     # substrings back into the next prompt). See mem-034.
     will_block = False
     if strict_block and result["loop_mode"]:
-        state = read_prior_turn_state()
+        state = read_prior_turn_state(root)
         last_turn = state.get("last_turn") or {}
         check_shown = last_turn.get("check_shown")
         will_block = check_shown is False

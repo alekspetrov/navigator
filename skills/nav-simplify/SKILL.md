@@ -144,9 +144,11 @@ For each modified file, analyze for simplification opportunities:
 
 **Run analysis**:
 ```bash
-# Project-relative path (resolved from repo root). Pass --scoring roi to
-# enable cost/benefit gating (default: complexity, legacy behavior).
-python3 skills/nav-simplify/scripts/code_analyzer.py --file "$file" --scoring roi
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+# Pass --scoring roi to enable cost/benefit gating (default: complexity,
+# legacy behavior).
+python3 "$PLUGIN_DIR/skills/nav-simplify/scripts/code_analyzer.py" --file "$file" --scoring roi
 ```
 
 ### Step 4.5: ROI Gate (when scoring.mode = "roi")

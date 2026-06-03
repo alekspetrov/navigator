@@ -27,7 +27,9 @@ Auto-invoke when user says:
 Query the knowledge graph for what we know about testing in this project:
 
 ```bash
-python3 skills/nav-graph/functions/graph_manager.py \
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
   --action query --concept testing \
   --graph-path .agent/knowledge/graph.json 2>/dev/null | head -40
 ```
@@ -144,7 +146,9 @@ If any fail because tests assume incorrect behavior, **fix the tests, not the so
 
 Ingest:
 ```bash
-echo '<execution_summary JSON>' | python3 skills/nav-graph/functions/execution_to_graph.py -
+PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+echo '<execution_summary JSON>' | python3 "$PLUGIN_DIR/skills/nav-graph/functions/execution_to_graph.py" -
 ```
 
 ## Success Criteria

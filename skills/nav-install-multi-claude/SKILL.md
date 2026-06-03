@@ -147,10 +147,10 @@ echo ""
 
 cd "$TEMP_DIR"
 
-if [ -f "scripts/install-multi-claude.sh" ]; then
+if [ -f "$TEMP_DIR/scripts/install-multi-claude.sh" ]; then
   # Run the installer
-  chmod +x scripts/install-multi-claude.sh
-  ./scripts/install-multi-claude.sh
+  chmod +x "$TEMP_DIR/scripts/install-multi-claude.sh"
+  "$TEMP_DIR/scripts/install-multi-claude.sh"
 
   INSTALL_EXIT=$?
 

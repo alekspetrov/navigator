@@ -1,6 +1,6 @@
 # TASK-46: Hook correctness & safety fixes (non-path)
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-03 (PR #14)
 **Created**: 2026-06-02
 **Work-package**: `wp5-hook-safety`
 **Phase**: 3 — Behavioral fixes (guarded)

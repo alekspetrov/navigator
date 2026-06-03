@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T11:12:30.251001Z",
+  "last_updated": "2026-06-03T12:08:43.170749Z",
   "stats": {
-    "total_nodes": 132,
-    "total_edges": 878,
+    "total_nodes": 133,
+    "total_edges": 886,
     "memory_count": 37
   },
   "nodes": {
@@ -586,6 +586,21 @@
           "skills",
           "knowledge",
           "frontend"
+        ]
+      },
+      "TASK-46": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-46-hook-safety.md",
+        "title": "Hook correctness & safety fixes (non-path)",
+        "status": "completed",
+        "concepts": [
+          "api",
+          "tom",
+          "knowledge",
+          "testing",
+          "skills",
+          "markers",
+          "context",
+          "deployment"
         ]
       }
     },
@@ -6748,6 +6763,46 @@
       "from": "TASK-45",
       "to": "workflow",
       "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "tom",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-46",
+      "to": "deployment",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6860,7 +6915,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "context": [
       "TASK-32",
@@ -6937,7 +6993,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "skills": [
       "TASK-32",
@@ -7021,7 +7078,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "session": [
       "TASK-32",
@@ -7247,7 +7305,8 @@
       "TASK-41",
       "TASK-40",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-46"
     ],
     "markers": [
       "TASK-18",
@@ -7307,7 +7366,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-40",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "deployment": [
       "TASK-11",
@@ -7334,7 +7394,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "code quality": [
       "TASK-19",
@@ -7372,7 +7433,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7493,7 +7555,8 @@
       "TASK-40",
       "TASK-44",
       "TASK-50",
-      "TASK-45"
+      "TASK-45",
+      "TASK-46"
     ],
     "general": [
       "mem-028",

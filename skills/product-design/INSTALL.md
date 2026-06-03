@@ -111,7 +111,7 @@ pip install -r requirements.txt
 
 ```bash
 cd functions
-python3 test_mcp_connection.py
+python3 check_mcp_connection.py
 ```
 
 **Expected output**:
@@ -297,7 +297,7 @@ skills/product-design/
 │   └── ...
 ├── functions/
 │   ├── figma_mcp_client.py        # MCP client wrapper ✨ NEW
-│   ├── test_mcp_connection.py     # Connection test ✨ NEW
+│   ├── check_mcp_connection.py     # Connection test ✨ NEW
 │   ├── design_analyzer.py         # Existing functions (to be refactored)
 │   └── ...
 ├── requirements.txt                # Dependencies ✨ NEW
@@ -368,7 +368,7 @@ Include:
 - Python version: `python3 --version`
 - Figma version: Figma → Help → About Figma
 - Error message and full stack trace
-- Output from: `python3 functions/test_mcp_connection.py`
+- Output from: `python3 functions/check_mcp_connection.py`
 
 ---
 

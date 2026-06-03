@@ -14,11 +14,18 @@ from typing import Optional
 
 
 def load_graph(graph_path: str) -> dict:
-    """Load graph from file, return empty structure if not exists."""
+    """Load graph from file, return empty structure if missing or corrupt."""
     path = Path(graph_path)
     if path.exists():
-        with open(path, 'r') as f:
-            return json.load(f)
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            # Corrupt graph file — fall back to an empty graph rather than
+            # crashing every session-start hook / nav-graph query that loads it.
+            print(f"Warning: {graph_path} is not valid JSON; using empty graph",
+                  file=sys.stderr)
+            return create_empty_graph()
     return create_empty_graph()
 
 

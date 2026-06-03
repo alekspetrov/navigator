@@ -1,6 +1,6 @@
 # TASK-45: Test coverage for hooks & destructive/blocking paths
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-03
 **Created**: 2026-06-02
 **Work-package**: `wp4-hook-tests`
 **Phase**: 2 — Test coverage
@@ -80,15 +80,22 @@ NOTE on running in CI: these are stdlib-unittest files runnable today with `pyth
 
 ## Acceptance Criteria
 
-- [ ] `python -m unittest discover -s hooks -p 'test_*.py'` passes with the 4 new hook test files
-- [ ] test_workflow_enforcer asserts exit 2 + `<nav-workflow-block>` sentinel only when loop trigger AND state check_shown=false AND strict_block=true; exit 0 in all other branches incl. PILOT_EXECUTOR set and missing state file
-- [ ] test_nav_read_guard drives the per-turn counter past escalate_threshold and asserts exit 2 + `<nav-read-guard-block>`, plus exit 0 when strict_block=false and on session_id change
-- [ ] test_compact_roundtrip: PreCompact writes marker + .active, PostCompact appends `## Compact Summary (Claude Code)` containing the injected summary sentinel, nav_session_start _section_active_marker surfaces the marker name, and PostCompact with no .active is a no-op exit 0
-- [ ] graph_manager.load_graph and profile_manager.load_profile return create_empty_graph()/{} on a corrupt JSON file instead of raising, with tests asserting this
-- [ ] test_workflow_detector and test_complexity_scorer cover loop-trigger matching, complexity thresholds/cap, and all five complexity_scorer categories
-- [ ] test_auto_updater covers compare_versions (newer/older/equal/uneven), get_current_version parsing of representative `claude plugin list` output, and reinstall_plugin returning success:false on failed uninstall WITHOUT invoking install — all with subprocess.run mocked (zero real plugin operations)
-- [ ] skills/frontend-component/functions/test_generator.py and skills/product-design/functions/test_mcp_connection.py no longer match the `test_*.py` discovery glob (renamed), and every SKILL.md/import reference to them is updated
-- [ ] Whole-repo discovery `python -m unittest discover -s . -p 'test_*.py'` (excluding venv) collects without ImportError from the two former mis-named files
+- [x] `python -m unittest discover -s hooks -p 'test_*.py'` passes — 38 tests across the 4 new hook test files (green via `make test`, which now includes `hooks`).
+- [x] test_workflow_enforcer asserts exit 2 + `<nav-workflow-block>` sentinel only when loop trigger AND `last_turn.check_shown=false` AND strict_block=true; exit 0 in all other branches incl. PILOT_EXECUTOR set, missing state file, and a prompt already wrapped in the sentinel (mem-034 regression). State file confirmed `.agent/.nav-workflow-state.json`; block gated on `check_shown is False` (identity).
+- [x] test_nav_read_guard drives the `.agent/.nav-read-counter.json` per-turn counter and asserts exit 2 + `<nav-read-guard-block>`, plus exit 0 when strict_block=false and on session_id change, allowlist exemption, and no-`.agent/` silent exit 0. (Deviation: the hook blocks AT `count >= escalate_threshold` (5th read), not strictly past it — asserted the real behavior.)
+- [x] test_compact_roundtrip: PreCompact writes `before-compact-manual-*.md` + `.active`, PostCompact appends `## Compact Summary (Claude Code)` containing the injected sentinel, nav_session_start `_section_active_marker` surfaces the marker name (`## Active Marker:`), and PostCompact with no `.active` is a no-op exit 0.
+- [x] graph_manager.load_graph → create_empty_graph() and profile_manager.load_profile → {} on a corrupt JSON file (try/except json.JSONDecodeError added), with tests asserting no raise.
+- [x] test_workflow_detector + test_complexity_scorer cover loop-trigger matching (case-insensitive), complexity thresholds/cap, and all five complexity_scorer categories. (Confirmed real weights: workflow_detector high/med/low = 0.3/0.2/0.1 +0.2 multi-file cap 1.0; complexity_scorer factors action≤0.4/scope≤0.3/files≤0.2/planning≤0.2; task_mode flips at ≥0.5.)
+- [x] test_auto_updater covers compare_versions (current-relative: -1/0/+1, uneven lengths), get_current_version parsing of multi-line `claude plugin list` (mocked subprocess), and reinstall_plugin returning success:false on failed uninstall WITHOUT invoking install (real flow is uninstall→add→install; verified call_count==1, no install argv). Zero real plugin operations.
+- [x] frontend-component/functions/test_generator.py → `file_generator.py` and product-design/functions/test_mcp_connection.py → `check_mcp_connection.py` (git mv); all refs updated (frontend SKILL.md ×4; product-design INSTALL.md/setup.sh/README.md — the actual ref sites, not SKILL.md).
+- [x] Whole-repo `python -m unittest discover -s . -p 'test_*.py'` no longer hits an ImportError/SystemExit from the two former mis-named files (figma import / argparse generator).
+
+## Implementation Notes (2026-06-03)
+
+- **9 new test files, 108 new tests**, all stdlib `unittest`. Hook tests are subprocess-against-tmp-project (never the real `.agent/`); scorer/graph/profile/updater are direct-import. Written by 4 parallel agents, each verifying against real source and running green; full `make test` green afterward.
+- **Makefile**: added `hooks`, `skills/nav-start/functions`, `skills/nav-graph/functions`, `skills/nav-profile/functions` to `TEST_DIRS` so the new suites run in CI; refreshed the now-obsolete exclusion comment (the rename removed the discovery poison).
+- **Deviations from the audit spec** (asserted real behavior): read-guard blocks AT threshold not past; `compare_versions` is current-relative; `reinstall_plugin` is a 3-step flow; `add_goal` upserts by name preserving `context`; `add_correction` keeps the last 20. The "11 test files" effort estimate was an overcount — the Files table specifies 9 new test files + 2 guard edits.
+- product-design refs lived in INSTALL.md/setup.sh/README.md (not SKILL.md as the audit assumed) — all updated.
 
 ## Technical Decisions
 
@@ -111,6 +118,6 @@ NOTE on running in CI: these are stdlib-unittest files runnable today with `pyth
 
 ## Done
 
-- [ ] All acceptance criteria checked
-- [ ] Tests pass in CI (once TASK-43 gate exists)
-- [ ] Committed + roadmap (TASK-42) status updated
+- [x] All acceptance criteria checked
+- [x] Tests pass (`make test` green — 9 new files, 108 tests; whole-repo discovery clean); CI runs on branch push
+- [x] Committed + roadmap (TASK-42) status updated

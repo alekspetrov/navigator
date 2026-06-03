@@ -106,6 +106,7 @@ def _correction_to_memory_in_graph(correction: dict, graph: dict) -> str:
         concepts=concepts,
         confidence=confidence,
         source_task=None,
+        source='correction',
     )
 
 
@@ -173,11 +174,12 @@ def check_for_new_corrections(profile_path: str, graph_path: str) -> dict:
 
     correction_count = len(profile.get('corrections', []))
 
-    # Check how many corrections we've already synced
-    # We track this by counting memories with no source_task (correction-based)
+    # Count memories tagged at creation as correction-derived. Memories from
+    # other sources (and legacy memories lacking the 'source' field) are not
+    # counted, so this reflects only what sync_corrections_to_graph produced.
     synced_count = sum(
         1 for m in graph['nodes'].get('memories', {}).values()
-        if 'learned-from' not in str(graph.get('edges', []))
+        if m.get('source') == 'correction'
     )
 
     return {

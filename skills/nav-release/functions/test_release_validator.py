@@ -13,7 +13,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from release_validator import verify_hook_paths, check_version_match  # noqa: E402
+from release_validator import (  # noqa: E402
+    verify_hook_paths,
+    check_version_match,
+    _strip_dot_slash,
+)
 
 
 def _make_root(tmp: Path, hook_names, manifest_hooks):
@@ -116,6 +120,24 @@ class CheckVersionMatchTest(unittest.TestCase):
                 "[![Version](https://img.shields.io/badge/version-6.15.5-blue.svg)](x)\n")
             _, mismatches = check_version_match(tmp, "6.15.6")
             self.assertTrue(any("README.md" in m for m in mismatches))
+
+
+class StripDotSlashTest(unittest.TestCase):
+    """wp11/TASK-51: prefix-only strip, not lstrip('./') char-class strip."""
+
+    def test_strips_leading_dot_slash(self):
+        self.assertEqual(_strip_dot_slash("./skills/x"), "skills/x")
+
+    def test_no_prefix_unchanged(self):
+        self.assertEqual(_strip_dot_slash("skills/x"), "skills/x")
+
+    def test_preserves_dot_segment_after_prefix(self):
+        self.assertEqual(_strip_dot_slash("./a/.b"), "a/.b")
+
+    def test_demonstrates_lstrip_bug_is_fixed(self):
+        # lstrip('./') eats the leading dot of a dotfile; the helper does not.
+        self.assertEqual("./.config".lstrip("./"), "config")
+        self.assertEqual(_strip_dot_slash("./.config"), ".config")
 
 
 if __name__ == "__main__":

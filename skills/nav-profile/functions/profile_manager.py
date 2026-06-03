@@ -101,14 +101,23 @@ def add_correction(profile: dict, correction: dict) -> dict:
 
 
 def add_goal(profile: dict, goal: dict) -> dict:
-    """Add or update a goal in the profile."""
+    """Add or update a goal in the profile.
+
+    A goal must have a non-empty 'name'. If it doesn't, the profile is returned
+    unchanged with an error on stderr (callers save the profile as a no-op
+    rather than crashing). Dedup tolerates legacy goals that lack 'name'.
+    """
+    if not goal.get("name"):
+        print("Error: goal requires a 'name'", file=sys.stderr)
+        return profile
+
     if "goals" not in profile:
         profile["goals"] = []
 
     today = datetime.now().strftime("%Y-%m-%d")
 
     # Check if goal already exists
-    existing = next((g for g in profile["goals"] if g["name"] == goal["name"]), None)
+    existing = next((g for g in profile["goals"] if g.get("name") == goal["name"]), None)
 
     if existing:
         existing["last_mentioned"] = today

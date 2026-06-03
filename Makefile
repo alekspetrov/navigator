@@ -29,6 +29,7 @@ TEST_DIRS := \
 	skills/nav-release/functions \
 	skills/nav-start/functions \
 	skills/nav-graph/functions \
+	skills/nav-onboard/functions \
 	skills/nav-profile/functions
 
 # Standalone shell test scripts (each exits non-zero on failure).

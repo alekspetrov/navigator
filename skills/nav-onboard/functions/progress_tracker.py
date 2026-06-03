@@ -132,18 +132,22 @@ def update_progress(
     if not data_file.exists():
         return {"error": "Progress not initialized. Run init first."}
 
-    data = json.loads(data_file.read_text())
+    try:
+        data = json.loads(data_file.read_text())
+    except json.JSONDecodeError:
+        return {"error": "Progress data corrupt"}
 
-    if skill_name not in data["progress"]:
+    progress = data.get("progress", {})
+    if skill_name not in progress:
         return {"error": f"Unknown skill: {skill_name}"}
 
     # Update skill status
-    data["progress"][skill_name]["status"] = status
+    progress[skill_name]["status"] = status
     if status == "completed":
-        data["progress"][skill_name]["completed"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-        data["completed"] = sum(1 for s in data["progress"].values() if s["status"] == "completed")
+        progress[skill_name]["completed"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        data["completed"] = sum(1 for s in progress.values() if s.get("status") == "completed")
     if notes:
-        data["progress"][skill_name]["notes"] = notes
+        progress[skill_name]["notes"] = notes
 
     # Save updated data
     data_file.write_text(json.dumps(data, indent=2))
@@ -151,12 +155,14 @@ def update_progress(
     # Regenerate markdown
     _regenerate_markdown(onboarding_dir, data)
 
+    total = data.get("total", 0)
+    completed = data.get("completed", 0)
     return {
         "skill": skill_name,
         "status": status,
-        "completed": data["completed"],
-        "total": data["total"],
-        "percentage": round(data["completed"] / data["total"] * 100) if data["total"] > 0 else 0,
+        "completed": completed,
+        "total": total,
+        "percentage": round(completed / total * 100) if total > 0 else 0,
         "next_task": get_next_task(project_dir),
     }
 
@@ -177,16 +183,21 @@ def get_progress(project_dir: str) -> Dict:
     if not data_file.exists():
         return {"initialized": False}
 
-    data = json.loads(data_file.read_text())
+    try:
+        data = json.loads(data_file.read_text())
+    except json.JSONDecodeError:
+        return {"error": "Progress data corrupt"}
 
+    total = data.get("total", 0)
+    completed = data.get("completed", 0)
     return {
         "initialized": True,
-        "flow_type": data["flow_type"],
-        "project_type": data["project_type"],
-        "completed": data["completed"],
-        "total": data["total"],
-        "percentage": round(data["completed"] / data["total"] * 100) if data["total"] > 0 else 0,
-        "skills": data["progress"],
+        "flow_type": data.get("flow_type"),
+        "project_type": data.get("project_type"),
+        "completed": completed,
+        "total": total,
+        "percentage": round(completed / total * 100) if total > 0 else 0,
+        "skills": data.get("progress", {}),
         "next_task": get_next_task(project_dir),
     }
 
@@ -207,12 +218,16 @@ def get_next_task(project_dir: str) -> Optional[str]:
     if not data_file.exists():
         return None
 
-    data = json.loads(data_file.read_text())
+    try:
+        data = json.loads(data_file.read_text())
+    except json.JSONDecodeError:
+        return None
 
     # Find first non-completed skill in order
-    all_skills = data["essential_skills"] + data["development_skills"]
+    all_skills = data.get("essential_skills", []) + data.get("development_skills", [])
+    progress = data.get("progress", {})
     for skill in all_skills:
-        if data["progress"][skill]["status"] != "completed":
+        if progress.get(skill, {}).get("status") != "completed":
             return skill
 
     return None

@@ -2,477 +2,247 @@
 
 **Category**: Development
 **Created**: 2025-10-13
-**Last Updated**: 2025-10-13
+**Last Updated**: 2026-06-04
 
 ---
 
 ## Context
 
-This SOP ensures version numbers stay consistent across all files during releases. Version drift creates user confusion and erodes documentation trust.
+This SOP keeps the version number consistent across every file that carries it
+during a release. Version drift confuses users and erodes documentation trust.
 
-**Problem**: Version references scattered across 7+ locations
-**Solution**: Single source of truth + automated checklist
-**Result**: Zero version drift
+**Problem**: the version is repeated in several manifests and docs
+**Solution**: one single source of truth + a 6-file bump checklist + an audit script
+**Result**: zero version drift
+
+> This list is kept in sync with the authoritative 6-file checklist in
+> `.agent/DEVELOPMENT-README.md` ("Scenario: releasing a new version"). If the
+> two ever disagree, DEVELOPMENT-README wins and this SOP must be corrected.
 
 ---
 
 ## When to Use
 
-Use this SOP:
 - Before every plugin release (patch, minor, major)
 - When updating version references
-- To audit version consistency
-- When onboarding contributors to release process
+- To audit version consistency before tagging
+- When onboarding contributors to the release process
 
 ---
 
 ## Single Source of Truth
 
-**Primary**: `.claude-plugin/marketplace.json`
+**SSOT**: `.claude-plugin/marketplace.json` -> `metadata.version`
 
 ```json
 {
   "metadata": {
-    "version": "1.5.0"  // ← SSOT
+    "version": "6.15.6"
   },
   "plugins": [
-    {
-      "version": "1.5.0"  // ← Must match metadata.version
-    }
+    { "name": "navigator", "source": "./" }
   ]
 }
 ```
 
-**All other files reference this version**.
+> The marketplace `plugins[]` entries carry only `name` and `source` — there is
+> **no** `plugins[0].version` field. `.claude-plugin/plugin.json` `version` is
+> the manifest version that must match the SSOT; tooling
+> (`config_migrator.py`, `release_validator.py`) reads the plugin manifest, not
+> a marketplace plugin entry.
 
 ---
 
-## Version Reference Map
+## Version Reference Map (the 6 bump locations)
 
-| File | Location | Format | Update Frequency |
-|------|----------|--------|------------------|
-| `marketplace.json` | `metadata.version` | `"1.5.0"` | Every release |
-| `marketplace.json` | `plugins[0].version` | `"1.5.0"` | Every release |
-| `README.md` | Line ~5 (status) | `v1.5.0` | Every release |
-| `README.md` | Line ~8 (badge) | `1.5.0` | Every release |
-| `README.md` | Line ~435 (roadmap) | `v1.5.0` | Every release |
-| `README.md` | Line ~506 (footer) | `1.5.0` | Every release |
-| `DEVELOPMENT-README.md` | Bottom | `(v1.5.0)` | Every release |
-| Git tag | Tag name | `v1.5.0` | Every release |
-| GitHub release | Release version | `v1.5.0` | Every release |
+Every release bumps the same six files. Five carry a matchable version string;
+the sixth is a new per-version release-notes file.
 
-**Total**: 9 locations must match
+| # | File | Location | Format |
+|---|------|----------|--------|
+| 1 | `.claude-plugin/marketplace.json` | `metadata.version` (SSOT) | `"6.15.6"` |
+| 2 | `.claude-plugin/plugin.json` | `version` | `"6.15.6"` |
+| 3 | `README.md` | badge (line ~8) | `version-6.15.6-blue` |
+| 4 | `CLAUDE.md` | footer `**Navigator Version**:` (+ the config-sample `"version"`) | `6.15.6` |
+| 5 | `.agent/.nav-config.json` | `version` | `"6.15.6"` |
+| 6 | `releases/RELEASE-NOTES-v6.15.6.md` | new file per release | filename |
+
+**Also refreshed (not gated by the audit):** `.agent/DEVELOPMENT-README.md`
+footer carries a `(vX.Y.Z …)` note — update it opportunistically, but it is not
+one of the six canonical bump locations.
+
+Git tag (`vX.Y.Z`) and the GitHub release are produced by CI from the tag (see
+`release.yml`); they are not hand-edited files and so are not in the bump set.
 
 ---
 
 ## Pre-Release Version Sync Checklist
 
-**Run this checklist BEFORE making any release commits**.
+Run this **before** making release commits.
 
-### 1. Determine New Version
-
-```bash
-# Check current version
-cat .claude-plugin/marketplace.json | jq -r '.metadata.version'
-
-# Determine bump type:
-# - Patch (1.5.0 → 1.5.1): Bug fixes only
-# - Minor (1.5.0 → 1.6.0): New features, backward compatible
-# - Major (1.5.0 → 2.0.0): Breaking changes
-```
-
-**Set target version**:
-```bash
-NEW_VERSION="1.6.0"  # Update this value
-```
-
-### 2. Update All Version References
-
-**Files to update** (use NEW_VERSION from above):
-
-#### File 1: `.claude-plugin/marketplace.json` (2 locations)
-
-```json
-{
-  "metadata": {
-    "version": "1.6.0"  // ← Update here
-  },
-  "plugins": [
-    {
-      "version": "1.6.0"  // ← And here
-    }
-  ]
-}
-```
-
-#### File 2: `README.md` (4 locations)
-
-```markdown
-# Line ~5
-**Status**: ✅ Published v1.6.0
-
-# Line ~8
-[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)]
-
-# Line ~435 (roadmap section)
-- v1.6.0 published
-
-# Line ~506 (footer)
-**Version**: 1.6.0
-**Last Updated**: 2025-10-XX  # Update date too
-```
-
-#### File 3: `.agent/DEVELOPMENT-README.md` (1 location)
-
-```markdown
-# Bottom of file
-**Last Updated**: 2025-10-XX (v1.6.0)
-```
-
-### 3. Verify Consistency (Audit Script)
-
-**Run this script to verify all references match**:
+### 1. Determine the new version
 
 ```bash
-#!/bin/bash
-# Save as: scripts/audit-version.sh
+# Current SSOT version
+jq -r '.metadata.version' .claude-plugin/marketplace.json
 
-NEW_VERSION="1.6.0"  # Set your target version
+# Bump type:
+#   Patch (6.15.6 -> 6.15.7): bug fixes only
+#   Minor (6.15.6 -> 6.16.0): new features, backward compatible
+#   Major (6.15.6 -> 7.0.0):  breaking changes
+NEW_VERSION="6.16.0"   # set this
+```
 
-echo "🔍 Auditing version consistency for v${NEW_VERSION}..."
+### 2. Update the six locations
+
+1. `.claude-plugin/marketplace.json` -> `metadata.version`
+2. `.claude-plugin/plugin.json` -> `version`
+3. `README.md` -> badge `version-${NEW_VERSION}-blue`
+4. `CLAUDE.md` -> footer `**Navigator Version**: ${NEW_VERSION}` (and the
+   `"version"` literal in the config sample)
+5. `.agent/.nav-config.json` -> `version`
+6. `releases/RELEASE-NOTES-v${NEW_VERSION}.md` -> create it
+
+### 3. Verify consistency (audit script)
+
+Save as `scripts/audit-version.sh` and run from the repo root. It derives the
+target version from the SSOT and checks the other locations against it, so there
+is no version literal to keep in sync inside the script.
+
+```bash
+#!/usr/bin/env bash
+# Verify the 6 canonical version locations agree with the SSOT.
+set -uo pipefail
+
+SSOT_FILE=".claude-plugin/marketplace.json"
+V="$(jq -r '.metadata.version' "$SSOT_FILE")"
+echo "Auditing version consistency against SSOT v${V} (${SSOT_FILE} metadata.version)"
 echo ""
-
 ERRORS=0
 
-# Check marketplace.json (metadata)
-echo "Checking .claude-plugin/marketplace.json (metadata.version)..."
-RESULT=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
-if [ "$RESULT" = "$NEW_VERSION" ]; then
-  echo "✅ metadata.version: $RESULT"
-else
-  echo "❌ metadata.version: $RESULT (expected: $NEW_VERSION)"
-  ERRORS=$((ERRORS + 1))
-fi
+check() {            # check <label> <command...>
+  local label="$1"; shift
+  if "$@" >/dev/null 2>&1; then
+    echo "OK  ${label}"
+  else
+    echo "ERR ${label}"
+    ERRORS=$((ERRORS + 1))
+  fi
+}
 
-# Check marketplace.json (plugins)
-echo "Checking .claude-plugin/marketplace.json (plugins[0].version)..."
-RESULT=$(jq -r '.plugins[0].version' .claude-plugin/marketplace.json)
-if [ "$RESULT" = "$NEW_VERSION" ]; then
-  echo "✅ plugins[0].version: $RESULT"
-else
-  echo "❌ plugins[0].version: $RESULT (expected: $NEW_VERSION)"
-  ERRORS=$((ERRORS + 1))
-fi
+# 2. plugin.json version must equal the SSOT
+check ".claude-plugin/plugin.json version == ${V}" \
+  bash -c "[ \"\$(jq -r '.version' .claude-plugin/plugin.json)\" = \"${V}\" ]"
 
-# Check README.md (status)
-echo "Checking README.md (status line)..."
-if grep -q "Published v${NEW_VERSION}" README.md; then
-  echo "✅ Status line contains v${NEW_VERSION}"
-else
-  echo "❌ Status line missing v${NEW_VERSION}"
-  ERRORS=$((ERRORS + 1))
-fi
+# 3. README.md badge
+check "README.md badge version-${V}-blue" \
+  grep -q "version-${V}-blue" README.md
 
-# Check README.md (badge)
-echo "Checking README.md (badge)..."
-if grep -q "version-${NEW_VERSION}-blue" README.md; then
-  echo "✅ Badge contains version-${NEW_VERSION}"
-else
-  echo "❌ Badge missing version-${NEW_VERSION}"
-  ERRORS=$((ERRORS + 1))
-fi
+# 4. CLAUDE.md footer (the config sample tracks it too; the footer is canonical)
+check "CLAUDE.md footer Navigator Version: ${V}" \
+  grep -q "Navigator Version\*\*: ${V}" CLAUDE.md
 
-# Check README.md (roadmap)
-echo "Checking README.md (roadmap)..."
-if grep -q "v${NEW_VERSION} published" README.md; then
-  echo "✅ Roadmap contains v${NEW_VERSION} published"
-else
-  echo "❌ Roadmap missing v${NEW_VERSION} published"
-  ERRORS=$((ERRORS + 1))
-fi
+# 5. .agent/.nav-config.json version
+check ".agent/.nav-config.json version == ${V}" \
+  bash -c "[ \"\$(jq -r '.version' .agent/.nav-config.json)\" = \"${V}\" ]"
 
-# Check README.md (footer)
-echo "Checking README.md (footer version)..."
-if grep -q "^\*\*Version\*\*: ${NEW_VERSION}" README.md; then
-  echo "✅ Footer contains Version: ${NEW_VERSION}"
-else
-  echo "❌ Footer missing Version: ${NEW_VERSION}"
-  ERRORS=$((ERRORS + 1))
-fi
-
-# Check DEVELOPMENT-README.md
-echo "Checking .agent/DEVELOPMENT-README.md..."
-if grep -q "(v${NEW_VERSION})" .agent/DEVELOPMENT-README.md; then
-  echo "✅ DEVELOPMENT-README contains (v${NEW_VERSION})"
-else
-  echo "❌ DEVELOPMENT-README missing (v${NEW_VERSION})"
-  ERRORS=$((ERRORS + 1))
-fi
+# 6. Release notes file for this version exists
+check "releases/RELEASE-NOTES-v${V}.md exists" \
+  test -f "releases/RELEASE-NOTES-v${V}.md"
 
 echo ""
-if [ $ERRORS -eq 0 ]; then
-  echo "🎉 All version references consistent! Ready to commit."
+if [ "$ERRORS" -eq 0 ]; then
+  echo "All 6 canonical version locations agree on v${V}."
   exit 0
 else
-  echo "⚠️  Found $ERRORS version mismatch(es). Fix before committing!"
+  echo "${ERRORS} mismatch(es). Fix before tagging."
   exit 1
 fi
 ```
 
-**Quick audit** (manual):
+The project also ships `skills/nav-release/functions/release_validator.py`
+(`--check-all`, `--verify-hooks`, `--verify-tag`) which is the canonical
+release gate; the script above is the quick manual equivalent.
+
+### 4. Commit the version bump
 
 ```bash
-# Set your target version
-NEW_VERSION="1.6.0"
-
-# Check all references
-echo "marketplace.json (metadata):"
-jq -r '.metadata.version' .claude-plugin/marketplace.json
-
-echo "marketplace.json (plugins):"
-jq -r '.plugins[0].version' .claude-plugin/marketplace.json
-
-echo "README.md references:"
-grep -E "Published v|version-.*-blue|v[0-9]+\.[0-9]+\.[0-9]+ published|^\*\*Version\*\*:" README.md
-
-echo "DEVELOPMENT-README.md:"
-grep -E "\(v[0-9]+\.[0-9]+\.[0-9]+\)" .agent/DEVELOPMENT-README.md
-```
-
-### 4. Commit Version Bump
-
-**After all references match, commit separately**:
-
-```bash
-git add .claude-plugin/marketplace.json README.md .agent/DEVELOPMENT-README.md
-git commit -m "chore: bump version to v1.6.0
-
-Prepare for v1.6.0 release. Updated version references in:
-- marketplace.json (metadata + plugins)
-- README.md (status, badge, roadmap, footer)
-- DEVELOPMENT-README.md (footer)
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
+git add .claude-plugin/marketplace.json .claude-plugin/plugin.json \
+        README.md CLAUDE.md .agent/.nav-config.json \
+        releases/RELEASE-NOTES-v${NEW_VERSION}.md
+git commit -m "chore: bump version to v${NEW_VERSION}"
 ```
 
 ---
 
 ## Post-Release Checklist
 
-**After feature commits are done**:
+Releases publish via CI from the pushed tag (`release.yml`), not by hand.
 
-- [ ] Create Git tag: `git tag -a v1.6.0 -m "Version 1.6.0: Description"`
-- [ ] Push commit: `git push origin main`
-- [ ] Push tag: `git push origin v1.6.0`
-- [ ] Create GitHub release with notes
-- [ ] Verify badge renders correctly (may take 5-10 min for cache)
-- [ ] Test installation in fresh project
+- [ ] Tag the bump commit: `git tag -a vX.Y.Z -m "Version X.Y.Z: ..."`
+- [ ] Push commit and tag: `git push origin main && git push origin vX.Y.Z`
+- [ ] Confirm the GitHub Action published the release
+- [ ] Verify with `release_validator.py --verify-tag vX.Y.Z`
+- [ ] Confirm the README badge renders (Shields.io CDN cache: 5-10 min)
 
 ---
 
 ## Semantic Versioning Guide
 
-### Patch (1.5.0 → 1.5.1)
+### Patch (6.15.6 -> 6.15.7)
+- Bug fixes, typo/doc corrections, no new features, no breaking changes
+- e.g. fix a hook path bug, correct a README typo
 
-**When to use**:
-- Bug fixes only
-- Typo corrections
-- Documentation fixes
-- No new features
-- No breaking changes
+### Minor (6.15.6 -> 6.16.0)
+- New features/skills, backward compatible, no breaking changes
+- e.g. add a new skill, enhance existing output
 
-**Examples**:
-- Fix template syntax error
-- Correct typo in README
-- Fix broken link in docs
-
-### Minor (1.5.0 → 1.6.0)
-
-**When to use**:
-- New features
-- New commands
-- Backward compatible changes
-- Enhanced functionality
-- No breaking changes
-
-**Examples**:
-- Add new `/nav:markers` command
-- Add auto-resume feature
-- Enhance existing command output
-- Add new template option
-
-### Major (1.5.0 → 2.0.0)
-
-**When to use**:
-- Breaking changes
-- API changes requiring user action
-- Command renames or removals
-- File structure changes
-- Configuration schema changes
-
-**Examples**:
-- Rename `/nav:init` to `/nav:setup`
-- Change `.agent/` folder structure
-- Remove deprecated command
-- Change config file format
+### Major (6.15.6 -> 7.0.0)
+- Breaking changes requiring user action
+- e.g. rename a skill's trigger, change `.agent/` structure, change config schema
 
 ---
 
 ## Troubleshooting
 
-### Issue: Version Mismatch Detected
+### Version mismatch detected
+1. Read the SSOT (`marketplace.json` `metadata.version`)
+2. Update the mismatched location(s) from the Reference Map
+3. Re-run `scripts/audit-version.sh`
+4. Commit the fix with a `chore:` prefix
 
-**Symptoms**: Audit script shows different versions across files
+### Badge not rendering
+1. Check the badge URL format: `version-6.15.6-blue`
+2. Shields.io CDN cache takes 5-10 minutes; hard-refresh the browser
 
-**Solution**:
-1. Identify which files are out of sync
-2. Determine correct version (from `marketplace.json`)
-3. Update all mismatched files manually
-4. Re-run audit script
-5. Commit fix separately with `chore:` prefix
-
-### Issue: Badge Not Rendering
-
-**Symptoms**: Version badge shows old version or 404
-
-**Solutions**:
-1. Check README.md badge URL format:
-   ```markdown
-   [![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)]
-   ```
-2. Verify version number has no typos or spaces
-3. Shield.io CDN cache takes 5-10 minutes to update
-4. Force refresh browser with Cmd+Shift+R
-5. Try adding cache-busting param: `?v=timestamp`
-
-### Issue: Git Tag Already Exists
-
-**Symptoms**: `fatal: tag 'v1.6.0' already exists`
-
-**Solution**:
+### Git tag already exists
 ```bash
-# Delete local tag
-git tag -d v1.6.0
-
-# Delete remote tag (if pushed)
-git push origin :refs/tags/v1.6.0
-
-# Recreate tag with correct version
-git tag -a v1.6.0 -m "Version 1.6.0: Description"
-
-# Push corrected tag
-git push origin v1.6.0
+git tag -d vX.Y.Z                       # delete local
+git push origin :refs/tags/vX.Y.Z       # delete remote
+git tag -a vX.Y.Z -m "Version X.Y.Z"    # recreate
+git push origin vX.Y.Z
 ```
 
-### Issue: README Still Shows Old Version After Update
-
-**Symptoms**: Updated file but version still shows old number
-
-**Solutions**:
-1. Check you saved the file
-2. Verify you edited correct file (not a copy)
-3. Check line numbers haven't shifted (search for pattern instead)
-4. Use `grep` to find all occurrences: `grep -n "1.5.0" README.md`
-5. Look for version in comments or code blocks (should update too)
-
----
-
-## Prevention & Automation
-
-### Current Process
-
-**Manual checklist** with audit script (current approach)
-- **Pros**: Works now, catches errors, simple
-- **Cons**: Manual, requires discipline
-
-### Future Improvements
-
-#### Option 1: Pre-commit Hook
-
-```bash
-#!/bin/bash
-# .git/hooks/pre-commit
-
-# Run version audit if marketplace.json changed
-if git diff --cached --name-only | grep -q "marketplace.json"; then
-  echo "⚠️  marketplace.json changed. Running version audit..."
-  ./scripts/audit-version.sh
-  if [ $? -ne 0 ]; then
-    echo "❌ Commit blocked: Version mismatch detected!"
-    echo "Fix version references and try again."
-    exit 1
-  fi
-fi
-```
-
-#### Option 2: Version Bump Script
-
-```bash
-#!/bin/bash
-# scripts/bump-version.sh NEW_VERSION
-
-# Automatically updates all version references
-# Usage: ./scripts/bump-version.sh 1.6.0
-```
-
-#### Option 3: GitHub Action
-
-```yaml
-# .github/workflows/version-check.yml
-name: Version Consistency Check
-on: [pull_request]
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: ./scripts/audit-version.sh
-```
-
-**Decision**: Start with manual checklist, add automation if version drift becomes frequent.
+### A doc still shows the old version
+- Search by pattern, not line number (line numbers drift): `grep -n "6.15.6" <file>`
+- Remember the config sample in CLAUDE.md carries the version in addition to the footer
 
 ---
 
 ## Related Documentation
 
-**System Docs**:
-- [Project Architecture](../system/project-architecture.md)
-- [Plugin Patterns](../system/plugin-patterns.md)
-
-**Other SOPs**:
-- [Plugin Release Workflow](./plugin-release-workflow.md) - Complete release process
-
-**Task Docs**:
-- [TASK-04: Version Sync Fix](../tasks/TASK-04-version-sync-release-process.md)
+- [Complete Release Workflow](./complete-release-workflow.md) — canonical end-to-end guide
+- [Plugin Release Workflow](./plugin-release-workflow.md) — Step 0 version sync
+- [Plugin Release (deployment)](../deployment/plugin-release.md) — tag -> CI -> verify
+- `.agent/DEVELOPMENT-README.md` — authoritative 6-file bump checklist
 
 ---
 
 ## Version History
 
 - **2025-10-13**: Created during TASK-04 (version sync fix)
-- **Last Updated**: 2025-10-13
-
----
-
-## Notes
-
-### Why This SOP Exists
-
-On 2025-10-13, v1.5.0 was released with `marketplace.json` showing v1.5.0 but `README.md` still showing v1.4.0. This created user confusion and eroded documentation trust.
-
-**Root cause**: No systematic checklist for version updates
-**Solution**: This SOP with pre-release checklist and audit script
-**Prevention**: Make version sync mandatory part of release workflow
-
-### Success Criteria
-
-- [ ] Zero version mismatches in future releases
-- [ ] New contributors can follow checklist without errors
-- [ ] Audit script catches issues before commit
-- [ ] Users always see consistent version numbers
-
----
-
-**This SOP prevents version drift and ensures professional release quality** 🚀
+- **2026-06-04**: Rewritten for wp9/TASK-52 — corrected the SSOT (removed the
+  phantom `plugins[0].version`), replaced the non-existent README
+  status/roadmap/footer lines with the real six bump locations, and rewrote the
+  audit script to derive the target from the SSOT and check only locations that
+  exist (exits 0 at the current release).

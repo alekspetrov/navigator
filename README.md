@@ -95,7 +95,7 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 
 | Feature | Navigator | Others |
 |---------|-----------|--------|
-| Structured workflows | ✅ 27 skills | ✅ |
+| Structured workflows | ✅ Full skill suite | ✅ |
 | Component generation | ✅ | ✅ |
 | Test generation | ✅ | ✅ |
 | Session longevity | **20+ exchanges** | 5-7 exchanges |
@@ -167,7 +167,7 @@ That's it. Navigator handles the rest.
 
 ## What You Get
 
-**19 skills** that auto-invoke on natural language:
+**Skills** that auto-invoke on natural language:
 
 ```
 "Start my Navigator session"              → Session with 92% savings

@@ -139,7 +139,7 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-05-18):
+Current active threads (as of 2026-06-04):
 - **TASK-05** — landing page content
 - **TASK-13** — web documentation site (planning)
 - **TASK-15** — marketing strategy & community adoption
@@ -147,7 +147,6 @@ Current active threads (as of 2026-05-18):
 - **TASK-35** — project memory (research)
 - **TASK-37** — nav-simplify complexity / cost scoring (design)
 - **TASK-39** — Next.js workshop prep
-- **TASK-40** — Phase 3 hook migration v6.12 (partial — v6.12.0 + v6.12.1 shipped; v6.12.2 pending)
 
 For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `releases/RELEASE-NOTES-*.md`.
 

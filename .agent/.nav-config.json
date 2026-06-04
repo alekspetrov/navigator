@@ -56,7 +56,20 @@
   "auto_update": {
     "enabled": true,
     "check_interval_hours": 1,
-    "last_check": "2026-06-02T16:51:06.620013"
+    "last_check": "2026-06-04T12:45:13.919121"
+  },
+  "session_start_hook": {
+    "enabled": true,
+    "include_sections": [
+      "navigator",
+      "marker",
+      "config",
+      "graph",
+      "profile",
+      "tasks",
+      "auto_update"
+    ],
+    "char_budget": 9500
   },
   "compact_hook": {
     "enabled": true,

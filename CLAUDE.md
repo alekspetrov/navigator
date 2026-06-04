@@ -849,7 +849,7 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 ```
 
 **Slash commands** (legacy, still work):
-- `/nav:init`, `/nav:start`, `/nav:update-doc`, `/nav:marker`, `/nav:compact`
+- `/nav:init`, `/nav:start`, `/nav:marker`, `/nav:compact`
 
 ---
 
@@ -876,7 +876,7 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 
 ### Token Budget
 - System + tools: ~50k (fixed)
-- CLAUDE.md: ~15k (this file)
+- CLAUDE.md: ~7k (this file)
 - Message history: ~60k (managed via compact)
 - **Documentation**: ~66k (on-demand loading)
 
@@ -916,11 +916,11 @@ CORRECT: Task agent → Returns 3 relevant files = 8k tokens (92% savings)
 
 ## Configuration
 
-Navigator config in `.agent/.nav-config.json`:
+Navigator config in `.agent/.nav-config.json` (minimal subset shown; the live file also carries `tom_features`, `loop_mode`, `task_mode`, `knowledge_graph`, `multi_agent`, and the `*_hook` toggle blocks):
 
 ```json
 {
-  "version": "5.5.0",
+  "version": "6.15.6",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",

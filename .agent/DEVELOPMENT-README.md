@@ -143,7 +143,7 @@ Current active threads (as of 2026-05-18):
 - **TASK-05** — landing page content
 - **TASK-13** — web documentation site (planning)
 - **TASK-15** — marketing strategy & community adoption
-- **TASK-25** — multi-Claude reliability fixes (planning, follow-up to v6.1.x)
+- **TASK-25** — multi-Claude scripts DEPRECATED (superseded by native Workflows)
 - **TASK-35** — project memory (research)
 - **TASK-37** — nav-simplify complexity / cost scoring (design)
 - **TASK-39** — Next.js workshop prep

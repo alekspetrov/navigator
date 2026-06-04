@@ -2,8 +2,21 @@
 # Multi-Claude Workflow Dashboard
 # Real-time terminal visualization of parallel agent progress
 # Part of Navigator v6.1.0
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): the multi-Claude scripts are superseded by
+# native Claude Code orchestration; use `/workflows` (live progress) or the
+# Agent view to monitor native subagents. Kept for reference only.
 
 set -e
+
+if [ "${NAV_MULTI_CLAUDE_FORCE:-0}" != "1" ]; then
+  cat <<'DEPRECATED'
+⚠️  multi-claude-dashboard.sh is DEPRECATED (TASK-25).
+Monitor native orchestration with /workflows or the Agent view instead.
+To run anyway: NAV_MULTI_CLAUDE_FORCE=1 multi-claude-dashboard.sh ...
+DEPRECATED
+  exit 0
+fi
 
 # Colors
 RED='\033[0;31m'

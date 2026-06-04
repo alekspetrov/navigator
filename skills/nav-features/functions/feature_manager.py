@@ -101,12 +101,13 @@ FEATURES = {
         "name": "multi_claude_scripts",
         "display_name": "Multi-Claude Scripts",
         "version": "4.3.0",
-        "description": "External shell scripts for multi-Claude workflows",
-        "short_desc": "navigator-multi-claude.sh on PATH",
+        "description": "DEPRECATED (TASK-25) — use native /workflows + Agent tool",
+        "short_desc": "Deprecated; superseded by native Workflows",
         "config_key": None,
         "enabled_key": None,
         "default": False,
         "type": "installed",
+        "deprecated": True,
         "check_command": "command -v navigator-multi-claude.sh"
     },
     "compact_hook": {

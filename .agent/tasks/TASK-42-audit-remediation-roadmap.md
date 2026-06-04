@@ -28,7 +28,7 @@ Build wp1 (CI test job + pre-publish validation gate) first. Today release.yml i
 | `wp6-kg-integrity` — Knowledge-graph data integrity + dormant maintenance wiring | TASK-47 | — | L | med | TASK-45 | `split` |
 | `wp7-detection` — Detection precision: token-boundary matching + consolidate complexity impls | TASK-48 | — | M | med | TASK-45 | `fix+test` |
 | `wp3-plugin-paths` — Plugin-relative path resolution (skills + hooks work outside the source repo) | TASK-49 | — | L | med | — | `fix+test` |
-| `wp10-multiclaude` — Multi-Claude reliability: repair correctness bugs and gate experimental status honestly | TASK-25 | — | L | med | — | `fix+test` |
+| `wp10-multiclaude` — Multi-Claude reliability → **DEPRECATED** (2026-06-04): superseded by native Workflows; scripts tombstoned, not repaired | TASK-25 | — | L | med | — | ~~`fix+test`~~ → `deprecate` |
 | `wp11-python-misc` — Misc Python correctness fixes | TASK-51 | — | M | low | — | `fix+test` |
 | `wp9-docs-config` — Docs & config drift cleanup | TASK-52 | — | M | low | TASK-44 | `fix+test` |
 

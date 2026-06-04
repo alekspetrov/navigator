@@ -1,8 +1,20 @@
 #!/bin/bash
 # Navigator Multi-Claude Proof of Concept
 # Tests basic automation with 2-phase workflow (plan → implement)
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): superseded by native Claude Code Dynamic
+# Workflows (/workflows) and subagents (the Agent tool). Kept for reference only.
 
 set -euo pipefail
+
+if [ "${NAV_MULTI_CLAUDE_FORCE:-0}" != "1" ]; then
+  cat <<'DEPRECATED'
+⚠️  navigator-multi-claude-poc.sh is DEPRECATED (TASK-25).
+Use native Claude Code orchestration instead: /workflows or the Agent tool.
+To run anyway: NAV_MULTI_CLAUDE_FORCE=1 navigator-multi-claude-poc.sh ...
+DEPRECATED
+  exit 0
+fi
 
 # Colors for output
 GREEN='\033[0;32m'

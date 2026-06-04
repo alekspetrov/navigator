@@ -1,8 +1,27 @@
 #!/bin/bash
 # Navigator Multi-Claude Workflow Installer
 # Installs scripts and verifies dependencies
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): the multi-Claude scripts are superseded by
+# native Claude Code orchestration, which needs no installation. This installer
+# now refuses to run.
 
 set -euo pipefail
+
+cat <<'DEPRECATED'
+⚠️  install-multi-claude.sh is DEPRECATED (TASK-25) — installation disabled.
+
+Navigator's multi-Claude shell scripts are superseded by native Claude Code
+orchestration, which requires no separate install:
+  • /workflows     — Dynamic Workflows (multi-phase, parallel, resumable)
+  • the Agent tool — parallel subagents with git-worktree isolation
+
+To remove a stale prior install:
+  rm -f "$HOME/bin/navigator-multi-claude.sh" \
+        "$HOME/bin/navigator-multi-claude-poc.sh" \
+        "$HOME/bin/install-multi-claude.sh"
+DEPRECATED
+exit 0
 
 # Colors
 GREEN='\033[0;32m'

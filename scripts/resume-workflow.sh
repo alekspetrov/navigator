@@ -1,8 +1,21 @@
 #!/bin/bash
 # Resume Multi-Claude Workflow
 # Resumes interrupted workflows from saved state
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): the multi-Claude scripts are superseded by
+# native Claude Code Dynamic Workflows (/workflows), which resume in-session.
+# Kept for reference only.
 
 set -euo pipefail
+
+if [ "${NAV_MULTI_CLAUDE_FORCE:-0}" != "1" ]; then
+  cat <<'DEPRECATED'
+⚠️  resume-workflow.sh is DEPRECATED (TASK-25).
+Native Dynamic Workflows (/workflows) resume in-session; no marker state needed.
+To run anyway: NAV_MULTI_CLAUDE_FORCE=1 resume-workflow.sh ...
+DEPRECATED
+  exit 0
+fi
 
 # Colors
 GREEN='\033[0;32m'

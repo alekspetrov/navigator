@@ -333,7 +333,7 @@ Never change what code does - only how it does it.
 
 - **Autonomous completion**: After verify, before commit (if enabled)
 - **Loop Mode**: During VERIFY phase as completion indicator
-- **Multi-Claude**: Dedicated "simplifier" role in parallel workflows
+- **Workflows**: Simplifier can run as a dedicated subagent in a native workflow
 - **On-demand**: "simplify this code", "review for clarity"
 
 #### Configuration

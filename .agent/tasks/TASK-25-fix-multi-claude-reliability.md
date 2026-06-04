@@ -1,14 +1,63 @@
-# TASK-25: Fix Multi-Claude Workflow Reliability (30% → 90%)
+# TASK-25: Multi-Claude Workflow — DEPRECATED (was: Fix Reliability 30% → 90%)
 
 **Created**: 2025-11-01
 **Assignee**: Multi-Claude Workflow (dogfooding)
 **Priority**: High
-**Status**: Planning
-**Target**: v4.5.0
+**Status**: ❌ Deprecated — 2026-06-04 (superseded by native Claude Code Workflows)
+**Target**: ~~v4.5.0~~ — not pursued; feature deprecated instead
+**Work-package**: wp10 of TASK-42 (audit remediation). Decision: **deprecate**, not repair.
 
 ---
 
-## Problem Statement
+## Deprecation Decision (2026-06-04)
+
+The "repair vs deprecate" fork flagged in the roadmap was resolved in favor of
+**deprecation**. The marker-coordinated, headless `claude -p` orchestrator is
+superseded by Claude Code's **native** Dynamic Workflows (`/workflows`, the
+Workflow tool) and subagents (the Agent tool), which provide multi-phase
+orchestration, parallel/pipeline fan-out, git-worktree isolation, and resume
+**without** marker files or external scripts.
+
+**Evidence behind the decision** (two research sweeps, 2026-06-03/04):
+- **Superseded**: native Workflows + subagents cover every use case these scripts
+  targeted (phases, parallelism, monitoring, resume). The only gap — cross-session
+  durability — is better served by a durable-workflow runtime than marker files.
+- **Dormant**: last real feature work on the scripts was 2026-01-23 (~4.5 months
+  prior); several scripts were committed once and never iterated. Across all
+  recorded sessions there are **zero** orchestrator runs — the only transcript hit
+  is a `command -v` PATH check. The maintainer's own memory called them
+  "effectively non-functional."
+- **Current practice**: the maintainer orchestrates this very project with native
+  Workflows — runs `wf_0dc1b9ce-7d8` (audit) and `wf_187896bb-5af` (this roadmap),
+  with 100+ parallel subagent transcripts. The audit that flagged these scripts as
+  broken was itself run on the native workflow.
+- Additional rationale: the `-p` headless approach is fragile, and real
+  orchestration/integration work lives in **Pilot**, not this OSS repo.
+
+**What deprecation did** (this commit):
+- Added a `DEPRECATED` banner to all 6 scripts (`scripts/navigator-multi-claude*.sh`,
+  `sub-claude-monitor.sh`, `resume-workflow.sh`, `multi-claude-dashboard.sh`,
+  `install-multi-claude.sh`). User-invocable scripts print a redirect and exit
+  unless `NAV_MULTI_CLAUDE_FORCE=1`; `install-multi-claude.sh` refuses
+  unconditionally.
+- Rewrote `skills/nav-multi` and `skills/nav-install-multi-claude` as
+  deprecation/redirect notices pointing to `/workflows` + the Agent tool.
+- Removed the "Install multi-Claude workflows" advertising block from `nav-start`.
+- Marked the `multi_claude_scripts` feature deprecated in `feature_manager`.
+- Deleted the 3 orphaned `tests/test-{monitor,recovery,retry-logic}.sh` (they tested
+  the deprecated internals and were never wired into `make test`).
+- Updated CLAUDE.md, DEVELOPMENT-README, the TASK-42 roadmap, and the audit memory.
+
+**Not done (deliberately reversible)**: the script files, `templates/multi-claude/`
+role templates, and `poc-*` fixtures are kept for reference under the banner. A
+follow-up may hard-delete them once the deprecation has shipped a release.
+
+**The ~7 correctness bugs the audit found are now moot** — they live only in code
+that no longer runs and is on a removal path. They are NOT being fixed.
+
+---
+
+## Problem Statement (historical — for reference only)
 
 **Current state**: Multi-Claude workflows succeed 30% of the time (3/10 test workflows)
 
@@ -567,4 +616,4 @@ This task is **work-package wp10** of the audit remediation roadmap (**TASK-42**
 - session state never records `started_at` (dashboard elapsed timer wrong)
 - `resume-workflow.sh` sets status 'resumed' without verifying the new marker
 
-**Decision pending** (see TASK-42): genuine repair vs mark-experimental/deprecate. Effort L, risk med.
+**Decision RESOLVED (2026-06-04): deprecate** (see the Deprecation Decision section at the top). These 12 findings are moot — the code is on a removal path and no longer runs. Not repaired.

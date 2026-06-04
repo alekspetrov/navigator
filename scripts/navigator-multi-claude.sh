@@ -1,8 +1,28 @@
 #!/bin/bash
 # Navigator Multi-Claude Production Workflow
 # Implements full automation: ticket → implementation → PR → status updates
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): This marker-coordinated, headless `claude -p`
+# orchestrator is superseded by Claude Code's native Dynamic Workflows
+# (/workflows, the Workflow tool) and subagents (the Agent tool) — parallel
+# fan-out, worktree isolation, and resume with no marker files. Unmaintained
+# and never reliable (~30% success). Kept for reference only.
 
 set -euo pipefail
+
+if [ "${NAV_MULTI_CLAUDE_FORCE:-0}" != "1" ]; then
+  cat <<'DEPRECATED'
+⚠️  navigator-multi-claude.sh is DEPRECATED (TASK-25).
+
+Superseded by native Claude Code orchestration:
+  • /workflows     — Dynamic Workflows (multi-phase, parallel, resumable)
+  • the Agent tool — parallel subagents with git-worktree isolation
+
+Unmaintained (~30% success); kept for reference only.
+To run anyway: NAV_MULTI_CLAUDE_FORCE=1 navigator-multi-claude.sh ...
+DEPRECATED
+  exit 0
+fi
 
 # Colors for output
 GREEN='\033[0;32m'

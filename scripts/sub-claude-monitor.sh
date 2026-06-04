@@ -1,6 +1,10 @@
 #!/bin/bash
 # Sub-Claude Timeout Monitor
 # Monitors headless Claude instances for timeouts and marker creation
+#
+# ⚠️ DEPRECATED (2026-06, TASK-25): internal helper for the deprecated
+# navigator-multi-claude.sh orchestrator. Superseded by native Claude Code
+# orchestration (/workflows, the Agent tool). Kept for reference only.
 
 set -euo pipefail
 

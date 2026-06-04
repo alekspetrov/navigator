@@ -53,8 +53,40 @@ def _read_plugin_version() -> str:
 
 CURRENT_VERSION = _read_plugin_version()
 
-# Config sections added in each version
+# Config sections added in each version.
+#
+# Each top-level key is the Navigator version that INTRODUCED the config
+# block(s) under it. get_missing_configs seeds a block only when the user's
+# recorded version is <= the introduction version AND the block is absent
+# (see get_missing_configs), so this is purely additive and idempotent —
+# a user upgrading from an old version receives every block introduced after
+# them, while a user already ahead of a given version is assumed to have it.
+#
+# Default shapes are copied verbatim from the live .agent/.nav-config.json so
+# upgraded users get the same discoverable opt-out keys the project ships with.
 VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
+    "5.0.0": {
+        "tom_features": {
+            "verification_checkpoints": True,
+            "confirmation_threshold": "high-stakes",
+            "profile_enabled": True,
+            "diagnose_enabled": True,
+            "belief_anchors": False
+        }
+    },
+    "5.1.0": {
+        "loop_mode": {
+            "enabled": False,
+            "max_iterations": 5,
+            "stagnation_threshold": 3,
+            "exit_requires_explicit_signal": True,
+            "show_status_block": True,
+            "iteration_approval": "none",
+            "periodic_interval": 3,
+            "never_pause_on_stagnation": False,
+            "stagnation_diversify_strategy": "combine"
+        }
+    },
     "5.4.0": {
         "simplification": {
             "enabled": False,
@@ -75,6 +107,83 @@ VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
             "defer_to_skills": True,
             "complexity_threshold": 0.5,
             "show_phase_indicator": True
+        }
+    },
+    "6.0.0": {
+        "knowledge_graph": {
+            "enabled": True,
+            "auto_capture_corrections": True,
+            "auto_capture_decisions": True,
+            "auto_surface_relevant": True,
+            "max_session_memories": 5,
+            "confidence_decay_rate": 0.01,
+            "staleness_threshold_days": 90,
+            "git_tracked": True
+        }
+    },
+    "6.1.0": {
+        "multi_agent": {
+            "enabled": True,
+            "default_workflow": "standard",
+            "auto_dashboard": False,
+            "parallel_limit": 3,
+            "retry_attempts": 2,
+            "phase_timeout_seconds": 180
+        }
+    },
+    "6.9.0": {
+        "session_start_hook": {
+            "enabled": True,
+            "include_sections": [
+                "navigator",
+                "marker",
+                "config",
+                "graph",
+                "profile",
+                "tasks",
+                "auto_update"
+            ],
+            "char_budget": 9500
+        }
+    },
+    "6.10.0": {
+        "compact_hook": {
+            "enabled": True,
+            "include_transcript_summary": True,
+            "include_git_state": True,
+            "char_budget": 8000,
+            "append_post_compact_summary": True
+        }
+    },
+    "6.11.0": {
+        "task_graph_sync_hook": {
+            "enabled": True
+        },
+        "workflow_state_hook": {
+            "enabled": True
+        },
+        "profile_sync_hook": {
+            "enabled": True
+        }
+    },
+    "6.11.1": {
+        "workflow_enforcer_hook": {
+            "enabled": True,
+            "strict_block": True
+        }
+    },
+    "6.12.0": {
+        "read_guard_hook": {
+            "enabled": True,
+            "warn_threshold": 3,
+            "escalate_threshold": 5,
+            "strict_block": True,
+            "allowlist": [
+                "DEVELOPMENT-README.md",
+                ".nav-config.json",
+                ".user-profile.json",
+                "knowledge/graph.json"
+            ]
         }
     }
 }

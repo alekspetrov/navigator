@@ -1,10 +1,10 @@
 # TASK-42: Audit Remediation Roadmap
 
-**Status**: 🗺️ Active (umbrella)
+**Status**: 🗺️ Active (umbrella) — all remediation WPs (wp1–wp11) shipped; only wp12 security re-sweep outstanding
 **Created**: 2026-06-02
 **Priority**: High
 **Source**: 10-dimension audit `wf_0dc1b9ce-7d8` (86 verified findings) → remediation plan `wf_187896bb-5af`
-**Shipped already**: critical hook-manifest regression fixed in **v6.15.6**
+**Shipped already**: critical hook-manifest regression fixed in **v6.15.6**; all remediation work-packages wp1–wp11 (TASK-43…51 + wp10/TASK-25) shipped to `main`. **Only the wp12 security re-sweep remains** (see Open Gap).
 
 ---
 

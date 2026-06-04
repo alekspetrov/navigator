@@ -1,6 +1,6 @@
 # TASK-52: Docs & config drift cleanup
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-06-04
 **Created**: 2026-06-02
 **Work-package**: `wp9-docs-config`
 **Phase**: 5 — Docs & config reconciliation
@@ -56,14 +56,14 @@ All changes are doc/config string edits plus one small Python dict extension; no
 
 ## Acceptance Criteria
 
-- [ ] grep -nE '27 skills|19 skills' README.md returns nothing; README no longer hardcodes a skill count
-- [ ] CLAUDE.md config sample shows "version": "6.15.6" and is labelled a minimal subset; the ~15k token figure is corrected to ~7k; /nav:update-doc no longer appears in CLAUDE.md
-- [ ] config_migrator VERSION_CONFIGS contains tom_features, loop_mode, knowledge_graph, multi_agent, and all *_hook toggle blocks (incl. session_start_hook) keyed by introduction version; a unit/regression test migrates a synthetic v5.3.0 config and asserts all v5.x/v6.x blocks are seeded and a second run is a no-op (idempotent)
-- [ ] .agent/.nav-config.json contains a session_start_hook block; python3 hooks/nav_session_start.py still emits its payload unchanged with the block present (smoke test)
-- [ ] version-management.md Version Reference Map lists only locations that exist (no plugins[0].version, no README status/roadmap/footer lines); the embedded audit script run against the repo at v6.15.6 exits 0 with zero ERRORS
-- [ ] neither .claude-plugin/plugin.json nor .claude-plugin/marketplace.json contains aleks@example.com (grep -r 'aleks@example.com' .claude-plugin returns nothing)
-- [ ] DEVELOPMENT-README.md active task list does not include TASK-40; the bump-checklist count is consistent between DEVELOPMENT-README and version-management.md
-- [ ] json.load succeeds on both manifests and .nav-config.json after edits (no JSON syntax breakage)
+- [x] grep -nE '27 skills|19 skills' README.md returns nothing; README no longer hardcodes a skill count
+- [x] CLAUDE.md config sample shows "version": "6.15.6" and is labelled a minimal subset; the ~15k token figure is corrected to ~7k; /nav:update-doc no longer appears in CLAUDE.md
+- [x] config_migrator VERSION_CONFIGS contains tom_features, loop_mode, knowledge_graph, multi_agent, and all *_hook toggle blocks (incl. session_start_hook) keyed by introduction version; a unit/regression test migrates a synthetic v5.3.0 config and asserts all v5.x/v6.x blocks are seeded and a second run is a no-op (idempotent)
+- [x] .agent/.nav-config.json contains a session_start_hook block; python3 hooks/nav_session_start.py still emits its payload unchanged with the block present (smoke test)
+- [x] version-management.md Version Reference Map lists only locations that exist (no plugins[0].version, no README status/roadmap/footer lines); the embedded audit script run against the repo at v6.15.6 exits 0 with zero ERRORS
+- [x] neither .claude-plugin/plugin.json nor .claude-plugin/marketplace.json contains aleks@example.com (grep -r 'aleks@example.com' .claude-plugin returns nothing)
+- [x] DEVELOPMENT-README.md active task list does not include TASK-40; the bump-checklist count is consistent between DEVELOPMENT-README and version-management.md
+- [x] json.load succeeds on both manifests and .nav-config.json after edits (no JSON syntax breakage)
 
 ## Technical Decisions
 
@@ -86,6 +86,6 @@ All changes are doc/config string edits plus one small Python dict extension; no
 
 ## Done
 
-- [ ] All acceptance criteria checked
-- [ ] Tests pass in CI (once TASK-43 gate exists)
-- [ ] Committed + roadmap (TASK-42) status updated
+- [x] All acceptance criteria checked
+- [x] Tests pass in CI (once TASK-43 gate exists)
+- [x] Committed + roadmap (TASK-42) status updated

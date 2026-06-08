@@ -60,7 +60,7 @@ def _hook_enabled(root: Path) -> bool:
 
 
 def _resolve_plugin_dir() -> Path | None:
-    env = os.environ.get("CLAUDE_PLUGIN_DIR")
+    env = os.environ.get("CLAUDE_PLUGIN_ROOT") or os.environ.get("CLAUDE_PLUGIN_DIR")
     if env and Path(env).is_dir():
         return Path(env)
     candidates = [

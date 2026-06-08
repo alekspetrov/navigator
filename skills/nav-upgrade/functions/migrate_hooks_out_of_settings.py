@@ -9,7 +9,7 @@ Navigator v6.13.0+ ships its lifecycle hooks via the plugin manifest
 merged the same hook entries into the user's project `.claude/settings.json`
 via skills/nav-init/functions/settings_merger.py. Those entries are now
 duplicated (plugin manifest + user settings) AND broken (user-settings hooks
-don't get `${CLAUDE_PLUGIN_DIR}` substitution — only plugin-manifest hooks
+don't get `${CLAUDE_PLUGIN_ROOT}` substitution — only plugin-manifest hooks
 do). Both problems disappear if we strip the Navigator-installed entries
 out of `.claude/settings.json` and let the plugin manifest handle them.
 

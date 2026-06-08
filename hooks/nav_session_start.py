@@ -242,7 +242,7 @@ def _section_open_tasks(root: Path) -> str | None:
 
 
 def _resolve_plugin_dir() -> Path | None:
-    env = os.environ.get("CLAUDE_PLUGIN_DIR")
+    env = os.environ.get("CLAUDE_PLUGIN_ROOT") or os.environ.get("CLAUDE_PLUGIN_DIR")
     if env:
         p = Path(env)
         if p.is_dir():

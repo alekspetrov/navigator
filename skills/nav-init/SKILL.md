@@ -154,7 +154,7 @@ If `CLAUDE.md` doesn't exist:
 
 ### 6. Claude Code Hooks (Plugin Manifest)
 
-**Navigator's lifecycle hooks ship with the plugin manifest** (`.claude-plugin/plugin.json`'s top-level `hooks` field) starting v6.13.0+. They are *not* merged into the project's `.claude/settings.json` — Claude Code only substitutes `${CLAUDE_PLUGIN_DIR}` for hooks declared in a plugin manifest, so merging them into user settings (the prior approach) produced broken commands like `/hooks/X.py`.
+**Navigator's lifecycle hooks ship with the plugin manifest** (`.claude-plugin/plugin.json`'s top-level `hooks` field) starting v6.13.0+. They are *not* merged into the project's `.claude/settings.json` — Claude Code only substitutes `${CLAUDE_PLUGIN_ROOT}` for hooks declared in a plugin manifest, so merging them into user settings (the prior approach) produced broken commands like `/hooks/X.py`.
 
 The plugin registers the following hooks automatically when the plugin is installed:
 

@@ -34,7 +34,7 @@ def _make_root(tmp: Path, hook_names, manifest_hooks):
 def _cmd(name):
     return {
         "type": "command",
-        "command": f'python3 "${{CLAUDE_PLUGIN_DIR:-x}}/hooks/{name}"',
+        "command": f'python3 "${{CLAUDE_PLUGIN_ROOT:-x}}/hooks/{name}"',
         "timeout": 5,
     }
 

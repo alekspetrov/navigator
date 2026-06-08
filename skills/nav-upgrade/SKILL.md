@@ -328,7 +328,7 @@ git commit -m "chore: update CLAUDE.md to Navigator v4.3.0"
 
 **v6.13.0+**: Navigator's lifecycle hooks now ship with the plugin manifest
 (`.claude-plugin/plugin.json`'s top-level `hooks` field). Claude Code only
-substitutes `${CLAUDE_PLUGIN_DIR}` for hooks declared in a plugin manifest,
+substitutes `${CLAUDE_PLUGIN_ROOT}` for hooks declared in a plugin manifest,
 so the prior approach (merging hooks into the project's `.claude/settings.json`)
 produced broken commands like `/hooks/X.py` (empty expansion). Hooks ship
 with the plugin from v6.13.0 onwards.
@@ -337,7 +337,7 @@ with the plugin from v6.13.0 onwards.
 `.claude/settings.json` and must be removed to prevent double-firing:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 if [ ! -d "$PLUGIN_DIR" ]; then
   PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 fi

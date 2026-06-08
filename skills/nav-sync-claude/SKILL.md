@@ -40,7 +40,7 @@ fi
 Use `version_detector.py` to analyze CLAUDE.md:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/version_detector.py" CLAUDE.md
 ```
@@ -88,7 +88,7 @@ echo "📦 Backup created: CLAUDE.md.backup"
 Use `claude_updater.py` to parse current CLAUDE.md:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/claude_updater.py" extract CLAUDE.md > /tmp/nav-customizations.json
 ```
@@ -107,7 +107,7 @@ This extracts:
 Apply latest template with extracted customizations:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Template fetching now automatic via get_template_path():
 # 1. Tries GitHub (version-matched)
@@ -186,7 +186,7 @@ Rollback if needed: mv CLAUDE.md.backup CLAUDE.md
 If config exists, migrate to latest version with new sections:
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 if [ -f ".agent/.nav-config.json" ]; then
   python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/config_migrator.py" .agent/.nav-config.json
@@ -213,7 +213,7 @@ Changes:
 
 **Dry run** (preview changes without applying):
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 python3 "$PLUGIN_DIR/skills/nav-sync-claude/functions/config_migrator.py" .agent/.nav-config.json --dry-run
 ```

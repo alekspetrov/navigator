@@ -34,7 +34,7 @@ Auto-invoke when user mentions:
 Before gathering requirements, query the knowledge graph for what we already know about API/endpoint work in this project. Mirrors `navigator-research`'s Phase 0.
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
   --action query --concept api \
@@ -343,7 +343,7 @@ After Step 7, emit an `execution_summary` JSON block. This is the parity equival
 **Ingestion** (run from project root):
 
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 echo '<execution_summary JSON>' | python3 "$PLUGIN_DIR/skills/nav-graph/functions/execution_to_graph.py" -
 ```

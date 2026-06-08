@@ -311,7 +311,7 @@ HOOK_EMITS_PAYLOAD = {"SessionStart", "PreCompact", "PostCompact"}
 
 
 def _resolve_plugin_dir_for_test() -> str:
-    """Find the latest cached plugin install dir for use as CLAUDE_PLUGIN_DIR in smoke tests."""
+    """Find the latest cached plugin install dir for use as CLAUDE_PLUGIN_ROOT in smoke tests."""
     cache_root = Path.home() / ".claude" / "plugins" / "cache" / "navigator-marketplace" / "navigator"
     if not cache_root.is_dir():
         return ""
@@ -326,7 +326,7 @@ def _resolve_plugin_dir_for_test() -> str:
 def verify_hooks(root: Path, plugin: dict) -> Tuple[List[Dict], List[Dict]]:
     """
     Smoke-test every plugin manifest hook command end-to-end under both
-    set and unset $CLAUDE_PLUGIN_DIR.
+    set and unset $CLAUDE_PLUGIN_ROOT.
 
     Detects the v6.14.0 class of bug where a manifest shell guard silently
     short-circuits (exit 0, no stdout, no stderr) when the variable is
@@ -342,8 +342,8 @@ def verify_hooks(root: Path, plugin: dict) -> Tuple[List[Dict], List[Dict]]:
     passed: List[Dict] = []
     failed: List[Dict] = []
 
-    base_env = {k: v for k, v in os.environ.items() if k != "CLAUDE_PLUGIN_DIR"}
-    set_env = {**base_env, "CLAUDE_PLUGIN_DIR": plugin_dir} if plugin_dir else base_env
+    base_env = {k: v for k, v in os.environ.items() if k != "CLAUDE_PLUGIN_ROOT"}
+    set_env = {**base_env, "CLAUDE_PLUGIN_ROOT": plugin_dir} if plugin_dir else base_env
 
     for event, entries in hooks.items():
         fixture = HOOK_STDIN_FIXTURES.get(event, '{"cwd": "."}')
@@ -463,7 +463,7 @@ def main():
     parser.add_argument("--check-version", type=str, help="Verify specific version")
     parser.add_argument("--verify-tag", type=str, help="Verify tag contains all skills")
     parser.add_argument("--verify-hooks", action="store_true",
-                        help="Smoke-test plugin manifest hook commands under set/unset CLAUDE_PLUGIN_DIR")
+                        help="Smoke-test plugin manifest hook commands under set/unset CLAUDE_PLUGIN_ROOT")
     parser.add_argument("--verify-hook-paths", action="store_true",
                         help="Statically assert every plugin.json hook command resolves to an existing hooks/<name>.py file")
     parser.add_argument("--json", action="store_true", help="Output as JSON")

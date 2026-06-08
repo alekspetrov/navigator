@@ -1,6 +1,6 @@
 {
   "name": "navigator",
-  "version": "6.15.6",
+  "version": "6.15.7",
   "description": "Finish What You Start - Sessions that last, AI that learns, Features that ship. Context engineering + Theory of Mind + Knowledge Graph + Loop Mode + Task Mode. Features Project Knowledge Graph (unified search, experiential memory), unified workflow orchestration, auto-update on session start, ToM-based verification checkpoints, bilateral modeling, quality detection, enhanced context markers, and Loop Mode. 92% token reduction with proven strategies. Based on Riedl & Weidmann 2025 Human-AI Synergy research.",
   "author": {
     "name": "Aleks Petrov",
@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_session_start.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_session_start.py\"",
             "timeout": 10
           }
         ]
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_pre_compact.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_pre_compact.py\"",
             "timeout": 30
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_post_compact.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_post_compact.py\"",
             "timeout": 10
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_workflow_state.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_workflow_state.py\"",
             "timeout": 5
           }
         ]
@@ -107,7 +107,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/workflow_enforcer.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/workflow_enforcer.py\"",
             "timeout": 5
           }
         ]
@@ -119,7 +119,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_read_guard.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_read_guard.py\"",
             "timeout": 5
           }
         ]
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_task_graph_sync.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_task_graph_sync.py\"",
             "timeout": 10
           }
         ]
@@ -141,7 +141,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_DIR:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_profile_sync.py\"",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_profile_sync.py\"",
             "timeout": 10
           }
         ]

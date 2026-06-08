@@ -920,7 +920,7 @@ Navigator config in `.agent/.nav-config.json` (minimal subset shown; the live fi
 
 ```json
 {
-  "version": "6.15.6",
+  "version": "6.15.7",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",

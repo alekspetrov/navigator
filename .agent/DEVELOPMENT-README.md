@@ -78,7 +78,7 @@ Strategic loading beats bulk loading.
 
 **Project**: Claude Code plugin for Navigator
 **Tech**: Markdown skills, JSON manifests, Python hook scripts
-**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.6)
+**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.7)
 
 **New here?** Read in order:
 1. [Project Architecture](./system/project-architecture.md) — plugin structure, manifest, hook wiring
@@ -178,9 +178,11 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 
 ---
 
-## Lifecycle Hooks (v6.9.0 → v6.15.6)
+## Lifecycle Hooks (v6.9.0 → v6.15.7)
 
 Navigator ships eight Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
+
+Hook commands resolve via `${CLAUDE_PLUGIN_ROOT}` (the installed plugin directory) with a marketplace-path fallback. **v6.15.7** corrected a long-standing typo where the manifest referenced the non-existent `${CLAUDE_PLUGIN_DIR}` — it always expanded empty, forcing every install onto the fallback (the `main`-tracking marketplace checkout) since hooks moved into the manifest in v6.13.0.
 
 ### What ships
 
@@ -284,5 +286,5 @@ cd ~/Projects/tmp/nav-test
 
 ---
 
-**Last Updated**: 2026-06-02 (v6.15.6 — removed deleted nav_commit_reminder.py from public manifest; hook count corrected to nine)
+**Last Updated**: 2026-06-08 (v6.15.7 — corrected plugin hook env var `CLAUDE_PLUGIN_DIR` → `CLAUDE_PLUGIN_ROOT`; published audit-remediation wp1–wp11)
 **Powered By**: Navigator (Complete Framework)

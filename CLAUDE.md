@@ -920,7 +920,7 @@ Navigator config in `.agent/.nav-config.json` (minimal subset shown; the live fi
 
 ```json
 {
-  "version": "6.15.7",
+  "version": "6.16.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -963,5 +963,5 @@ Navigator config in `.agent/.nav-config.json` (minimal subset shown; the live fi
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2026-06-02
-**Navigator Version**: 6.15.7
+**Last Updated**: 2026-06-15
+**Navigator Version**: 6.16.0

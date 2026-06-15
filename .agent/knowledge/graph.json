@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-03T14:24:09.338264Z",
+  "last_updated": "2026-06-15T09:45:33.076333+00:00",
   "stats": {
-    "total_nodes": 136,
-    "total_edges": 731,
-    "memory_count": 37
+    "total_nodes": 149,
+    "total_edges": 750,
+    "memory_count": 49
   },
   "nodes": {
     "tasks": {
@@ -648,6 +648,20 @@
           "knowledge",
           "api",
           "database"
+        ]
+      },
+      "TASK-54": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-54-nav-pilot-dispatch-skill.md",
+        "title": "nav-pilot \u2014 Dispatch Handoff Skill (Navigator \u2192 Pilot)",
+        "status": "completed",
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
         ]
       }
     },
@@ -1894,6 +1908,210 @@
         ],
         "created": "2026-05-18",
         "last_validated": "2026-05-18"
+      },
+      "mem-038": {
+        "type": "decision",
+        "summary": "----------: -------- - -----------",
+        "path": "memories/decisions/mem-038.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-039": {
+        "type": "decision",
+        "summary": "Skill boundary: new skill - One pattern per skill; nav-task authors, nav-pilot dispatches",
+        "path": "memories/decisions/mem-039.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-040": {
+        "type": "decision",
+        "summary": "Validation: delegate to Pilot - Confirmed: spec checking is Pilot's job, not ours",
+        "path": "memories/decisions/mem-040.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-041": {
+        "type": "decision",
+        "summary": "Issue interface: `gh` - Confirmed: GitHub-only access",
+        "path": "memories/decisions/mem-041.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-042": {
+        "type": "decision",
+        "summary": "Target repo: current origin (override optional) - `gh` defaults to the repo you're in; least config",
+        "path": "memories/decisions/mem-042.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-043": {
+        "type": "decision",
+        "summary": "Safety on dispatch: confirm + `--dry-run` - Outward-facing artifact; ToM high-stakes checkpoint",
+        "path": "memories/decisions/mem-043.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "skills",
+          "knowledge",
+          "deployment",
+          "theory of mind",
+          "authentication"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-044": {
+        "type": "decision",
+        "summary": "----------: -------- - -----------",
+        "path": "memories/decisions/mem-044.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-045": {
+        "type": "decision",
+        "summary": "Skill boundary: new skill - One pattern per skill; nav-task authors, nav-pilot dispatches",
+        "path": "memories/decisions/mem-045.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-046": {
+        "type": "decision",
+        "summary": "Validation: delegate to Pilot - Confirmed: spec checking is Pilot's job, not ours",
+        "path": "memories/decisions/mem-046.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-047": {
+        "type": "decision",
+        "summary": "Issue interface: `gh` - Confirmed: GitHub-only access",
+        "path": "memories/decisions/mem-047.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-048": {
+        "type": "decision",
+        "summary": "Target repo: current origin (override optional) - `gh` defaults to the repo you're in; least config",
+        "path": "memories/decisions/mem-048.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
+      },
+      "mem-049": {
+        "type": "decision",
+        "summary": "Safety on dispatch: confirm + `--dry-run` - Outward-facing artifact; ToM high-stakes checkpoint",
+        "path": "memories/decisions/mem-049.md",
+        "confidence": 0.95,
+        "concepts": [
+          "deployment",
+          "context",
+          "knowledge",
+          "skills",
+          "authentication",
+          "theory of mind",
+          "testing"
+        ],
+        "created": "2026-06-15",
+        "last_validated": "2026-06-15"
       }
     },
     "files": {}
@@ -5956,6 +6174,101 @@
       "from": "TASK-49",
       "to": "context",
       "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-54",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "mem-038",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-039",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-040",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-041",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-042",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-043",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-044",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-045",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-046",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-047",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-048",
+      "to": "TASK-54",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-049",
+      "to": "TASK-54",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -6074,7 +6387,20 @@
       "TASK-46",
       "TASK-47",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "context": [
       "TASK-32",
@@ -6155,7 +6481,20 @@
       "TASK-46",
       "TASK-47",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "skills": [
       "TASK-32",
@@ -6243,7 +6582,20 @@
       "TASK-46",
       "TASK-47",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "session": [
       "TASK-32",
@@ -6316,7 +6668,20 @@
       "2025-01-21-task30-verification-plan",
       "TASK-41",
       "TASK-44",
-      "TASK-50"
+      "TASK-50",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "workflow": [
       "TASK-33",
@@ -6567,7 +6932,20 @@
       "TASK-46",
       "TASK-47",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "code quality": [
       "TASK-19",
@@ -6609,7 +6987,20 @@
       "TASK-46",
       "TASK-47",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6619,7 +7010,20 @@
       "SOP-plugin_release",
       "before-compact-2025-01-23-task35-knowledge-graph",
       "2025-01-20-repositioning-finish-what-you-start",
-      "2025-01-20-v520-release-complete"
+      "2025-01-20-v520-release-complete",
+      "TASK-54",
+      "mem-038",
+      "mem-039",
+      "mem-040",
+      "mem-041",
+      "mem-042",
+      "mem-043",
+      "mem-044",
+      "mem-045",
+      "mem-046",
+      "mem-047",
+      "mem-048",
+      "mem-049"
     ],
     "simplification": [
       "TASK-02",

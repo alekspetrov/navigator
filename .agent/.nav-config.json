@@ -58,6 +58,11 @@
     "check_interval_hours": 1,
     "last_check": "2026-06-08T16:11:33.109699"
   },
+  "pilot": {
+    "enabled": true,
+    "label": "pilot",
+    "repo": null
+  },
   "session_start_hook": {
     "enabled": true,
     "include_sections": [

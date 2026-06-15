@@ -45,6 +45,7 @@
     "./skills/nav-marker",
     "./skills/nav-compact",
     "./skills/nav-task",
+    "./skills/nav-pilot",
     "./skills/nav-sop",
     "./skills/nav-skill-creator",
     "./skills/nav-release",

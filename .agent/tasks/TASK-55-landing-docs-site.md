@@ -137,8 +137,15 @@ Schema-page audit surfaced live `.nav-config.json` keys NOT in CLAUDE.md (docume
 `simplification.{model,skip_patterns,max_file_size,preserve_comments,rules}`, `auto_update.last_check`. Slash-commands
 page note: repo is **skills-only** (no `commands/` dir) — only the 5 canonical legacy `/nav:*` commands documented.
 
-**Remaining Phase 2**: concept-page body expansion (currently short stubs from CLAUDE.md). Then Phase 3 polish
-(brand assets/OG image) + DNS (user).
+## Phase 2 — Concept bodies DONE (2026-06-25)
+Expanded the 6 concept stubs into full mental-model pages via 4 parallel agents (source = `.agent/philosophy/*` +
+CLAUDE.md): context-engineering, theory-of-mind, task-mode, loop-mode, knowledge-graph, autonomous-completion.
+Concepts carry the "why" (philosophy/rationale); config keys deferred to `/configuration/*` (no duplication). Build
+green (60 pages, Pagefind 55); all 6 verified 200 on production. **Phase 2 (docs migration) is content-complete.**
+
+**Remaining**: Phase 3 polish (brand assets / logo / OG image — none exist yet) + DNS (user). Separate pre-existing
+bug: `QUICK-START.md` in the plugin repo still ships the old `jitd` plugin name (Getting Started page should fix on
+import).
 
 ## Phase 4 — Deployed (2026-06-24)
 Live on Vercel (project `aleksei-petrovs-projects/navigator-site`, Next.js auto-detected, build 58s):

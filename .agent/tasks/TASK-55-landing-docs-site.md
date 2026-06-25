@@ -143,9 +143,17 @@ CLAUDE.md): context-engineering, theory-of-mind, task-mode, loop-mode, knowledge
 Concepts carry the "why" (philosophy/rationale); config keys deferred to `/configuration/*` (no duplication). Build
 green (60 pages, Pagefind 55); all 6 verified 200 on production. **Phase 2 (docs migration) is content-complete.**
 
-**Remaining**: Phase 3 polish (brand assets / logo / OG image — none exist yet) + DNS (user). Separate pre-existing
-bug: `QUICK-START.md` in the plugin repo still ships the old `jitd` plugin name (Getting Started page should fix on
-import).
+**Remaining**: Phase 3 polish (brand assets / logo / OG image — none exist yet) + DNS (user).
+
+## Stale `jitd` plugin name — FIXED (2026-06-25, commit 36b06df)
+Plugin was renamed jitd → navigator ~6 months ago but live install/usage docs still shipped the old name + wrong repo
+(`jitd/official`, `nav-plugin`). Fixed: `docs/QUICK-START.md`, `.claude-plugin/README.md`, `docs/CONFIGURATION.md`,
+`docs/DEPLOYMENT.md` (full jitd→navigator + nav-plugin→navigator pass), `skills/plugin-slash-command/SKILL.md` example
+path, `.agent/system/project-architecture.md` + release SOP install examples. **Left intentional**: migration scripts
+(`migrate-config.sh`, `post-install.sh`), legacy `/jitd:` detection in `nav-sync-claude`/`plugin-slash-command`
+validators, CHANGELOG/release/archive history, `mem-036` rename pitfall. The site (`navigator-site`) was already clean
+— Phase 2 authoring applied the correct install command on import. Note: `DEPLOYMENT.md` is still v1.0.x-era stale
+beyond the name (shows a `commands` array, v1.0.0, hardcoded 92%/10x metrics) — separate cleanup if it matters.
 
 ## Phase 4 — Deployed (2026-06-24)
 Live on Vercel (project `aleksei-petrovs-projects/navigator-site`, Next.js auto-detected, build 58s):

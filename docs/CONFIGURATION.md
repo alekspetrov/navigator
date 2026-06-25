@@ -619,8 +619,8 @@ Full PM/chat integration, documentation freshness checks.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/jitd/plugin/issues)
-- **Discussions**: [Community](https://github.com/jitd/plugin/discussions)
+- **Issues**: [GitHub Issues](https://github.com/alekspetrov/navigator/issues)
+- **Discussions**: [Community](https://github.com/alekspetrov/navigator/discussions)
 - **Examples**: See [examples/](../examples/) for complete configs
 
 ---

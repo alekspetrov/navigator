@@ -71,7 +71,7 @@ nav-plugin/
   },
   "plugins": [
     {
-      "name": "jitd",
+      "name": "navigator",
       "version": "1.3.0",  // Keep in sync with metadata.version
       "repository": "https://github.com/alekspetrov/nav-plugin"
     }
@@ -152,7 +152,7 @@ cd ~/Projects/tmp/nav-test
 /plugin marketplace add file:///Users/aleks.petrov/Projects/startups/nav-plugin
 
 # 4. Reinstall and test
-/plugin install jitd
+/plugin install navigator
 /nav:init  # or other command
 
 # 5. Verify results
@@ -191,7 +191,7 @@ cat CLAUDE.md
 /plugin marketplace add alekspetrov/nav-plugin
 
 # Install plugin
-/plugin install jitd
+/plugin install navigator
 
 # Use commands
 /nav:init

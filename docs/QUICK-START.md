@@ -19,8 +19,8 @@ Get Navigator running in your project in 5 minutes.
 
 ```bash
 # Via Claude Code marketplace
-/plugin marketplace add jitd/official
-/plugin install jitd
+/plugin marketplace add alekspetrov/navigator
+/plugin install navigator
 ```
 
 ### Step 2: Initialize in Your Project
@@ -382,15 +382,15 @@ Metrics to track:
 
 - **Documentation**: [Full Docs](./README.md)
 - **Configuration**: [Configuration Guide](./CONFIGURATION.md)
-- **Issues**: [GitHub Issues](https://github.com/jitd/plugin/issues)
-- **Community**: [GitHub Discussions](https://github.com/jitd/plugin/discussions)
+- **Issues**: [GitHub Issues](https://github.com/alekspetrov/navigator/issues)
+- **Community**: [GitHub Discussions](https://github.com/alekspetrov/navigator/discussions)
 
 ---
 
 ## Summary
 
 **5-Minute Setup**:
-1. `/plugin install jitd`
+1. `/plugin install navigator`
 2. `/nav:init`
 3. Customize navigator
 

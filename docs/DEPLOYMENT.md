@@ -38,7 +38,7 @@ This is the **actual working schema** (as of v1.0.1):
 
 ```json
 {
-  "name": "jitd",
+  "name": "navigator",
   "version": "1.0.1",
   "description": "Context-efficient documentation system...",
   "author": {
@@ -46,8 +46,8 @@ This is the **actual working schema** (as of v1.0.1):
     "email": "aleks@example.com",
     "url": "https://github.com/alekspetrov"
   },
-  "homepage": "https://github.com/alekspetrov/nav-plugin",
-  "repository": "https://github.com/alekspetrov/nav-plugin",
+  "homepage": "https://github.com/alekspetrov/navigator",
+  "repository": "https://github.com/alekspetrov/navigator",
   "license": "MIT",
   "keywords": ["documentation", "context-management", "token-optimization"],
   "commands": [
@@ -84,13 +84,13 @@ A **marketplace** is a Git repository (usually GitHub) that hosts Claude Code pl
 ### How Marketplaces Work
 
 ```
-GitHub Repo (nav-plugin)
+GitHub Repo (navigator)
     ↓
 Contains .claude-plugin/marketplace.json
     ↓
 Users add marketplace: /plugin marketplace add user/repo
     ↓
-Users install plugin: /plugin install jitd
+Users install plugin: /plugin install navigator
     ↓
 Plugin files copied to user's project
 ```
@@ -107,7 +107,7 @@ Plugin files copied to user's project
 
 **Repository structure**:
 ```
-github.com/alekspetrov/nav-plugin
+github.com/alekspetrov/navigator
 ├── .claude-plugin/
 │   ├── marketplace.json
 │   └── README.md
@@ -120,10 +120,10 @@ github.com/alekspetrov/nav-plugin
 **How users install**:
 ```bash
 # Add marketplace
-/plugin marketplace add alekspetrov/nav-plugin
+/plugin marketplace add alekspetrov/navigator
 
 # Install plugin
-/plugin install jitd
+/plugin install navigator
 
 # Use plugin
 /nav:init
@@ -147,7 +147,7 @@ github.com/alekspetrov/nav-plugin
 **How users install**:
 ```bash
 # Marketplace pre-added (official)
-/plugin install jitd
+/plugin install navigator
 ```
 
 **Benefits**:
@@ -169,7 +169,7 @@ github.com/alekspetrov/nav-plugin
 github.com/alekspetrov/claude-plugins
 ├── .claude-plugin/
 │   └── marketplace.json  # Lists all plugins
-├── jitd/
+├── navigator/
 │   ├── .claude/
 │   └── templates/
 ├── other-plugin/
@@ -190,7 +190,7 @@ github.com/alekspetrov/claude-plugins
 
 **Option A: Via GitHub Website**
 1. Go to github.com/new
-2. Repository name: `nav-plugin`
+2. Repository name: `navigator`
 3. Description: "Navigator plugin for Claude Code"
 4. Public (recommended for community)
 5. Don't initialize (we have existing code)
@@ -198,10 +198,10 @@ github.com/alekspetrov/claude-plugins
 
 **Option B: Via GitHub CLI**
 ```bash
-cd /Users/aleks.petrov/Projects/startups/nav-plugin
+cd /Users/aleks.petrov/Projects/startups/navigator
 
 # Create repo
-gh repo create alekspetrov/nav-plugin \
+gh repo create alekspetrov/navigator \
   --public \
   --description "Navigator plugin for Claude Code - 92% token reduction" \
   --source=. \
@@ -211,10 +211,10 @@ gh repo create alekspetrov/nav-plugin \
 ### Step 2: Push Code to GitHub
 
 ```bash
-cd /Users/aleks.petrov/Projects/startups/nav-plugin
+cd /Users/aleks.petrov/Projects/startups/navigator
 
 # Add remote
-git remote add origin https://github.com/alekspetrov/nav-plugin.git
+git remote add origin https://github.com/alekspetrov/navigator.git
 
 # Push
 git push -u origin main
@@ -226,13 +226,13 @@ Ensure `.claude-plugin/marketplace.json` is correct:
 
 ```json
 {
-  "name": "jitd",
+  "name": "navigator",
   "displayName": "Navigator - Navigator",
   "version": "1.0.0",
   "description": "Context-efficient documentation system...",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alekspetrov/nav-plugin"  // Update this!
+    "url": "https://github.com/alekspetrov/navigator"  // Update this!
   }
 }
 ```
@@ -263,8 +263,8 @@ First public release of Navigator plugin for Claude Code.
 
 ## Installation
 \`\`\`bash
-/plugin marketplace add alekspetrov/nav-plugin
-/plugin install jitd
+/plugin marketplace add alekspetrov/navigator
+/plugin install navigator
 /nav:init
 \`\`\`
 
@@ -284,10 +284,10 @@ In a **different project**, test the installation:
 
 ```bash
 # Add your marketplace
-/plugin marketplace add alekspetrov/nav-plugin
+/plugin marketplace add alekspetrov/navigator
 
 # Install plugin
-/plugin install jitd
+/plugin install navigator
 
 # Verify files copied
 ls .claude/commands/
@@ -306,10 +306,10 @@ Ensure main README has installation instructions:
 
 \`\`\`bash
 # Add Navigator marketplace
-/plugin marketplace add alekspetrov/nav-plugin
+/plugin marketplace add alekspetrov/navigator
 
 # Install plugin
-/plugin install jitd
+/plugin install navigator
 
 # Initialize in your project
 /nav:init
@@ -324,7 +324,7 @@ Ensure main README has installation instructions:
 
 ```json
 {
-  "name": "jitd",                    // Plugin identifier (lowercase, no spaces)
+  "name": "navigator",                    // Plugin identifier (lowercase, no spaces)
   "displayName": "Navigator - Navigator",  // Shown to users
   "version": "1.0.0",                // Semantic versioning
   "description": "...",              // Short description
@@ -336,7 +336,7 @@ Ensure main README has installation instructions:
 
   "repository": {
     "type": "git",
-    "url": "https://github.com/alekspetrov/nav-plugin"  // Must match actual repo!
+    "url": "https://github.com/alekspetrov/navigator"  // Must match actual repo!
   },
 
   "license": "MIT",
@@ -361,8 +361,8 @@ Ensure main README has installation instructions:
   "examples": [...],                 // Example projects
 
   "support": {                       // Help resources
-    "docs": "https://github.com/alekspetrov/nav-plugin/blob/main/docs/README.md",
-    "issues": "https://github.com/alekspetrov/nav-plugin/issues"
+    "docs": "https://github.com/alekspetrov/navigator/blob/main/docs/README.md",
+    "issues": "https://github.com/alekspetrov/navigator/issues"
   }
 }
 ```
@@ -391,22 +391,22 @@ Must have:
 
 ```bash
 # User runs:
-/plugin marketplace add alekspetrov/nav-plugin
+/plugin marketplace add alekspetrov/navigator
 ```
 
 Claude Code:
-1. Fetches `https://github.com/alekspetrov/nav-plugin`
+1. Fetches `https://github.com/alekspetrov/navigator`
 2. Reads `.claude-plugin/marketplace.json`
-3. Registers marketplace as "alekspetrov/nav-plugin"
+3. Registers marketplace as "alekspetrov/navigator"
 
 ```bash
 # User runs:
-/plugin install jitd
+/plugin install navigator
 ```
 
 Claude Code:
-1. Looks up `jitd` in registered marketplaces
-2. Finds it in `alekspetrov/nav-plugin`
+1. Looks up `navigator` in registered marketplaces
+2. Finds it in `alekspetrov/navigator`
 3. Copies these files to user's project:
    - `.claude/commands/` → User's `.claude/commands/`
    - `templates/` → Available for reference
@@ -451,13 +451,13 @@ gh release create v1.1.0 --title "Navigator v1.1.0" --notes "..."
 
 **Option 1: Manual**
 ```bash
-/plugin update jitd
+/plugin update navigator
 ```
 
 **Option 2: Reinstall**
 ```bash
-/plugin uninstall jitd
-/plugin install jitd
+/plugin uninstall navigator
+/plugin install navigator
 ```
 
 ---
@@ -472,7 +472,7 @@ If you want to host multiple plugins:
 github.com/alekspetrov/claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json          # Lists all plugins
-├── jitd/
+├── navigator/
 │   ├── .claude-plugin/
 │   │   └── plugin.json           # Navigator plugin manifest
 │   ├── .claude/commands/
@@ -492,8 +492,8 @@ github.com/alekspetrov/claude-plugins/
   "version": "1.0.0",
   "plugins": [
     {
-      "name": "jitd",
-      "path": "jitd/",
+      "name": "navigator",
+      "path": "navigator/",
       "version": "1.0.0"
     },
     {
@@ -509,7 +509,7 @@ github.com/alekspetrov/claude-plugins/
 
 ```bash
 /plugin marketplace add alekspetrov/claude-plugins
-/plugin install jitd
+/plugin install navigator
 /plugin install another-plugin
 ```
 
@@ -519,11 +519,11 @@ github.com/alekspetrov/claude-plugins/
 
 ### 1. Direct GitHub (Primary)
 
-**URL**: `https://github.com/alekspetrov/nav-plugin`
+**URL**: `https://github.com/alekspetrov/navigator`
 
 **Installation**:
 ```bash
-/plugin marketplace add alekspetrov/nav-plugin
+/plugin marketplace add alekspetrov/navigator
 ```
 
 **Best for**: Full control, fast updates
@@ -535,7 +535,7 @@ github.com/alekspetrov/claude-plugins/
 **Installation**:
 ```bash
 # Marketplace pre-added
-/plugin install jitd
+/plugin install navigator
 ```
 
 **Best for**: Maximum visibility, official endorsement
@@ -547,7 +547,7 @@ github.com/alekspetrov/claude-plugins/
 **Installation**:
 ```bash
 /plugin marketplace add seth-hobson/claude-code
-/plugin install jitd  # If he includes it
+/plugin install navigator  # If he includes it
 ```
 
 **Best for**: Reaching specific communities
@@ -586,7 +586,7 @@ Early results: 92% less loading overhead (12k vs 150k tokens)
 
 Following this experiment in real-time 🧪
 
-Install: /plugin marketplace add alekspetrov/nav-plugin
+Install: /plugin marketplace add alekspetrov/navigator
 ```
 
 ### Blog Post
@@ -636,7 +636,7 @@ A clear description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce:
-1. Run `/plugin install jitd`
+1. Run `/plugin install navigator`
 2. Run `/nav:init`
 3. See error...
 
@@ -713,7 +713,7 @@ Create `CONTRIBUTING.md`:
 
 ```bash
 # Create GitHub repo
-gh repo create alekspetrov/nav-plugin --public --source=. --push
+gh repo create alekspetrov/navigator --public --source=. --push
 
 # Tag version
 git tag -a v1.0.0 -m "Initial release"
@@ -723,8 +723,8 @@ git push origin v1.0.0
 gh release create v1.0.0 --title "Navigator v1.0.0" --notes "..."
 
 # Test installation
-/plugin marketplace add alekspetrov/nav-plugin
-/plugin install jitd
+/plugin marketplace add alekspetrov/navigator
+/plugin install navigator
 /nav:init
 
 # Update plugin
@@ -737,4 +737,4 @@ git push origin v1.1.0
 
 **Ready to deploy**: Follow steps above to publish Navigator to GitHub and make it available to the world! 🚀
 
-**Support**: Issues at https://github.com/alekspetrov/nav-plugin/issues
+**Support**: Issues at https://github.com/alekspetrov/navigator/issues

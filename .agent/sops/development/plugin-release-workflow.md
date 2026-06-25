@@ -206,7 +206,7 @@ gh run watch --exit-status "$(gh run list --workflow=release.yml --limit=1 --jso
 ```bash
 cd /path/to/test/project
 /plugin marketplace add alekspetrov/nav-plugin
-/plugin install jitd
+/plugin install navigator
 /nav:init
 /nav:start
 ```

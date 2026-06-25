@@ -250,7 +250,7 @@ Next steps:
    Navigator Plugin
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    Version: 2.2.0
-   Installed: /Users/you/.claude/plugins/jitd
+   Installed: /Users/you/.claude/plugins/navigator
    Config: .agent/.nav-config.json
 
    System:

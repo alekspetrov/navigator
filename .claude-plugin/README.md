@@ -78,8 +78,8 @@ From production usage (2-week experiment):
 
 ```bash
 # Via Claude Code marketplace
-/plugin marketplace add jitd/official
-/plugin install jitd
+/plugin marketplace add alekspetrov/navigator
+/plugin install navigator
 ```
 
 ### Initialize in Your Project
@@ -274,9 +274,9 @@ Navigator principles work with any context-limited AI (Cursor, GitHub Copilot, e
 
 ## Support
 
-- **Documentation**: [Full Docs](https://github.com/jitd/plugin/blob/main/docs/README.md)
-- **Issues**: [GitHub Issues](https://github.com/jitd/plugin/issues)
-- **Discussions**: [Community](https://github.com/jitd/plugin/discussions)
+- **Documentation**: [Full Docs](https://github.com/alekspetrov/navigator/blob/main/docs/README.md)
+- **Issues**: [GitHub Issues](https://github.com/alekspetrov/navigator/issues)
+- **Discussions**: [Community](https://github.com/alekspetrov/navigator/discussions)
 - **Twitter**: [@alekspetrov](https://twitter.com/alekspetrov)
 
 ---

@@ -157,6 +157,6 @@ On success the marketplace auto-serves the new tag; users update with `/plugin u
 ## Related
 
 - **Skill**: [`nav-release`](../skills/nav-release/SKILL.md) — the interactive release walkthrough
-- **SOPs**: `.agent/sops/development/` — `navigator-plugin-release-workflow.md`, `version-management.md`
+- **SOP**: `.agent/sops/development/release-workflow.md` — the canonical end-to-end release SOP
 - **Manifests**: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`
 - **CI**: `.github/workflows/release.yml`, `.github/workflows/test.yml`

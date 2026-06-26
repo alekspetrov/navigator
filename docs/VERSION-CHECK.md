@@ -261,7 +261,7 @@ cat .claude-plugin/plugin.json | python3 -m json.tool
 ## See Also
 
 - [Navigator Upgrade Guide](../UPGRADE-v3.4.0.md)
-- [Release Workflow SOP](../.agent/sops/development/navigator-plugin-release-workflow.md)
+- [Release Workflow SOP](../.agent/sops/development/release-workflow.md)
 - [nav-upgrade Skill](../skills/nav-upgrade/SKILL.md)
 
 ---

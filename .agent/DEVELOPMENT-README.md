@@ -162,9 +162,7 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 ## Standard Operating Procedures
 
 **Development**:
-- [Version Management](./sops/development/version-management.md) — single source of truth, 6-file bump checklist
-- [Complete Release Workflow](./sops/development/complete-release-workflow.md) — current canonical guide
-- [Plugin Release Workflow](./sops/development/plugin-release-workflow.md) — Step 0 version sync, semantic versioning
+- [Release Workflow](./sops/development/release-workflow.md) — canonical end-to-end release SOP (SSOT, 6-file bump, CI publish, semver)
 - [Autonomous Completion](./sops/development/autonomous-completion.md) — what to do without being asked
 
 **Integrations**:
@@ -228,7 +226,7 @@ Each hook has an `<event>_hook.enabled` toggle in `.agent/.nav-config.json`. Def
 4. Add an end-to-end smoke test that covers the cooperating-hook composition, not just unit behavior
 
 **Scenario: releasing a new version**
-1. `sops/development/complete-release-workflow.md`
+1. `sops/development/release-workflow.md`
 2. Run `release_validator.py --check-all` and `--verify-hooks`
 3. Bump 6 files (marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json, RELEASE-NOTES-*.md)
 4. Tag → CI publishes via `release.yml`
@@ -267,7 +265,7 @@ cd ~/Projects/tmp/nav-test
 # invoke skill or hook via natural language
 ```
 
-**Release**: see `sops/development/complete-release-workflow.md`.
+**Release**: see `sops/development/release-workflow.md`.
 
 ---
 

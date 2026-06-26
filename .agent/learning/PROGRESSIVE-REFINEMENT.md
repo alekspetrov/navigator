@@ -80,8 +80,7 @@ Load index → Navigate to relevant section → Load only that section → Use 1
 - [TASK-18: Principle to Product](./tasks/TASK-18-principle-to-product-v3.5.md) - 📋 Planning
 
 ### Standard Operating Procedures
-- [Version Management](./sops/development/version-management.md) - Pre-release checklist
-- [Plugin Release](./sops/development/plugin-release-workflow.md) - Step-by-step process
+- [Release Workflow](./sops/development/release-workflow.md) - canonical end-to-end release SOP
 ```
 
 **Token cost**: ~2k
@@ -337,7 +336,7 @@ Savings: 77%
 ```markdown
 # Plugin Release Workflow
 
-**Prerequisites**: Read [Version Management](./version-management.md) first
+**Prerequisites**: Read [Release Workflow](../sops/development/release-workflow.md) first
 
 **Related**:
 - [Testing SOP](./testing-workflow.md) - If adding features

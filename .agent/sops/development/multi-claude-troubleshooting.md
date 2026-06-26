@@ -464,7 +464,7 @@ grep "❌" .agent/.marker-log | wc -l
 ## Related Documentation
 
 **Navigator SOPs**:
-- Complete Release Workflow: `.agent/sops/development/complete-release-workflow.md`
+- Release Workflow: `.agent/sops/development/release-workflow.md`
 - Multi-Claude Workflow Guide: `scripts/POC-LEARNINGS.md`
 
 **Code References**:

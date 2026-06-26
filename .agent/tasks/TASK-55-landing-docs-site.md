@@ -143,7 +143,10 @@ CLAUDE.md): context-engineering, theory-of-mind, task-mode, loop-mode, knowledge
 Concepts carry the "why" (philosophy/rationale); config keys deferred to `/configuration/*` (no duplication). Build
 green (60 pages, Pagefind 55); all 6 verified 200 on production. **Phase 2 (docs migration) is content-complete.**
 
-**Remaining**: Phase 3 polish (brand assets / logo / OG image — none exist yet) + DNS (user).
+## Phase 3 — OG image + SEO DONE (2026-06-26)
+Added a file-convention social card (`app/opengraph-image.tsx`, next/og 1200x630 wordmark) that cascades og:image + twitter:image to all 62 routes, a matching `twitter-image.tsx`, and a `%s — Navigator` title template (deep pages read e.g. "nav-loop — Navigator"). Verified live: https://navigator-site.vercel.app/opengraph-image returns a valid 1200x630 PNG; meta tags confirmed in built HTML.
+
+**Remaining**: DNS (user) + optional full brand identity (logo mark / palette / typography — site currently uses a text wordmark).
 
 ## Stale `jitd` plugin name — FIXED (2026-06-25, commit 36b06df)
 Plugin was renamed jitd → navigator ~6 months ago but live install/usage docs still shipped the old name + wrong repo

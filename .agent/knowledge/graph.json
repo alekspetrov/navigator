@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-15T09:45:33.076333+00:00",
+  "last_updated": "2026-06-25T12:35:30.507524+00:00",
   "stats": {
-    "total_nodes": 149,
-    "total_edges": 750,
+    "total_nodes": 150,
+    "total_edges": 762,
     "memory_count": 49
   },
   "nodes": {
@@ -662,6 +662,25 @@
           "authentication",
           "theory of mind",
           "testing"
+        ]
+      },
+      "TASK-55": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-55-landing-docs-site.md",
+        "title": "Navigator Landing Page + Documentation Site",
+        "status": "unknown",
+        "concepts": [
+          "skills",
+          "knowledge",
+          "workflow",
+          "database",
+          "simplification",
+          "deployment",
+          "authentication",
+          "markers",
+          "context",
+          "theory of mind",
+          "testing",
+          "frontend"
         ]
       }
     },
@@ -6269,6 +6288,66 @@
       "from": "mem-049",
       "to": "TASK-54",
       "type": "learned-from"
+    },
+    {
+      "from": "TASK-55",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-55",
+      "to": "knowledge",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6306,7 +6385,8 @@
       "TASK-40",
       "TASK-50",
       "TASK-47",
-      "TASK-49"
+      "TASK-49",
+      "TASK-55"
     ],
     "testing": [
       "TASK-32",
@@ -6400,7 +6480,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "context": [
       "TASK-32",
@@ -6494,7 +6575,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "skills": [
       "TASK-32",
@@ -6595,7 +6677,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "session": [
       "TASK-32",
@@ -6681,7 +6764,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "workflow": [
       "TASK-33",
@@ -6744,7 +6828,8 @@
       "TASK-38",
       "TASK-41",
       "TASK-45",
-      "TASK-48"
+      "TASK-48",
+      "TASK-55"
     ],
     "backend": [
       "TASK-16",
@@ -6800,7 +6885,8 @@
       "2025-10-20-092541-v3.0.0-migration-complete",
       "TASK-50",
       "TASK-45",
-      "TASK-49"
+      "TASK-49",
+      "TASK-55"
     ],
     "api": [
       "TASK-01",
@@ -6901,7 +6987,8 @@
       "TASK-45",
       "TASK-46",
       "TASK-47",
-      "TASK-49"
+      "TASK-49",
+      "TASK-55"
     ],
     "deployment": [
       "TASK-11",
@@ -6945,7 +7032,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "code quality": [
       "TASK-19",
@@ -7000,7 +7088,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7023,7 +7112,8 @@
       "mem-046",
       "mem-047",
       "mem-048",
-      "mem-049"
+      "mem-049",
+      "TASK-55"
     ],
     "simplification": [
       "TASK-02",
@@ -7037,7 +7127,8 @@
       "mem-024",
       "TASK-41",
       "TASK-48",
-      "TASK-49"
+      "TASK-49",
+      "TASK-55"
     ],
     "knowledge-graph": [
       "mem-003",

@@ -259,8 +259,12 @@ def validate_concepts(graph: dict, concepts: list) -> tuple:
     if not concept_nodes:
         return list(concepts), []
 
+    # Vocabulary = concept NODES + their aliases; deliberately NOT the
+    # concept_index (add_node auto-indexes every write's concepts there, so
+    # freeform tags would self-legitimize).
     known_keys = {k.lower() for k in concept_nodes}
-    known_keys |= {k.lower() for k in graph.get("concept_index", {})}
+    for cdata in concept_nodes.values():
+        known_keys |= {a.lower() for a in cdata.get("aliases", [])}
 
     canonical = []
     unknown = []
@@ -479,6 +483,63 @@ def add_memory(graph: dict, memory_type: str, summary: str,
         graph = add_edge(graph, memory_id, source_task, "learned-from")
 
     return memory_id
+
+
+def memory_file_ref(mem: dict) -> Optional[str]:
+    """Return a memory node's backing-file reference, whichever key it uses.
+
+    Navigator writes `path`; consumer graphs observed in the wild (pilot,
+    2026-07 audit) use `file` or `memory_file`. Nodes with no reference at
+    all are legal — treat None as 'no backing file'.
+    """
+    return mem.get("path") or mem.get("file") or mem.get("memory_file")
+
+
+def resolve_memory_file(ref: str, root: str = ".",
+                        base_dir: str = ".agent/knowledge") -> Optional[Path]:
+    """Resolve a node's file reference to an existing on-disk Path.
+
+    Tries Navigator style first ({root}/{base_dir}/{ref}, where ref is like
+    'memories/pitfalls/mem-001.md'), then consumer style ({root}/{ref}, where
+    ref is a root-relative path like '.agent/knowledge/memories/...').
+    Returns None when neither resolves.
+    """
+    if not ref:
+        return None
+    for candidate in (Path(root) / base_dir / ref, Path(root) / ref):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def move_memory_file_to_resolved(mem: dict, root: str = ".",
+                                 base_dir: str = ".agent/knowledge") -> Optional[str]:
+    """Move a memory's backing file into its sibling resolved/ directory.
+
+    memories/{type}s/X.md -> memories/{type}s/resolved/X.md (codifies the
+    convention that emerged organically in consumer repos). Updates whichever
+    path key the node uses so consumer schema is preserved. Returns the new
+    reference (in the node's own style), or None when there is no file to
+    move. Files already under resolved/ are left in place.
+    """
+    ref = memory_file_ref(mem)
+    src = resolve_memory_file(ref, root, base_dir)
+    if src is None:
+        return None
+    if src.parent.name == "resolved":
+        return ref
+
+    dst = src.parent / "resolved" / src.name
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    src.rename(dst)
+
+    # Rewrite the node's reference in its own key + style
+    new_ref = str(Path(ref).parent / "resolved" / Path(ref).name)
+    for key in ("path", "file", "memory_file"):
+        if key in mem:
+            mem[key] = new_ref
+            break
+    return new_ref
 
 
 def update_confidence(graph: dict, memory_id: str,

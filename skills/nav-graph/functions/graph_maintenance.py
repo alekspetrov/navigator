@@ -13,7 +13,16 @@ from pathlib import Path
 from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
-from graph_manager import load_graph, save_graph
+from graph_manager import (
+    load_graph,
+    save_graph,
+    add_memory,
+    memory_file_ref,
+    move_memory_file_to_resolved,
+    register_concept,
+    resolve_concept_alias,
+    resolve_memory_file,
+)
 
 DEFAULT_DECAY_RATE = 0.01
 
@@ -120,13 +129,243 @@ def repair_graph(graph: dict) -> dict:
             mem['confidence'] = _normalize_confidence_value(c)
             conf_fixed += 1
 
+    # Drop concept_index entries whose members reference no existing node,
+    # and remove keys left empty (safe: the index is derived data).
+    index_pruned = 0
+    concept_index = graph.get('concept_index', {})
+    for concept in list(concept_index):
+        members = [n for n in concept_index[concept] if n in node_ids]
+        index_pruned += len(concept_index[concept]) - len(members)
+        if members:
+            concept_index[concept] = members
+        else:
+            del concept_index[concept]
+
     return {
         'edges_before': before,
         'edges_after': len(cleaned),
         'duplicates_removed': dup_removed,
         'dangling_removed': dangling_removed,
         'confidences_normalized': conf_fixed,
+        'index_entries_pruned': index_pruned,
     }
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Disk-vs-graph reconciliation (v6.17.0)
+#
+# The 2026-07 pilot audit found 52 of 84 memory files with zero graph
+# presence: files and nodes were written by uncoordinated paths and nothing
+# ever compared them. These checks close that gap.
+# ──────────────────────────────────────────────────────────────────────────────
+
+def find_broken_file_links(graph: dict, root: str = ".",
+                           base_dir: str = ".agent/knowledge") -> list:
+    """Memories whose path/file reference resolves to NO file on disk.
+
+    Nodes with no path reference at all are NOT broken — summary-only nodes
+    are legal (consumer graphs carry them) — they simply have nothing to
+    verify.
+    """
+    broken = []
+    for mem_id, mem in graph.get('nodes', {}).get('memories', {}).items():
+        ref = memory_file_ref(mem)
+        if ref and resolve_memory_file(ref, root, base_dir) is None:
+            broken.append({'id': mem_id, 'ref': ref,
+                           'summary': mem.get('summary', '')[:60]})
+    return broken
+
+
+def find_unindexed_memory_files(graph: dict, root: str = ".",
+                                base_dir: str = ".agent/knowledge") -> list:
+    """Memory .md files on disk with no graph node referencing them.
+
+    Scans {root}/{base_dir}/memories/**/*.md — all filenames, not just
+    mem-*.md (consumer repos use descriptive slugs like pattern_*.md).
+    README files are excluded.
+    """
+    mem_root = Path(root) / base_dir / "memories"
+    if not mem_root.is_dir():
+        return []
+
+    linked = set()
+    for mem in graph.get('nodes', {}).get('memories', {}).values():
+        ref = memory_file_ref(mem)
+        resolved = resolve_memory_file(ref, root, base_dir) if ref else None
+        if resolved:
+            linked.add(resolved.resolve())
+
+    unindexed = []
+    for f in sorted(mem_root.glob("**/*.md")):
+        if f.name.upper().startswith("README"):
+            continue
+        if f.resolve() not in linked:
+            unindexed.append(str(f))
+    return unindexed
+
+
+def find_invalid_concept_refs(graph: dict) -> list:
+    """(node_id, concept) pairs whose concept has no concept node or alias.
+
+    Checked across ALL node buckets. Returns [] when the graph has no concept
+    vocabulary at all — minimal graphs are not punished.
+    """
+    concept_nodes = graph.get('nodes', {}).get('concepts', {})
+    if not concept_nodes:
+        return []
+
+    # Vocabulary = concept NODES + their aliases. Deliberately NOT the
+    # concept_index: add_node auto-indexes every node's concepts there, so
+    # freeform tags would self-legitimize the moment they're written.
+    known = {k.lower() for k in concept_nodes}
+    for cdata in concept_nodes.values():
+        known |= {a.lower() for a in cdata.get('aliases', [])}
+
+    invalid = []
+    for node_type, nodes in graph.get('nodes', {}).items():
+        if node_type == 'concepts':
+            continue
+        for node_id, node in nodes.items():
+            for concept in node.get('concepts', []):
+                c = str(concept).lower()
+                if c in known:
+                    continue
+                if resolve_concept_alias(graph, c).lower() in known:
+                    continue
+                invalid.append((node_id, concept))
+    return invalid
+
+
+def _parse_memory_file(path: Path) -> dict:
+    """Best-effort metadata extraction from a memory .md file.
+
+    Handles both observed formats:
+    - YAML-ish frontmatter (consumer/pilot style): name/description/type keys
+    - Navigator memory_writer style: '# Type: Title' heading + footer lines
+      '**Confidence**: NN%' and '**Concepts**: a, b'
+    Conservative fallbacks: summary=filename, confidence=0.5, concepts=[].
+    """
+    meta = {'summary': path.stem.replace('_', ' ').replace('-', ' '),
+            'concepts': [], 'confidence': 0.5, 'type': None}
+    try:
+        text = path.read_text(errors='replace')
+    except OSError:
+        return meta
+
+    lines = text.splitlines()
+
+    # Frontmatter block
+    if lines and lines[0].strip() == '---':
+        for line in lines[1:40]:
+            s = line.strip()
+            if s == '---':
+                break
+            if s.startswith('description:'):
+                meta['summary'] = s[len('description:'):].strip() or meta['summary']
+            elif s.startswith('type:'):
+                t = s[len('type:'):].strip().lower()
+                if t in ('pattern', 'pitfall', 'decision', 'learning'):
+                    meta['type'] = t
+            elif s.startswith('name:') and meta['summary'] == path.stem.replace('_', ' ').replace('-', ' '):
+                meta['summary'] = s[len('name:'):].strip() or meta['summary']
+
+    for line in lines:
+        s = line.strip()
+        if s.startswith('# ') and meta['summary'] == path.stem.replace('_', ' ').replace('-', ' '):
+            # '# Pattern: Title' -> 'Title'; '# Title' -> 'Title'
+            heading = s[2:].strip()
+            meta['summary'] = heading.split(':', 1)[1].strip() if ':' in heading else heading
+        elif s.startswith('**Confidence**:'):
+            try:
+                meta['confidence'] = min(1.0, max(0.0, float(
+                    s.split(':', 1)[1].strip().rstrip('%')) / 100.0))
+            except ValueError:
+                pass
+        elif s.startswith('**Concepts**:'):
+            raw = s.split(':', 1)[1].strip()
+            if raw and raw.lower() != 'general':
+                meta['concepts'] = [c.strip().lower() for c in raw.split(',') if c.strip()]
+
+    meta['summary'] = meta['summary'][:200]
+    return meta
+
+
+def _infer_type_and_resolved(path: Path) -> tuple:
+    """Infer (memory_type, resolved) from the file's parent directories.
+
+    memories/patterns/x.md -> ('pattern', False)
+    memories/pitfalls/resolved/x.md -> ('pitfall', True)
+    """
+    parent = path.parent.name
+    resolved = parent == 'resolved'
+    type_dir = path.parent.parent.name if resolved else parent
+    memory_type = type_dir[:-1] if type_dir.endswith('s') else type_dir
+    if memory_type not in ('pattern', 'pitfall', 'decision', 'learning'):
+        memory_type = 'learning'
+    return memory_type, resolved
+
+
+def reconcile(graph: dict, root: str = ".",
+              base_dir: str = ".agent/knowledge",
+              execute: bool = False) -> dict:
+    """Report (and optionally repair) disk-vs-graph drift.
+
+    Dry-run (default) reports broken file links, unindexed memory files, and
+    invalid concept refs. --execute registers UNINDEXED FILES only — the one
+    safe automatic fix. Broken-link nodes are never auto-deleted (the node's
+    summary is still knowledge) and concept refs are never rewritten.
+    """
+    report = {
+        'broken_file_links': find_broken_file_links(graph, root, base_dir),
+        'unindexed_files': find_unindexed_memory_files(graph, root, base_dir),
+        'invalid_concept_refs': find_invalid_concept_refs(graph),
+        'registered': [],
+        'errors': [],
+    }
+
+    if not execute:
+        return report
+
+    for file_str in report['unindexed_files']:
+        path = Path(file_str)
+        meta = _parse_memory_file(path)
+        memory_type, resolved = _infer_type_and_resolved(path)
+        if meta['type']:
+            memory_type = meta['type']
+
+        # Reconcile recovers reality: tags found in real files become
+        # vocabulary (equivalent of --allow-new-concept).
+        for c in meta['concepts']:
+            register_concept(graph, c)
+
+        try:
+            mem_id = add_memory(
+                graph, memory_type, meta['summary'], meta['concepts'],
+                confidence=meta['confidence'], base_dir=str(Path(root) / base_dir),
+                create_file=False,
+            )
+        except (ValueError, OSError) as e:
+            report['errors'].append(f"{file_str}: {e}")
+            continue
+
+        node = graph['nodes']['memories'][mem_id]
+        # Point the node at the actual file, preserving location style:
+        # under base_dir -> base_dir-relative 'path'; else root-relative.
+        try:
+            node['path'] = str(path.resolve().relative_to(
+                (Path(root) / base_dir).resolve()))
+        except ValueError:
+            try:
+                node['path'] = str(path.resolve().relative_to(
+                    Path(root).resolve()))
+            except ValueError:
+                node['path'] = str(path)
+        if resolved:
+            node['resolved'] = True
+        node['source'] = 'reconcile'
+        report['registered'].append({'id': mem_id, 'file': file_str})
+
+    return report
 
 
 def _read_decay_rate(config_path: str) -> float:
@@ -298,8 +537,15 @@ def apply_decay(graph: dict, decay_rate: Optional[float] = None,
     return graph
 
 
-def prune_memories(graph: dict, threshold: float = 0.3, dry_run: bool = True) -> dict:
-    """Remove memories below confidence threshold."""
+def prune_memories(graph: dict, threshold: float = 0.3, dry_run: bool = True,
+                   root: str = ".", base_dir: str = ".agent/knowledge") -> dict:
+    """Remove memories below confidence threshold.
+
+    On --execute, each pruned node's backing file is moved to its sibling
+    resolved/ directory rather than left in place — otherwise the next
+    `reconcile --execute` would re-register the file at default confidence,
+    resurrecting the pruned memory forever.
+    """
     to_remove = []
 
     for mem_id, mem_data in graph['nodes'].get('memories', {}).items():
@@ -312,7 +558,11 @@ def prune_memories(graph: dict, threshold: float = 0.3, dry_run: bool = True) ->
     }
 
     if not dry_run and to_remove:
+        moved_files = 0
         for mem_id in to_remove:
+            if move_memory_file_to_resolved(
+                    graph['nodes']['memories'][mem_id], root, base_dir):
+                moved_files += 1
             del graph['nodes']['memories'][mem_id]
 
             # Remove from concept index, dropping now-empty concept keys
@@ -331,12 +581,20 @@ def prune_memories(graph: dict, threshold: float = 0.3, dry_run: bool = True) ->
                             if e['from'] != mem_id and e['to'] != mem_id]
 
         result['removed'] = len(to_remove)
+        result['files_moved_to_resolved'] = moved_files
 
     return result
 
 
-def health_check(graph: dict) -> dict:
-    """Run comprehensive health check on graph."""
+def health_check(graph: dict, root: str = ".",
+                 base_dir: str = ".agent/knowledge") -> dict:
+    """Run comprehensive health check on graph.
+
+    v6.17.0 adds disk-vs-graph checks (broken file links, unindexed memory
+    files — both score-affecting) and concept-vocabulary drift (advisory).
+    `root`/`base_dir` default to CWD conventions so the pre-v6.17.0
+    signature keeps working.
+    """
     memories = graph['nodes'].get('memories', {})
     tasks = graph['nodes'].get('tasks', {})
     concepts = graph['nodes'].get('concepts', {})
@@ -378,6 +636,20 @@ def health_check(graph: dict) -> dict:
     stats['dangling_edges'] = len(dangling)
     stats['confidence_out_of_range'] = len(oor_conf)
 
+    # Disk-vs-graph drift (v6.17.0). Files under a resolved/ directory are
+    # intentional archives (consumer convention: superseded memories moved
+    # aside without a node) — they count as advisory, not score-affecting.
+    broken_links = find_broken_file_links(graph, root, base_dir)
+    unindexed = find_unindexed_memory_files(graph, root, base_dir)
+    unindexed_active = [f for f in unindexed
+                        if Path(f).parent.name != 'resolved']
+    unindexed_archived = len(unindexed) - len(unindexed_active)
+    invalid_refs = find_invalid_concept_refs(graph)
+    stats['broken_file_links'] = len(broken_links)
+    stats['unindexed_memory_files'] = len(unindexed_active)
+    stats['unindexed_archived_files'] = unindexed_archived
+    stats['invalid_concept_refs'] = len(invalid_refs)
+
     # Issues (score-affecting): integrity defects + low-confidence volume.
     issues = []
     if dup_edges:
@@ -390,9 +662,17 @@ def health_check(graph: dict) -> dict:
         issues.append(f'{low_conf} memories below 0.3 confidence (prune candidates)')
     if len(orphans) > 10:
         issues.append(f'{len(orphans)} nodes not indexed by any concept')
+    if broken_links:
+        issues.append(f'{len(broken_links)} memories whose file link resolves '
+                      f'to nothing (run: --action reconcile)')
+    if unindexed_active:
+        issues.append(f'{len(unindexed_active)} memory files on disk with no '
+                      f'graph node (run: --action reconcile --execute)')
 
     # Advisory (NOT score-affecting): the conflict heuristic is high-false-
     # positive and staleness is expected on an actively-curated graph.
+    # Concept drift is advisory too — a consumer graph with legacy freeform
+    # tags should surface the drift without zeroing its score.
     advisory = []
     conflicts = detect_conflicts(graph)
     if conflicts:
@@ -400,6 +680,13 @@ def health_check(graph: dict) -> dict:
     stale = find_stale_memories(graph)
     if stale:
         advisory.append(f'{len(stale)} stale memories (not validated in 90+ days)')
+    if invalid_refs:
+        advisory.append(f'{len(invalid_refs)} concept refs with no concept '
+                        f'node/alias (vocabulary drift)')
+    if unindexed_archived:
+        advisory.append(f'{unindexed_archived} archived (resolved/) files '
+                        f'without nodes — reconcile --execute registers them '
+                        f'as resolved')
 
     stats['issues'] = issues
     stats['advisory'] = advisory
@@ -412,10 +699,12 @@ def main():
     parser = argparse.ArgumentParser(description='Knowledge graph maintenance')
     parser.add_argument('--action', required=True,
                        choices=['health', 'conflicts', 'stale', 'low-confidence',
-                               'decay', 'prune', 'repair'],
+                               'decay', 'prune', 'repair', 'reconcile'],
                        help='Action to perform')
     parser.add_argument('--graph-path', default='.agent/knowledge/graph.json',
                        help='Path to knowledge graph')
+    parser.add_argument('--root', default='.',
+                       help='Project root for disk-vs-graph checks')
     parser.add_argument('--threshold', type=float, default=0.3,
                        help='Confidence threshold for pruning')
     parser.add_argument('--stale-days', type=int, default=None,
@@ -431,7 +720,7 @@ def main():
     graph = load_graph(args.graph_path)
 
     if args.action == 'health':
-        result = health_check(graph)
+        result = health_check(graph, args.root)
         print("Knowledge Graph Health Check")
         print("=" * 40)
         print(f"Total Nodes: {result['total_nodes']}")
@@ -443,6 +732,9 @@ def main():
         print(f"Duplicate Edges: {result['duplicate_edges']}")
         print(f"Dangling Edges: {result['dangling_edges']}")
         print(f"Confidence Out-of-Range: {result['confidence_out_of_range']}")
+        print(f"Broken File Links: {result['broken_file_links']}")
+        print(f"Unindexed Memory Files: {result['unindexed_memory_files']}")
+        print(f"Invalid Concept Refs: {result['invalid_concept_refs']}")
         print(f"\nHealth Score: {result['health_score']}/100")
         if result['issues']:
             print("\nIssues:")
@@ -514,7 +806,7 @@ def main():
 
     elif args.action == 'prune':
         dry_run = not args.execute
-        result = prune_memories(graph, args.threshold, dry_run)
+        result = prune_memories(graph, args.threshold, dry_run, root=args.root)
 
         if dry_run:
             print(f"Would remove {result['would_remove']} memories below {args.threshold}:")
@@ -524,9 +816,54 @@ def main():
         else:
             if save_graph(args.graph_path, graph):
                 print(f"Pruned {result['removed']} memories below {args.threshold}")
+                print(f"Backing files moved to resolved/: "
+                      f"{result.get('files_moved_to_resolved', 0)}")
             else:
                 print("Failed to save graph", file=sys.stderr)
                 sys.exit(1)
+
+    elif args.action == 'reconcile':
+        result = reconcile(graph, root=args.root, execute=args.execute)
+        print("Disk-vs-Graph Reconciliation")
+        print("=" * 40)
+
+        broken = result['broken_file_links']
+        print(f"\nBroken file links: {len(broken)}")
+        for b in broken:
+            print(f"  - {b['id']}: {b['ref']}")
+        if broken:
+            print("  Hint: restore the file, fix the node's path, or "
+                  "resolve-memory / remove-node it. Never auto-deleted.")
+
+        unindexed = result['unindexed_files']
+        print(f"\nUnindexed memory files: {len(unindexed)}")
+        for f in unindexed[:20]:
+            print(f"  - {f}")
+        if len(unindexed) > 20:
+            print(f"  ... and {len(unindexed) - 20} more")
+
+        refs = result['invalid_concept_refs']
+        print(f"\nInvalid concept refs: {len(refs)}")
+        for node_id, concept in refs[:15]:
+            print(f"  - {node_id}: '{concept}'")
+        if len(refs) > 15:
+            print(f"  ... and {len(refs) - 15} more")
+        if refs:
+            print("  Hint: remap to an existing concept, add an alias, or "
+                  "register the concept. Never auto-rewritten.")
+
+        if args.execute:
+            print(f"\nRegistered {len(result['registered'])} unindexed files:")
+            for r in result['registered']:
+                print(f"  + {r['id']} <- {r['file']}")
+            for e in result['errors']:
+                print(f"  ! {e}", file=sys.stderr)
+            if result['registered']:
+                if not save_graph(args.graph_path, graph):
+                    print("Failed to save graph", file=sys.stderr)
+                    sys.exit(1)
+        elif unindexed:
+            print("\nRun with --execute to register unindexed files.")
 
 
 if __name__ == '__main__':

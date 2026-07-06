@@ -117,7 +117,13 @@ def correction_to_memory(correction: dict, graph_path: str) -> Optional[str]:
     sync_corrections_to_graph which amortizes the I/O.
     """
     graph = load_graph(graph_path)
-    memory_id = _correction_to_memory_in_graph(correction, graph)
+    try:
+        memory_id = _correction_to_memory_in_graph(correction, graph)
+    except (OSError, FileExistsError, ValueError) as e:
+        # add_memory is fail-loud since v6.17.0; None is this function's
+        # established failure signal.
+        print(f"warning: correction memory not created: {e}", file=sys.stderr)
+        return None
     if save_graph(graph_path, graph):
         return memory_id
     return None

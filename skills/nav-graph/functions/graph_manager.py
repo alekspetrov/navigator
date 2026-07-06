@@ -240,6 +240,57 @@ def resolve_concept_alias(graph: dict, query: str) -> str:
     return query_lower
 
 
+def validate_concepts(graph: dict, concepts: list) -> tuple:
+    """Validate concepts against the graph's concept vocabulary.
+
+    Returns (canonical_concepts, unknown_concepts). Each concept is resolved
+    through resolve_concept_alias; a concept is "known" when it resolves to a
+    key in the concepts bucket or the concept_index. Canonical substitution is
+    applied on the accepted path (e.g. 'auth' -> 'authentication'), so the
+    graph accumulates one spelling per concept instead of drifting aliases.
+
+    If the concepts bucket is empty, validation is skipped and every concept
+    is returned as-given — minimal/consumer graphs without a curated
+    vocabulary must not hard-fail (the 2026-07 pilot audit found 42 freeform
+    tags precisely because nothing validated at write time; enforcement only
+    makes sense once a vocabulary exists).
+    """
+    concept_nodes = graph.get("nodes", {}).get("concepts", {})
+    if not concept_nodes:
+        return list(concepts), []
+
+    known_keys = {k.lower() for k in concept_nodes}
+    known_keys |= {k.lower() for k in graph.get("concept_index", {})}
+
+    canonical = []
+    unknown = []
+    for c in concepts:
+        resolved = resolve_concept_alias(graph, c)
+        if resolved.lower() in known_keys:
+            if resolved not in canonical:
+                canonical.append(resolved)
+        else:
+            unknown.append(c)
+    return canonical, unknown
+
+
+def register_concept(graph: dict, concept: str) -> dict:
+    """Register a new concept node with the standard fallback shape.
+
+    Mirrors graph_builder's fallback for concepts outside CONCEPT_DEFINITIONS
+    so nodes created via --allow-new-concept are indistinguishable from
+    builder-created ones.
+    """
+    key = concept.strip().lower()
+    if key and key not in graph["nodes"].setdefault("concepts", {}):
+        graph["nodes"]["concepts"][key] = {
+            "name": key.title(),
+            "aliases": [],
+            "domain": "general",
+        }
+    return graph
+
+
 def query_by_concept(graph: dict, concept: str) -> dict:
     """Query all nodes related to a concept."""
     # Resolve aliases first
@@ -374,6 +425,13 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     `source` tags the origin of the memory (e.g. 'correction' for memories
     derived from profile corrections). It is persisted on the node only when
     provided, so nodes created without it keep their existing shape.
+
+    Write ordering (v6.17.0): the backing file is written BEFORE the node is
+    added, and file-write failures PROPAGATE (FileExistsError/OSError) with
+    the in-memory graph unmutated. Previously the node was added first and a
+    failed file write was swallowed with a warning, producing nodes whose
+    `path` pointed at nothing — the drift class the 2026-07 pilot audit found.
+    Programmatic callers must handle the exception (skip + record the error).
     """
     confidence = _clamp_confidence(confidence)
     memories = graph["nodes"].get("memories", {})
@@ -388,6 +446,20 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     # Determine path (relative; resolves to {base_dir}/{path})
     path = f"memories/{memory_type}s/{memory_id}.md"
 
+    # File FIRST: if this raises, the graph is untouched — no orphan node.
+    if create_file:
+        # Lazy import to avoid a hard dependency cycle at module load
+        from memory_writer import create_memory_file
+        create_memory_file(
+            memory_id=memory_id,
+            memory_type=memory_type,
+            title=summary[:80],
+            summary=summary,
+            confidence=int(round(confidence * 100)),
+            concepts=concepts or [],
+            base_dir=base_dir,
+        )
+
     memory_data = {
         "type": memory_type,
         "summary": summary,
@@ -401,28 +473,6 @@ def add_memory(graph: dict, memory_type: str, summary: str,
         memory_data["source"] = source
 
     graph = add_node(graph, "memories", memory_id, memory_data)
-
-    if create_file:
-        try:
-            # Lazy import to avoid a hard dependency cycle at module load
-            from memory_writer import create_memory_file
-            create_memory_file(
-                memory_id=memory_id,
-                memory_type=memory_type,
-                title=summary[:80],
-                summary=summary,
-                confidence=int(round(confidence * 100)),
-                concepts=concepts or [],
-                base_dir=base_dir,
-            )
-        except Exception as e:
-            # Non-fatal: the graph node is still valid even if file creation
-            # fails. Surface a warning so callers can investigate.
-            print(
-                f"warning: add_memory created {memory_id} node but failed to "
-                f"write backing file ({e})",
-                file=sys.stderr,
-            )
 
     # Add edge from source task if provided
     if source_task:
@@ -564,6 +614,9 @@ def main():
     parser.add_argument('--summary', help='Memory summary')
     parser.add_argument('--concepts', help='Comma-separated list of concepts')
     parser.add_argument('--confidence', type=float, default=0.8, help='Memory confidence')
+    parser.add_argument('--allow-new-concept', action='store_true',
+                       help='Register unknown concepts as new concept nodes '
+                            'instead of rejecting the write')
     parser.add_argument('--source-task', help='Source task for memory')
     parser.add_argument('--from-id', help='Edge source node')
     parser.add_argument('--to-id', help='Edge target node')
@@ -629,14 +682,36 @@ def main():
             sys.exit(1)
 
         graph = load_graph(args.graph_path)
-        concepts = [c.strip().lower() for c in args.concepts.split(',')]
+        concepts = [c.strip().lower() for c in args.concepts.split(',') if c.strip()]
+
+        # Write-time concept validation (v6.17.0): reject unknown concepts at
+        # the CLI boundary so freeform tags can't accumulate. Skipped when the
+        # graph has no concept vocabulary (validate_concepts returns no
+        # unknowns then). --allow-new-concept registers them instead.
+        canonical, unknown = validate_concepts(graph, concepts)
+        if unknown:
+            if args.allow_new_concept:
+                for c in unknown:
+                    graph = register_concept(graph, c)
+                    canonical.append(c.strip().lower())
+            else:
+                vocab = sorted(graph.get("nodes", {}).get("concepts", {}))
+                print(f"Error: unknown concept(s): {', '.join(unknown)}",
+                      file=sys.stderr)
+                print(f"Known vocabulary: {', '.join(vocab)}", file=sys.stderr)
+                print("Hint: use an existing concept/alias, or pass "
+                      "--allow-new-concept to register new ones.",
+                      file=sys.stderr)
+                sys.exit(1)
+        concepts = canonical
+
         try:
             memory_id = add_memory(
                 graph, args.memory_type, args.summary, concepts,
                 args.confidence, args.source_task,
                 memory_id=args.node_id,
             )
-        except (ValueError, FileExistsError) as e:
+        except (ValueError, FileExistsError, OSError) as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
@@ -646,6 +721,14 @@ def main():
             print(f"Summary: {args.summary}")
             print(f"Concepts: {', '.join(concepts)}")
         else:
+            # Roll back the backing file so a failed graph persist doesn't
+            # leave an orphan .md that the graph knows nothing about.
+            node = graph["nodes"].get("memories", {}).get(memory_id, {})
+            rel = node.get("path")
+            if rel:
+                Path(".agent/knowledge", rel).unlink(missing_ok=True)
+            print(f"Error: failed to save graph; rolled back backing file "
+                  f"for {memory_id}", file=sys.stderr)
             sys.exit(1)
 
     elif args.action == 'add-edge':

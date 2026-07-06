@@ -137,14 +137,20 @@ def ingest_findings(findings: dict, graph_path: str,
             result["memory_ids"].append(f"(dry-run mem-{idx})")
             continue
 
-        memory_id = add_memory(
-            graph=graph,
-            memory_type=mem["type"],
-            summary=summary,
-            concepts=concepts,
-            confidence=confidence,
-            source_task=None,  # Research findings are not tied to a task
-        )
+        try:
+            memory_id = add_memory(
+                graph=graph,
+                memory_type=mem["type"],
+                summary=summary,
+                concepts=concepts,
+                confidence=confidence,
+                source_task=None,  # Research findings are not tied to a task
+            )
+        except (OSError, FileExistsError, ValueError) as e:
+            # add_memory is fail-loud since v6.17.0 — record and skip so one
+            # bad finding doesn't abort the whole ingest.
+            result["errors"].append(f"mem-{idx}: {e}")
+            continue
         result["ingested"] += 1
         result["memory_ids"].append(memory_id)
 

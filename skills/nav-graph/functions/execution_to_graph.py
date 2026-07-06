@@ -167,14 +167,20 @@ def ingest_summary(summary: dict, graph_path: str,
             )
             continue
 
-        memory_id = add_memory(
-            graph=graph,
-            memory_type=memory_type,
-            summary=entry_summary,
-            concepts=concepts,
-            confidence=confidence,
-            source_task=source_task,
-        )
+        try:
+            memory_id = add_memory(
+                graph=graph,
+                memory_type=memory_type,
+                summary=entry_summary,
+                concepts=concepts,
+                confidence=confidence,
+                source_task=source_task,
+            )
+        except (OSError, FileExistsError, ValueError) as e:
+            # add_memory is fail-loud since v6.17.0 — record and skip so one
+            # bad entry doesn't abort the whole ingest.
+            result["errors"].append(f"{section}[{idx}]: {e}")
+            continue
         result["ingested"] += 1
         result["by_type"][memory_type] += 1
         result["memory_ids"].append(memory_id)

@@ -298,5 +298,137 @@ class TestConfidenceClamp(unittest.TestCase):
         self.assertLessEqual(graph["nodes"]["memories"][mem_id]["confidence"], 1.0)
 
 
+class TestAddMemoryFailLoud(unittest.TestCase):
+    """v6.17.0: file is written BEFORE the node; failures propagate."""
+
+    def test_file_written_before_node(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            graph = create_empty_graph()
+            mem_id = add_memory(
+                graph, "pattern", "ordering test", ["auth"],
+                base_dir=tmp,
+            )
+            path = Path(tmp) / "memories" / "patterns" / f"{mem_id}.md"
+            self.assertTrue(path.exists())
+            self.assertIn(mem_id, graph["nodes"]["memories"])
+
+    def test_file_exists_propagates_and_graph_unmutated(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "memories" / "patterns" / "mem-001.md"
+            target.parent.mkdir(parents=True)
+            target.write_text("pre-existing")
+
+            graph = create_empty_graph()
+            with self.assertRaises(FileExistsError):
+                add_memory(
+                    graph, "pattern", "collision", ["auth"],
+                    base_dir=tmp, memory_id="mem-001",
+                )
+            # No orphan node, no edges, no concept index pollution
+            self.assertEqual(graph["nodes"]["memories"], {})
+            self.assertEqual(graph["edges"], [])
+            self.assertEqual(graph["concept_index"], {})
+
+    def test_oserror_propagates_and_graph_unmutated(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # Make the memories root a FILE so mkdir(parents=True) fails
+            (Path(tmp) / "memories").write_text("not a dir")
+            graph = create_empty_graph()
+            with self.assertRaises(OSError):
+                add_memory(graph, "pattern", "io failure", ["auth"], base_dir=tmp)
+            self.assertEqual(graph["nodes"]["memories"], {})
+
+
+class TestValidateConcepts(unittest.TestCase):
+    """v6.17.0 write-time concept validation."""
+
+    def _graph_with_vocab(self):
+        graph = create_empty_graph()
+        graph["nodes"]["concepts"]["authentication"] = {
+            "name": "Authentication", "aliases": ["login"], "domain": "security",
+        }
+        graph["nodes"]["concepts"]["database"] = {
+            "name": "Database", "aliases": [], "domain": "data",
+        }
+        return graph
+
+    def test_known_concepts_pass(self):
+        graph = self._graph_with_vocab()
+        canonical, unknown = graph_manager.validate_concepts(
+            graph, ["authentication", "database"])
+        self.assertEqual(canonical, ["authentication", "database"])
+        self.assertEqual(unknown, [])
+
+    def test_alias_resolves_to_canonical(self):
+        graph = self._graph_with_vocab()
+        canonical, unknown = graph_manager.validate_concepts(graph, ["login"])
+        self.assertEqual(canonical, ["authentication"])
+        self.assertEqual(unknown, [])
+
+    def test_builtin_abbreviation_resolves(self):
+        # 'auth' maps via the abbreviations table but only counts as known
+        # when the canonical target exists in the graph
+        graph = self._graph_with_vocab()
+        graph["concept_index"]["authentication"] = ["mem-001"]
+        canonical, unknown = graph_manager.validate_concepts(graph, ["auth"])
+        self.assertEqual(canonical, ["authentication"])
+        self.assertEqual(unknown, [])
+
+    def test_unknown_concept_rejected(self):
+        graph = self._graph_with_vocab()
+        canonical, unknown = graph_manager.validate_concepts(
+            graph, ["authentication", "totally-freeform-tag"])
+        self.assertEqual(canonical, ["authentication"])
+        self.assertEqual(unknown, ["totally-freeform-tag"])
+
+    def test_empty_vocabulary_skips_validation(self):
+        graph = create_empty_graph()
+        canonical, unknown = graph_manager.validate_concepts(
+            graph, ["anything", "goes"])
+        self.assertEqual(canonical, ["anything", "goes"])
+        self.assertEqual(unknown, [])
+
+    def test_register_concept_creates_fallback_shape(self):
+        graph = create_empty_graph()
+        graph_manager.register_concept(graph, "New-Domain")
+        node = graph["nodes"]["concepts"]["new-domain"]
+        self.assertEqual(node["name"], "New-Domain".lower().title())
+        self.assertEqual(node["aliases"], [])
+        self.assertEqual(node["domain"], "general")
+
+
+class TestCliAddMemoryRollback(unittest.TestCase):
+    """CLI add-memory rolls back the backing file when save_graph fails."""
+
+    def test_save_failure_unlinks_file(self):
+        import subprocess
+        import os
+        with tempfile.TemporaryDirectory() as tmp:
+            # graph path inside a directory we then make read-only, so
+            # save_graph fails AFTER add_memory wrote the .md under CWD
+            ro_dir = Path(tmp) / "ro"
+            ro_dir.mkdir()
+            graph_path = ro_dir / "graph.json"
+            os.chmod(ro_dir, 0o500)
+            try:
+                proc = subprocess.run(
+                    [sys.executable, str(Path(__file__).parent / "graph_manager.py"),
+                     "--action", "add-memory",
+                     "--graph-path", str(graph_path),
+                     "--memory-type", "pattern",
+                     "--summary", "rollback test",
+                     "--concepts", "rollback-test-concept"],
+                    capture_output=True, text=True, cwd=tmp,
+                )
+            finally:
+                os.chmod(ro_dir, 0o700)
+            self.assertNotEqual(proc.returncode, 0)
+            # The .md written under {cwd}/.agent/knowledge must be gone
+            leftovers = list((Path(tmp) / ".agent").rglob("*.md")) \
+                if (Path(tmp) / ".agent").exists() else []
+            self.assertEqual(leftovers, [])
+            self.assertIn("rolled back", proc.stderr)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

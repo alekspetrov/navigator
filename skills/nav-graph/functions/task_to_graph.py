@@ -171,14 +171,22 @@ def add_task_to_graph(task_path: str, graph_path: str) -> dict:
             if len(summary) > 200:
                 summary = summary[:197] + '...'
 
-            memory_id = add_memory(
-                graph=graph,
-                memory_type='decision',
-                summary=summary,
-                concepts=concepts,
-                confidence=0.95,
-                source_task=task_id
-            )
+            try:
+                memory_id = add_memory(
+                    graph=graph,
+                    memory_type='decision',
+                    summary=summary,
+                    concepts=concepts,
+                    confidence=0.95,
+                    source_task=task_id
+                )
+            except (OSError, FileExistsError, ValueError) as e:
+                # add_memory is fail-loud since v6.17.0 (file written before
+                # node). This runs inside the PostToolUse sync hook — skip the
+                # memory rather than dying mid-sync.
+                print(f"warning: skipped decision memory for {task_id}: {e}",
+                      file=sys.stderr)
+                continue
             memories_created.append(memory_id)
 
     # Save graph

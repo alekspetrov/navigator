@@ -371,8 +371,17 @@ def infer_edges(tasks: list, sops: list, system_docs: list) -> list:
     return edges
 
 
-def build_graph(agent_dir: str) -> dict:
-    """Build complete knowledge graph from .agent/ directory."""
+def build_graph(agent_dir: str, existing_graph: dict = None) -> dict:
+    """Build complete knowledge graph from .agent/ directory.
+
+    Rebuilds tasks/sops/system/markers/concepts from disk. Memories (and
+    file nodes) are NOT reconstructable from a scan — they carry graph-only
+    fields (source, last_validated, resolved, superseded_by) — so when
+    `existing_graph` is provided its `memories`/`files` buckets and any
+    edges touching them are preserved. Before v6.17.0 a rebuild silently
+    wiped every memory node, which was one root cause of the disk-vs-graph
+    drift the 2026-07 pilot audit found.
+    """
     agent_path = Path(agent_dir)
 
     if not agent_path.exists():
@@ -385,11 +394,20 @@ def build_graph(agent_dir: str) -> dict:
     system_docs = scan_system(agent_path)
     markers = scan_markers(agent_path)
 
-    # Collect all concepts
+    # Preserved buckets from the existing graph (empty when none given)
+    existing_nodes = (existing_graph or {}).get("nodes", {})
+    preserved_memories = dict(existing_nodes.get("memories", {}))
+    preserved_files = dict(existing_nodes.get("files", {}))
+
+    # Collect all concepts — including preserved-memory concepts, so
+    # build_concept_nodes creates concept nodes for them and the
+    # concept_index loop below indexes them.
     all_concepts = set()
     for items in [tasks, sops, system_docs, markers]:
         for item in items:
             all_concepts.update(item.get('concepts', []))
+    for mem in preserved_memories.values():
+        all_concepts.update(mem.get('concepts', []))
 
     # Build graph structure
     graph = {
@@ -402,8 +420,8 @@ def build_graph(agent_dir: str) -> dict:
             "sops": {s['id']: s for s in sops},
             "markers": {m['id']: m for m in markers},
             "concepts": build_concept_nodes(all_concepts),
-            "memories": {},
-            "files": {}
+            "memories": preserved_memories,
+            "files": preserved_files
         },
         "edges": [],
         "concept_index": {}
@@ -419,6 +437,18 @@ def build_graph(agent_dir: str) -> dict:
     for edge in infer_edges(tasks, sops, system_docs):
         if edge["from"] in node_ids and edge["to"] in node_ids:
             graph = add_edge(graph, edge["from"], edge["to"], edge["type"],
+                             edge.get("weight", 1.0))
+
+    # Carry over existing edges that touch a preserved memory/file node,
+    # subject to the same referential-integrity filter (the other endpoint
+    # must exist in the rebuilt node set — e.g. a learned-from task that
+    # still exists, or a concept node recreated above).
+    preserved_ids = set(preserved_memories) | set(preserved_files)
+    for edge in (existing_graph or {}).get("edges", []):
+        if (edge.get("from") in preserved_ids or edge.get("to") in preserved_ids) \
+                and edge.get("from") in node_ids and edge.get("to") in node_ids:
+            graph = add_edge(graph, edge["from"], edge["to"],
+                             edge.get("type", "relates-to"),
                              edge.get("weight", 1.0))
 
     # Build concept index
@@ -454,17 +484,30 @@ def main():
                        help='Output path for graph.json')
     parser.add_argument('--dry-run', action='store_true',
                        help='Print stats without writing')
+    parser.add_argument('--no-preserve-memories', action='store_true',
+                       help='Intentionally rebuild from scratch, discarding '
+                            'existing memory/file nodes (default: preserved)')
 
     args = parser.parse_args()
 
+    existing_graph = None
+    if not args.no_preserve_memories and Path(args.output).exists():
+        try:
+            with open(args.output) as f:
+                existing_graph = json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"warning: could not load existing graph for memory "
+                  f"preservation ({e}); rebuilding from scratch", file=sys.stderr)
+
     print(f"Scanning {args.agent_dir}...")
-    graph = build_graph(args.agent_dir)
+    graph = build_graph(args.agent_dir, existing_graph=existing_graph)
 
     stats = graph["stats"]
     print(f"\nGraph Statistics:")
     print(f"  Tasks: {stats.get('task_count', 0)}")
     print(f"  SOPs: {stats.get('sop_count', 0)}")
     print(f"  Concepts: {stats.get('concept_count', 0)}")
+    print(f"  Memories (preserved): {stats.get('memory_count', 0)}")
     print(f"  Total Nodes: {stats['total_nodes']}")
     print(f"  Total Edges: {stats['total_edges']}")
 

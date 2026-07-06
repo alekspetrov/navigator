@@ -51,6 +51,32 @@ User: "Document this OAuth feature I just built"
 → Generate implementation plan from conversation
 ```
 
+### Step 2.5: Recall Prior Knowledge (CREATE flow only, v6.17.0+)
+
+Before writing the plan, query the knowledge graph for memories relevant
+to this feature — pitfalls and patterns the project has already paid for:
+
+```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+
+if [ -f ".agent/knowledge/graph.json" ]; then
+  python3 "$PLUGIN_DIR/skills/nav-graph/functions/memory_recall.py" \
+    --concepts "{comma-separated concepts inferred from the feature description}" \
+    --format markdown --limit 5
+fi
+```
+
+- Infer concepts from the feature description using the same keyword
+  families as `task_to_graph.extract_concepts_from_task` (auth, database,
+  api, frontend, testing, …) — alias resolution absorbs abbreviations.
+- **Empty output → skip silently.** Do not add the section; do not mention
+  the absence.
+- Non-empty output → include it as the `## Known Pitfalls & Patterns`
+  section in the template below, and **reflect each recalled pitfall in
+  the Implementation phases** (a recalled pitfall that doesn't change the
+  plan wasn't really factored in).
+
 ### Step 3A: Create New Task (If Starting Feature)
 
 Generate task document from template:
@@ -71,6 +97,16 @@ Generate task document from template:
 
 **Goal**:
 [What are we building?]
+
+---
+
+## Known Pitfalls & Patterns
+
+<!-- From knowledge graph (Step 2.5). OMIT this section entirely if recall
+     returned nothing. Each recalled pitfall must be reflected in the
+     Implementation phases below. -->
+
+- **PITFALL** (90%, mem-XXX): [recalled summary]
 
 ---
 

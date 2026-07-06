@@ -170,6 +170,13 @@ python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
   --graph-path .agent/knowledge/graph.json
 ```
 
+**Write guarantees (v6.17.0+)**: the backing `.md` is written BEFORE the
+graph node and failures fail loudly (no more path-points-at-nothing nodes);
+a failed graph save rolls the file back. Concepts are validated against the
+graph's concept vocabulary — an unknown concept rejects the write and lists
+the valid vocabulary. Pass `--allow-new-concept` to register genuinely new
+concepts instead. Graphs without a curated vocabulary skip validation.
+
 **Optionally create detailed memory file**:
 ```markdown
 # Pitfall: Auth Changes Break Session Tests
@@ -229,6 +236,12 @@ Graph saved to .agent/knowledge/graph.json
 
 Query with: "What do we know about [topic]?"
 ```
+
+**Rebuild safety (v6.17.0+)**: re-running the builder over an existing graph
+PRESERVES the `memories` and `files` buckets and their edges — memories carry
+graph-only fields no scan can reconstruct, and rebuilds used to wipe them
+silently. Pass `--no-preserve-memories` for an intentional from-scratch
+rebuild.
 
 ### Step 3D: Show Stats (If STATS Action)
 
@@ -471,6 +484,57 @@ Advisory (not scored):
 `Duplicate Edges`, `Dangling Edges`, and `Confidence Out-of-Range` are the
 integrity gate — all three should read `0` on a healthy graph. If they don't,
 run `--action repair` (below).
+
+v6.17.0 adds disk-vs-graph checks: `Broken File Links` (node references a
+file that doesn't exist) and `Unindexed Memory Files` (files on disk with no
+node — the drift class a 2026-07 audit found at 52/84 in a consumer repo)
+are score-affecting; concept-vocabulary drift and archived `resolved/` files
+without nodes are advisory. Pass `--root <project-root>` when running from
+another directory.
+
+### Reconcile Disk vs Graph (v6.17.0+)
+Report drift between memory files on disk and graph nodes; `--execute`
+registers unindexed files (type from parent dir, `resolved/` parent →
+`resolved: true`, frontmatter/heading parsing with conservative fallbacks —
+0.5 confidence when unknown). Broken-link nodes are never auto-deleted and
+concept refs are never rewritten — those two are report-and-hint only:
+```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+# Dry-run report
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_maintenance.py" --action reconcile
+# Register unindexed files
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_maintenance.py" --action reconcile --execute
+```
+
+### Resolve / Supersede a Memory (v6.17.0+)
+When a memory stops being true (bug fixed, decision reversed, guidance
+codified elsewhere), do NOT delete it — resolve it. The node gets
+`resolved: true` (+ `superseded_by` and a `supersedes` edge when a newer
+memory replaces it) and the backing file moves to the sibling `resolved/`
+directory. Resolved memories are excluded from session-start surfacing and
+task-doc recall, skipped by stale/decay sweeps, and flagged `[resolved]` in
+query output:
+```bash
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
+  --action resolve-memory --node-id mem-012 [--superseded-by mem-045]
+```
+
+### Memory Recall (v6.17.0+)
+Deterministic relevance ranking used by the SessionStart hook and nav-task
+Step 2.5 — also useful standalone:
+```bash
+# Explicit concepts (markdown for task docs, compact for terse output)
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/memory_recall.py" \
+  --concepts "auth,testing" --format markdown --limit 5
+# Auto mode: concepts from open task nodes + active context marker
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/memory_recall.py" \
+  --auto --agent-dir .agent --limit 5
+```
+Scoring: concept overlap (alias-resolved), then confidence; resolved
+memories excluded; silent (exit 0, no output) when nothing matches.
+Compatible with consumer graphs that use `file:` keys and lack a
+`concept_index`.
 
 ### Repair Integrity Defects
 Idempotently dedupe `(from, to, type)` edge rows, drop edges that reference a

@@ -264,15 +264,25 @@ fi
    Concepts: {concept_count} indexed
 ```
 
-**Surface relevant memories** (if `auto_surface_relevant: true` in config):
-- Check recent tasks/markers for concepts
-- Query graph for memories matching those concepts
-- Display top 2-3 relevant memories:
+**Surface relevant memories** (v6.17.0+: injected automatically):
+The SessionStart hook now enforces `auto_surface_relevant` — when the
+sentinel is present (fast path), a `## Relevant Memories` block is already
+in your context, produced by `memory_recall.py --auto` (concepts from open
+task nodes + active marker, resolved memories excluded). Render it as:
 ```
 💡 Relevant Memories:
    - PITFALL: "Auth changes often break session tests" (90%)
    - PATTERN: "Always run unit tests before integration" (85%)
 ```
+**Legacy path only** (sentinel absent): run the recall CLI manually:
+```bash
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/memory_recall.py" \
+  --auto --agent-dir .agent --graph-path .agent/knowledge/graph.json \
+  --limit 5 --format compact
+```
+Empty output → omit the block. Disable via
+`knowledge_graph.auto_surface_relevant: false` in `.agent/.nav-config.json`
+(`max_session_memories` caps the count).
 
 **If graph doesn't exist**:
 ```

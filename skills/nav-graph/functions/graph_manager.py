@@ -86,7 +86,11 @@ def calculate_stats(graph: dict) -> dict:
 
 
 def add_node(graph: dict, node_type: str, node_id: str, data: dict) -> dict:
-    """Add a node to the graph."""
+    """Add a node to the graph.
+
+    Consumer graphs (pilot-style) may lack the concept_index/edges keys
+    entirely — writes must tolerate that, not KeyError (v6.17.1).
+    """
     if node_type not in graph["nodes"]:
         graph["nodes"][node_type] = {}
 
@@ -94,11 +98,12 @@ def add_node(graph: dict, node_type: str, node_id: str, data: dict) -> dict:
 
     # Update concept index if node has concepts
     concepts = data.get("concepts", [])
+    index = graph.setdefault("concept_index", {})
     for concept in concepts:
-        if concept not in graph["concept_index"]:
-            graph["concept_index"][concept] = []
-        if node_id not in graph["concept_index"][concept]:
-            graph["concept_index"][concept].append(node_id)
+        if concept not in index:
+            index[concept] = []
+        if node_id not in index[concept]:
+            index[concept].append(node_id)
 
     return graph
 
@@ -112,19 +117,20 @@ def remove_node(graph: dict, node_type: str, node_id: str) -> dict:
         # Remove from nodes
         del graph["nodes"][node_type][node_id]
 
-        # Remove from concept index
+        # Remove from concept index (may be absent on consumer graphs)
+        index = graph.setdefault("concept_index", {})
         for concept in concepts:
-            if concept in graph["concept_index"]:
-                graph["concept_index"][concept] = [
-                    n for n in graph["concept_index"][concept] if n != node_id
+            if concept in index:
+                index[concept] = [
+                    n for n in index[concept] if n != node_id
                 ]
                 # Clean up empty concept entries
-                if not graph["concept_index"][concept]:
-                    del graph["concept_index"][concept]
+                if not index[concept]:
+                    del index[concept]
 
         # Remove edges involving this node
         graph["edges"] = [
-            e for e in graph["edges"]
+            e for e in graph.get("edges", [])
             if e["from"] != node_id and e["to"] != node_id
         ]
 
@@ -142,14 +148,15 @@ def add_edge(graph: dict, from_id: str, to_id: str,
     if weight != 1.0:
         edge["weight"] = weight
 
-    # Check for duplicates
-    for existing in graph["edges"]:
+    # Check for duplicates (edges key may be absent on consumer graphs)
+    edges = graph.setdefault("edges", [])
+    for existing in edges:
         if (existing["from"] == from_id and
             existing["to"] == to_id and
             existing["type"] == edge_type):
             return graph  # Edge already exists
 
-    graph["edges"].append(edge)
+    edges.append(edge)
     return graph
 
 

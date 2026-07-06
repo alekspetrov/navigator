@@ -964,4 +964,4 @@ Navigator config in `.agent/.nav-config.json` (minimal subset shown; the live fi
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2026-06-15
-**Navigator Version**: 6.17.0
+**Navigator Version**: 6.17.1

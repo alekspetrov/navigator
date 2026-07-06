@@ -397,6 +397,36 @@ class TestValidateConcepts(unittest.TestCase):
         self.assertEqual(node["domain"], "general")
 
 
+class TestConsumerGraphWrites(unittest.TestCase):
+    """v6.17.1: writes must tolerate graphs lacking concept_index/edges keys
+    (pilot-style consumer graphs). Regression: task_to_graph crashed with
+    KeyError: 'concept_index' syncing a task into the pilot repo graph."""
+
+    def _consumer_graph(self):
+        # Minimal pilot-shaped graph: nodes only, no concept_index, no edges
+        return {"version": "1.0.0", "updated": "2026-07-05",
+                "nodes": {"tasks": {}, "memories": {}, "concepts": {}}}
+
+    def test_add_node_without_concept_index(self):
+        g = self._consumer_graph()
+        add_node(g, "tasks", "TASK-386", {"title": "t", "concepts": ["ci"]})
+        self.assertIn("TASK-386", g["nodes"]["tasks"])
+        self.assertEqual(g["concept_index"]["ci"], ["TASK-386"])
+
+    def test_add_edge_without_edges_key(self):
+        g = self._consumer_graph()
+        add_node(g, "tasks", "TASK-386", {"concepts": []})
+        add_node(g, "tasks", "TASK-387", {"concepts": []})
+        add_edge(g, "TASK-386", "TASK-387", "relates-to")
+        self.assertEqual(len(g["edges"]), 1)
+
+    def test_remove_node_without_concept_index_or_edges(self):
+        g = self._consumer_graph()
+        g["nodes"]["tasks"]["TASK-386"] = {"concepts": ["ci"]}  # bypass index
+        remove_node(g, "tasks", "TASK-386")
+        self.assertNotIn("TASK-386", g["nodes"]["tasks"])
+
+
 class TestResolveMemory(unittest.TestCase):
     """v6.17.0 supersession lifecycle."""
 

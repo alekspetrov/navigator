@@ -397,6 +397,87 @@ class TestValidateConcepts(unittest.TestCase):
         self.assertEqual(node["domain"], "general")
 
 
+class TestResolveMemory(unittest.TestCase):
+    """v6.17.0 supersession lifecycle."""
+
+    def _repo(self, tmp, path_key="path"):
+        base = Path(tmp) / ".agent" / "knowledge" / "memories" / "pitfalls"
+        base.mkdir(parents=True)
+        (base / "mem-001.md").write_text("pitfall body")
+
+        graph = create_empty_graph()
+        ref = ("memories/pitfalls/mem-001.md" if path_key == "path"
+               else ".agent/knowledge/memories/pitfalls/mem-001.md")
+        add_node(graph, "memories", "mem-001",
+                 {path_key: ref, "type": "pitfall", "concepts": []})
+        add_node(graph, "memories", "mem-002",
+                 {"path": "memories/pitfalls/mem-002.md", "type": "pitfall",
+                  "concepts": []})
+        return base, graph
+
+    def test_resolve_moves_file_and_marks_node(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base, graph = self._repo(tmp)
+            result = graph_manager.resolve_memory(graph, "mem-001", root=tmp)
+            self.assertTrue((base / "resolved" / "mem-001.md").exists())
+            self.assertFalse((base / "mem-001.md").exists())
+            node = graph["nodes"]["memories"]["mem-001"]
+            self.assertTrue(node["resolved"])
+            self.assertIn("resolved_date", node)
+            self.assertEqual(node["path"], "memories/pitfalls/resolved/mem-001.md")
+            self.assertEqual(result["new_ref"],
+                             "memories/pitfalls/resolved/mem-001.md")
+
+    def test_resolve_pilot_style_file_key(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base, graph = self._repo(tmp, path_key="file")
+            graph_manager.resolve_memory(graph, "mem-001", root=tmp)
+            node = graph["nodes"]["memories"]["mem-001"]
+            # Consumer schema preserved: still 'file', not rewritten to 'path'
+            self.assertNotIn("path", node)
+            self.assertEqual(
+                node["file"],
+                ".agent/knowledge/memories/pitfalls/resolved/mem-001.md")
+            self.assertTrue((base / "resolved" / "mem-001.md").exists())
+
+    def test_superseded_by_adds_edge(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _, graph = self._repo(tmp)
+            graph_manager.resolve_memory(graph, "mem-001",
+                                         superseded_by="mem-002", root=tmp)
+            node = graph["nodes"]["memories"]["mem-001"]
+            self.assertEqual(node["superseded_by"], "mem-002")
+            self.assertIn({"from": "mem-002", "to": "mem-001",
+                           "type": "supersedes"}, graph["edges"])
+
+    def test_missing_file_warns_but_marks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _, graph = self._repo(tmp)
+            graph["nodes"]["memories"]["mem-001"]["path"] = \
+                "memories/pitfalls/gone.md"
+            result = graph_manager.resolve_memory(graph, "mem-001", root=tmp)
+            self.assertTrue(graph["nodes"]["memories"]["mem-001"]["resolved"])
+            self.assertEqual(result["old_ref"], result["new_ref"])
+
+    def test_unknown_ids_raise(self):
+        graph = create_empty_graph()
+        with self.assertRaises(ValueError):
+            graph_manager.resolve_memory(graph, "mem-404")
+        add_node(graph, "memories", "mem-001", {"concepts": []})
+        with self.assertRaises(ValueError):
+            graph_manager.resolve_memory(graph, "mem-001",
+                                         superseded_by="mem-001")
+        with self.assertRaises(ValueError):
+            graph_manager.resolve_memory(graph, "mem-001",
+                                         superseded_by="mem-404")
+
+    def test_format_memory_flags_resolved(self):
+        line = graph_manager._format_memory(
+            {"type": "pitfall", "summary": "s", "confidence": 0.9,
+             "resolved": True})
+        self.assertIn("[resolved]", line)
+
+
 class TestCliAddMemoryRollback(unittest.TestCase):
     """CLI add-memory rolls back the backing file when save_graph fails."""
 

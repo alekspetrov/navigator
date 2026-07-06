@@ -542,6 +542,59 @@ def move_memory_file_to_resolved(mem: dict, root: str = ".",
     return new_ref
 
 
+def resolve_memory(graph: dict, memory_id: str,
+                   superseded_by: Optional[str] = None,
+                   root: str = ".",
+                   base_dir: str = ".agent/knowledge") -> dict:
+    """Mark a memory resolved/superseded and archive its backing file.
+
+    The supersession lifecycle (v6.17.0): a memory that stopped being true
+    (bug fixed, decision reversed, guidance codified elsewhere) is NOT
+    deleted — its node gets `resolved: true` (+ `superseded_by` when a
+    newer memory replaces it) and its file moves to the sibling resolved/
+    directory. Resolved memories are excluded from recall surfacing and
+    stale/decay sweeps but stay greppable and queryable (marked [resolved]).
+
+    Before this existed, superseded memories were served as truth: the
+    2026-07 pilot audit found 19 of 52 curated memories described behavior
+    later work had reversed.
+
+    Returns {memory_id, old_ref, new_ref, superseded_by}. Raises ValueError
+    for unknown ids. A missing backing file warns but still marks the node —
+    the graph is the source of truth for lifecycle state.
+    """
+    memories = graph["nodes"].get("memories", {})
+    if memory_id not in memories:
+        raise ValueError(f"Memory {memory_id} not found in graph")
+    if superseded_by is not None:
+        if superseded_by == memory_id:
+            raise ValueError("A memory cannot supersede itself")
+        if superseded_by not in memories:
+            raise ValueError(f"Superseding memory {superseded_by} not found in graph")
+
+    mem = memories[memory_id]
+    old_ref = memory_file_ref(mem)
+    if old_ref and resolve_memory_file(old_ref, root, base_dir) is None:
+        print(f"warning: {memory_id} backing file not found ({old_ref}); "
+              f"marking node resolved anyway", file=sys.stderr)
+        new_ref = old_ref
+    else:
+        new_ref = move_memory_file_to_resolved(mem, root, base_dir) or old_ref
+
+    mem["resolved"] = True
+    mem["resolved_date"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if superseded_by:
+        mem["superseded_by"] = superseded_by
+        graph = add_edge(graph, superseded_by, memory_id, "supersedes")
+
+    return {
+        "memory_id": memory_id,
+        "old_ref": old_ref,
+        "new_ref": new_ref,
+        "superseded_by": superseded_by,
+    }
+
+
 def update_confidence(graph: dict, memory_id: str,
                       boost: bool = False, decay_days: int = 0) -> float:
     """Update memory confidence with decay/boost."""
@@ -584,7 +637,9 @@ def _format_memory(memory: dict) -> str:
     mem_type = memory.get("type", "unknown").upper()
     summary = memory.get("summary", "No summary")
     confidence = int(memory.get("confidence", 0) * 100)
-    return f"  - {mem_type}: \"{summary}\" ({confidence}%)"
+    # Resolved memories stay queryable but must not present as live truth
+    flag = " [resolved]" if memory.get("resolved") else ""
+    return f"  - {mem_type}: \"{summary}\" ({confidence}%){flag}"
 
 
 def _format_sop(sop: dict) -> str:
@@ -662,7 +717,8 @@ def main():
     parser = argparse.ArgumentParser(description='Manage Navigator knowledge graph')
     parser.add_argument('--action', required=True,
                        choices=['query', 'add-node', 'add-memory', 'add-edge',
-                               'remove-node', 'stats', 'init', 'related'],
+                               'remove-node', 'stats', 'init', 'related',
+                               'resolve-memory'],
                        help='Action to perform')
     parser.add_argument('--graph-path', default='.agent/knowledge/graph.json',
                        help='Path to graph file')
@@ -679,6 +735,10 @@ def main():
                        help='Register unknown concepts as new concept nodes '
                             'instead of rejecting the write')
     parser.add_argument('--source-task', help='Source task for memory')
+    parser.add_argument('--superseded-by',
+                       help='Memory id that supersedes the one being resolved')
+    parser.add_argument('--root', default='.',
+                       help='Project root for file operations')
     parser.add_argument('--from-id', help='Edge source node')
     parser.add_argument('--to-id', help='Edge target node')
     parser.add_argument('--edge-type', help='Edge type')
@@ -803,6 +863,39 @@ def main():
         if save_graph(args.graph_path, graph):
             print(f"Added edge: {args.from_id} --[{args.edge_type}]--> {args.to_id}")
         else:
+            sys.exit(1)
+
+    elif args.action == 'resolve-memory':
+        if not args.node_id:
+            print("Error: --node-id required for resolve-memory", file=sys.stderr)
+            sys.exit(1)
+
+        graph = load_graph(args.graph_path)
+        try:
+            result = resolve_memory(graph, args.node_id,
+                                    superseded_by=args.superseded_by,
+                                    root=args.root)
+        except (ValueError, OSError) as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+        if save_graph(args.graph_path, graph):
+            print(f"Resolved memory: {result['memory_id']}")
+            if result['old_ref'] != result['new_ref']:
+                print(f"File: {result['old_ref']} -> {result['new_ref']}")
+            if result['superseded_by']:
+                print(f"Superseded by: {result['superseded_by']}")
+        else:
+            # Roll the file move back so a failed graph persist doesn't
+            # leave disk and (unpersisted) graph state disagreeing.
+            if result['old_ref'] and result['new_ref'] \
+                    and result['old_ref'] != result['new_ref']:
+                src = resolve_memory_file(result['new_ref'], args.root)
+                if src is not None:
+                    dst = src.parent.parent / src.name
+                    src.rename(dst)
+            print("Error: failed to save graph; file move rolled back",
+                  file=sys.stderr)
             sys.exit(1)
 
     elif args.action == 'remove-node':

@@ -447,6 +447,8 @@ def find_stale_memories(graph: dict, threshold_days: int = 90) -> list:
     cutoff = datetime.now() - timedelta(days=threshold_days)
 
     for mem_id, mem_data in graph['nodes'].get('memories', {}).items():
+        if mem_data.get('resolved'):
+            continue  # archived memories shouldn't generate staleness noise
         last_validated = mem_data.get('last_validated')
         if not last_validated:
             stale.append({
@@ -517,6 +519,8 @@ def apply_decay(graph: dict, decay_rate: Optional[float] = None,
     today_str = today.isoformat()
 
     for mem_data in graph['nodes'].get('memories', {}).values():
+        if mem_data.get('resolved'):
+            continue  # lifecycle already settled — no decay churn
         anchor = mem_data.get('last_decayed') or mem_data.get('last_validated')
         if not anchor:
             continue

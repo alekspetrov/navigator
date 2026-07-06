@@ -241,6 +241,57 @@ def _section_open_tasks(root: Path) -> str | None:
     return "## Open Tasks\n\n" + "\n".join(entries)
 
 
+def _section_relevant_memories(root: Path, plugin_dir: Path | None,
+                               limit: int) -> str | None:
+    """Surface graph memories relevant to open tasks + active marker.
+
+    Implements knowledge_graph.auto_surface_relevant — a documented contract
+    that was prose-only since v6.0.0 (the flag existed; nothing read it).
+    Degradation ladder mirrors _section_graph_stats: no graph, no plugin
+    dir, or no recall helper -> section silently absent.
+
+    timeout=3 (not 4): this is the hook's third subprocess; 4+4+3 keeps the
+    pathological all-hang worst case near the 10s hook budget. Real cost is
+    <300ms.
+    """
+    graph_path = root / ".agent" / "knowledge" / "graph.json"
+    if not graph_path.is_file() or plugin_dir is None:
+        return None
+    recall = plugin_dir / "skills" / "nav-graph" / "functions" / "memory_recall.py"
+    if not recall.is_file():
+        return None
+    try:
+        out = subprocess.run(
+            [
+                sys.executable,
+                str(recall),
+                "--auto",
+                "--agent-dir",
+                str(root / ".agent"),
+                "--graph-path",
+                str(graph_path),
+                "--limit",
+                str(limit),
+                "--format",
+                "compact",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=3,
+        )
+        text = (out.stdout or "").strip()
+        if not text:
+            return None
+        return (
+            "## Relevant Memories\n\n"
+            "Prior knowledge matching your open tasks/marker — factor these "
+            "in before planning.\n\n" + text[:1200]
+        )
+    except Exception as e:
+        print(f"nav_session_start: memory recall failed: {e}", file=sys.stderr)
+        return None
+
+
 def _resolve_plugin_dir() -> Path | None:
     env = os.environ.get("CLAUDE_PLUGIN_ROOT") or os.environ.get("CLAUDE_PLUGIN_DIR")
     if env:
@@ -263,6 +314,7 @@ def _resolve_plugin_dir() -> Path | None:
 def _read_hook_config(root: Path) -> dict:
     cfg = _safe_json(root / ".agent" / ".nav-config.json") or {}
     hook_cfg = cfg.get("session_start_hook") or {}
+    kg_cfg = cfg.get("knowledge_graph") or {}
     return {
         "enabled": hook_cfg.get("enabled", True),
         "include_sections": hook_cfg.get(
@@ -270,6 +322,13 @@ def _read_hook_config(root: Path) -> dict:
             ["navigator", "marker", "config", "graph", "profile", "tasks", "auto_update"],
         ),
         "char_budget": int(hook_cfg.get("char_budget", CHAR_BUDGET)),
+        # The memories section is gated by knowledge_graph.auto_surface_relevant
+        # (the documented contract since v6.0.0), NOT by include_sections —
+        # projects migrated at >=6.9.0 carry explicit include_sections lists
+        # that predate this section, and the block-additive config migrator
+        # cannot append to them.
+        "surface_memories": bool(kg_cfg.get("auto_surface_relevant", True)),
+        "max_memories": int(kg_cfg.get("max_session_memories", 5)),
     }
 
 
@@ -322,6 +381,10 @@ def _build_payload(stdin_data: dict) -> str | None:
     add("config", lambda: _section_config(root))
     add("auto_update", lambda: _section_auto_update(root, plugin_dir))
     add("graph", lambda: _section_graph_stats(root, plugin_dir))
+    if cfg["surface_memories"]:
+        sections_enabled.add("memories")
+        add("memories", lambda: _section_relevant_memories(
+            root, plugin_dir, cfg["max_memories"]))
     add("profile", lambda: _section_user_profile(root))
     add("tasks", lambda: _section_open_tasks(root))
     if source != "resume":

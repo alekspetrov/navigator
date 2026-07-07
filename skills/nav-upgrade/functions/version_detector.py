@@ -14,8 +14,10 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from urllib import request
+
+REPO = 'alekspetrov/navigator'
 
 
 def get_current_version() -> Optional[str]:
@@ -96,41 +98,111 @@ def get_plugin_json_version() -> Optional[str]:
     return None
 
 
-def get_latest_version_from_github() -> Dict:
+def fetch_candidate_releases() -> List[Dict]:
     """
-    Get latest Navigator version from GitHub releases API.
+    Fetch recent releases from GitHub, newest first, excluding drafts/prereleases.
+
+    Raises on network/API failure - caller decides how to handle it.
+    """
+    url = f'https://api.github.com/repos/{REPO}/releases?per_page=10'
+    req = request.Request(url)
+    req.add_header('User-Agent', 'Navigator-Version-Detector')
+
+    with request.urlopen(req, timeout=10) as response:
+        data = json.load(response)
+
+    return [r for r in data if not r.get('draft') and not r.get('prerelease')]
+
+
+def validate_release_tag(tag_name: str) -> Dict:
+    """
+    Validate that a release tag's plugin.json version matches the tag itself.
+
+    A release published without a matching plugin.json version bump (bad
+    automation, or a human tagging before the version sync) would otherwise
+    be offered as an update that never actually changes the installed
+    version, causing a phantom-update loop every session.
 
     Returns:
-        Dict with version, release_url, and changes
+        Dict with:
+        - valid: True if plugin.json version matches the tag, or if the
+          validation fetch itself failed (fail-open - don't block updates
+          on a flaky/offline network)
+        - plugin_version: the version found in plugin.json, or None
+        - network_error: True if the validation fetch failed
     """
-    try:
-        url = 'https://api.github.com/repos/alekspetrov/navigator/releases/latest'
+    expected_version = tag_name.lstrip('v')
+    url = f'https://raw.githubusercontent.com/{REPO}/{tag_name}/.claude-plugin/plugin.json'
 
+    try:
         req = request.Request(url)
         req.add_header('User-Agent', 'Navigator-Version-Detector')
 
         with request.urlopen(req, timeout=10) as response:
             data = json.load(response)
+            plugin_version = data.get('version')
+    except Exception:
+        return {'valid': True, 'plugin_version': None, 'network_error': True}
 
-            # Extract version from tag_name (e.g., "v3.3.0" → "3.3.0")
-            tag_name = data.get('tag_name', '')
-            version = tag_name.lstrip('v')
+    return {
+        'valid': plugin_version == expected_version,
+        'plugin_version': plugin_version,
+        'network_error': False,
+    }
 
-            # Parse release notes for key changes
-            body = data.get('body', '')
-            changes = parse_release_notes(body)
 
-            return {
-                'version': version,
-                'release_url': data.get('html_url', ''),
-                'release_date': data.get('published_at', '').split('T')[0],
-                'changes': changes
-            }
+def get_latest_version_from_github() -> Dict:
+    """
+    Get latest valid Navigator version from GitHub releases API.
+
+    Walks releases newest-first and skips any whose plugin.json version
+    doesn't match its tag (malformed release) so it's never offered as an
+    update. A validation fetch failure fails open - that candidate is
+    offered as-is rather than blocking on network flakiness.
+
+    Returns:
+        Dict with version, release_url, and changes
+    """
+    try:
+        candidates = fetch_candidate_releases()
     except Exception as e:
         return {
             'version': None,
             'error': str(e)
         }
+
+    for release in candidates:
+        tag_name = release.get('tag_name', '')
+        if not tag_name:
+            continue
+
+        validation = validate_release_tag(tag_name)
+        if not validation['valid']:
+            print(
+                f"release {tag_name} has plugin.json {validation['plugin_version']} "
+                "— malformed release, ignoring",
+                file=sys.stderr
+            )
+            continue
+
+        # Extract version from tag_name (e.g., "v3.3.0" → "3.3.0")
+        version = tag_name.lstrip('v')
+
+        # Parse release notes for key changes
+        body = release.get('body', '')
+        changes = parse_release_notes(body)
+
+        return {
+            'version': version,
+            'release_url': release.get('html_url', ''),
+            'release_date': release.get('published_at', '').split('T')[0],
+            'changes': changes
+        }
+
+    return {
+        'version': None,
+        'error': 'No valid release found (all candidates failed plugin.json validation)'
+    }
 
 
 def parse_release_notes(body: str) -> Dict:

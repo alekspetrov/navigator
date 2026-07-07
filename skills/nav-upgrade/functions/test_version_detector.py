@@ -81,5 +81,127 @@ class GetPluginJsonVersionTest(unittest.TestCase):
                 self.assertIsNone(vd.get_plugin_json_version())
 
 
+def _release(tag, prerelease=False, draft=False, body=""):
+    return {
+        "tag_name": tag,
+        "prerelease": prerelease,
+        "draft": draft,
+        "html_url": f"https://github.com/alekspetrov/navigator/releases/{tag}",
+        "published_at": "2026-07-01T00:00:00Z",
+        "body": body,
+    }
+
+
+class _FakeResponse:
+    """Minimal context-manager stand-in for urlopen()'s response object."""
+
+    def __init__(self, payload):
+        self._payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self):
+        return json.dumps(self._payload).encode()
+
+
+class GetLatestVersionFromGithubTest(unittest.TestCase):
+    """Guards GH-25: a release tag whose plugin.json disagrees with the tag
+    must never be offered as an update (phantom-update loop otherwise)."""
+
+    def _mock_urlopen(self, releases, plugin_versions):
+        """releases: list of release dicts from the /releases endpoint.
+        plugin_versions: dict tag -> version string returned by the raw
+        plugin.json fetch for that tag (missing tag -> raises, simulating a
+        network failure on the validation fetch only).
+        """
+
+        def fake_urlopen(req, timeout=10):
+            url = req.full_url if hasattr(req, "full_url") else req
+            if "api.github.com" in url:
+                return _FakeResponse(releases)
+            # raw.githubusercontent.com/<repo>/<tag>/.claude-plugin/plugin.json
+            tag = url.split("/")[-3]
+            if tag not in plugin_versions:
+                raise OSError("network unreachable")
+            return _FakeResponse({"version": plugin_versions[tag]})
+
+        return mock.patch.object(vd.request, "urlopen", side_effect=fake_urlopen)
+
+    def test_matching_release_is_offered(self):
+        releases = [_release("v6.16.0")]
+        with self._mock_urlopen(releases, {"v6.16.0": "6.16.0"}):
+            result = vd.get_latest_version_from_github()
+        self.assertEqual(result["version"], "6.16.0")
+        self.assertIsNone(result.get("error"))
+
+    def test_mismatched_release_skipped_next_considered(self):
+        releases = [_release("v6.17.0"), _release("v6.16.0")]
+        with self._mock_urlopen(
+            releases, {"v6.17.0": "6.16.9", "v6.16.0": "6.16.0"}
+        ):
+            result = vd.get_latest_version_from_github()
+        self.assertEqual(result["version"], "6.16.0")
+
+    def test_validation_fetch_error_fails_open(self):
+        """No plugin_versions entry for the tag -> validation fetch raises,
+        but the release must still be offered (fail-open)."""
+        releases = [_release("v6.16.0")]
+        with self._mock_urlopen(releases, {}):
+            result = vd.get_latest_version_from_github()
+        self.assertEqual(result["version"], "6.16.0")
+
+    def test_prerelease_excluded(self):
+        releases = [_release("v6.17.0-beta.1", prerelease=True), _release("v6.16.0")]
+        with self._mock_urlopen(
+            releases, {"v6.17.0-beta.1": "6.17.0-beta.1", "v6.16.0": "6.16.0"}
+        ):
+            result = vd.get_latest_version_from_github()
+        self.assertEqual(result["version"], "6.16.0")
+
+    def test_releases_endpoint_failure_returns_error(self):
+        with mock.patch.object(
+            vd.request, "urlopen", side_effect=OSError("network down")
+        ):
+            result = vd.get_latest_version_from_github()
+        self.assertIsNone(result["version"])
+        self.assertIn("network down", result["error"])
+
+    def test_all_candidates_malformed_returns_error(self):
+        releases = [_release("v6.16.0")]
+        with self._mock_urlopen(releases, {"v6.16.0": "6.15.9"}):
+            result = vd.get_latest_version_from_github()
+        self.assertIsNone(result["version"])
+
+
+class ValidateReleaseTagTest(unittest.TestCase):
+    def test_matching_version_is_valid(self):
+        def fake_urlopen(req, timeout=10):
+            return _FakeResponse({"version": "6.16.0"})
+
+        with mock.patch.object(vd.request, "urlopen", side_effect=fake_urlopen):
+            result = vd.validate_release_tag("v6.16.0")
+        self.assertTrue(result["valid"])
+        self.assertFalse(result["network_error"])
+
+    def test_mismatched_version_is_invalid(self):
+        def fake_urlopen(req, timeout=10):
+            return _FakeResponse({"version": "6.15.9"})
+
+        with mock.patch.object(vd.request, "urlopen", side_effect=fake_urlopen):
+            result = vd.validate_release_tag("v6.16.0")
+        self.assertFalse(result["valid"])
+        self.assertEqual(result["plugin_version"], "6.15.9")
+
+    def test_network_failure_fails_open(self):
+        with mock.patch.object(vd.request, "urlopen", side_effect=OSError("boom")):
+            result = vd.validate_release_tag("v6.16.0")
+        self.assertTrue(result["valid"])
+        self.assertTrue(result["network_error"])
+
+
 if __name__ == "__main__":
     unittest.main()

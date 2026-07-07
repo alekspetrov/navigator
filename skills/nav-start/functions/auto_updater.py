@@ -23,8 +23,10 @@ import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from urllib import request
+
+REPO = 'alekspetrov/navigator'
 
 
 # --- Version Detection (from nav-upgrade/version_detector.py) ---
@@ -66,24 +68,112 @@ def get_current_version() -> Optional[str]:
         return None
 
 
-def get_latest_version_from_github() -> Dict:
-    """Get latest Navigator version from GitHub releases API."""
+def fetch_candidate_releases() -> List[Dict]:
+    """Fetch recent releases from GitHub, newest first, excluding drafts/prereleases.
+
+    Raises on network/API failure - caller decides how to handle it.
+    """
+    url = f'https://api.github.com/repos/{REPO}/releases?per_page=10'
+    req = request.Request(url)
+    req.add_header('User-Agent', 'Navigator-Auto-Updater')
+
+    with request.urlopen(req, timeout=10) as response:
+        data = json.load(response)
+
+    return [r for r in data if not r.get('draft') and not r.get('prerelease')]
+
+
+def validate_release_tag(tag_name: str) -> Dict:
+    """Validate that a release tag's plugin.json version matches the tag itself.
+
+    Mirrors nav-upgrade/version_detector.validate_release_tag: a release
+    published without a matching plugin.json bump would otherwise be offered
+    as an update that never actually changes the installed version, causing
+    a phantom-update loop every session. A validation fetch failure fails
+    open (offer the update) so offline/flaky networks don't block updates.
+    """
+    expected_version = tag_name.lstrip('v')
+    url = f'https://raw.githubusercontent.com/{REPO}/{tag_name}/.claude-plugin/plugin.json'
+
     try:
-        url = 'https://api.github.com/repos/alekspetrov/navigator/releases/latest'
         req = request.Request(url)
         req.add_header('User-Agent', 'Navigator-Auto-Updater')
 
         with request.urlopen(req, timeout=10) as response:
             data = json.load(response)
-            tag_name = data.get('tag_name', '')
-            version = tag_name.lstrip('v')
-            return {
-                'version': version,
-                'release_url': data.get('html_url', ''),
-                'release_date': data.get('published_at', '').split('T')[0]
-            }
+            plugin_version = data.get('version')
+    except Exception:
+        return {'valid': True, 'plugin_version': None, 'network_error': True}
+
+    return {
+        'valid': plugin_version == expected_version,
+        'plugin_version': plugin_version,
+        'network_error': False,
+    }
+
+
+def get_latest_version_from_github() -> Dict:
+    """Get latest valid Navigator version from GitHub releases API.
+
+    Walks releases newest-first and skips any whose plugin.json version
+    doesn't match its tag (malformed release).
+    """
+    try:
+        candidates = fetch_candidate_releases()
     except Exception as e:
         return {'version': None, 'error': str(e)}
+
+    for release in candidates:
+        tag_name = release.get('tag_name', '')
+        if not tag_name:
+            continue
+
+        validation = validate_release_tag(tag_name)
+        if not validation['valid']:
+            print(
+                f"release {tag_name} has plugin.json {validation['plugin_version']} "
+                "— malformed release, ignoring",
+                file=sys.stderr
+            )
+            continue
+
+        return {
+            'version': tag_name.lstrip('v'),
+            'release_url': release.get('html_url', ''),
+            'release_date': release.get('published_at', '').split('T')[0]
+        }
+
+    return {
+        'version': None,
+        'error': 'No valid release found (all candidates failed plugin.json validation)'
+    }
+
+
+def get_installed_plugin_version() -> Optional[str]:
+    """Read the version from the highest-versioned cached plugin install.
+
+    Used post-update to verify `claude plugin update` actually landed the
+    target version, not just that the command exited 0 - a malformed
+    release can report success while the cache still holds the old version.
+    """
+    cache_root = Path.home() / '.claude' / 'plugins' / 'cache'
+    candidates = list(cache_root.glob('*/navigator/*/.claude-plugin/plugin.json'))
+
+    def _version_key(plugin_json: Path):
+        version_dir = plugin_json.parent.parent.name
+        return [int(x) for x in re.findall(r'\d+', version_dir)]
+
+    for plugin_json in sorted(candidates, key=_version_key, reverse=True):
+        try:
+            with open(plugin_json, 'r') as f:
+                data = json.load(f)
+                version = data.get('version')
+                if version:
+                    return version
+        except (json.JSONDecodeError, OSError):
+            continue
+
+    return None
 
 
 def compare_versions(current: str, latest: str) -> int:
@@ -475,6 +565,21 @@ def auto_update(config_path: str = '.agent/.nav-config.json') -> Dict:
             'latest_version': latest_version
         }
 
+    # Skip releases already flagged as malformed this project - avoids a
+    # per-session phantom-update prompt for the same bad tag.
+    ignored_releases = auto_update_config.get('ignored_releases', [])
+    if latest_version in ignored_releases:
+        auto_update_config['last_check'] = datetime.now().isoformat()
+        config['auto_update'] = auto_update_config
+        save_config(config, config_path)
+
+        return {
+            'status': 'skipped',
+            'message': f'Release v{latest_version} previously failed verification - ignoring until a newer release appears',
+            'current_version': current_version,
+            'latest_version': latest_version
+        }
+
     # Update available - attempt update
     update_result = update_plugin_via_claude()
 
@@ -488,6 +593,27 @@ def auto_update(config_path: str = '.agent/.nav-config.json') -> Dict:
     save_config(config, config_path)
 
     if update_result['success']:
+        # Verify the installed version actually matches what we targeted -
+        # `claude plugin update` can report success on a malformed release
+        # that never lands the expected version.
+        installed_version = get_installed_plugin_version()
+        if installed_version != latest_version:
+            ignored_releases.append(latest_version)
+            auto_update_config['ignored_releases'] = ignored_releases
+            config['auto_update'] = auto_update_config
+            save_config(config, config_path)
+
+            return {
+                'status': 'failed',
+                'message': (
+                    f'updated marketplace but installed version is {installed_version}, '
+                    f'expected {latest_version} — malformed release?'
+                ),
+                'current_version': current_version,
+                'latest_version': latest_version,
+                'installed_version': installed_version
+            }
+
         # Sync project config with new version
         sync_result = sync_project_config(config_path, latest_version)
 

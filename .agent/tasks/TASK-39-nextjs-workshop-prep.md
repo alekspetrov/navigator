@@ -1,6 +1,6 @@
 # TASK-39: Next.js Workshop Prep — Templates, Patterns, Quickstart
 
-**Status**: 🚧 In Progress
+**Status**: ✅ Completed — 2026-05-11 (bbcc598: templates + generators + NEXTJS-PATTERNS.md + validated dry run; workshop/ docs intentionally untracked in 2760653 — event-specific materials stay local; workshop delivered 2026-05-22; shipped in v6.12.0+ tags). Status closed retroactively 2026-07-09.
 **Created**: 2026-05-11
 **Workshop date**: 2026-05-22 (JSNation — Advanced Claude Code workshop)
 **Priority**: High (11 days to ship)

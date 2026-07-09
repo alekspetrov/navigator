@@ -1,10 +1,10 @@
 # TASK-42: Audit Remediation Roadmap
 
-**Status**: 🗺️ Active (umbrella) — all remediation WPs (wp1–wp11) shipped; only wp12 security re-sweep outstanding
+**Status**: ✅ Complete — wp1–wp11 shipped; wp12 security re-sweep done 2026-07-09 (no exploitable findings; see wp12 section)
 **Created**: 2026-06-02
 **Priority**: High
 **Source**: 10-dimension audit `wf_0dc1b9ce-7d8` (86 verified findings) → remediation plan `wf_187896bb-5af`
-**Shipped already**: critical hook-manifest regression fixed in **v6.15.6**; all remediation work-packages wp1–wp11 (TASK-43…51 + wp10/TASK-25) shipped to `main`. **Only the wp12 security re-sweep remains** (see Open Gap).
+**Shipped already**: critical hook-manifest regression fixed in **v6.15.6**; all remediation work-packages wp1–wp11 (TASK-43…51 + wp10/TASK-25) shipped to `main`. wp12 security re-sweep completed 2026-07-09 (see wp12 section at end) — roadmap closed.
 
 ---
 
@@ -99,3 +99,65 @@ Dependency edges respected exactly as declared: wp4→wp1; wp5/wp6/wp7→wp4; wp
 - Per-WP tasks: TASK-43 (ci-gate), TASK-44 (version-tooling), TASK-45 (hook-tests), TASK-46 (hook-safety), TASK-47 (kg-integrity), TASK-48 (detection), TASK-49 (plugin-paths), TASK-50 (skill-templates), TASK-51 (python-misc), TASK-52 (docs-config)
 - wp10 (multi-Claude) → **TASK-25** (existing)
 - Audit backlog memory: `project_audit_backlog_2026_06`
+
+---
+
+## wp12 Security Re-sweep — completed 2026-07-09
+
+Inline review (subagent runs were blocked by model cyber-safeguards; reviewed directly).
+Scope per Open Gap: injection, auto-update supply chain, read-guard bypass.
+Files reviewed: `hooks/nav_session_start.py`, `hooks/nav_brief.py`, `hooks/nav_read_guard.py`,
+`skills/nav-start/functions/auto_updater.py`, `scripts/check-version.sh`, plus a repo-wide
+scan for `shell=True` / `eval` / `exec` / `os.system` (zero hits outside a docstring).
+
+### Dimension 1: Context-injection surfaces — PASS (trust-boundary notes)
+
+- **No command injection.** Every subprocess call uses argv lists; nav_brief concepts are
+  regex-restricted (`[a-z][a-z\-_]{3,}`) and passed as a single argv element; config-derived
+  paths never touch a shell string.
+- **Anti-recursion mitigations present and deliberate**: nav_brief strips echoed
+  `<nav-workflow-block>` sentinels before scoring; nav_read_guard's block message
+  deliberately omits the triggering file_path (commented rationale in source).
+- **I-1 (low, accepted)**: SessionStart injects `.agent/` file content (README, marker,
+  profile, memories) into model context. A hostile repo could plant instruction text there —
+  but that is the same trust domain as CLAUDE.md itself; Claude Code's model treats project
+  files as trusted. No remote or cross-project content is ever injected. No action.
+- **I-2 (low)**: PreCompact markers embed `git status` output; hostile *filenames* in the
+  working tree flow into injected context. Same local trust domain. No action.
+
+### Dimension 2: Auto-update supply chain — PASS with one documented inherent risk
+
+- **U-1 (medium, inherent)**: No cryptographic verification of releases (no signing/checksum).
+  Trust anchor = GitHub repo over HTTPS + Claude Code's plugin pipeline. A GitHub account/repo
+  compromise means code execution on auto-updating users at next session start (hooks run
+  automatically). This is the standard marketplace trust model; mitigations that exist today:
+  `auto_update.enabled: false` and manual review before `nav-upgrade`. Release signing is
+  possible future work, not a defect.
+- **U-2 (good)**: tag↔plugin.json validation (5fe5ddd, mirrored in auto_updater) blocks
+  malformed/phantom releases; post-update the installed version is re-verified against the
+  target and mismatches are added to `ignored_releases`.
+- **U-3 (accepted)**: validation fetch fails OPEN on network error — documented, and it is an
+  integrity check, not an authenticity check, so fail-open does not weaken the (absent)
+  authenticity guarantee.
+- **U-4 (good)**: SessionStart path is read-only (`--check-drift`); the mutating update runs
+  only via the skill flow with fixed identifiers (`navigator@navigator-marketplace`) — no
+  user- or network-controlled data reaches a command line. Remote version strings are parsed
+  with strict `\d+\.\d+\.\d+` regexes.
+- **U-5 (low, availability)**: reinstall fallback is uninstall→add→install; a failure after
+  uninstall leaves the plugin absent until next session. Not a security issue.
+
+### Dimension 3: Read-guard bypass — PASS (by design; keep framing honest)
+
+- **R-1 (by design)**: nav_read_guard is a token-budget guard, not a security boundary.
+  Known bypasses — Bash `cat`, Grep/Glob, agents, config threshold raise, counter-file
+  delete — are all acceptable because its purpose is anti-pattern prevention; its own block
+  message advertises the escape hatches. Docs and source already frame it exactly this way;
+  keep it that way (never cite it as an access control).
+- **R-2 (minor)**: symlinks inside `.agent/` pointing outside escape counting
+  (`Path.resolve()` semantics). Irrelevant to security, negligible to token accounting.
+
+### Verdict
+
+**No exploitable findings.** One inherent-risk documentation item (U-1) — now recorded here.
+The security dimension that failed to return structured output in the original audit
+(`wf_0dc1b9ce-7d8`) is hereby re-run and closed. TASK-42 remediation roadmap is complete.

@@ -108,8 +108,11 @@ def extract_decisions(content: str) -> list:
 
     for row in rows:
         decision, options, chosen, reasoning = [col.strip() for col in row]
-        # Skip header row
-        if decision.lower() in ['decision', '---', '-']:
+        # Skip the header row and the separator row. Separator cells are any
+        # run of dashes/colons/spaces (e.g. `----------` or `:---:`) — an
+        # exact-match list missed wide cells and ingested them as decisions
+        # ("----------: -------- - -----------", see mem-038/mem-044).
+        if decision.lower() == 'decision' or re.fullmatch(r'[-:\s]+', decision):
             continue
         if chosen and reasoning and len(reasoning) > 5:
             decisions.append({
@@ -166,10 +169,21 @@ def add_task_to_graph(task_path: str, graph_path: str) -> dict:
     memories_created = []
     if status == 'completed':
         decisions = extract_decisions(content)
+        # Re-syncing a task must not duplicate its decision memories: the
+        # TASK-54 sync ran twice and produced mem-044..049 as byte-identical
+        # copies of mem-038..043. Skip any summary already in the graph.
+        existing_summaries = {
+            m.get('summary')
+            for m in graph.get('nodes', {}).get('memories', {}).values()
+            if m.get('type') == 'decision'
+        }
         for decision in decisions:
             summary = f"{decision['decision']}: {decision['chosen']} - {decision['reasoning']}"
             if len(summary) > 200:
                 summary = summary[:197] + '...'
+            if summary in existing_summaries:
+                continue
+            existing_summaries.add(summary)
 
             try:
                 memory_id = add_memory(

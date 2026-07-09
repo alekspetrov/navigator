@@ -1,6 +1,6 @@
 # TASK-56: nav-brief — Intent-Brief Enforcement for Ambiguous Prompts
 
-**Status**: ✅ Implemented — 2026-07-09 (version bump deferred to next release)
+**Status**: ✅ Implemented — 2026-07-09 (shipped in v6.18.0)
 **Created**: 2026-07-09
 **Effort**: M (~3.25 days planned)
 

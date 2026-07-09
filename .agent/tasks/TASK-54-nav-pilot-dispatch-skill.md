@@ -1,6 +1,6 @@
 # TASK-54: nav-pilot — Dispatch Handoff Skill (Navigator → Pilot)
 
-**Status**: ✅ Implemented — 2026-06-15 (version bump deferred to next release)
+**Status**: ✅ Implemented — 2026-06-15 (shipped in v6.16.0)
 **Created**: 2026-06-15
 **Assignee**: Manual
 

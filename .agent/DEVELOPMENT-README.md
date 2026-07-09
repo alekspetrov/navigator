@@ -193,7 +193,7 @@ Hook commands resolve via `${CLAUDE_PLUGIN_ROOT}` (the installed plugin director
 | `nav_workflow_state.py` | Stop | Record per-turn signal (`check_shown`, `nav_status_shown`, `loop_phase`, `tools_used`) into `.agent/.nav-workflow-state.json` |
 | `nav_profile_sync.py` | PostToolUse (Write/Edit on `.user-profile.json`) | Convert new corrections into graph memories |
 | `workflow_enforcer.py` | UserPromptSubmit | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` |
-| `nav_brief.py` | UserPromptSubmit | Score prompt ambiguity (TASK-56); on ambiguous task-shaped prompts inject a NAV-BRIEF instruction + relevant graph memories so the model renders an intent brief before implementing. Never blocks (exit 0 only — mem-034). Sibling entry to `workflow_enforcer.py`; composes on the same event |
+| `nav_brief.py` | UserPromptSubmit | Score prompt ambiguity (TASK-56, shipped v6.18.0); on ambiguous task-shaped prompts inject a NAV-BRIEF instruction + relevant graph memories so the model renders an intent brief before implementing. Never blocks (exit 0 only — mem-034). Sibling entry to `workflow_enforcer.py`; composes on the same event. Live-validated 2026-07-09: full cycle (brief → confirmation → BRIEF DRIFT on scope growth → re-confirmation) ran on a real bug, and the hook's own memory recall surfaced the graph corruption fixed in v6.18.1 — see `sops/debugging/knowledge-graph-memory-corruption.md` |
 | `nav_read_guard.py` | PreToolUse (Read on `.agent/`) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`) |
 
 ### Composition lessons captured

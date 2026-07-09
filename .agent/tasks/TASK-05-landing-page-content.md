@@ -1,7 +1,7 @@
 # TASK-05: Landing Page Content
 
 **Created**: 2025-10-13
-**Status**: In Progress
+**Status**: ✅ Completed — superseded by TASK-55; landing content shipped on the live site (navigator-site.vercel.app, verified 2026-07-09).
 **Target**: Website/landing page for Navigator plugin
 
 ---

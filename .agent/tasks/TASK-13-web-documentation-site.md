@@ -1,6 +1,6 @@
 # TASK-13: Web Documentation Site
 
-**Status**: 📋 Planning
+**Status**: ✅ Completed — superseded by TASK-55; docs site (62 pages) built + deployed at navigator-site.vercel.app. Status synced 2026-07-09.
 **Priority**: High
 **Estimated Effort**: 2-3 weeks (MVP), 6 weeks (complete)
 **Created**: 2025-10-19

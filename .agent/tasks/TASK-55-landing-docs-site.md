@@ -1,6 +1,6 @@
 # TASK-55: Navigator Landing Page + Documentation Site
 
-**Status**: 📐 Plan ready for review (not yet implemented)
+**Status**: ✅ Built + deployed — 62 pages live at navigator-site.vercel.app (OG image included); only DNS cutover to the custom domain remains. Status synced 2026-07-09.
 **Created**: 2026-06-24
 **Supersedes**: TASK-05 (Landing Page Content) and TASK-13 (Web Documentation Site — stale: VitePress/v3.1.0)
 **Source**: deep-research workflow `wf_0777e387-af9` (9 agents, asset audit + Pilot-stack study + web refs + completeness critic)

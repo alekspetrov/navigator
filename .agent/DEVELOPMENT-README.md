@@ -78,7 +78,7 @@ Strategic loading beats bulk loading.
 
 **Project**: Claude Code plugin for Navigator
 **Tech**: Markdown skills, JSON manifests, Python hook scripts
-**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.15.7)
+**Plugin version**: see `.claude-plugin/plugin.json` (currently v6.18.1)
 
 **New here?** Read in order:
 1. [Project Architecture](./system/project-architecture.md) — plugin structure, manifest, hook wiring
@@ -139,14 +139,13 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-06-04):
-- **TASK-05** — landing page content
-- **TASK-13** — web documentation site (planning)
-- **TASK-15** — marketing strategy & community adoption
-- **TASK-25** — multi-Claude scripts DEPRECATED (superseded by native Workflows)
+Current active threads (as of 2026-07-09):
+- **TASK-15** — marketing strategy & community adoption (plan needs a refresh pass; predates the live site + v6.18.x)
 - **TASK-35** — project memory (research)
 - **TASK-37** — nav-simplify complexity / cost scoring (design)
-- **TASK-39** — Next.js workshop prep
+- **TASK-55** — landing + docs site: built + deployed (navigator-site.vercel.app); only DNS cutover left
+
+Closed 2026-07-09: TASK-05/13 (superseded by TASK-55), TASK-39 (workshop delivered 2026-05-22), TASK-42 (audit roadmap complete incl. wp12 security re-sweep), TASK-56 (nav-brief, shipped v6.18.0).
 
 For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `releases/RELEASE-NOTES-*.md`.
 
@@ -172,11 +171,12 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 - [Plugin Release](./sops/deployment/plugin-release.md) — pre-release checklist, tag → CI workflow, post-release verification
 
 **Debugging**:
+- [Knowledge-Graph Memory Corruption](./sops/debugging/knowledge-graph-memory-corruption.md) — diagnose junk/duplicate memories, clean via remove-node + resolved/ archiving, fix the ingester
 - Document as discovered. Capture novel diagnoses as memories in the knowledge graph (`mem-XXX.md` under `.agent/knowledge/memories/`).
 
 ---
 
-## Lifecycle Hooks (v6.9.0 → v6.15.7)
+## Lifecycle Hooks (v6.9.0 → v6.18.1)
 
 Navigator ships nine Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
 
@@ -285,5 +285,5 @@ cd ~/Projects/tmp/nav-test
 
 ---
 
-**Last Updated**: 2026-06-08 (v6.15.7 — corrected plugin hook env var `CLAUDE_PLUGIN_DIR` → `CLAUDE_PLUGIN_ROOT`; published audit-remediation wp1–wp11)
+**Last Updated**: 2026-07-09 (v6.18.1 — nav-brief shipped v6.18.0; decision-extraction separator/dedupe fix v6.18.1; audit roadmap TASK-42 closed incl. wp12 security re-sweep)
 **Powered By**: Navigator (Complete Framework)

@@ -1,6 +1,6 @@
 # TASK-15: Marketing Strategy & Community Adoption Plan
 
-**Status**: 🚧 In Progress
+**Status**: 🚧 In Progress — ongoing campaign, not autonomously executable. Truth-sync 2026-07-09: landing/docs site now live (TASK-55, navigator-site.vercel.app), JSNation workshop delivered 2026-05-22 (TASK-39), plugin at v6.18.0. Doc content (calendar, v3.2.0 target, competitor matrix) predates all of this — needs a refresh pass before further execution.
 **Priority**: High
 **Estimated Effort**: 2-3 weeks
 **Version Target**: v3.2.0 (Marketing Push)

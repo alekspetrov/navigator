@@ -96,6 +96,11 @@
     "enabled": true,
     "strict_block": true
   },
+  "brief_hook": {
+    "enabled": true,
+    "ambiguity_threshold": 0.5,
+    "memory_budget_chars": 1200
+  },
   "read_guard_hook": {
     "enabled": true,
     "warn_threshold": 3,

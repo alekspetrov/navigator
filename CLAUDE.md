@@ -556,6 +556,27 @@ User: "Fix the typo in README"
 
 ---
 
+### Intent Briefs (nav-brief, TASK-56)
+
+**Ambiguity ≠ complexity.** A small task can be highly ambiguous ("fix the bug" — which bug?). The `nav_brief.py` UserPromptSubmit hook scores each prompt for ambiguity; when a task-shaped prompt scores ≥ threshold, it injects a `NAV-BRIEF` instruction + relevant knowledge-graph memories.
+
+**When you see a NAV-BRIEF block in context**: render a one-screen INTENT BRIEF (Goal / Scope / Approach / Limits / Verify / Won't do), pre-fill defaults from the injected memories, ask **max 2 open questions**, and wait for user confirmation before modifying files. Mid-task, if work is about to exceed the confirmed brief's scope, raise `BRIEF DRIFT` and ask.
+
+**Passthrough** (no brief): no NAV-BRIEF block this turn, the prompt answers a pending brief's questions, or the user says "just do it" / "quick fix" / "skip the brief".
+
+Config (`.agent/.nav-config.json`):
+```json
+"brief_hook": {
+  "enabled": true,
+  "ambiguity_threshold": 0.5,
+  "memory_budget_chars": 1200
+}
+```
+
+Full behavior: `skills/nav-brief/SKILL.md`.
+
+---
+
 ### Project Knowledge Graph (v6.0.0)
 
 Navigator v6.0.0 introduces the **Project Knowledge Graph** - unified search across all project knowledge with experiential memory.

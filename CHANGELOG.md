@@ -6,6 +6,10 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [Unreleased]
+
+**New skill + hook `nav-brief` — intent-brief enforcement for ambiguous prompts (TASK-56).** The expensive failure mode is rework, not context overflow: ambiguous task prompts get implemented on guessed scope, then corrected over 2-4 exchanges. A new `UserPromptSubmit` hook (`hooks/nav_brief.py`, sibling entry to `workflow_enforcer.py`) scores each prompt for **ambiguity** — a third axis, deliberately separate from both complexity scorers per TASK-48 precedent (`skills/nav-brief/functions/ambiguity_scorer.py`: question/confirmation zero-out gates, task-verb base 0.5, vague-scope bonus, credits for file paths / numbers / limiter words / acceptance criteria; word-boundary regex only). At/above threshold it injects a `NAV-BRIEF` instruction plus relevant graph memories (via `memory_recall.py --concepts`, 3s timeout, silent degradation, 1200-char budget); the `nav-brief` skill then renders a one-screen INTENT BRIEF (Goal/Scope/Approach/Limits/Verify/Won't-do), asks max 2 open questions, waits for confirmation, and raises `BRIEF DRIFT` if implementation later exceeds confirmed scope. Never blocks — exit 0 + stdout only (mem-034: exit 2 on UserPromptSubmit stops the model entirely). Config: `brief_hook {enabled, ambiguity_threshold: 0.5, memory_budget_chars: 1200}`; `PILOT_EXECUTOR` bypass for autonomous dispatch. 42 new tests (25 scorer, 16 hook subprocess, 1 two-hook composition case in the smoke suite). v1 is stateless; pending-brief tracking, strict gating, and briefs-shown metrics are explicitly deferred.
+
 ## [v6.17.1] — 2026-07-06
 
 **Hotfix: consumer-graph writes crashed on missing `concept_index`.** `add_node`/`remove_node`/`add_edge` assumed `concept_index` and `edges` keys exist — pilot-style consumer graphs lack them, so the first task_to_graph sync after v6.17.0 died with `KeyError`. Now `setdefault`s. 3 regression tests (pilot-shaped fixture). → [Full release notes](./releases/RELEASE-NOTES-v6.17.1.md)

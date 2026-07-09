@@ -28,6 +28,7 @@
   ],
   "skills": [
     "./skills/nav-graph",
+    "./skills/nav-brief",
     "./skills/nav-workflow",
     "./skills/nav-features",
     "./skills/nav-simplify",
@@ -109,6 +110,15 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/workflow_enforcer.py\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_brief.py\"",
             "timeout": 5
           }
         ]

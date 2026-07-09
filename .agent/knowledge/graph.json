@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-06-25T12:35:30.507524+00:00",
+  "last_updated": "2026-07-09T17:28:38.816022+00:00",
   "stats": {
-    "total_nodes": 150,
-    "total_edges": 762,
+    "total_nodes": 151,
+    "total_edges": 768,
     "memory_count": 49
   },
   "nodes": {
@@ -681,6 +681,19 @@
           "theory of mind",
           "testing",
           "frontend"
+        ]
+      },
+      "TASK-56": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-56-nav-brief.md",
+        "title": "nav-brief \u2014 Intent-Brief Enforcement for Ambiguous Prompts",
+        "status": "completed",
+        "concepts": [
+          "api",
+          "knowledge",
+          "skills",
+          "testing",
+          "markers",
+          "context"
         ]
       }
     },
@@ -6348,6 +6361,36 @@
       "from": "TASK-55",
       "to": "knowledge",
       "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-56",
+      "to": "api",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6481,7 +6524,8 @@
       "mem-047",
       "mem-048",
       "mem-049",
-      "TASK-55"
+      "TASK-55",
+      "TASK-56"
     ],
     "context": [
       "TASK-32",
@@ -6576,7 +6620,8 @@
       "mem-047",
       "mem-048",
       "mem-049",
-      "TASK-55"
+      "TASK-55",
+      "TASK-56"
     ],
     "skills": [
       "TASK-32",
@@ -6678,7 +6723,8 @@
       "mem-047",
       "mem-048",
       "mem-049",
-      "TASK-55"
+      "TASK-55",
+      "TASK-56"
     ],
     "session": [
       "TASK-32",
@@ -6924,7 +6970,8 @@
       "TASK-44",
       "TASK-50",
       "TASK-46",
-      "TASK-49"
+      "TASK-49",
+      "TASK-56"
     ],
     "markers": [
       "TASK-18",
@@ -6988,7 +7035,8 @@
       "TASK-46",
       "TASK-47",
       "TASK-49",
-      "TASK-55"
+      "TASK-55",
+      "TASK-56"
     ],
     "deployment": [
       "TASK-11",
@@ -7089,7 +7137,8 @@
       "mem-047",
       "mem-048",
       "mem-049",
-      "TASK-55"
+      "TASK-55",
+      "TASK-56"
     ],
     "theory of mind": [
       "TASK-19",

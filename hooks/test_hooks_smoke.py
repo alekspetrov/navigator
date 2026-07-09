@@ -145,5 +145,37 @@ class HooksSmokeTest(unittest.TestCase):
         self._check_malformed("nav_workflow_state.py")
 
 
+class UserPromptSubmitCompositionTest(unittest.TestCase):
+    """TASK-56: workflow_enforcer.py + nav_brief.py are sibling entries on
+    the same UserPromptSubmit event. Both print PLAIN TEXT (not JSON) on the
+    soft path, so they are exempt from the stdout-JSON contract above. This
+    verifies they compose: same payload, both exit 0, distinct markers,
+    neither's marker leaks into the other's output.
+    """
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.root = _make_project(Path(self._tmp.name))
+
+    def tearDown(self) -> None:
+        self._tmp.cleanup()
+
+    def test_both_hooks_compose_on_same_prompt(self) -> None:
+        # Loop trigger AND ambiguous task in one prompt: both hooks fire.
+        payload = json.dumps(
+            {"prompt": "run until done: refactor the API", "cwd": str(self.root)}
+        )
+        enforcer = _run("workflow_enforcer.py", payload, self.root)
+        brief = _run("nav_brief.py", payload, self.root)
+
+        self.assertEqual(enforcer.returncode, 0, enforcer.stderr)
+        self.assertEqual(brief.returncode, 0, brief.stderr)
+        self.assertIn("WORKFLOW CHECK", enforcer.stdout)
+        self.assertIn("NAV-BRIEF", brief.stdout)
+        # Markers must not collide across hooks.
+        self.assertNotIn("NAV-BRIEF", enforcer.stdout)
+        self.assertNotIn("WORKFLOW CHECK", brief.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()

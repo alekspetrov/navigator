@@ -1,6 +1,6 @@
 # TASK-57: v7 Spike — Empirically Verify Unproven Hook Channels
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (six memories mem-050..055 recorded, CC 2.1.205)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)
@@ -172,6 +172,38 @@ git diff --stat                                   # no hooks/nav_dispatch.py, no
 - S5 memory explicitly supersedes or reconfirms mem-035.
 - Every spike-gated routing-matrix row points at a proven channel or its named fallback;
   TASK-59/60 unblocked. Probe scripts re-runnable, handed to TASK-58 for packaging.
+
+## Results (2026-07-10, CC 2.1.205)
+
+Six memories recorded, confidence 1.0, auto-assigned IDs mem-050..055 (mem-044..049 correctly
+skipped as burned). Channel verdicts, one line each:
+
+- **S1 (mem-050)**: PostToolUse `additionalContext` DELIVERS — supersedes mem-035 for this
+  sub-channel; declarative content only (imperatives flagged as prompt injection and refused).
+- **S2 (mem-051)**: Stop `continue:true` NO-OP; `decision:block`+reason is the forced-continuation
+  mechanism; `stop_hook_active` belt + flag-file fuse both verified. continue:true ships OFF.
+- **S3 (mem-052)**: SubagentStart `additionalContext` WORKS; subagent complied (start-context is
+  trusted, unlike tool-adjacent); both-way isolation holds; subagent transcripts are separate
+  `<session>/subagents/agent-<id>.jsonl` files.
+- **S4 (mem-053)**: block-as-answer WORKS both variants, zero model tokens (num_turns=0, usage=0);
+  WINNER `decision:block` (exit-2 leaks hook command chrome); no re-trigger; CC appends
+  "Original prompt: <trigger>" to block messages — transcript-scanning hooks must tolerate it.
+- **S5 (mem-054)**: PreToolUse split — stdout DEAD (reconfirms mem-035 for stdout);
+  `additionalContext` DELIVERS (supersedes mem-035 for that sub-channel). read_guard stays
+  deny-only per plan.
+- **S6 (mem-055)**: `${CLAUDE_PLUGIN_ROOT}` binds (to marketplace SOURCE path for dir-source
+  installs); unset = LOUD exit-2 failure, not silent no-op; SessionStart fires in headless `-p`;
+  silent hooks leave no transcript attachment (conformance needs side-channel logs).
+
+**Method lesson (feeds TASK-58)**: never use "quote this token verbatim" as the injection
+observable on tool-adjacent channels — the model's injection defense refuses compliance while
+delivery succeeds. Use a declarative fact + a question only answerable from it. Also: hook payload
+`cwd` arrives realpath'd on macOS (`/tmp` → `/private/tmp`) — never string-prefix-gate on cwd.
+`memory_recall.py` takes comma-separated concepts: `--concepts "hooks,harness-behavior"`.
+
+Probe scripts (re-runnable, for TASK-58): `/tmp/nav-v7-spike/probes/` — `common.py` +
+`probe_s{1..6}.py`; harness at `/tmp/nav-v7-spike/marketplace/` (plugin installed at user scope,
+uninstall after TASK-58 packaging). Verdicts: `/tmp/nav-v7-spike/state/verdict-s*.json`.
 
 ## Refs
 

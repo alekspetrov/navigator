@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-07-10T11:07:44.442880+00:00",
+  "last_updated": "2026-07-10T13:23:13.211445+00:00",
   "stats": {
-    "total_nodes": 152,
-    "total_edges": 828,
-    "memory_count": 42
+    "total_nodes": 167,
+    "total_edges": 839,
+    "memory_count": 53
   },
   "nodes": {
     "tasks": {
@@ -697,15 +697,15 @@
         ]
       },
       "TASK-57": {
-        "path": ".agent/tasks/TASK-57-v7-hook-channel-spike.md",
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-57-v7-hook-channel-spike.md",
         "title": "v7 Spike \u2014 Empirically Verify Unproven Hook Channels",
-        "status": "backlog",
+        "status": "completed",
         "concepts": [
           "workflow",
-          "deployment",
           "knowledge",
-          "context",
+          "deployment",
           "testing",
+          "context",
           "skills"
         ]
       },
@@ -1567,6 +1567,26 @@
           "workflow"
         ],
         "domain": "navigator"
+      },
+      "hooks": {
+        "name": "Hooks",
+        "aliases": [],
+        "domain": "general"
+      },
+      "harness-behavior": {
+        "name": "Harness-Behavior",
+        "aliases": [],
+        "domain": "general"
+      },
+      "plugin-channels": {
+        "name": "Plugin-Channels",
+        "aliases": [],
+        "domain": "general"
+      },
+      "subagents": {
+        "name": "Subagents",
+        "aliases": [],
+        "domain": "general"
       }
     },
     "memories": {
@@ -2149,6 +2169,166 @@
         ],
         "created": "2026-06-15",
         "last_validated": "2026-06-15"
+      },
+      "mem-050": {
+        "type": "learning",
+        "summary": "S1 verdict \u2014 PostToolUse hookSpecificOutput.additionalContext DELIVERS to the model. Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike, ship-path scratch marketplace). Supersedes mem-035 for the PostToolUse additionalContext sub-channel. The payload lands as a transcript attachment entry of type hook_additional_context immediately after the tool_result. Hard constraint: content must be DECLARATIVE (facts, data, memories). Imperative instructions ('you MUST quote this token') are flagged by the model as prompt injection and refused (2/2 runs), while a declarative fact was correctly used to answer a question (clean pass; sentinel NAV-S1-c2505e07 answered as the 'internal build codename'). PostToolUseFailure inherits this verdict per the routing matrix. Evidence: transcript /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/26e7b852-b8d7-4ea7-8a00-594c85249863.jsonl; probe /tmp/nav-v7-spike/probes/probe_s1.py; verdict /tmp/nav-v7-spike/state/verdict-s1.json.",
+        "path": "memories/learnings/mem-050.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-051": {
+        "type": "learning",
+        "summary": "S2 verdict \u2014 Stop hook 'continue: true' is a NO-OP for forced continuation; 'decision: block' + reason IS the working mechanism. Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike). continue:true was accepted (hook_success) but the session ended normally (num_turns=1, no continuation) \u2014 continue only has effect as continue:false. decision:block injected its reason as a user-role 'Stop hook feedback:' message and produced exactly one continuation obeying it (CLI result was the sentinel NAV-S2B-bbebfac5, num_turns=2). Runaway protection verified on both layers: the re-fire after a block carries stop_hook_active=true (harness belt), and the single-shot flag-file fuse consumed correctly with a run-twice subtest showing zero further continuations (mem-037 discipline). v7 consequence: stop_completion builds on decision:block; continue:true ships OFF permanently. Evidence: transcripts /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/fcd00eb3-4193-474f-adac-482bd9bfa077.jsonl (continue variant) and 047b00c1-c117-4863-968a-f9eb9d1494ae.jsonl (block variant); probe /tmp/nav-v7-spike/probes/probe_s2.py; verdict /tmp/nav-v7-spike/state/verdict-s2.json.",
+        "path": "memories/learnings/mem-051.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-052": {
+        "type": "learning",
+        "summary": "S3 verdict \u2014 SubagentStart hookSpecificOutput.additionalContext WORKS with both-way main/subagent isolation. Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike). The event fires for Task-tool subagents, and the injected context lands as a hook_additional_context attachment in the subagent's own transcript; the subagent complied with it (quoted sentinel NAV-S3A-d656b96b in its answer \u2014 subagent-start injection is treated as trusted context, unlike tool-adjacent injection). Isolation holds both ways: the injected sentinel reached the main thread only via the expected Task tool_result relay, and a main-thread-only sentinel never appeared in the subagent transcript. Harness facts: subagent transcripts are SEPARATE files at <session-id>/subagents/agent-<id>.jsonl under the project slug dir (not sidechain entries in the main JSONL); hook payload carries agent_type. v7 consequence: subagent_context feature is viable at the 2k-char budget. Evidence: transcripts /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/670f5507-8980-4174-99e7-ac7f83c4314f.jsonl and its subagents/agent-afbe4a5fb40770c7f.jsonl; probe /tmp/nav-v7-spike/probes/probe_s3.py; verdict /tmp/nav-v7-spike/state/verdict-s3.json.",
+        "path": "memories/learnings/mem-052.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels",
+          "subagents"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-053": {
+        "type": "learning",
+        "summary": "S4 verdict \u2014 UserPromptSubmit block-as-answer WORKS with zero model invocation; WINNER: decision:block JSON (over exit-2 stderr). Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike). Both variants blocked the trigger turn with num_turns=0, duration_api_ms=0, all-zero usage and modelUsage={} \u2014 a genuinely zero-token deterministic answer path for Tier-1. Rendering: decision:block shows 'UserPromptSubmit operation blocked by hook:' plus the reason (clean); exit-2 leaks the raw hook command chrome into the visible answer. Echo hygiene (mem-034): the same-session follow-up prompt passed through without re-trigger and answered normally with no block-text leakage; caution \u2014 Claude Code itself appends 'Original prompt: <trigger>' to the block message, so the trigger phrase re-enters the transcript regardless of hook-side hygiene; transcript/context-scanning hooks must tolerate that echo. Scripting note: a blocked turn still returns subtype success, exit 0 \u2014 detect blocks via num_turns==0 or the result prefix, never exit codes. Evidence: transcripts /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/69c208c3-55b4-4c9b-b607-142af26fddfe.jsonl (decision:block) and 58150d0e-5aa9-4afd-a9b1-76d86accbcc9.jsonl (exit-2); probe /tmp/nav-v7-spike/probes/probe_s4.py; verdict /tmp/nav-v7-spike/state/verdict-s4.json.",
+        "path": "memories/learnings/mem-053.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-054": {
+        "type": "learning",
+        "summary": "S5 verdict \u2014 PreToolUse split result: plain stdout is DEAD (reconfirms mem-035 for stdout); hookSpecificOutput.additionalContext DELIVERS (SUPERSEDES mem-035 for that sub-channel). Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike), reproduced across clean runs. Stdout variant: sentinel appears only in a hook_success transcript attachment (hook-output logging, not model-visible); the model explicitly answered 'no codename' \u2014 clean negative. Context variant: sentinel lands as a hook_additional_context attachment and the model answered the codename question with it (NAV-S5C-b307f7bf). Same declarative-only constraint as S1: imperative instructions via tool-adjacent additionalContext are flagged as prompt injection and refused. Docs remain untrustworthy for this class of behavior \u2014 only version-stamped empirical results count; per plan, read_guard stays deny-only regardless (advisory redesign is a v7.x follow-up, not TASK-61). Evidence: transcripts /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/83ed067c-dd03-479e-8db5-dc111345c3b9.jsonl (stdout) and e0cee530-2e10-457f-8e89-b39330035ea7.jsonl (context); probe /tmp/nav-v7-spike/probes/probe_s5.py; verdict /tmp/nav-v7-spike/state/verdict-s5.json.",
+        "path": "memories/learnings/mem-054.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-055": {
+        "type": "learning",
+        "summary": "S6 verdict \u2014 ${CLAUDE_PLUGIN_ROOT} binds correctly in plugin-manifest hook commands, including headless claude -p sessions. Empirically observed in CC 2.1.205 on 2026-07-10 (TASK-57 spike). For directory-source marketplaces it binds to the marketplace SOURCE path (/tmp/nav-v7-spike/marketplace/nav-spike), not the ~/.claude/plugins/cache copy \u2014 source edits take effect in new sessions without reinstall. Unset/empty env is a LOUD failure (exit 2, python cannot open /hooks/...), not mem-036's silent no-op \u2014 the :-fallback pattern stays prudent for commands that might run outside plugin context. SessionStart DOES fire in headless -p sessions. Two conformance-relevant harness facts: hooks that print no stdout leave NO transcript attachment (silent hooks are transcript-invisible; suites need side-channel logs), and hook payload cwd arrives realpath'd on macOS (/tmp becomes /private/tmp) while $PWD may stay logical \u2014 never gate hooks on raw string-prefix cwd checks; resolve paths first. Evidence: side-channel log /tmp/nav-v7-spike/state/log-s6.txt; transcripts /Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-spike-project/4c6781cf-54a1-47db-a47b-76e14b700ef6.jsonl and 4d1391c6-1862-44cf-ba46-baca113d5c85.jsonl; probe /tmp/nav-v7-spike/probes/probe_s6.py; verdict /tmp/nav-v7-spike/state/verdict-s6.json.",
+        "path": "memories/learnings/mem-055.md",
+        "confidence": 1.0,
+        "concepts": [
+          "hooks",
+          "harness-behavior",
+          "plugin-channels",
+          "deployment"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-056": {
+        "type": "decision",
+        "summary": "Probe env: marketplace - mem-036: settings.json masks failures",
+        "path": "memories/decisions/mem-056.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-057": {
+        "type": "decision",
+        "summary": "Evidence: dual, position grep - mem-034: echoes false-pass presence",
+        "path": "memories/decisions/mem-057.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-058": {
+        "type": "decision",
+        "summary": "Memory IDs: auto-assign - IDs burned by archived resolved/ files",
+        "path": "memories/decisions/mem-058.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-059": {
+        "type": "decision",
+        "summary": "Sequencing: hard gate - plan: no dispatcher code pre-memories",
+        "path": "memories/decisions/mem-059.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-060": {
+        "type": "decision",
+        "summary": "S2 ship default: OFF until proven - mem-037 successor risk",
+        "path": "memories/decisions/mem-060.md",
+        "confidence": 0.95,
+        "concepts": [
+          "testing",
+          "context",
+          "knowledge",
+          "workflow",
+          "deployment",
+          "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
       }
     },
     "files": {}
@@ -6696,6 +6876,61 @@
       "from": "TASK-64",
       "to": "skills",
       "type": "implements"
+    },
+    {
+      "from": "mem-050",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-051",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-052",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-053",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-054",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-055",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-056",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-057",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-058",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-059",
+      "to": "TASK-57",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-060",
+      "to": "TASK-57",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -6837,7 +7072,12 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "context": [
       "TASK-32",
@@ -6934,7 +7174,12 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "skills": [
       "TASK-32",
@@ -7038,7 +7283,12 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "session": [
       "TASK-32",
@@ -7190,7 +7440,12 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "backend": [
       "TASK-16",
@@ -7406,7 +7661,13 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-055",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "code quality": [
       "TASK-19",
@@ -7463,7 +7724,12 @@
       "TASK-60",
       "TASK-61",
       "TASK-62",
-      "TASK-63"
+      "TASK-63",
+      "mem-056",
+      "mem-057",
+      "mem-058",
+      "mem-059",
+      "mem-060"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7562,7 +7828,13 @@
       "mem-036",
       "mem-034",
       "mem-035",
-      "mem-037"
+      "mem-037",
+      "mem-050",
+      "mem-051",
+      "mem-052",
+      "mem-053",
+      "mem-054",
+      "mem-055"
     ],
     "session-lifecycle": [
       "mem-026",
@@ -7657,7 +7929,13 @@
     "harness-behavior": [
       "mem-036",
       "mem-035",
-      "mem-037"
+      "mem-037",
+      "mem-050",
+      "mem-051",
+      "mem-052",
+      "mem-053",
+      "mem-054",
+      "mem-055"
     ],
     "sessionstart": [
       "mem-036"
@@ -7726,6 +8004,17 @@
     ],
     "loop-mode": [
       "mem-037"
+    ],
+    "plugin-channels": [
+      "mem-050",
+      "mem-051",
+      "mem-052",
+      "mem-053",
+      "mem-054",
+      "mem-055"
+    ],
+    "subagents": [
+      "mem-052"
     ]
   }
 }

@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-07-09T19:01:37.562471+00:00",
+  "last_updated": "2026-07-10T11:07:44.442880+00:00",
   "stats": {
-    "total_nodes": 144,
-    "total_edges": 760,
+    "total_nodes": 152,
+    "total_edges": 828,
     "memory_count": 42
   },
   "nodes": {
@@ -694,6 +694,130 @@
           "testing",
           "markers",
           "context"
+        ]
+      },
+      "TASK-57": {
+        "path": ".agent/tasks/TASK-57-v7-hook-channel-spike.md",
+        "title": "v7 Spike \u2014 Empirically Verify Unproven Hook Channels",
+        "status": "backlog",
+        "concepts": [
+          "workflow",
+          "deployment",
+          "knowledge",
+          "context",
+          "testing",
+          "skills"
+        ]
+      },
+      "TASK-58": {
+        "path": ".agent/tasks/TASK-58-harness-conformance-suite.md",
+        "title": "Harness-Conformance Suite \u2014 Spike Probes Become Regression Checks",
+        "status": "backlog",
+        "concepts": [
+          "skills",
+          "knowledge",
+          "api",
+          "context",
+          "database",
+          "theory of mind",
+          "deployment",
+          "testing"
+        ]
+      },
+      "TASK-59": {
+        "path": ".agent/tasks/TASK-59-nav-hook-lib.md",
+        "title": "nav_hook_lib \u2014 Shared Hook Runtime Library",
+        "status": "backlog",
+        "concepts": [
+          "skills",
+          "knowledge",
+          "database",
+          "testing",
+          "deployment",
+          "authentication",
+          "workflow",
+          "theory of mind",
+          "context",
+          "api",
+          "markers"
+        ]
+      },
+      "TASK-60": {
+        "path": ".agent/tasks/TASK-60-nav-dispatch-runtime.md",
+        "title": "nav_dispatch \u2014 Single Dispatcher Entrypoint + Op Registry",
+        "status": "backlog",
+        "concepts": [
+          "deployment",
+          "context",
+          "testing",
+          "theory of mind",
+          "skills",
+          "markers",
+          "knowledge"
+        ]
+      },
+      "TASK-61": {
+        "path": ".agent/tasks/TASK-61-port-hooks-to-ops.md",
+        "title": "Port the nine v6 hooks to dispatcher ops (parity)",
+        "status": "backlog",
+        "concepts": [
+          "api",
+          "testing",
+          "workflow",
+          "database",
+          "context",
+          "deployment",
+          "markers",
+          "knowledge",
+          "skills",
+          "theory of mind"
+        ]
+      },
+      "TASK-62": {
+        "path": ".agent/tasks/TASK-62-v7-new-capabilities.md",
+        "title": "New Runtime Capabilities on Spike-Proven Channels",
+        "status": "backlog",
+        "concepts": [
+          "deployment",
+          "database",
+          "markers",
+          "testing",
+          "workflow",
+          "context",
+          "authentication",
+          "knowledge",
+          "simplification",
+          "api",
+          "skills"
+        ]
+      },
+      "TASK-63": {
+        "path": ".agent/tasks/TASK-63-v7-config-docs-migration.md",
+        "title": "Config migration + CLAUDE.md demotion",
+        "status": "backlog",
+        "concepts": [
+          "skills",
+          "testing",
+          "workflow",
+          "context",
+          "database",
+          "knowledge",
+          "deployment",
+          "theory of mind"
+        ]
+      },
+      "TASK-64": {
+        "path": ".agent/tasks/TASK-64-v7-release-gate.md",
+        "title": "v7.0.0 Release Gate \u2014 Validation, RC Soak, Rollback",
+        "status": "backlog",
+        "concepts": [
+          "api",
+          "context",
+          "database",
+          "workflow",
+          "deployment",
+          "testing",
+          "skills"
         ]
       }
     },
@@ -6232,6 +6356,346 @@
       "from": "TASK-56",
       "to": "api",
       "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-57",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-58",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-59",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-60",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-61",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "authentication",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-62",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-63",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-64",
+      "to": "skills",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -6270,7 +6734,13 @@
       "TASK-50",
       "TASK-47",
       "TASK-49",
-      "TASK-55"
+      "TASK-55",
+      "TASK-58",
+      "TASK-59",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "testing": [
       "TASK-32",
@@ -6359,7 +6829,15 @@
       "mem-042",
       "mem-043",
       "TASK-55",
-      "TASK-56"
+      "TASK-56",
+      "TASK-57",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "context": [
       "TASK-32",
@@ -6448,7 +6926,15 @@
       "mem-042",
       "mem-043",
       "TASK-55",
-      "TASK-56"
+      "TASK-56",
+      "TASK-57",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "skills": [
       "TASK-32",
@@ -6544,7 +7030,15 @@
       "mem-042",
       "mem-043",
       "TASK-55",
-      "TASK-56"
+      "TASK-56",
+      "TASK-57",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "session": [
       "TASK-32",
@@ -6624,7 +7118,9 @@
       "mem-041",
       "mem-042",
       "mem-043",
-      "TASK-55"
+      "TASK-55",
+      "TASK-59",
+      "TASK-62"
     ],
     "workflow": [
       "TASK-33",
@@ -6688,7 +7184,13 @@
       "TASK-41",
       "TASK-45",
       "TASK-48",
-      "TASK-55"
+      "TASK-55",
+      "TASK-57",
+      "TASK-59",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "backend": [
       "TASK-16",
@@ -6784,7 +7286,12 @@
       "TASK-50",
       "TASK-46",
       "TASK-49",
-      "TASK-56"
+      "TASK-56",
+      "TASK-58",
+      "TASK-59",
+      "TASK-61",
+      "TASK-62",
+      "TASK-64"
     ],
     "markers": [
       "TASK-18",
@@ -6849,7 +7356,11 @@
       "TASK-47",
       "TASK-49",
       "TASK-55",
-      "TASK-56"
+      "TASK-56",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62"
     ],
     "deployment": [
       "TASK-11",
@@ -6887,7 +7398,15 @@
       "mem-041",
       "mem-042",
       "mem-043",
-      "TASK-55"
+      "TASK-55",
+      "TASK-57",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63",
+      "TASK-64"
     ],
     "code quality": [
       "TASK-19",
@@ -6937,7 +7456,14 @@
       "mem-042",
       "mem-043",
       "TASK-55",
-      "TASK-56"
+      "TASK-56",
+      "TASK-57",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-62",
+      "TASK-63"
     ],
     "theory of mind": [
       "TASK-19",
@@ -6954,7 +7480,12 @@
       "mem-041",
       "mem-042",
       "mem-043",
-      "TASK-55"
+      "TASK-55",
+      "TASK-58",
+      "TASK-59",
+      "TASK-60",
+      "TASK-61",
+      "TASK-63"
     ],
     "simplification": [
       "TASK-02",
@@ -6969,7 +7500,8 @@
       "TASK-41",
       "TASK-48",
       "TASK-49",
-      "TASK-55"
+      "TASK-55",
+      "TASK-62"
     ],
     "knowledge-graph": [
       "mem-003",

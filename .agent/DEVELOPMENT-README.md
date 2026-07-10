@@ -139,7 +139,19 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-07-09):
+Current active threads (as of 2026-07-10):
+
+**v7.0.0 program — "Hooks as Runtime"** (planned 2026-07-10; interactive execution, not Pilot-dispatched; critical path 57→59→60→61→62→64, 58/63 parallel):
+- **TASK-57** — spike: empirically verify unproven hook channels (GATE: no dispatcher code before its memories exist)
+- **TASK-58** — harness-conformance suite (spike probes → regression checks)
+- **TASK-59** — nav_hook_lib shared runtime library
+- **TASK-60** — nav_dispatch single dispatcher + op registry
+- **TASK-61** — port the nine v6 hooks to ops (golden parity)
+- **TASK-62** — new capabilities on spike-proven channels (Tier-1, stop_completion, JIT memory, subagent context)
+- **TASK-63** — config migration + CLAUDE.md demotion
+- **TASK-64** — release gate: validation, RC soak, rollback (GATE: no tag without ship-week conformance + Pilot compat sign-off)
+
+Other threads:
 - **TASK-15** — marketing strategy & community adoption (plan needs a refresh pass; predates the live site + v6.18.x)
 - **TASK-35** — project memory (research)
 - **TASK-37** — nav-simplify complexity / cost scoring (design)

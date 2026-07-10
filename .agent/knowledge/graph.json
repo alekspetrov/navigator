@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-07-10T13:23:13.211445+00:00",
+  "last_updated": "2026-07-10T14:14:59.602445+00:00",
   "stats": {
-    "total_nodes": 167,
-    "total_edges": 839,
-    "memory_count": 53
+    "total_nodes": 175,
+    "total_edges": 847,
+    "memory_count": 61
   },
   "nodes": {
     "tasks": {
@@ -725,21 +725,21 @@
         ]
       },
       "TASK-59": {
-        "path": ".agent/tasks/TASK-59-nav-hook-lib.md",
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-59-nav-hook-lib.md",
         "title": "nav_hook_lib \u2014 Shared Hook Runtime Library",
-        "status": "backlog",
+        "status": "completed",
         "concepts": [
-          "skills",
+          "api",
+          "testing",
           "knowledge",
           "database",
-          "testing",
-          "deployment",
-          "authentication",
           "workflow",
-          "theory of mind",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
           "context",
-          "api",
-          "markers"
+          "theory of mind"
         ]
       },
       "TASK-60": {
@@ -2326,6 +2326,174 @@
           "workflow",
           "deployment",
           "skills"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-061": {
+        "type": "decision",
+        "summary": "Complexity model: additive - plan \u00a74: kills the contradictory base-0.5\u00b1 variant",
+        "path": "memories/decisions/mem-061.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-062": {
+        "type": "decision",
+        "summary": "Ambiguity handling: separate axis on ScoreCard - TASK-48 precedent: ambiguity \u2260 complexity",
+        "path": "memories/decisions/mem-062.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-063": {
+        "type": "decision",
+        "summary": "Old scorer paths: \u22645-line re-export shims - rollback safety for one major; delete in v8",
+        "path": "memories/decisions/mem-063.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-064": {
+        "type": "decision",
+        "summary": "State layout: single `.nav-runtime-state.json` v2, atomic tmp+rename - plan decision 2: one read/write per event",
+        "path": "memories/decisions/mem-064.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-065": {
+        "type": "decision",
+        "summary": "stderr emission: only emitter in `sentinels.py`, redacting - mem-034; enforced by lint-style grep test",
+        "path": "memories/decisions/mem-065.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-066": {
+        "type": "decision",
+        "summary": "Text scanning: no op scans unstripped text (`strip_all()`) - plan decision 3: mem-034 made architectural",
+        "path": "memories/decisions/mem-066.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-067": {
+        "type": "decision",
+        "summary": "Pilot compat: parser accepts pilot-signal v2 \u2192 v3 - Pilot supervisor contract frozen",
+        "path": "memories/decisions/mem-067.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
+        ],
+        "created": "2026-07-10",
+        "last_validated": "2026-07-10"
+      },
+      "mem-068": {
+        "type": "decision",
+        "summary": "Dependencies: pure stdlib - hooks must run on any user Python",
+        "path": "memories/decisions/mem-068.md",
+        "confidence": 0.95,
+        "concepts": [
+          "api",
+          "testing",
+          "knowledge",
+          "database",
+          "workflow",
+          "skills",
+          "deployment",
+          "markers",
+          "authentication",
+          "context",
+          "theory of mind"
         ],
         "created": "2026-07-10",
         "last_validated": "2026-07-10"
@@ -6931,6 +7099,46 @@
       "from": "mem-060",
       "to": "TASK-57",
       "type": "learned-from"
+    },
+    {
+      "from": "mem-061",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-062",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-063",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-064",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-065",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-066",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-067",
+      "to": "TASK-59",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-068",
+      "to": "TASK-59",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -6975,7 +7183,15 @@
       "TASK-61",
       "TASK-62",
       "TASK-63",
-      "TASK-64"
+      "TASK-64",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "testing": [
       "TASK-32",
@@ -7077,7 +7293,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "context": [
       "TASK-32",
@@ -7179,7 +7403,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "skills": [
       "TASK-32",
@@ -7288,7 +7520,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "session": [
       "TASK-32",
@@ -7370,7 +7610,15 @@
       "mem-043",
       "TASK-55",
       "TASK-59",
-      "TASK-62"
+      "TASK-62",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "workflow": [
       "TASK-33",
@@ -7445,7 +7693,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "backend": [
       "TASK-16",
@@ -7546,7 +7802,15 @@
       "TASK-59",
       "TASK-61",
       "TASK-62",
-      "TASK-64"
+      "TASK-64",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "markers": [
       "TASK-18",
@@ -7615,7 +7879,15 @@
       "TASK-59",
       "TASK-60",
       "TASK-61",
-      "TASK-62"
+      "TASK-62",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "deployment": [
       "TASK-11",
@@ -7667,7 +7939,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "code quality": [
       "TASK-19",
@@ -7729,7 +8009,15 @@
       "mem-057",
       "mem-058",
       "mem-059",
-      "mem-060"
+      "mem-060",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "theory of mind": [
       "TASK-19",
@@ -7751,7 +8039,15 @@
       "TASK-59",
       "TASK-60",
       "TASK-61",
-      "TASK-63"
+      "TASK-63",
+      "mem-061",
+      "mem-062",
+      "mem-063",
+      "mem-064",
+      "mem-065",
+      "mem-066",
+      "mem-067",
+      "mem-068"
     ],
     "simplification": [
       "TASK-02",

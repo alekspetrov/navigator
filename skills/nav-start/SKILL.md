@@ -558,9 +558,10 @@ This skill uses:
 - **.agent/.nav-config.json**: Configuration
 - **.agent/.context-markers/.active**: Active marker check
 
-**Fast-path source** (v6.9.0+): SessionStart hook at `hooks/nav_session_start.py`
-pre-loads all of the above into the session before the skill runs. See
-`nav-init` Step 6 for how it's wired into `.claude/settings.json`.
+**Fast-path source** (v6.9.0+): the SessionStart op at
+`hooks/ops/session_start.py` (dispatched by `hooks/nav_dispatch.py` from the
+plugin manifest) pre-loads all of the above into the session before the
+skill runs.
 
 ## Error Handling
 

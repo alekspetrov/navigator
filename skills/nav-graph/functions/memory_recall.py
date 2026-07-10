@@ -3,7 +3,7 @@
 Memory Recall - deterministic relevant-memory ranking (v6.17.0)
 
 The single ranking implementation behind both surfacing moments:
-- SessionStart hook (`nav_session_start.py`) shells to `--auto` for the
+- SessionStart op (`hooks/ops/session_start.py`) shells to `--auto` for the
   "Relevant Memories" section
 - nav-task Step 2.5 shells to `--concepts` for the task doc's
   "Known Pitfalls & Patterns" section

@@ -162,8 +162,8 @@ The plugin registers the following hooks automatically when the plugin is instal
 2. **PreCompact** — writes a context marker before manual or silent auto-compact (v6.10.0+)
 3. **PostCompact** — appends Claude Code's compact summary to the marker (v6.10.0+)
 4. **Stop** — silent workflow-state writer; records whether WORKFLOW CHECK / NAVIGATOR_STATUS appeared (v6.11.0+)
-5. **UserPromptSubmit** — workflow_enforcer (Loop/Task mode trigger detection + optional strict_block gate)
-6. **PreToolUse(Read)** — nav_read_guard (bulk-read circuit breaker)
+5. **UserPromptSubmit** — prompt_gate + prompt_brief ops (Loop/Task mode trigger detection + optional strict_block gate; intent-brief injection)
+6. **PreToolUse(Read)** — read_guard op (bulk-read circuit breaker)
 7. **PostToolUse(Edit|Write|Bash)** — token monitor (warns at 70% / 85% context usage)
 8. **PostToolUse(Edit|Write)** — task→graph sync and profile correction sync (v6.11.0+)
 

@@ -1,0 +1,134 @@
+{
+  "version": "6.18.1",
+  "project_management": "none",
+  "task_prefix": "TASK",
+  "team_chat": "none",
+  "auto_load_navigator": true,
+  "compact_strategy": "conservative",
+  "task_mode": {
+    "enabled": true,
+    "auto_detect": true,
+    "defer_to_skills": true,
+    "complexity_threshold": 0.5,
+    "show_phase_indicator": true
+  },
+  "tom_features": {
+    "verification_checkpoints": true,
+    "confirmation_threshold": "high-stakes",
+    "profile_enabled": true,
+    "diagnose_enabled": true,
+    "belief_anchors": false
+  },
+  "loop_mode": {
+    "enabled": false,
+    "max_iterations": 5,
+    "stagnation_threshold": 3,
+    "exit_requires_explicit_signal": true,
+    "show_status_block": true,
+    "iteration_approval": "none",
+    "periodic_interval": 3,
+    "never_pause_on_stagnation": false,
+    "stagnation_diversify_strategy": "combine"
+  },
+  "simplification": {
+    "enabled": true,
+    "trigger": "post-implementation",
+    "scope": "modified",
+    "model": "opus",
+    "skip_patterns": [
+      "*.test.*",
+      "*.spec.*",
+      "*.md",
+      "*.json",
+      "*.yaml"
+    ],
+    "max_file_size": 50000,
+    "auto_apply": false,
+    "preserve_comments": true,
+    "rules": {
+      "avoid_nested_ternary": true,
+      "max_nesting_depth": 3,
+      "max_function_length": 50,
+      "prefer_explicit_returns": true,
+      "consolidate_imports": true
+    }
+  },
+  "auto_update": {
+    "enabled": true,
+    "check_interval_hours": 1,
+    "last_check": "2026-06-08T16:11:33.109699"
+  },
+  "pilot": {
+    "enabled": true,
+    "label": "pilot",
+    "repo": null
+  },
+  "session_start_hook": {
+    "enabled": true,
+    "include_sections": [
+      "navigator",
+      "marker",
+      "config",
+      "graph",
+      "profile",
+      "tasks",
+      "auto_update"
+    ],
+    "char_budget": 9500
+  },
+  "compact_hook": {
+    "enabled": true,
+    "include_transcript_summary": true,
+    "include_git_state": true,
+    "char_budget": 8000,
+    "append_post_compact_summary": true
+  },
+  "task_graph_sync_hook": {
+    "enabled": true
+  },
+  "workflow_state_hook": {
+    "enabled": true
+  },
+  "profile_sync_hook": {
+    "enabled": true
+  },
+  "workflow_enforcer_hook": {
+    "enabled": true,
+    "strict_block": true
+  },
+  "brief_hook": {
+    "enabled": true,
+    "ambiguity_threshold": 0.5,
+    "memory_budget_chars": 1200
+  },
+  "read_guard_hook": {
+    "enabled": true,
+    "warn_threshold": 3,
+    "escalate_threshold": 5,
+    "strict_block": true,
+    "allowlist": [
+      "DEVELOPMENT-README.md",
+      ".nav-config.json",
+      ".user-profile.json",
+      "knowledge/graph.json"
+    ]
+  },
+  "knowledge_graph": {
+    "enabled": true,
+    "auto_capture_corrections": true,
+    "auto_capture_decisions": true,
+    "auto_surface_relevant": true,
+    "max_session_memories": 5,
+    "confidence_decay_rate": 0.01,
+    "staleness_threshold_days": 90,
+    "git_tracked": true
+  },
+  "multi_agent": {
+    "enabled": true,
+    "default_workflow": "standard",
+    "auto_dashboard": false,
+    "parallel_limit": 3,
+    "retry_attempts": 2,
+    "phase_timeout_seconds": 180
+  }
+}

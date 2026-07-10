@@ -1,6 +1,6 @@
 ---
 name: nav-brief
-description: Render a one-screen intent brief (Goal/Scope/Approach/Limits/Verify/Won't-do) before implementing ambiguous task-shaped prompts, triggered by the nav_brief.py UserPromptSubmit hook. Confirms scope with max 2 open questions before touching files; detects brief drift mid-task.
+description: Render a one-screen intent brief (Goal/Scope/Approach/Limits/Verify/Won't-do) before implementing ambiguous task-shaped prompts, triggered by the prompt_brief op (UserPromptSubmit via hooks/nav_dispatch.py). Confirms scope with max 2 open questions before touching files; detects brief drift mid-task.
 version: 1.0.0
 ---
 
@@ -20,7 +20,8 @@ undo/redo, pollutes context with dead ends, and forces mid-feature compacts.
 ## When This Fires
 
 **Hook contract**: render a brief ONLY when this turn's injected context
-contains a `NAV-BRIEF` reminder block (emitted by `hooks/nav_brief.py` on
+contains a `NAV-BRIEF` reminder block (emitted by the `prompt_brief` op —
+`hooks/ops/prompt_brief.py`, dispatched by `nav_dispatch.py` — on
 UserPromptSubmit when ambiguity score >= threshold). Never self-trigger from
 your own judgment alone — the hook is the single trigger source, so behavior
 stays predictable and tunable via config.

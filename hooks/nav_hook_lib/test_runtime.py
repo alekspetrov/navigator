@@ -376,6 +376,25 @@ class MergeRulesTest(RuntimeTestBase):
         self.assertEqual(result.exit_code, 0)
         self.assertIsNone(result.stderr)
 
+    def test_ack_alone_emits_bare_empty_doc(self):
+        # TASK-61 parity: v6 side-effect hooks print `{}` as a pure
+        # acknowledgment; {"ack": True} reproduces that byte shape.
+        registry = {"Stop": [
+            self.make_op("ak_rec", phase="recorders", result={"ack": True}),
+        ]}
+        result = runtime.dispatch("Stop", self.payload(), registry=registry)
+        self.assertEqual(result.stdout, "{}")
+        self.assertEqual(result.exit_code, 0)
+        self.assertIsNone(result.stderr)
+
+    def test_ack_subsumed_by_real_output_keys(self):
+        registry = {"Stop": [
+            self.make_op("as_rec", phase="recorders",
+                         result={"ack": True, "system_message": "note"}),
+        ]}
+        result = runtime.dispatch("Stop", self.payload(), registry=registry)
+        self.assertEqual(json.loads(result.stdout), {"systemMessage": "note"})
+
 
 class CrashIsolationTest(RuntimeTestBase):
     SECRET = "run until done: the user prompt text"

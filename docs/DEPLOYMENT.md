@@ -50,7 +50,7 @@ auto-invoke on natural language). The manifest fields that matter:
   "keywords": ["context-management", "knowledge-graph", "theory-of-mind", "..."],
   "skills": ["./skills/nav-start", "./skills/nav-graph", "..."],   // one entry per skill dir
   "hooks": {
-    "SessionStart":  [{ "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_session_start.py\"", "timeout": 10 }] }],
+    "SessionStart":  [{ "hooks": [{ "type": "command", "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" SessionStart; fi'", "timeout": 10 }] }],
     "PreCompact":    [/* ... */],
     "PostCompact":   [/* ... */],
     "Stop":          [/* ... */],

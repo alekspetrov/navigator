@@ -185,6 +185,18 @@ class MigrateTests(unittest.TestCase):
         self.assertEqual(len(summary["removed"]), len(mig.NAV_HOOK_NAMES))
         self.assertNotIn("hooks", self._read())
 
+    def test_covers_all_nine_v6_hook_basenames(self):
+        # TASK-61 Phase 7: the v6 hook files are deleted from the plugin, so
+        # any consumer settings.json entry referencing them is stale. The
+        # migration list must cover every one of the nine v6 surfaces.
+        nine = {
+            "nav_session_start", "nav_pre_compact", "nav_post_compact",
+            "nav_task_graph_sync", "nav_profile_sync", "nav_read_guard",
+            "nav_workflow_state", "workflow_enforcer", "nav_brief",
+        }
+        self.assertTrue(nine.issubset(set(mig.NAV_HOOK_NAMES)),
+                        nine - set(mig.NAV_HOOK_NAMES))
+
 
 if __name__ == "__main__":
     unittest.main()

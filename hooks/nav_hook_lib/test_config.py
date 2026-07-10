@@ -274,12 +274,9 @@ class PilotExecutorSinglePolicyPointTest(unittest.TestCase):
     policy read.
     """
 
-    # The two v6 hooks not yet ported to ops still read the env var directly.
-    # Allowlist shrinks to empty in TASK-61 Phase 7.
-    V6_HOOK_ALLOWLIST = frozenset({
-        "nav_brief.py",
-        "workflow_enforcer.py",
-    })
+    # TASK-61 Phase 7: the v6 hooks are deleted; config.is_pilot_executor()
+    # is the only PILOT_EXECUTOR read under hooks/. Keep empty.
+    V6_HOOK_ALLOWLIST = frozenset()
 
     def test_no_pilot_executor_mentions_outside_config(self):
         hooks_dir = LIB_DIR.parent

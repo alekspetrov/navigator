@@ -1,0 +1,22 @@
+{
+  "surface": "session_start",
+  "event": "SessionStart",
+  "v6_script": "hooks/nav_session_start.py",
+  "payload_note": "REAL payload captured verbatim from a live headless session (see README.md).",
+  "payload": {
+    "session_id": "bed2070a-4fde-4a89-87b5-3552b4f2702b",
+    "transcript_path": "/Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-golden-project/bed2070a-4fde-4a89-87b5-3552b4f2702b.jsonl",
+    "cwd": "/private/tmp/nav-v7-golden/project",
+    "hook_event_name": "SessionStart",
+    "source": "startup"
+  },
+  "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": \"<!-- nav-session-start-injected:v1 -->\\n# Navigator Session Start\\n_source: startup_\\n\\nThis block was injected by the SessionStart hook \\u2014 Navigator content is already in your context. Do NOT re-Read these files. Render the session summary directly from this data.\\n\\n\\n## Navigator Config (.agent/.nav-config.json)\\n\\n```json\\n{\\n  \\\"version\\\": \\\"6.18.1\\\",\\n  \\\"project_management\\\": \\\"none\\\",\\n  \\\"task_prefix\\\": \\\"TASK\\\",\\n  \\\"team_chat\\\": \\\"none\\\",\\n  \\\"loop_mode\\\": false,\\n  \\\"task_mode\\\": true,\\n  \\\"knowledge_graph\\\": true,\\n  \\\"tom_features\\\": {\\n    \\\"verification_checkpoints\\\": true,\\n    \\\"confirmation_threshold\\\": \\\"high-stakes\\\",\\n    \\\"profile_enabled\\\": true,\\n    \\\"diagnose_enabled\\\": true,\\n    \\\"belief_anchors\\\": false\\n  },\\n  \\\"auto_update\\\": true\\n}\\n```\\n\\n---\\n\\n## Open Tasks\\n\\n- `TASK-01-sample.md` \\u2014 TASK-01: Sample task for golden capture [In Progress]\\n\\n---\\n\\n## Navigator Index (.agent/DEVELOPMENT-README.md)\\n\\n# Golden Capture Project \\u2014 Documentation Navigator\\n\\nMinimal Navigator index for the TASK-61 golden-payload capture session.\\n\\n## Documentation Index\\n\\n| Doc | When to read |\\n|-----|--------------|\\n| `tasks/TASK-01-sample.md` | Working the sample task |\\n\\n## Current Focus\\n\\nTASK-01 \\u2014 sample task used to drive Read/Edit tool activity.\\n\"}}\n",
+  "exit_code": 0,
+  "env_notes": {
+    "CLAUDE_PLUGIN_ROOT": "repo root (parity runner also replays with the var UNSET)",
+    "HOME": "isolated empty tmp dir (blocks installed-plugin/version-drift leakage)",
+    "stripped": "CLAUDE_PROJECT_DIR, CLAUDE_USER_MESSAGE, CLAUDE_PLUGIN_DIR, PILOT_EXECUTOR",
+    "runtime_rewrites": "payload cwd -> fresh tmp project; transcript_path -> fixtures/transcript.jsonl (the only sanctioned payload edits)",
+    "state": "fresh fixture project, NO pre-existing state files (default no-state branch)"
+  }
+}

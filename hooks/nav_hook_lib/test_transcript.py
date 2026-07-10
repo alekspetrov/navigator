@@ -2,14 +2,19 @@
 """Tests for nav_hook_lib/transcript.py (TASK-59, Phase 5).
 
 stdlib unittest only. The load-bearing test is the parity suite: the v6
-reader (``hooks/nav_workflow_state.py::_last_assistant_turn``) is imported
-and run directly against ``fixtures/transcript-sample.jsonl`` — a real
-transcript recorded during the TASK-57 spike (synthetic scratch-project
-data, checked for personal content) — and its derived values (assistant
-text, tool-name set) must match ``transcript.last_assistant_turn`` byte
-for byte. Parity is also asserted on synthetic transcripts covering the
-tool_use, string-content, and garbage-line paths the fixture does not hit.
+reader (``hooks/nav_workflow_state.py::_last_assistant_turn``) was run
+against ``fixtures/transcript-sample.jsonl`` — a real transcript recorded
+during the TASK-57 spike (synthetic scratch-project data, checked for
+personal content) — and its derived values (assistant text, tool-name set)
+must match ``transcript.last_assistant_turn`` byte for byte. TASK-61
+Phase 7 deleted the v6 source: the expected values pinned below (incl. the
+fixture text sha256) are the FROZEN v6 truth; the live differential leg
+auto-skips when the v6 file is absent (same pattern as
+tests/golden/test_parity.py leg 1). Parity is also asserted on synthetic
+transcripts covering the tool_use, string-content, and garbage-line paths
+the fixture does not hit.
 """
+import hashlib
 import importlib.util
 import json
 import sys
@@ -35,19 +40,27 @@ def load_v6_module():
     return mod
 
 
+# sha256 of the fixture's last assistant text as derived by the v6 reader —
+# recorded before TASK-61 Phase 7 deleted hooks/nav_workflow_state.py.
+FIXTURE_TEXT_SHA256 = (
+    "1db93158f94bd8293fef4c3843c7ac4175d9b4c4f20e470e9fb0d5aed8864ed6"
+)
+
+
 class TranscriptParityTest(unittest.TestCase):
-    """Byte-parity between the lib reader and the v6 hook's reader."""
+    """Byte-parity between the lib reader and the (frozen) v6 reader."""
 
     @classmethod
     def setUpClass(cls):
-        cls.v6 = load_v6_module()
+        cls.v6 = load_v6_module() if V6_READER.is_file() else None
 
     def assert_parity(self, path):
-        v6_text, v6_tools = self.v6._last_assistant_turn(
-            {"transcript_path": str(path)})
         lib_text, lib_tools = transcript.last_assistant_turn(path)
-        self.assertEqual(v6_text, lib_text)
-        self.assertEqual(v6_tools, lib_tools)
+        if self.v6 is not None:  # live differential leg (pre-Phase-7 only)
+            v6_text, v6_tools = self.v6._last_assistant_turn(
+                {"transcript_path": str(path)})
+            self.assertEqual(v6_text, lib_text)
+            self.assertEqual(v6_tools, lib_tools)
         return lib_text, lib_tools
 
     def test_fixture_parity(self):
@@ -58,6 +71,10 @@ class TranscriptParityTest(unittest.TestCase):
         # strings would prove nothing — require real extracted content.
         self.assertTrue(text.strip(), "fixture yielded empty assistant text")
         self.assertEqual(tools, set())
+        # Frozen v6 truth: the lib must keep producing the exact bytes the
+        # v6 reader produced (recorded before the v6 source was deleted).
+        self.assertEqual(hashlib.sha256(text.encode("utf-8")).hexdigest(),
+                         FIXTURE_TEXT_SHA256)
 
     def test_parity_tool_use_only_turn(self):
         """Last assistant turn with tool_use blocks and no text."""

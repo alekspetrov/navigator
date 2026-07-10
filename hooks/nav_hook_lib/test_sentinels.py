@@ -208,19 +208,9 @@ class StderrLintTest(unittest.TestCase):
     keeps trigger phrases out of echoed block notices.
     """
 
-    # The nine v6 hooks still emit stderr directly until they are ported to
-    # ops. Allowlist shrinks to empty in TASK-61 Phase 7.
-    V6_HOOK_ALLOWLIST = frozenset({
-        "nav_brief.py",
-        "nav_post_compact.py",
-        "nav_pre_compact.py",
-        "nav_profile_sync.py",
-        "nav_read_guard.py",
-        "nav_session_start.py",
-        "nav_task_graph_sync.py",
-        "nav_workflow_state.py",
-        "workflow_enforcer.py",
-    })
+    # TASK-61 Phase 7: the v6 hooks are deleted; nothing under hooks/ may
+    # write stderr except sentinels.py. Keep empty.
+    V6_HOOK_ALLOWLIST = frozenset()
 
     def test_no_stderr_writes_outside_sentinels(self):
         lib_dir = Path(__file__).resolve().parent

@@ -40,7 +40,10 @@ Contract highlights (TASK-60 dispatch contract):
     only meaningful emission (mem-051), true is the harness default and is
     omitted; exit_code = max of op exit_codes (a deliberate gate exit-2
     survives); stderr lines joined. Exactly one output document on stdout,
-    or None.
+    or None. `ack` (TASK-61 parity): when some op set ack truthy and the
+    merged document would otherwise be EMPTY, the bare `{}` doc is emitted —
+    the v6 side-effect hooks' acknowledgment shape; any real output key
+    subsumes it.
   - Pilot merge belt: when config.is_pilot_executor() is true, every
     blocking key is stripped from op results BEFORE merging (decision /
     reason, permission deny/ask, nonzero exit_code, continue_ False);
@@ -324,8 +327,11 @@ def _merge_outputs(event: str, outcomes: list, extra_context_line):
     decision_reason = None
     permission = None  # (decision, reason)
     exit_code = 0
+    ack = False  # v6 `{}` acknowledgment (TASK-61 parity; see docstring)
 
     for _, result in sorted(outcomes, key=lambda item: item[0]):
+        if result.get("ack"):
+            ack = True
         context = result.get("additional_context")
         if isinstance(context, str) and context:
             contexts.append(context)
@@ -395,6 +401,11 @@ def _merge_outputs(event: str, outcomes: list, extra_context_line):
         stdout = plain_stdout
     elif doc:
         stdout = json.dumps(doc)
+    elif ack:
+        # TASK-61 parity: v6 side-effect hooks print a bare `{}` doc as a
+        # pure acknowledgment. An op returning {"ack": True} reproduces it
+        # when the merge is otherwise empty; real output keys subsume it.
+        stdout = "{}"
     else:
         stdout = None
     return stdout, exit_code, stderr_lines

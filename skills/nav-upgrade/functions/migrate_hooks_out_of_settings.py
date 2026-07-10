@@ -53,6 +53,7 @@ NAV_HOOK_NAMES = (
     "nav_task_graph_sync",
     "nav_profile_sync",
     "nav_commit_reminder",
+    "nav_brief",
     "token_monitor",
     "workflow_enforcer",
 )

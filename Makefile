@@ -21,6 +21,7 @@ build:
 TEST_DIRS := \
 	hooks \
 	hooks/nav_hook_lib \
+	tests/golden \
 	tests/harness-conformance \
 	skills/nav-upgrade/functions \
 	skills/nav-sync-claude/functions \

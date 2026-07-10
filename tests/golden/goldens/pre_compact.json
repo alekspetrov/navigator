@@ -1,0 +1,23 @@
+{
+  "surface": "pre_compact",
+  "event": "PreCompact",
+  "v6_script": "hooks/nav_pre_compact.py",
+  "payload_note": "SYNTHESIZED payload: Pre/PostCompact cannot be driven headlessly. Fields mirror what the v6 hook reads (cwd, session_id, transcript_path, plus trigger / compact_summary), with session identity taken from the live-captured Stop payload. See README.md.",
+  "payload": {
+    "session_id": "bed2070a-4fde-4a89-87b5-3552b4f2702b",
+    "transcript_path": "/Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-golden-project/bed2070a-4fde-4a89-87b5-3552b4f2702b.jsonl",
+    "cwd": "/private/tmp/nav-v7-golden/project",
+    "hook_event_name": "PreCompact",
+    "trigger": "manual",
+    "custom_instructions": ""
+  },
+  "stdout": "{}\n",
+  "exit_code": 0,
+  "env_notes": {
+    "CLAUDE_PLUGIN_ROOT": "repo root (parity runner also replays with the var UNSET)",
+    "HOME": "isolated empty tmp dir (blocks installed-plugin/version-drift leakage)",
+    "stripped": "CLAUDE_PROJECT_DIR, CLAUDE_USER_MESSAGE, CLAUDE_PLUGIN_DIR, PILOT_EXECUTOR",
+    "runtime_rewrites": "payload cwd -> fresh tmp project; transcript_path -> fixtures/transcript.jsonl (the only sanctioned payload edits)",
+    "state": "fresh fixture project, NO pre-existing state files (default no-state branch)"
+  }
+}

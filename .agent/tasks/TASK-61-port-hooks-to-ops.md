@@ -1,6 +1,6 @@
 # TASK-61: Port the nine v6 hooks to dispatcher ops (parity)
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (nine surfaces at byte-parity; goldens leg-1 proven against HEAD v6 scripts in a worktree; old hooks + 7 test files deleted; guard allowlists empty)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)
@@ -186,6 +186,25 @@ Live drives (this repo): loop-trigger prompt after a mutating turn without WORKF
   echo probe) green and permanent.
 - Single state file with `schema:2`; legacy files archived, markers untouched.
 - nav-upgrade migration note published for consumer settings referencing old paths.
+
+## Sanctioned Deviations (recorded at close, 2026-07-10)
+
+- Landed as one commit, not per-port commits: parallel port groups shared one working tree. Leg-1
+  golden evidence (V6GoldenRegressionTest 9/9 OK) was captured in a git worktree at pre-port HEAD.
+- Unset-env criterion: the TASK-60 sh-guard makes unset+missing-dispatcher a deliberate SILENT
+  exit 0 (asserted, not accidental); parity suite proves unset+resolvable produces golden output.
+- The Verify grep hits inert provenance/migration references by design (goldens corpus, ops
+  docstrings, nav-upgrade machinery, v6 config KEY names kept for parity) — criterion satisfied
+  in spirit; live references were all fixed.
+- runtime.py gained an opt-in `ack` result key mid-task (five goldens record v6's bare {} doc,
+  unproducible through the frozen merge) — documented in runtime docstring + ops/README.
+- PostToolUse matcher widened to Edit|Write|MultiEdit|NotebookEdit (TASK-60); syncs skip
+  notebook payloads gracefully (tested).
+- Silent-path goldens (prompt_gate/prompt_brief/read_guard) lock the no-output path; branch
+  behavior is locked by colocated + composition tests instead.
+- Live drives (loop-block, INTENT BRIEF, read-guard trip) deferred to the alpha gate — they need
+  a restarted session running the v7 manifest; .claude/settings.local.json dev backstop now
+  routes through nav_dispatch so the next session in this repo exercises v7 live.
 
 ## Refs
 

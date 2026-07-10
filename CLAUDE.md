@@ -558,7 +558,7 @@ User: "Fix the typo in README"
 
 ### Intent Briefs (nav-brief, TASK-56)
 
-**Ambiguity ≠ complexity.** A small task can be highly ambiguous ("fix the bug" — which bug?). The `nav_brief.py` UserPromptSubmit hook scores each prompt for ambiguity; when a task-shaped prompt scores ≥ threshold, it injects a `NAV-BRIEF` instruction + relevant knowledge-graph memories.
+**Ambiguity ≠ complexity.** A small task can be highly ambiguous ("fix the bug" — which bug?). The `prompt_brief` op (`hooks/ops/prompt_brief.py`, dispatched by `nav_dispatch.py` on UserPromptSubmit) scores each prompt for ambiguity; when a task-shaped prompt scores ≥ threshold, it injects a `NAV-BRIEF` instruction + relevant knowledge-graph memories.
 
 **When you see a NAV-BRIEF block in context**: render a one-screen INTENT BRIEF (Goal / Scope / Approach / Limits / Verify / Won't do), pre-fill defaults from the injected memories, ask **max 2 open questions**, and wait for user confirmation before modifying files. Mid-task, if work is about to exceed the confirmed brief's scope, raise `BRIEF DRIFT` and ask.
 

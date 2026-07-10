@@ -30,7 +30,7 @@ Invoke this skill when the user:
 **Before doing anything else**, check whether the project has the PreCompact hook installed.
 
 ```bash
-HAS_HOOK=$(grep -l "nav_pre_compact" .claude/settings.json .claude/settings.local.json 2>/dev/null | head -1)
+HAS_HOOK=$(grep -l "nav_dispatch" .claude/settings.json .claude/settings.local.json 2>/dev/null | head -1)
 ```
 
 **If the hook is present**:

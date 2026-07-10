@@ -31,7 +31,7 @@ NAV_FRAGMENT = {
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 nav_session_start.py",
+                        "command": "python3 sample_hook_a.py",
                         "timeout": 10,
                     }
                 ]
@@ -42,7 +42,7 @@ NAV_FRAGMENT = {
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 nav_pre_compact.py",
+                        "command": "python3 sample_hook_b.py",
                         "timeout": 30,
                     }
                 ]
@@ -83,7 +83,7 @@ class MergerTests(unittest.TestCase):
         result = self._read_target()
         self.assertEqual(
             self._commands_for(result, "SessionStart"),
-            ["python3 nav_session_start.py"],
+            ["python3 sample_hook_a.py"],
         )
 
     def test_preserves_user_hooks_same_event(self):
@@ -103,7 +103,7 @@ class MergerTests(unittest.TestCase):
         sm.merge(self.target, NAV_FRAGMENT)
         cmds = self._commands_for(self._read_target(), "SessionStart")
         self.assertIn("echo user-hello", cmds)
-        self.assertIn("python3 nav_session_start.py", cmds)
+        self.assertIn("python3 sample_hook_a.py", cmds)
 
     def test_preserves_user_hooks_different_event(self):
         self._write_settings(
@@ -123,7 +123,7 @@ class MergerTests(unittest.TestCase):
         merged = self._read_target()
         self.assertEqual(self._commands_for(merged, "Stop"), ["echo on-stop"])
         self.assertIn(
-            "python3 nav_session_start.py",
+            "python3 sample_hook_a.py",
             self._commands_for(merged, "SessionStart"),
         )
 
@@ -135,7 +135,7 @@ class MergerTests(unittest.TestCase):
         self.assertEqual(first, second)
         # And the SessionStart entry isn't duplicated
         cmds = self._commands_for(self._read_target(), "SessionStart")
-        self.assertEqual(cmds.count("python3 nav_session_start.py"), 1)
+        self.assertEqual(cmds.count("python3 sample_hook_a.py"), 1)
 
     def test_dedupe_by_command_string(self):
         self._write_settings(
@@ -146,7 +146,7 @@ class MergerTests(unittest.TestCase):
                             "hooks": [
                                 {
                                     "type": "command",
-                                    "command": "python3 nav_session_start.py",
+                                    "command": "python3 sample_hook_a.py",
                                 }
                             ]
                         }
@@ -156,7 +156,7 @@ class MergerTests(unittest.TestCase):
         )
         sm.merge(self.target, NAV_FRAGMENT)
         cmds = self._commands_for(self._read_target(), "SessionStart")
-        self.assertEqual(cmds, ["python3 nav_session_start.py"])
+        self.assertEqual(cmds, ["python3 sample_hook_a.py"])
 
     def test_preserves_top_level_keys(self):
         self._write_settings(
@@ -217,7 +217,7 @@ class MergerTests(unittest.TestCase):
         self.assertEqual(self._commands_for(merged, "Stop"), ["echo stop"])
         # PreCompact merged in
         self.assertIn(
-            "python3 nav_pre_compact.py",
+            "python3 sample_hook_b.py",
             self._commands_for(merged, "PreCompact"),
         )
         # SessionStart skipped, not corrupted
@@ -234,7 +234,7 @@ class MergerTests(unittest.TestCase):
         self.assertEqual(before, after)
         # But the returned dict has the merge applied
         self.assertIn(
-            "python3 nav_session_start.py",
+            "python3 sample_hook_a.py",
             self._commands_for(merged, "SessionStart"),
         )
 

@@ -188,25 +188,24 @@ For shipped scope, query the knowledge graph or browse `CHANGELOG.md` / `release
 
 ---
 
-## Lifecycle Hooks (v6.9.0 → v6.18.1)
+## Lifecycle Hooks (v7.0.0 dispatcher + ops)
 
-Navigator ships nine Claude Code hooks via the plugin manifest (`.claude-plugin/plugin.json`). They make Navigator state survive every session boundary and replace fragile "model, remember to…" prose with deterministic enforcement.
+Navigator registers ONE hook command per Claude Code event via the plugin manifest (`.claude-plugin/plugin.json`): `python3 hooks/nav_dispatch.py <event>`. The dispatcher loads shared runtime services from `hooks/nav_hook_lib/` (config layering, schema-2 state, sentinels/redaction, budget clamps) and routes each event to the ops registered in `hooks/nav_hook_lib/registry.py`, executing them in phase order (gate → injector → recorder). The nine v6 per-hook scripts were ported byte-parity to `hooks/ops/` in TASK-61 and deleted; `tests/golden/` locks the recorded v6 stdout/exit behavior.
 
-Hook commands resolve via `${CLAUDE_PLUGIN_ROOT}` (the installed plugin directory) with a marketplace-path fallback. **v6.15.7** corrected a long-standing typo where the manifest referenced the non-existent `${CLAUDE_PLUGIN_DIR}` — it always expanded empty, forcing every install onto the fallback (the `main`-tracking marketplace checkout) since hooks moved into the manifest in v6.13.0.
+Hook commands resolve via `${CLAUDE_PLUGIN_ROOT}` (the installed plugin directory) with a marketplace-path fallback (mem-036: the unset-env path is contract-tested, never a silent no-op). Per-turn/session state lives in `.agent/.nav-runtime-state.json` (`"schema": 2`); the v6 per-hook state files are archived to `.agent/.nav-v6-state.bak/` by the SessionStart op — never deleted, `.agent/.context-markers/` untouched.
 
 ### What ships
 
-| Hook | Event | Purpose |
+| Op (`hooks/ops/`) | Event (phase) | Purpose |
 | --- | --- | --- |
-| `nav_session_start.py` | SessionStart | Inject navigator + active marker + config + graph stats + profile into context; emit `<!-- nav-session-start-injected:v1 -->` sentinel so `nav-start` skips re-Reads |
-| `nav_pre_compact.py` | PreCompact | Snapshot conversation + git state + active tasks into `before-compact-{manual,auto}-{ts}.md`; set `.active` marker |
-| `nav_post_compact.py` | PostCompact | Append Claude Code's compact summary to the marker |
-| `nav_task_graph_sync.py` | PostToolUse (Write/Edit on `.agent/tasks/TASK-*.md`) | Upsert task node into the knowledge graph |
-| `nav_workflow_state.py` | Stop | Record per-turn signal (`check_shown`, `nav_status_shown`, `loop_phase`, `tools_used`) into `.agent/.nav-workflow-state.json` |
-| `nav_profile_sync.py` | PostToolUse (Write/Edit on `.user-profile.json`) | Convert new corrections into graph memories |
-| `workflow_enforcer.py` | UserPromptSubmit | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` |
-| `nav_brief.py` | UserPromptSubmit | Score prompt ambiguity (TASK-56, shipped v6.18.0); on ambiguous task-shaped prompts inject a NAV-BRIEF instruction + relevant graph memories so the model renders an intent brief before implementing. Never blocks (exit 0 only — mem-034). Sibling entry to `workflow_enforcer.py`; composes on the same event. Live-validated 2026-07-09: full cycle (brief → confirmation → BRIEF DRIFT on scope growth → re-confirmation) ran on a real bug, and the hook's own memory recall surfaced the graph corruption fixed in v6.18.1 — see `sops/debugging/knowledge-graph-memory-corruption.md` |
-| `nav_read_guard.py` | PreToolUse (Read on `.agent/`) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`) |
+| `session_start.py` | SessionStart (injector) | Inject navigator + active marker + config + graph stats + profile into context; emit `<!-- nav-session-start-injected:v1 -->` sentinel so `nav-start` skips re-Reads; archive v6 state files to `.nav-v6-state.bak/` |
+| `compact_marker.py` | PreCompact + PostCompact (recorder) | PreCompact: snapshot conversation + git state + active tasks into `before-compact-{manual,auto}-{ts}.md`, set `.active` marker. PostCompact: append Claude Code's compact summary to that marker |
+| `graph_sync.py` | PostToolUse Write/Edit on `.agent/tasks/TASK-*.md` (recorder) | Upsert task node into the knowledge graph |
+| `stop_state.py` | Stop (recorder) | Record per-turn signal (`check_shown` tristate, `nav_status_shown`, `loop_phase`, `tools_used`) into the schema-2 state file; the single audited turn-lifecycle reset barrel (read counter + tier-1 fuse slot + continue-counter slot) |
+| `profile_sync.py` | PostToolUse Write/Edit on `.user-profile.json` (recorder) | Convert new corrections into graph memories |
+| `prompt_gate.py` | UserPromptSubmit (gate) | Soft-warn on Loop Mode trigger, hard-block (exit 2) when prior turn skipped WORKFLOW CHECK AND `strict_block=true` (config key stays `workflow_enforcer_hook`) |
+| `prompt_brief.py` | UserPromptSubmit (injector) | Score prompt ambiguity (TASK-56, shipped v6.18.0); on ambiguous task-shaped prompts inject a NAV-BRIEF instruction + relevant graph memories so the model renders an intent brief before implementing. Never blocks (exit 0 only — mem-034). Composes with `prompt_gate` on the same event. Live-validated 2026-07-09: full cycle (brief → confirmation → BRIEF DRIFT on scope growth → re-confirmation) ran on a real bug, and the hook's own memory recall surfaced the graph corruption fixed in v6.18.1 — see `sops/debugging/knowledge-graph-memory-corruption.md` |
+| `read_guard.py` | PreToolUse Read on `.agent/` (gate) | Count non-allowlisted reads per turn; warn at 3, block at 5 (`strict_block=true`); deny-only channel (mem-035) |
 
 ### Composition lessons captured
 
@@ -219,7 +218,7 @@ Query: `"What do we know about hooks?"` returns the full memory set + their cros
 
 ### Configuration
 
-Each hook has an `<event>_hook.enabled` toggle in `.agent/.nav-config.json`. Defaults are all `true`. The two blocking hooks (`workflow_enforcer`, `nav_read_guard`) additionally take `strict_block`. `brief_hook` additionally takes `ambiguity_threshold` (default 0.5) and `memory_budget_chars` (default 1200). See `nav-features` skill for the interactive toggle UI.
+Each op keeps its v6 `*_hook.enabled` toggle in `.agent/.nav-config.json` (config keys unchanged: `session_start_hook`, `compact_hook`, `task_graph_sync_hook`, `workflow_state_hook`, `profile_sync_hook`, `workflow_enforcer_hook`, `brief_hook`, `read_guard_hook`). Defaults are all `true`. The two gates (`prompt_gate` via `workflow_enforcer_hook`, `read_guard` via `read_guard_hook`) additionally take `strict_block`. `brief_hook` additionally takes `ambiguity_threshold` (default 0.5) and `memory_budget_chars` (default 1200). See `nav-features` skill for the interactive toggle UI.
 
 ---
 

@@ -52,21 +52,21 @@ TAGS = {
         "close": "</nav-workflow-block>",
         "kind": "block",
         "status": "current",
-        "source": "hooks/workflow_enforcer.py",
+        "source": "hooks/ops/prompt_gate.py",
     },
     "nav-read-guard-block": {
         "open": "<nav-read-guard-block>",
         "close": "</nav-read-guard-block>",
         "kind": "block",
         "status": "current",
-        "source": "hooks/nav_read_guard.py",
+        "source": "hooks/ops/read_guard.py",
     },
     "nav-session-start-injected:v1": {
         "open": "<!-- nav-session-start-injected:v1 -->",
         "close": None,
         "kind": "marker",
         "status": "current",
-        "source": "hooks/nav_session_start.py",
+        "source": "hooks/ops/session_start.py",
     },
 }
 

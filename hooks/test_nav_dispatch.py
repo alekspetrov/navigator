@@ -284,26 +284,32 @@ class OffSwitchTest(_ProjectCase):
                 )
 
 
-class MissingOpModuleTest(_ProjectCase):
-    """Contract: missing op module (normal pre-TASK-61 state) -> skipped + note.
+class OpModuleImportTest(_ProjectCase):
+    """Contract: registry op modules import and run cleanly (post-TASK-61).
 
     Differential partner of OffSwitchTest: with the pristine (all-enabled)
-    config, the UserPromptSubmit ops ARE attempted, their modules do not
-    exist yet, and dispatch must record meta.op_errors notes — persisted via
-    the single atomic state save — while still exiting 0.
+    config, the UserPromptSubmit ops ARE attempted. Pre-TASK-61 this class
+    asserted "op module not found" notes (the sanctioned missing state);
+    the ports landed, so the differential flips: the modules must import
+    and leave NO missing-module or crash notes, while still exiting 0 and
+    persisting state via the single atomic save. The missing-module
+    contract itself stays covered in-process by nav_hook_lib/test_runtime
+    (test_missing_op_module_notes_without_sentinel_or_health).
     """
 
     config_body = PRISTINE_CONFIG
 
-    def test_missing_ops_noted_not_fatal(self):
+    def test_registry_ops_import_and_run_without_error_notes(self):
         result = run_dispatch(
             self.project, "UserPromptSubmit", event_payload(self.project, "UserPromptSubmit")
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         errs = self.state_op_errors()
         self.assertIsNotNone(errs, "runtime state file not persisted after dispatch")
+        self.assertNotIn("op module not found", errs,
+                         f"a registry op module is missing post-TASK-61: {errs}")
         for op in ("prompt_gate", "prompt_brief"):
-            self.assertIn(op, errs, f"missing-module note absent for op {op}: {errs}")
+            self.assertNotIn(op, errs, f"op {op} left an error note: {errs}")
 
 
 class MalformedInputTest(_ProjectCase):

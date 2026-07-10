@@ -1,0 +1,57 @@
+{
+  "surface": "profile_sync",
+  "event": "PostToolUse",
+  "v6_script": "hooks/nav_profile_sync.py",
+  "payload_note": "REAL payload captured verbatim from a live headless session (see README.md).",
+  "payload": {
+    "session_id": "bed2070a-4fde-4a89-87b5-3552b4f2702b",
+    "transcript_path": "/Users/aleks.petrov/.claude/projects/-private-tmp-nav-v7-golden-project/bed2070a-4fde-4a89-87b5-3552b4f2702b.jsonl",
+    "cwd": "/private/tmp/nav-v7-golden/project",
+    "prompt_id": "488387a6-121f-4a0c-b68a-aca78c8684be",
+    "permission_mode": "acceptEdits",
+    "effort": {
+      "level": "high"
+    },
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/private/tmp/nav-v7-golden/project/notes.md",
+      "old_string": "Scratch file for the golden-capture session.",
+      "new_string": "Scratch file for the golden-capture session.\ngolden capture complete",
+      "replace_all": false
+    },
+    "tool_response": {
+      "filePath": "/private/tmp/nav-v7-golden/project/notes.md",
+      "oldString": "Scratch file for the golden-capture session.",
+      "newString": "Scratch file for the golden-capture session.\ngolden capture complete",
+      "originalFile": "# Notes\n\nScratch file for the golden-capture session.\n",
+      "structuredPatch": [
+        {
+          "oldStart": 1,
+          "oldLines": 3,
+          "newStart": 1,
+          "newLines": 4,
+          "lines": [
+            " # Notes",
+            " ",
+            " Scratch file for the golden-capture session.",
+            "+golden capture complete"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    },
+    "tool_use_id": "toolu_0122maasjub9SDyuxFXgTYVi",
+    "duration_ms": 2
+  },
+  "stdout": "{}\n",
+  "exit_code": 0,
+  "env_notes": {
+    "CLAUDE_PLUGIN_ROOT": "repo root (parity runner also replays with the var UNSET)",
+    "HOME": "isolated empty tmp dir (blocks installed-plugin/version-drift leakage)",
+    "stripped": "CLAUDE_PROJECT_DIR, CLAUDE_USER_MESSAGE, CLAUDE_PLUGIN_DIR, PILOT_EXECUTOR",
+    "runtime_rewrites": "payload cwd -> fresh tmp project; transcript_path -> fixtures/transcript.jsonl (the only sanctioned payload edits)",
+    "state": "fresh fixture project, NO pre-existing state files (default no-state branch)"
+  }
+}

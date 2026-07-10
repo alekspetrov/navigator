@@ -356,7 +356,7 @@ python3 "$PLUGIN_DIR/skills/nav-upgrade/functions/migrate_hooks_out_of_settings.
   the known Navigator hook names (`nav_session_start`, `nav_pre_compact`,
   `nav_post_compact`, `nav_workflow_state`, `nav_read_guard`,
   `nav_task_graph_sync`, `nav_profile_sync`, `nav_commit_reminder`,
-  `token_monitor`, `workflow_enforcer`).
+  `nav_brief`, `token_monitor`, `workflow_enforcer`).
 - Writes a `.pre-migrate.<timestamp>` backup before any change.
 - Logs every removed entry to stderr.
 - Idempotent: re-running on an already-migrated file is a no-op.
@@ -364,6 +364,17 @@ python3 "$PLUGIN_DIR/skills/nav-upgrade/functions/migrate_hooks_out_of_settings.
 
 **Fresh installs do not need this step** — they never had hooks in
 `.claude/settings.json` to begin with.
+
+**v7.0.0 migration note**: the nine per-hook scripts were replaced by a
+single dispatcher (`hooks/nav_dispatch.py`) routing to `hooks/ops/*` — the
+old files no longer exist in the plugin. Any consumer `settings.json` entry
+still referencing an old hook path (e.g. `hooks/nav_session_start.py`,
+`hooks/workflow_enforcer.py`, `hooks/nav_brief.py`) is stale and now fails
+with "No such file or directory" on every event. Run the same
+`migrate_hooks_out_of_settings.py` step above — its basename list covers all
+nine v6 hooks — then restart Claude Code. Per-hook state files are archived
+automatically by the SessionStart op to `.agent/.nav-v6-state.bak/`
+(replaced by `.agent/.nav-runtime-state.json`, schema 2).
 
 ```
 ⚠️  RESTART REQUIRED to activate hooks from the plugin manifest.

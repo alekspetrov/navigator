@@ -1,6 +1,6 @@
 # TASK-60: nav_dispatch — Single Dispatcher Entrypoint + Op Registry
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (37→39-line fail-open shim, registry + phase pipeline, manifest rewrite w/ sh-guard fallback; p95 ~41ms; 7 adversarial findings fixed incl. BaseException escape, continue-merge inversion, PILOT_EXECUTOR merge belt)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)

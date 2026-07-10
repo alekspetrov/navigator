@@ -65,41 +65,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_session_start.py\"",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" SessionStart; fi'",
             "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_pre_compact.py\"",
-            "timeout": 30
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_post_compact.py\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_workflow_state.py\"",
-            "timeout": 5
           }
         ]
       }
@@ -109,16 +76,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/workflow_enforcer.py\"",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_brief.py\"",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" UserPromptSubmit; fi'",
             "timeout": 5
           }
         ]
@@ -130,7 +88,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_read_guard.py\"",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" PreToolUse; fi'",
             "timeout": 5
           }
         ]
@@ -138,21 +96,44 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_task_graph_sync.py\"",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" PostToolUse; fi'",
             "timeout": 10
           }
         ]
-      },
+      }
+    ],
+    "Stop": [
       {
-        "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_profile_sync.py\"",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" Stop; fi'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" PreCompact; fi'",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'f=\"${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/navigator-marketplace}/hooks/nav_dispatch.py\"; if [ -f \"$f\" ]; then exec python3 \"$f\" PostCompact; fi'",
             "timeout": 10
           }
         ]

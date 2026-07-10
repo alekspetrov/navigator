@@ -50,6 +50,11 @@ temp/
 .agent/.nav-read-counter.json
 .agent/.marker-log
 
+# v7 dispatcher state (local runtime state, TASK-60)
+.agent/.nav-runtime-state.json
+.agent/.nav-runtime-state.lock
+.agent/.nav-dispatch-health.json
+
 # Keep these in git (share with team)
 # .agent/.jitd-config.json
 # .agent/DEVELOPMENT-README.md

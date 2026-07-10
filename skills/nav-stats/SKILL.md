@@ -142,6 +142,20 @@ Your context window is 65% available for actual work.
 Share your efficiency: Take a screenshot! #ContextEfficiency
 ```
 
+### Step 4.5: Tier-1 Telemetry Row (v7.0.0+)
+
+If `.agent/.nav-runtime-state.json` (schema 2) carries a `tier1` section, append one row to the
+report:
+
+```
+Tier-1 responder: {hits} zero-token answers | {false_positives} suspected false positives
+```
+
+A false positive = a Tier-1 hit followed by a near-identical re-prompt (the user wanted the model
+after all). Rising false positives mean the exact-match table is intercepting prompts it should
+not — suggest disabling the offending rule via `tier1.rules.<id>: false`. Omit the row when the
+section is absent or tier1 is disabled.
+
 ### Step 5: Add Context-Specific Recommendations
 
 Based on efficiency score, provide actionable advice:

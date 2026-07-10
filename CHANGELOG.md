@@ -6,6 +6,30 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [Unreleased] — v7.0.0-alpha "Hooks as Runtime" (2026-07-10, local testing only)
+
+Complete hooks-runtime transformation (TASK-57..63). NOT released — alpha under local test.
+
+- **Spike-first**: six hook channels empirically verified on CC 2.1.205 (mem-050..055);
+  conformance suite checked in (`tests/harness-conformance/`, `make conformance-check`).
+- **nav_hook_lib**: shared stdlib runtime (hio, config, state schema-2 w/ flock + fail-closed
+  session scoping, sentinels sole-stderr-emitter, unified scoring + 49-prompt corpus, signals
+  v3 + pilot-v2 compat, transcript, budget, memory).
+- **nav_dispatch**: one fail-open dispatcher per event replaces nine hook scripts;
+  gates→responders→injectors→recorders pipeline; PILOT_EXECUTOR merge belt; dispatch-health
+  surfacing; sh-guard manifest commands (stale-clone fails open).
+- **Golden parity**: all nine v6 behaviors byte-matched via recorded corpus before any new
+  behavior; nine old hook files deleted.
+- **New capabilities**: prompt_tier1 zero-token answers (decision:block, five exact commands,
+  seeded off), stop_completion forced-continuation gate (decision:block, full breaker, seeded
+  off), jit_memory + failure_diagnosis declarative injection, subagent_context (2k),
+  config_guard, setup, TaskCreated/TaskCompleted graph sync — 13 validated manifest events.
+- **Config + docs**: additive VERSION_CONFIGS["7.0.0"] (blocking features seed off),
+  templates/CLAUDE.md 206→47 lines, root CLAUDE.md 988→331 (mandates → hook annotations),
+  nav-sync-claude refuses regeneration without observed hook liveness.
+
+---
+
 ## [v6.18.1] — 2026-07-09
 
 **Patch: table-separator rows ingested as decision memories + re-sync duplication.** Found live by nav-brief's own memory recall minutes after v6.18.0: `extract_decisions` skipped separator rows only on exact `'---'`/`'-'` match, so wide cells (`|----------|`) became 95%-confidence decision memories; `add_task_to_graph` also re-created every decision on re-sync (a TASK-54 double-sync cloned 6 memories). Skip is now `re.fullmatch(r'[-:\s]+')`; re-sync dedupes against existing decision summaries. Source-repo graph cleaned (7 nodes pruned, files archived to `resolved/`, health 85→100). 4 regression tests. → [Full release notes](./releases/RELEASE-NOTES-v6.18.1.md)

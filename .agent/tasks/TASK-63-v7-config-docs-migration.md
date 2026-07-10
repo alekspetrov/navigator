@@ -1,6 +1,6 @@
 # TASK-63: Config migration + CLAUDE.md demotion
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (8 v7 blocks seeded additively; template 47 lines; root CLAUDE.md 988→331 with hook annotations; liveness guard live-verified)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)
@@ -145,17 +145,30 @@ switches in the feature manager; verify listing + toggle round-trip.
 | v6 block cleanup | remove at 7.0.0; defer | Defer to 7.x minor | Additive-only rule; deprecation needs its own notice cycle |
 | Regeneration timing | always on sync; gate on liveness | Gate on dispatch-health freshness | Never leave a project with neither prose nor enforcement |
 
-Deferred decisions (not table rows — still open):
-- Exact successor block key names — fixed by TASK-61 op naming and TASK-62.
-- Tier-1 rule-id list for per-rule toggles — fixed by the TASK-62 whitelist.
-- Dispatch-health freshness threshold — align with the TASK-60 health-writer cadence.
+Resolved during implementation (2026-07-10, Phases 1–2 + 5–6):
+- Successor block key names — RESOLVED: v7 ops kept the v6 config keys verbatim
+  (`workflow_enforcer_hook`, `read_guard_hook`, etc. — see
+  `hooks/nav_hook_lib/registry.py` `OpSpec.config_key`), so NO successor blocks and NO
+  renames exist. `strict_block` inheritance is satisfied by the additive-only rule:
+  existing blocks are never touched, so the user's posture carries over unchanged and
+  no derived-seed machinery was needed. (Also recorded in the `config_migrator.py`
+  `VERSION_CONFIGS` docstring.)
+- Tier-1 rule-id list — RESOLVED: `nav_stats`, `show_features`, `list_markers`,
+  `graph_health`, `nav_version` (TASK-62 whitelist), seeded per-rule `true` under
+  `tier1.rules` with the `tier1.enabled` master switch `false`.
+- Liveness freshness threshold — RESOLVED: 7 days. The health file is written by the
+  dispatcher on ERROR only, so liveness proof is EITHER a fresh
+  `.agent/.nav-runtime-state.json` (`meta.schema == 2`, `meta.updated` within 7 days)
+  OR a fresh `.agent/.nav-dispatch-health.json` (`last_error.ts` within 7 days);
+  absent both, nav-sync-claude refuses regeneration (exit 3) naming the guard, the
+  files checked, and the remedy.
 
 ## Verify
 
 ```bash
 make test                                            # full estate, incl. nav-sync-claude dir
-python3 skills/nav-sync-claude/functions/config_migrator.py --config /tmp/fx/.nav-config.json
-python3 skills/nav-sync-claude/functions/config_migrator.py --config /tmp/fx/.nav-config.json
+python3 skills/nav-sync-claude/functions/config_migrator.py /tmp/fx/.nav-config.json
+python3 skills/nav-sync-claude/functions/config_migrator.py /tmp/fx/.nav-config.json
 # second run reports no changes; diff against first-run snapshot is empty
 wc -l templates/CLAUDE.md                            # ≤ ~65
 grep -c "WORKFLOW CHECK" templates/CLAUDE.md         # 0

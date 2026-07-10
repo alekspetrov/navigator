@@ -1,6 +1,6 @@
 # TASK-62: New Runtime Capabilities on Spike-Proven Channels
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (all six new events validated + registered; ops live-verified; tier1 zero-token answer proven at ~99ms)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)
@@ -142,6 +142,26 @@ dispatcher alongside TASK-61-ported siblings; only spike-gated behavior is spike
   AND unset per mem-036); composition tests: fuse consumed exactly once, held_count reset on
   UserPromptSubmit, mem-037 non-mutating-turn case, Tier-1 echo-hygiene probe (mem-034 class).
 - **Files**: `hooks/ops/test_*.py`, composition cases beside the Stop↔gate suite from TASK-61.
+
+## Phase 0 Verdict Table (recorded at close, 2026-07-10)
+
+| Probe | Verdict (memory) | Capability | Path taken |
+|---|---|---|---|
+| S4 | PASS, winner decision:block (mem-053) | prompt_tier1 | block-as-answer built; no exit-2 path |
+| S2 | continue:true FAIL, decision:block works (mem-051) | stop_completion | decision:block fallback; continue never emitted |
+| S1 | PASS, declarative only (mem-050) | jit_memory + failure_diagnosis | tool-result injection built; no pending-queue fallback needed |
+| S3 | PASS (mem-052) | subagent_context | shipped at 2k budget; drop path not taken |
+
+## Sanctioned Deviations (recorded at close)
+
+- held_count/fuse reset lives in the Stop reset barrel (turn end), not on UserPromptSubmit —
+  fail-safe direction (fewer continuations after interrupted turns), documented in the op.
+- stop_completion registers as a GATE ordered before the stop_state recorder (registry invariant:
+  phase order); the block short-circuits stop_state so fuse/held_count survive continuation.
+- False-positive counter surfaces in the Tier-1 `nav stats` answer and in nav-stats docs; a
+  dedicated /nav:stats telemetry row rides with the skill (display-only).
+- "--verify-hooks confirms registrations" is realized as unit tests
+  (test_registry + ManifestShapeTest assert every event maps to a committed op).
 
 ## Out of Scope
 

@@ -68,6 +68,13 @@ TAGS = {
         "status": "current",
         "source": "hooks/ops/session_start.py",
     },
+    "nav-t1-response": {
+        "open": "<nav-t1-response>",
+        "close": "</nav-t1-response>",
+        "kind": "block",
+        "status": "current",
+        "source": "hooks/ops/prompt_tier1.py",
+    },
 }
 
 # Precompiled span patterns for block tags (open..close, DOTALL).

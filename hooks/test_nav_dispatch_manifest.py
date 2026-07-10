@@ -5,11 +5,15 @@ stdlib unittest only, subprocess-driven per the test_workflow_enforcer.py
 template. Three concerns:
 
 1. Manifest shape — .claude-plugin/plugin.json references ONLY
-   hooks/nav_dispatch.py, registers exactly the seven v6 event surfaces,
-   with the contract matchers (PreToolUse: Read; PostToolUse:
-   Edit|Write|MultiEdit|NotebookEdit) and timeouts (SessionStart 10,
-   PostToolUse 10, PreCompact 30, PostCompact 10 — the v6 allowances —
-   all others 5). Each command is the fail-OPEN shell guard: the dispatcher
+   hooks/nav_dispatch.py, registers exactly the seven v6 event surfaces
+   plus the six TASK-62 events that survived the validate-or-drop gate
+   (SubagentStart, PostToolUseFailure, TaskCreated, TaskCompleted,
+   ConfigChange, Setup — all accepted by `claude plugin validate` on CC
+   2.1.205), with the contract matchers (PreToolUse: Read; PostToolUse:
+   Edit|Write|MultiEdit|NotebookEdit; no matcher on any TASK-62 event) and
+   timeouts (SessionStart 10, PostToolUse 10, PreCompact 30, PostCompact 10
+   — the v6 allowances — all others 5, including every TASK-62 event).
+   Each command is the fail-OPEN shell guard: the dispatcher
    file is [ -f ]-checked before exec, so a resolution miss exits 0
    silently instead of python3's loud exit 2 (which the harness treats as
    a block on every event).
@@ -53,6 +57,13 @@ EVENTS = (
     "Stop",
     "PreCompact",
     "PostCompact",
+    # TASK-62 event surfaces (validate-or-drop survivors, CC 2.1.205):
+    "SubagentStart",
+    "PostToolUseFailure",
+    "TaskCreated",
+    "TaskCompleted",
+    "ConfigChange",
+    "Setup",
 )
 # v6 allowances: PostToolUse hooks had 10s EACH, PostCompact 10s — the shared
 # dispatcher must not regress them to the 5s default.
@@ -137,7 +148,10 @@ class ManifestShapeTest(unittest.TestCase):
         scripts = set(re.findall(r"hooks/[A-Za-z0-9_]+\.py", raw))
         self.assertEqual(scripts, {"hooks/nav_dispatch.py"})
 
-    def test_exactly_seven_v6_events(self):
+    def test_exactly_the_registered_event_surfaces(self):
+        # Seven v6 surfaces + six TASK-62 validate-or-drop survivors; every
+        # registration maps to a committed dispatcher (v5.1.0 lesson) and to
+        # a registry EVENT_OPS row (asserted in nav_hook_lib/test_registry).
         self.assertEqual(set(self.manifest["hooks"].keys()), set(EVENTS))
 
     def test_command_shape_per_event(self):

@@ -6,7 +6,7 @@ golden (tests/golden/goldens/stop_state.json — asserted by test_parity.py).
 Here we pin the op-level contract: the mem-037 tristate rules, the
 stop_hook_active early-ack, mem-034 strip-before-scan, and ONE test per
 reset-barrel slot (reads.turn_count, completion.tier1_fuse,
-completion.held_count).
+completion.stop_fuse, completion.held_count).
 """
 from __future__ import annotations
 
@@ -145,6 +145,14 @@ class ResetBarrelTest(unittest.TestCase):
                        state={"completion": {"tier1_fuse": True}})
         stop_state.run(ctx)
         self.assertIs(ctx.state["completion"]["tier1_fuse"], False)
+
+    def test_stop_fuse_slot_reset(self):
+        # TASK-62: stop_completion's fuse is re-armed only here (single-shot
+        # per turn; Stop remains the single reset writer).
+        ctx = make_ctx({"last_assistant_message": "DONE"},
+                       state={"completion": {"stop_fuse": True}})
+        stop_state.run(ctx)
+        self.assertIs(ctx.state["completion"]["stop_fuse"], False)
 
     def test_continue_counter_slot_reset(self):
         ctx = make_ctx({"last_assistant_message": "DONE"},

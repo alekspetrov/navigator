@@ -13,10 +13,14 @@ ops/prompt_gate.py — mem-037: the pair never splits). Behavior:
                v6.15.3 AskUserQuestion deadlock fix, mem-037).
   - Resets the turn-lifecycle slots in ONE audited code path
     (``reset_turn_slots``): the read-guard counter (``reads.turn_count``),
-    the Tier-1 fuse slot (``completion.tier1_fuse``) and the
-    continue-counter slot (``completion.held_count``). The fuse/counter
-    slots are consumed by TASK-62; their reset semantics land here so Stop
-    is the single reset writer from day one.
+    the Tier-1 fuse slot (``completion.tier1_fuse``), the stop_completion
+    single-shot fuse (``completion.stop_fuse``) and the continue-counter
+    slot (``completion.held_count``). The fuse/counter slots are consumed
+    by TASK-62 (ops/prompt_tier1.py, ops/stop_completion.py); their reset
+    semantics land here so Stop is the single reset writer from day one.
+    NOTE: when the stop_completion gate blocks a Stop, this recorder is
+    short-circuited by the runtime — a forced continuation is the SAME
+    turn, so its fuse stays consumed and the read counter keeps counting.
   - Returns ``{"ack": True}`` so the dispatcher emits the bare ``{}`` doc —
     the recorded v6 acknowledgment shape (golden: stop_state.json).
 
@@ -71,8 +75,11 @@ def reset_turn_slots(ctx) -> None:
     Stop is the only writer that resets these slots — no other op may:
       - reads.turn_count -> 0 (v6 _reset_read_counter; skipped, exactly as
         in v6, when read_guard_hook.enabled is explicitly false);
-      - completion.tier1_fuse -> False (Tier-1 single-shot fuse slot,
-        consumed by TASK-62 prompt_tier1/stop_completion);
+      - completion.tier1_fuse -> False (Tier-1 answered-this-turn marker,
+        consumed by TASK-62 prompt_tier1);
+      - completion.stop_fuse -> False (stop_completion single-shot fuse,
+        consumed on every forced continuation — re-armed here at the next
+        CLEAN turn end, so it is single-shot per turn);
       - completion.held_count -> 0 (continue-counter slot, consumed by
         TASK-62 stop_completion; capped there by max_continues).
     """
@@ -83,6 +90,7 @@ def reset_turn_slots(ctx) -> None:
         completion = {}
         ctx.state["completion"] = completion
     completion["tier1_fuse"] = False
+    completion["stop_fuse"] = False
     completion["held_count"] = 0
 
 

@@ -7,10 +7,124 @@ Extracts customizations and generates updated CLAUDE.md with v3.1 template
 import sys
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib import request
 from urllib.error import URLError, HTTPError
+
+# ---------------------------------------------------------------------------
+# v7 hook-liveness sequencing guard (TASK-63 Phase 5, mem-036 class)
+#
+# The v7 CLAUDE.md template demotes prose mandates in favor of hook-runtime
+# enforcement. Regenerating CLAUDE.md while the hook runtime is dead would
+# leave a project with NEITHER prose NOR enforcement, so regeneration is
+# gated on OBSERVED dispatcher liveness — never on manifest or config
+# inspection, which both look fine while hooks are silently no-op (exactly
+# how mem-036 shipped broken for two releases).
+#
+# Liveness proof — EITHER file suffices:
+#   - fresh runtime state .agent/.nav-runtime-state.json
+#     (meta.schema == 2 and meta.updated within LIVENESS_MAX_AGE_DAYS), or
+#   - fresh dispatch health .agent/.nav-dispatch-health.json
+#     (last_error.ts within LIVENESS_MAX_AGE_DAYS).
+# The dispatcher writes the health file on ERROR only, so its absence is
+# normal on a healthy install — the state file is the primary signal; a
+# fresh error record still proves the dispatcher ran.
+# ---------------------------------------------------------------------------
+LIVENESS_MAX_AGE_DAYS = 7
+RUNTIME_STATE_RELPATH = ".agent/.nav-runtime-state.json"
+DISPATCH_HEALTH_RELPATH = ".agent/.nav-dispatch-health.json"
+RUNTIME_STATE_SCHEMA = 2
+
+
+def _parse_iso_timestamp(value) -> Optional[float]:
+    """ISO 8601 string -> epoch seconds; None on anything unparseable."""
+    if not isinstance(value, str) or not value:
+        return None
+    text = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.timestamp()
+
+
+def _read_json_object(path: Path) -> Optional[Dict]:
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _is_fresh(ts: Optional[float], now_ts: float) -> bool:
+    if ts is None:
+        return False
+    return (now_ts - ts) <= LIVENESS_MAX_AGE_DAYS * 86400
+
+
+def _state_file_is_fresh(path: Path, now_ts: float) -> bool:
+    """Fresh .nav-runtime-state.json: meta.schema == 2, meta.updated in window."""
+    doc = _read_json_object(path)
+    if doc is None:
+        return False
+    meta = doc.get("meta")
+    if not isinstance(meta, dict) or meta.get("schema") != RUNTIME_STATE_SCHEMA:
+        return False
+    return _is_fresh(_parse_iso_timestamp(meta.get("updated")), now_ts)
+
+
+def _health_file_is_fresh(path: Path, now_ts: float) -> bool:
+    """Fresh .nav-dispatch-health.json: last_error.ts in window."""
+    doc = _read_json_object(path)
+    if doc is None:
+        return False
+    last = doc.get("last_error")
+    if not isinstance(last, dict):
+        return False
+    return _is_fresh(_parse_iso_timestamp(last.get("ts")), now_ts)
+
+
+def check_hook_liveness(project_root, now: Optional[float] = None) -> Tuple[bool, str]:
+    """(True, "") when the hook runtime is provably live; else (False, message).
+
+    `project_root` is the directory that holds `.agent/` — for regeneration
+    that is the parent of the target CLAUDE.md. `now` is injectable epoch
+    seconds for tests.
+    """
+    root = Path(project_root)
+    now_ts = datetime.now(tz=timezone.utc).timestamp() if now is None else float(now)
+    state_path = root / RUNTIME_STATE_RELPATH
+    health_path = root / DISPATCH_HEALTH_RELPATH
+
+    if _state_file_is_fresh(state_path, now_ts):
+        return True, ""
+    if _health_file_is_fresh(health_path, now_ts):
+        return True, ""
+
+    message = "\n".join([
+        "Hook-liveness sequencing guard: refusing CLAUDE.md regeneration.",
+        "",
+        "No proof that the Navigator hook runtime is live in this project. Checked:",
+        f"  - {state_path}",
+        f"    (need meta.schema == {RUNTIME_STATE_SCHEMA} and meta.updated within "
+        f"{LIVENESS_MAX_AGE_DAYS} days)",
+        f"  - {health_path}",
+        f"    (need last_error.ts within {LIVENESS_MAX_AGE_DAYS} days)",
+        "",
+        "Both are absent or stale. Regenerating the demoted CLAUDE.md now would leave",
+        "this project with neither prose mandates nor hook enforcement (mem-036 class).",
+        "The existing CLAUDE.md was left untouched.",
+        "",
+        "Remedy: start a Claude Code session in this project so the dispatcher stamps",
+        f"{RUNTIME_STATE_RELPATH}, then re-run the sync.",
+    ])
+    return False, message
+
 
 def get_plugin_version() -> Optional[str]:
     """
@@ -238,7 +352,11 @@ def extract_customizations(claude_md_path: str) -> Dict:
             is_default = any(rule in line for rule in default_rules)
             if not is_default:
                 if line.startswith('-') or line.startswith('*'):
-                    customizations["code_standards"].append(line.lstrip('-*').strip())
+                    standard = line.lstrip('-*').strip()
+                    # Skip bullets that strip to nothing (e.g. a `---` rule),
+                    # mirroring the forbidden_actions truthiness guard.
+                    if standard:
+                        customizations["code_standards"].append(standard)
                 elif ':' in line:  # Format like "Custom rule: Always use hooks"
                     customizations["code_standards"].append(line)
 
@@ -425,6 +543,14 @@ def main():
             print("Error: Missing required arguments", file=sys.stderr)
             print("Required: --customizations, --template, --output", file=sys.stderr)
             sys.exit(1)
+
+        # TASK-63 Phase 5: regeneration only after observed hook liveness.
+        # Runs before any template fetch/read so a refusal is side-effect free.
+        project_root = Path(args['output']).resolve().parent
+        alive, guard_message = check_hook_liveness(project_root)
+        if not alive:
+            print(guard_message, file=sys.stderr)
+            sys.exit(3)
 
         try:
             with open(args['customizations'], 'r') as f:

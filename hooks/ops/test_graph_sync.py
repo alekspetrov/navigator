@@ -185,6 +185,67 @@ class WidenedMatcherSkipTest(GraphSyncTestBase):
         self.assertIsNone(self.stub_calls())
 
 
+class LifecycleEventTest(GraphSyncTestBase):
+    """TASK-62: TaskCreated/TaskCompleted feed the graph via the event branch."""
+
+    def lifecycle_ctx(self, event, payload_extra):
+        payload = {"cwd": str(self.root), "session_id": SESSION_ID}
+        payload.update(payload_extra)
+        ctx = self.ctx(payload)
+        ctx.event = event
+        return ctx
+
+    def test_task_created_with_task_path_runs_syncer(self):
+        task = self.make_task_doc()
+        result = graph_sync.run(
+            self.lifecycle_ctx("TaskCreated", {"task_path": str(task)}))
+        self.assertIn("upserted TASK-99-sample.md", result["stderr"])
+        calls = self.stub_calls()
+        self.assertEqual(calls[:2], ["--action", "add"])
+        self.assertEqual(calls[calls.index("--task-path") + 1], str(task))
+
+    def test_task_completed_with_nested_task_dict_runs_syncer(self):
+        task = self.make_task_doc("TASK-42-done.md")
+        result = graph_sync.run(self.lifecycle_ctx(
+            "TaskCompleted", {"task": {"file_path": str(task)}}))
+        self.assertIn("upserted TASK-42-done.md", result["stderr"])
+
+    def test_relative_lifecycle_path_resolves_against_root(self):
+        self.make_task_doc("TASK-07-rel.md")
+        result = graph_sync.run(self.lifecycle_ctx(
+            "TaskCreated", {"path": ".agent/tasks/TASK-07-rel.md"}))
+        self.assertIn("upserted TASK-07-rel.md", result["stderr"])
+
+    def test_payload_without_task_doc_path_is_silent(self):
+        result = graph_sync.run(self.lifecycle_ctx(
+            "TaskCompleted", {"task": {"id": "42", "subject": "no path here"}}))
+        self.assertIsNone(result)
+        self.assertIsNone(self.stub_calls())
+
+    def test_non_task_doc_path_is_silent(self):
+        notes = self.root / "notes.md"
+        notes.write_text("# Notes\n", encoding="utf-8")
+        result = graph_sync.run(self.lifecycle_ctx(
+            "TaskCreated", {"file_path": str(notes)}))
+        self.assertIsNone(result)
+        self.assertIsNone(self.stub_calls())
+
+    def test_missing_graph_is_silent_on_lifecycle_events(self):
+        self.graph_path.unlink()
+        task = self.make_task_doc()
+        result = graph_sync.run(
+            self.lifecycle_ctx("TaskCreated", {"task_path": str(task)}))
+        self.assertIsNone(result)
+        self.assertIsNone(self.stub_calls())
+
+    def test_lifecycle_branch_never_emits_the_v6_ack(self):
+        # The `{}` ack byte-contract belongs to the PostToolUse surface only.
+        task = self.make_task_doc()
+        result = graph_sync.run(
+            self.lifecycle_ctx("TaskCompleted", {"task_path": str(task)}))
+        self.assertNotIn("ack", result)
+
+
 class SyncFailureTest(GraphSyncTestBase):
     def test_failed_sync_reports_rc_and_still_acks(self):
         self.write_stub(rc=1)

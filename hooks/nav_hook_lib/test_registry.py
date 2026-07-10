@@ -3,22 +3,30 @@
 
 stdlib unittest only. Covers:
 
-  - EVENT_OPS keys are EXACTLY the seven v6 manifest event surfaces.
+  - EVENT_OPS keys are EXACTLY the seven v6 manifest event surfaces plus the
+    six TASK-62 events that survived the validate-or-drop gate (SubagentStart,
+    PostToolUseFailure, TaskCreated, TaskCompleted, ConfigChange, Setup).
   - OpSpec is a dataclass with exactly the five contract fields
     (name, phase, matcher, config_key, budget_ms), every field populated
     with the right type on every live row.
   - Phases are valid PHASE_ORDER values and each event's ops are listed in
     non-decreasing phase order (registry order IS merge order).
-  - config_key per row names an EXISTING v6 toggle block: verified against
-    the pristine fixture fixtures/nav-config-v6.18.1.json, with the exact
-    block names quoted here (session_start_hook, workflow_enforcer_hook,
-    brief_hook, read_guard_hook, task_graph_sync_hook, profile_sync_hook,
-    workflow_state_hook, compact_hook), each carrying an 'enabled' key so
-    the runtime's <config_key>.enabled gate resolves.
+  - config_key per row resolves an 'enabled' toggle: v6-ported rows verify
+    against the pristine fixture fixtures/nav-config-v6.18.1.json, with the
+    exact block names quoted here (session_start_hook,
+    workflow_enforcer_hook, brief_hook, read_guard_hook,
+    task_graph_sync_hook, profile_sync_hook, workflow_state_hook,
+    compact_hook); v7 rows (absent by design from pristine v6 configs)
+    verify against config.DEFAULTS: blocking/injecting blocks (tier1,
+    stop_completion, jit_memory, subagent_context, failure_diagnosis) must
+    seed enabled=false so old configs default safe, while the
+    systemMessage-only safety surfaces (config_guard, setup_hook) seed on.
   - Matcher regexes compile; the contract matchers behave ('Read',
     'Edit|Write|MultiEdit|NotebookEdit').
-  - Spike-gated TASK-62 ops are NOT live OpSpecs, but each is documented in
-    a registry comment together with its mem-05x verdict.
+  - Every landed TASK-62 row is a live OpSpec citing its mem-05x verdict in
+    an adjacent registry comment (config_guard has no spike dependency), and
+    every registered op name maps to a committed hooks/ops/<name>.py file
+    (v5.1.0 lesson: no registration without its file in the same commit).
   - registry.py stays pure data: no op imports, no I/O modules.
 """
 
@@ -32,13 +40,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import config  # noqa: E402  (sibling import; path pinned above)
 import registry  # noqa: E402  (sibling import; path pinned above)
 
 LIB_DIR = Path(__file__).resolve().parent
 FIXTURE = LIB_DIR / "fixtures" / "nav-config-v6.18.1.json"
 OPS_DIR = LIB_DIR.parent / "ops"
 
-# The seven v6 manifest event surfaces (TASK-60: new events belong to TASK-62).
+# The seven v6 manifest event surfaces.
 V6_EVENTS = {
     "SessionStart",
     "UserPromptSubmit",
@@ -49,38 +58,82 @@ V6_EVENTS = {
     "PostCompact",
 }
 
-# The eight TASK-61 rows: expected op names, in order, per event.
-EXPECTED_ROWS = {
-    "SessionStart": ["session_start"],
-    "UserPromptSubmit": ["prompt_gate", "prompt_brief"],
-    "PreToolUse": ["read_guard"],
-    "PostToolUse": ["graph_sync", "profile_sync"],
-    "Stop": ["stop_state"],
-    "PreCompact": ["compact_marker"],
-    "PostCompact": ["compact_marker"],
+# TASK-62 event surfaces: all six candidates survived the validate-or-drop
+# gate (`claude plugin validate`, CC 2.1.205 — a bogus-name control probe was
+# rejected, proving the gate checks event names).
+TASK62_EVENTS = {
+    "SubagentStart",
+    "PostToolUseFailure",
+    "TaskCreated",
+    "TaskCompleted",
+    "ConfigChange",
+    "Setup",
 }
 
-# op name -> the EXACT v6 toggle block name in .agent/.nav-config.json.
+ALL_EVENTS = V6_EVENTS | TASK62_EVENTS
+
+# The eight TASK-61 rows + every landed TASK-62 row, in order.
+EXPECTED_ROWS = {
+    "SessionStart": ["session_start"],
+    "UserPromptSubmit": ["prompt_gate", "prompt_tier1", "prompt_brief"],
+    "PreToolUse": ["read_guard"],
+    "PostToolUse": ["jit_memory", "graph_sync", "profile_sync"],
+    "Stop": ["stop_completion", "stop_state"],
+    "PreCompact": ["compact_marker"],
+    "PostCompact": ["compact_marker"],
+    "SubagentStart": ["subagent_context"],
+    "PostToolUseFailure": ["failure_diagnosis"],
+    "TaskCreated": ["graph_sync"],
+    "TaskCompleted": ["graph_sync"],
+    "ConfigChange": ["config_guard"],
+    "Setup": ["setup"],
+}
+
+# op name -> the EXACT toggle block name in .agent/.nav-config.json.
 EXPECTED_CONFIG_KEYS = {
     "session_start": "session_start_hook",
     "prompt_gate": "workflow_enforcer_hook",
+    "prompt_tier1": "tier1",
     "prompt_brief": "brief_hook",
     "read_guard": "read_guard_hook",
     "graph_sync": "task_graph_sync_hook",
     "profile_sync": "profile_sync_hook",
+    "stop_completion": "stop_completion",
     "stop_state": "workflow_state_hook",
     "compact_marker": "compact_hook",
+    "jit_memory": "jit_memory",
+    "subagent_context": "subagent_context",
+    "failure_diagnosis": "failure_diagnosis",
+    "config_guard": "config_guard",
+    "setup": "setup_hook",
 }
+
+# v7 rows: their toggle blocks are deliberately ABSENT from the pristine
+# v6.18.1 fixture; they resolve via config.DEFAULTS. Blocking/injecting
+# features seed OFF; the systemMessage-only safety surfaces seed ON.
+V7_OFF_CONFIG_KEYS = {
+    "tier1", "stop_completion", "jit_memory", "subagent_context",
+    "failure_diagnosis",
+}
+V7_ON_CONFIG_KEYS = {"config_guard", "setup_hook"}
+V7_CONFIG_KEYS = V7_OFF_CONFIG_KEYS | V7_ON_CONFIG_KEYS
 
 EXPECTED_PHASES = {
     "session_start": "injectors",
     "prompt_gate": "gates",
+    "prompt_tier1": "responders",
     "prompt_brief": "injectors",
     "read_guard": "gates",
     "graph_sync": "recorders",
     "profile_sync": "recorders",
+    "stop_completion": "gates",
     "stop_state": "recorders",
     "compact_marker": "recorders",
+    "jit_memory": "injectors",
+    "subagent_context": "injectors",
+    "failure_diagnosis": "injectors",
+    "config_guard": "injectors",
+    "setup": "injectors",
 }
 
 MUTATING_MATCHER = "Edit|Write|MultiEdit|NotebookEdit"
@@ -93,9 +146,10 @@ EVENT_TIMEOUT_SECONDS = {
 }
 DEFAULT_TIMEOUT_SECONDS = 5
 
-# TASK-62 spike-gated ops: comments only, each citing its verdict memory.
-# config_guard has no spike dependency in the routing matrix — no mem required.
-FUTURE_OPS_MEM = {
+# TASK-62 ops landed as live rows: each must still cite its verdict memory
+# in an adjacent registry comment. config_guard has no spike dependency in
+# the routing matrix — no mem required.
+LIVE_TASK62_MEM = {
     "prompt_tier1": "mem-053",
     "stop_completion": "mem-051",
     "jit_memory": "mem-050",
@@ -105,6 +159,11 @@ FUTURE_OPS_MEM = {
     "setup": "mem-055",
 }
 
+# Spike-gated TASK-62 ops NOT yet landed: comments only. Empty since Phases
+# 3-5 landed; the structure (and its never-live assertion) stays for any
+# future spike-gated row.
+FUTURE_OPS_MEM = {}
+
 
 def _all_specs():
     for event in registry.EVENT_OPS:
@@ -113,9 +172,9 @@ def _all_specs():
 
 
 class EventSurfaceTest(unittest.TestCase):
-    def test_events_are_exactly_the_seven_v6_surfaces(self):
-        self.assertEqual(set(registry.EVENT_OPS), V6_EVENTS)
-        self.assertEqual(set(registry.EVENTS), V6_EVENTS)
+    def test_events_are_exactly_the_v6_plus_task62_surfaces(self):
+        self.assertEqual(set(registry.EVENT_OPS), ALL_EVENTS)
+        self.assertEqual(set(registry.EVENTS), ALL_EVENTS)
 
     def test_every_event_has_at_least_one_op(self):
         for event, ops in registry.EVENT_OPS.items():
@@ -188,21 +247,44 @@ class ConfigKeyTest(unittest.TestCase):
                 f"{event}/{spec.name}",
             )
 
-    def test_every_config_key_is_a_block_in_the_v6_fixture(self):
+    def test_every_v6_config_key_is_a_block_in_the_v6_fixture(self):
         for event, spec in _all_specs():
+            if spec.config_key in V7_CONFIG_KEYS:
+                continue  # v7 blocks are absent from pristine v6 configs
             where = f"{event}/{spec.name}: {spec.config_key}"
             self.assertIn(spec.config_key, self.fixture, where)
             self.assertIsInstance(self.fixture[spec.config_key], dict, where)
 
-    def test_every_config_key_block_has_an_enabled_toggle(self):
+    def test_every_v6_config_key_block_has_an_enabled_toggle(self):
         # The runtime gates ops on config.get(cfg, key + '.enabled', True);
         # every mapped block must actually carry the toggle in v6.18.1.
         for event, spec in _all_specs():
+            if spec.config_key in V7_CONFIG_KEYS:
+                continue
             block = self.fixture[spec.config_key]
             self.assertIn(
                 "enabled", block, f"{event}/{spec.name}: {spec.config_key}.enabled"
             )
             self.assertIsInstance(block["enabled"], bool, spec.config_key)
+
+    def test_v7_config_keys_seed_the_right_posture_in_defaults(self):
+        # v7 rows must resolve via config.DEFAULTS so a pristine v6.18.1
+        # config loads safely: blocking/responding/injecting features seed
+        # enabled=False (migration policy); the systemMessage-only safety
+        # surfaces (config_guard, setup_hook) seed enabled=True.
+        live_v7 = {
+            spec.config_key for _, spec in _all_specs()
+            if spec.config_key in V7_CONFIG_KEYS
+        }
+        self.assertEqual(live_v7, V7_CONFIG_KEYS)
+        for key in sorted(V7_OFF_CONFIG_KEYS):
+            block = config.DEFAULTS.get(key)
+            self.assertIsInstance(block, dict, key)
+            self.assertIs(block.get("enabled"), False, f"{key}.enabled must seed False")
+        for key in sorted(V7_ON_CONFIG_KEYS):
+            block = config.DEFAULTS.get(key)
+            self.assertIsInstance(block, dict, key)
+            self.assertIs(block.get("enabled"), True, f"{key}.enabled must seed True")
 
 
 class MatcherTest(unittest.TestCase):
@@ -215,14 +297,19 @@ class MatcherTest(unittest.TestCase):
                     self.fail(f"{event}/{spec.name}: matcher does not compile: {exc}")
 
     def test_matcher_values_match_the_contract(self):
+        # Keyed by (event, op): graph_sync carries the mutating matcher on
+        # PostToolUse but None on the TaskCreated/TaskCompleted lifecycle
+        # events (matchers only apply to Pre/PostToolUse payloads).
         expected = {
-            "read_guard": "Read",
-            "graph_sync": MUTATING_MATCHER,
-            "profile_sync": MUTATING_MATCHER,
+            ("PreToolUse", "read_guard"): "Read",
+            ("PostToolUse", "jit_memory"): MUTATING_MATCHER,
+            ("PostToolUse", "graph_sync"): MUTATING_MATCHER,
+            ("PostToolUse", "profile_sync"): MUTATING_MATCHER,
         }
         for event, spec in _all_specs():
             self.assertEqual(
-                spec.matcher, expected.get(spec.name), f"{event}/{spec.name}"
+                spec.matcher, expected.get((event, spec.name)),
+                f"{event}/{spec.name}",
             )
 
     def test_mutating_matcher_hits_all_four_tools_and_not_bash(self):
@@ -251,7 +338,9 @@ class BudgetSanityTest(unittest.TestCase):
 
 
 class FutureRowsTest(unittest.TestCase):
-    """Spike-gated TASK-62 rows: comments with verdicts, never live OpSpecs."""
+    """TASK-62 row discipline: landed ops are live OpSpecs citing their
+    verdict memories in adjacent comments; any spike-gated op NOT yet landed
+    (FUTURE_OPS_MEM, empty since Phases 3-5 shipped) stays comment-only."""
 
     @classmethod
     def setUpClass(cls):
@@ -262,21 +351,53 @@ class FutureRowsTest(unittest.TestCase):
         overlap = live & set(FUTURE_OPS_MEM)
         self.assertEqual(
             overlap, set(),
-            f"TASK-62 ops registered as live OpSpecs in TASK-60: {sorted(overlap)}",
+            f"unlanded TASK-62 ops registered as live OpSpecs: {sorted(overlap)}",
+        )
+
+    def test_landed_task62_ops_are_live_opspecs(self):
+        live = {spec.name for _, spec in _all_specs()}
+        missing = set(LIVE_TASK62_MEM) - live
+        self.assertEqual(
+            missing, set(),
+            f"landed TASK-62 ops missing from the registry: {sorted(missing)}",
+        )
+
+    def _assert_mem_cited_near(self, op_name, mem_id):
+        self.assertIn(op_name, self.source, f"missing TASK-62 row: {op_name}")
+        # The verdict memory must be cited on the same comment block as the
+        # op name (within a few lines of its first mention).
+        idx = self.source.index(op_name)
+        window = self.source[max(0, idx - 700): idx + 700]
+        self.assertIn(
+            mem_id, window,
+            f"{op_name}: registry must cite its verdict memory {mem_id}",
         )
 
     def test_future_ops_documented_in_comments_with_mem_verdicts(self):
         for op_name, mem_id in FUTURE_OPS_MEM.items():
-            self.assertIn(op_name, self.source, f"missing TASK-62 comment row: {op_name}")
             if mem_id is None:
+                self.assertIn(
+                    op_name, self.source, f"missing TASK-62 comment row: {op_name}"
+                )
                 continue
-            # The verdict memory must be cited on the same comment block as
-            # the op name (within a few lines of its first mention).
-            idx = self.source.index(op_name)
-            window = self.source[idx : idx + 700]
-            self.assertIn(
-                mem_id, window,
-                f"{op_name}: TASK-62 comment must cite its verdict memory {mem_id}",
+            self._assert_mem_cited_near(op_name, mem_id)
+
+    def test_live_task62_ops_cite_mem_verdicts(self):
+        for op_name, mem_id in LIVE_TASK62_MEM.items():
+            if mem_id is None:  # config_guard: no spike dependency
+                self.assertIn(op_name, self.source, f"missing row: {op_name}")
+                continue
+            self._assert_mem_cited_near(op_name, mem_id)
+
+    def test_every_registered_op_has_a_committed_module_file(self):
+        # v5.1.0 incident class: a manifest/registry entry referencing a file
+        # the commit does not carry. Every live op name must map to
+        # hooks/ops/<name>.py in this checkout.
+        for event, spec in _all_specs():
+            module_path = OPS_DIR / f"{spec.name}.py"
+            self.assertTrue(
+                module_path.is_file(),
+                f"{event}/{spec.name}: missing op module {module_path}",
             )
 
 

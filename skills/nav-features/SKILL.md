@@ -54,6 +54,14 @@ v<version> Features:
 │ workflow_state_hook     │ [x]    │ Tracks current task/phase across the session  │
 │ task_graph_sync_hook    │ [x]    │ Auto-syncs task files into the knowledge g... │
 │ profile_sync_hook       │ [x]    │ Auto-captures preferences/corrections into... │
+│ dispatcher              │ [x]    │ Single hook dispatcher runtime (nav_dispat... │
+│ tier1                   │ [ ]    │ Zero-token answers for whitelisted prompts    │
+│ stop_completion         │ [ ]    │ Completion gate on Stop (decision:block)      │
+│ jit_memory              │ [ ]    │ Injects relevant memories after tool use      │
+│ subagent_context        │ [ ]    │ Injects project context into subagents (2k)   │
+│ failure_diagnosis       │ [ ]    │ Surfaces graph pitfalls on tool failures      │
+│ config_guard            │ [x]    │ Warns when .nav-config.json edits break JSON  │
+│ setup_hook              │ [x]    │ One-line runtime status on the Setup event    │
 └─────────────────────────┴────────┴───────────────────────────────────────────────┘
 
 All v<version> features configured.
@@ -91,6 +99,22 @@ Hooks (config-toggled, edit with caution):
 - `workflow_state_hook` - Tracks task/phase across the session
 - `task_graph_sync_hook` - Auto-syncs tasks into knowledge graph
 - `profile_sync_hook` - Auto-captures profile corrections
+
+v7 hooks runtime (config-toggled; new blocking/injecting features ship OFF):
+- `dispatcher` - Single hook dispatcher runtime (`nav_dispatch`); ON by default —
+  disabling turns off ALL hook ops at once
+- `tier1` - Zero-token answers for whitelisted prompts (per-rule flags live under
+  `tier1.rules.*` in `.agent/.nav-config.json`; edit those directly)
+- `stop_completion` - Completion gate on Stop via decision:block
+  (`stop_completion.continue_enabled` stays false; `max_continues` caps at 2)
+- `jit_memory` - Just-in-time memory injection after tool use
+- `subagent_context` - Project context injection into subagents
+  (`subagent_context.budget_chars`, default 2000)
+- `failure_diagnosis` - Graph-pitfall injection on PostToolUseFailure (ships OFF)
+- `config_guard` - systemMessage warning on invalid `.nav-config.json` edits
+  (safety surface, ON by default)
+- `setup_hook` - One-line runtime status on the Setup event (safety surface,
+  ON by default)
 
 Install-based:
 - `multi_claude_scripts` - External shell scripts (`navigator-multi-claude.sh` on PATH)

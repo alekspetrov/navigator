@@ -175,6 +175,17 @@ DEFAULTS = {
         "enabled": False,
         "budget_chars": 2000,  # mem-052: viable at the 2k-char budget
     },
+    "failure_diagnosis": {
+        "enabled": False,  # injecting feature (PostToolUseFailure) — ships OFF
+    },
+    # config_guard / setup_hook emit only user-facing systemMessage lines on
+    # explicit events (ConfigChange / Setup) — safety surfaces, seeded ON.
+    "config_guard": {
+        "enabled": True,
+    },
+    "setup_hook": {
+        "enabled": True,
+    },
 }
 
 

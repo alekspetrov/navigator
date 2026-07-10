@@ -175,6 +175,97 @@ FEATURES = {
         "enabled_key": "enabled",
         "default": True,
         "type": "config"
+    },
+    # v7 hooks-runtime toggles (TASK-63 Phase 6). Defaults mirror
+    # hooks/nav_hook_lib/config.py DEFAULTS: dispatcher ON, every net-new
+    # blocking/injecting capability OFF until enabled deliberately.
+    "dispatcher": {
+        "name": "dispatcher",
+        "display_name": "Hook Dispatcher",
+        "version": "7.0.0",
+        "description": "Single hook dispatcher runtime (nav_dispatch)",
+        "short_desc": "v7 single-dispatcher hook runtime",
+        "config_key": "dispatcher",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "tier1": {
+        "name": "tier1",
+        "display_name": "Tier-1 Answers",
+        "version": "7.0.0",
+        "description": "Zero-token answers for whitelisted prompts",
+        "short_desc": "Prompt-block answers at zero model tokens",
+        "config_key": "tier1",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
+    "stop_completion": {
+        "name": "stop_completion",
+        "display_name": "Stop Completion",
+        "version": "7.0.0",
+        "description": "Completion gate on Stop (decision:block)",
+        "short_desc": "Forced-continuation completion gate",
+        "config_key": "stop_completion",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
+    "jit_memory": {
+        "name": "jit_memory",
+        "display_name": "JIT Memory",
+        "version": "7.0.0",
+        "description": "Injects relevant memories after tool use",
+        "short_desc": "Just-in-time memory injection",
+        "config_key": "jit_memory",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
+    "subagent_context": {
+        "name": "subagent_context",
+        "display_name": "Subagent Context",
+        "version": "7.0.0",
+        "description": "Injects project context into subagents (2k)",
+        "short_desc": "Subagent context injection",
+        "config_key": "subagent_context",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
+    "failure_diagnosis": {
+        "name": "failure_diagnosis",
+        "display_name": "Failure Diagnosis",
+        "version": "7.0.0",
+        "description": "Surfaces graph pitfalls on tool failures",
+        "short_desc": "Pitfall injection on PostToolUseFailure",
+        "config_key": "failure_diagnosis",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
+    "config_guard": {
+        "name": "config_guard",
+        "display_name": "Config Guard",
+        "version": "7.0.0",
+        "description": "Warns when .nav-config.json edits break JSON",
+        "short_desc": "Config validation on ConfigChange",
+        "config_key": "config_guard",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
+    },
+    "setup_hook": {
+        "name": "setup_hook",
+        "display_name": "Setup Hint",
+        "version": "7.0.0",
+        "description": "One-line runtime status on the Setup event",
+        "short_desc": "Setup-event onboarding/status line",
+        "config_key": "setup_hook",
+        "enabled_key": "enabled",
+        "default": True,
+        "type": "config"
     }
 }
 

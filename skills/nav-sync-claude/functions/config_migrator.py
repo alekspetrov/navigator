@@ -64,6 +64,21 @@ CURRENT_VERSION = _read_plugin_version()
 #
 # Default shapes are copied verbatim from the live .agent/.nav-config.json so
 # upgraded users get the same discoverable opt-out keys the project ships with.
+#
+# v7.0.0 successor-block decision (TASK-63 Phase 1): v7 ops kept the v6 config
+# keys verbatim (workflow_enforcer_hook, read_guard_hook, etc. — see
+# hooks/nav_hook_lib/registry.py OpSpec.config_key), so NO successor blocks and
+# NO renames exist. strict_block inheritance is therefore satisfied by the
+# additive-only rule: existing blocks are never touched, so the user's
+# enforcement posture carries over unchanged, and rollback to v6.18.1 finds its
+# config intact. No derived-seed machinery is needed.
+#
+# v7.0.0 block shapes MUST match hooks/nav_hook_lib/config.py DEFAULTS — that
+# file is the runtime's layered-config contract and the source of truth
+# (test_config_migrator.py cross-checks). Every net-new blocking/injecting
+# capability seeds OFF (mem-037 class: prove before enable); only the
+# dispatcher and the systemMessage-only safety surfaces (config_guard,
+# setup_hook — warnings on explicit events, never blocking) ship ON.
 VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
     "5.0.0": {
         "tom_features": {
@@ -184,6 +199,42 @@ VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
                 ".user-profile.json",
                 "knowledge/graph.json"
             ]
+        }
+    },
+    "7.0.0": {
+        "dispatcher": {
+            "enabled": True
+        },
+        "tier1": {
+            "enabled": False,
+            "rules": {
+                "nav_stats": True,
+                "show_features": True,
+                "list_markers": True,
+                "graph_health": True,
+                "nav_version": True
+            }
+        },
+        "stop_completion": {
+            "enabled": False,
+            "continue_enabled": False,
+            "max_continues": 2
+        },
+        "jit_memory": {
+            "enabled": False
+        },
+        "subagent_context": {
+            "enabled": False,
+            "budget_chars": 2000
+        },
+        "failure_diagnosis": {
+            "enabled": False
+        },
+        "config_guard": {
+            "enabled": True
+        },
+        "setup_hook": {
+            "enabled": True
         }
     }
 }

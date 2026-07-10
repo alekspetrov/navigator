@@ -141,15 +141,20 @@ See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/a
 
 Current active threads (as of 2026-07-10):
 
-**v7.0.0 program — "Hooks as Runtime"** (planned 2026-07-10; interactive execution, not Pilot-dispatched; critical path 57→59→60→61→62→64, 58/63 parallel):
-- **TASK-57** — spike: empirically verify unproven hook channels (GATE: no dispatcher code before its memories exist)
-- **TASK-58** — harness-conformance suite (spike probes → regression checks)
-- **TASK-59** — nav_hook_lib shared runtime library
-- **TASK-60** — nav_dispatch single dispatcher + op registry
-- **TASK-61** — port the nine v6 hooks to ops (golden parity)
-- **TASK-62** — new capabilities on spike-proven channels (Tier-1, stop_completion, JIT memory, subagent context)
-- **TASK-63** — config migration + CLAUDE.md demotion
-- **TASK-64** — release gate: validation, RC soak, rollback (GATE: no tag without ship-week conformance + Pilot compat sign-off)
+**v7.0.0 program — "Hooks as Runtime"** — ALPHA COMPLETE 2026-07-10 (uncommitted→committed same
+day; local testing phase, no release tagged; critical path 57→59→60→61→62→64 all landed, 58/63
+parallel both landed):
+- **TASK-57** ✅ — spike: six channel verdicts recorded as mem-050..055 (CC 2.1.205)
+- **TASK-58** ✅ — harness-conformance suite + checked-in cc-2.1.205 results, make conformance-check
+- **TASK-59** ✅ — nav_hook_lib: nine stdlib modules, 217+ tests, scoring corpus ≤1 tier
+- **TASK-60** ✅ — nav_dispatch fail-open dispatcher + registry + manifest rewrite (p95 ~41ms)
+- **TASK-61** ✅ — nine v6 hooks ported to ops at golden byte-parity; old hooks deleted
+- **TASK-62** ✅ — prompt_tier1, stop_completion, jit_memory, failure_diagnosis, subagent_context,
+  config_guard, setup, graph_sync lifecycle events (13 manifest events, all validated)
+- **TASK-63** ✅ — VERSION_CONFIGS["7.0.0"] additive migrator, template 47 lines, root CLAUDE.md
+  annotated (mandates → hook enforcement), nav-sync-claude liveness guard
+- **TASK-64** — release gate NOT run (alpha is local-only by decision 2026-07-10); RC soak,
+  Pilot sign-off, and rollback doc remain before any v7.0.0 tag
 
 Other threads:
 - **TASK-15** — marketing strategy & community adoption (plan needs a refresh pass; predates the live site + v6.18.x)

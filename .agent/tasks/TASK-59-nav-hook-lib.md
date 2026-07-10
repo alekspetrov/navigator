@@ -1,6 +1,8 @@
 # TASK-59: nav_hook_lib — Shared Hook Runtime Library
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (217 lib tests; corpus 49 prompts ≤1 tier; guards widened
+to hooks/ with v6-file allowlist; PreToolUse dropped from additional_context — permission-bypass
+finding; state gains flock lock() + fail-closed session scoping per adversarial review)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)

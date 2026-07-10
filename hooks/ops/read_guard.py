@@ -19,6 +19,17 @@ v6 fidelity:
     delta). Session-change reset is now lib-owned (state.load drops the
     session-scoped ``reads`` section on session mismatch, replacing v6's
     session_id field check); the Stop op remains the primary reset.
+  - Per-turn counting is IDEMPOTENT per Read tool-use (TASK-66). The counter
+    represents *unique* qualifying Read tool-uses, not dispatch invocations:
+    a single Read tool-use can fire the PreToolUse surface more than once
+    (dual hook wiring across the v6->v7 migration, or a harness double-fire),
+    and counting per dispatch made N reads reach 2N — the block escalated on
+    the 3rd read instead of the 5th. Each qualifying Read is now keyed on its
+    ``tool_use_id`` (present on real payloads — verified by the read_guard
+    golden captured live) and counted EXACTLY once; a repeated dispatch of an
+    already-counted id is a no-op that re-evaluates the same threshold.
+    Payloads with no id fall back to per-dispatch counting (older harnesses
+    that fire exactly once), preserving prior behavior and the goldens.
   - The 300s ``stale_after_seconds`` staleness window stays INSIDE this op
     (v6 semantics; the state section's 2h TTL is a coarser lib backstop,
     per the TASK-59 review note): a counter whose ``updated_at`` predates
@@ -55,6 +66,11 @@ DEFAULT_ALLOWLIST = frozenset({
 DEFAULT_WARN_THRESHOLD = 3
 DEFAULT_ESCALATE_THRESHOLD = 5
 DEFAULT_STALE_AFTER_SECONDS = 300
+
+# Bound on the per-turn set of counted tool-use ids kept for dedup. Duplicate
+# dispatches of one Read arrive adjacently, so a small window always catches
+# them; the cap keeps the state section from growing over a long turn.
+MAX_SEEN_TOOL_USES = 64
 
 
 def _resolve_agent_relative(file_path: str, root: Path) -> str | None:
@@ -94,15 +110,55 @@ def _is_stale(updated_at, stale_after_s: int, now: float) -> bool:
     return (now - float(updated_at)) > stale_after_s
 
 
-def _increment_counter(ctx, stale_after_s: int) -> int:
-    """Bump reads.turn_count in runtime state; reset first when stale."""
+def _tool_use_id(payload) -> str | None:
+    """Stable identity of the Read tool-use, or None (TASK-66 dedup key).
+
+    Real PreToolUse payloads carry ``tool_use_id`` (verified: the read_guard
+    golden payload, captured verbatim from a live session, includes a
+    ``toolu_...`` value). Keying the per-turn counter on it makes each unique
+    Read count exactly once even when the SAME tool-use fires the PreToolUse
+    dispatch more than once. camelCase is accepted defensively. Returns None
+    when no id is present so the caller falls back to per-dispatch counting.
+    """
+    if not isinstance(payload, dict):
+        return None
+    for key in ("tool_use_id", "toolUseId"):
+        value = payload.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return None
+
+
+def _increment_counter(ctx, stale_after_s: int, tool_use_id: str | None) -> int:
+    """Bump reads.turn_count for a NEW Read tool-use; reset first when stale.
+
+    Idempotent per tool-use (TASK-66): a repeated dispatch of an already-
+    counted ``tool_use_id`` this turn returns the recorded count WITHOUT
+    re-incrementing, so a single Read never advances the counter twice (the
+    double-increment root cause) and the threshold decision is identical
+    across the duplicate. Reads with no id (tool_use_id is None) keep the v6
+    per-dispatch behavior. The reset-barrel coupling is preserved: stop_state
+    still overwrites the whole ``reads`` section on Stop, dropping the seen set
+    with it, and a stale window resets to a fresh (empty) section here.
+    """
     reads = ctx.state.get("reads")
     if not isinstance(reads, dict) or _is_stale(reads.get("updated_at"),
                                                 stale_after_s, ctx.now):
         reads = {}
-    count = int(reads.get("turn_count", 0)) + 1
+    seen = reads.get("seen_tool_uses")
+    if not isinstance(seen, list):
+        seen = []
+    count = int(reads.get("turn_count", 0))
+    if tool_use_id is not None and tool_use_id in seen:
+        reads["turn_count"] = count  # duplicate dispatch: idempotent no-op
+        ctx.state["reads"] = reads
+        return count
+    count += 1
     reads["turn_count"] = count
     reads["updated_at"] = float(ctx.now)
+    if tool_use_id is not None:
+        seen.append(tool_use_id)
+        reads["seen_tool_uses"] = seen[-MAX_SEEN_TOOL_USES:]
     ctx.state["reads"] = reads
     return count
 
@@ -158,7 +214,7 @@ def run(ctx):
     stale_after = int(config.get(cfg, "read_guard_hook.stale_after_seconds",
                                  DEFAULT_STALE_AFTER_SECONDS))
 
-    count = _increment_counter(ctx, stale_after)
+    count = _increment_counter(ctx, stale_after, _tool_use_id(payload))
 
     if count >= escalate_at and strict_block:
         # Deny-only channel: exit 2 + sentinel stderr (mem-035/mem-054).

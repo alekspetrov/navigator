@@ -121,11 +121,42 @@ class SnapshotTest(SubagentContextBase):
         self.assertTrue(recall.call_args.kwargs["auto"])
 
 
+class TopKTest(SubagentContextBase):
+    def test_top_k_constant_default_is_five(self):
+        self.assertEqual(subagent_context.TOP_K, 5)
+
+    def test_at_most_top_k_memories_injected(self):
+        self.write_readme()
+        summary = "\n".join(f'- PITFALL: "memory {i}" (9{i}%)' for i in range(8))
+        result, _ = self.run_with_recall(summary=summary)
+        text = result["additional_context"]
+        mem_lines = [ln for ln in text.splitlines() if ln.startswith("- PITFALL:")]
+        self.assertEqual(len(mem_lines), subagent_context.TOP_K)
+        self.assertLessEqual(len(text), 2000)
+        # recall's ranking order preserved: the first TOP_K lines, verbatim.
+        self.assertIn("memory 0", text)
+        self.assertIn("memory 4", text)
+        self.assertNotIn("memory 5", text)
+
+    def test_memory_ordering_is_deterministic_across_runs(self):
+        self.write_readme()
+        summary = "\n".join(f'- DECISION: "choice {i}" (9{i}%)' for i in range(5))
+        first, _ = self.run_with_recall(summary=summary)
+        second, _ = self.run_with_recall(summary=summary)
+        self.assertEqual(first["additional_context"], second["additional_context"])
+
+    def test_helper_caps_and_preserves_order(self):
+        self.assertEqual(subagent_context._top_k_memories("a\nb\nc\nd", 2), "a\nb")
+        self.assertEqual(subagent_context._top_k_memories("a\n\nb\n \nc", 5), "a\nb\nc")
+        self.assertEqual(subagent_context._top_k_memories("", 5), "")
+
+
 class BudgetTest(SubagentContextBase):
     def test_payload_never_exceeds_2000_chars(self):
         self.write_readme()
-        huge = "\n".join(f'- PITFALL: "pitfall number {i} with padding" (90%)'
-                         for i in range(200))
+        # Long lines (not many lines): the TOP_K cap trims count, so the budget
+        # clamp is exercised by TOP_K oversized memories, not a 200-line list.
+        huge = "\n".join(f'- PITFALL: "{"pad " * 150}{i}" (90%)' for i in range(5))
         result, _ = self.run_with_recall(summary=huge)
         text = result["additional_context"]
         self.assertLessEqual(len(text), 2000)

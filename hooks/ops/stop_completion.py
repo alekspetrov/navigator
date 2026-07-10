@@ -43,9 +43,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
+import subprocess
 from pathlib import Path
 
-from nav_hook_lib import config, memory, sentinels, signals, transcript
+from nav_hook_lib import config, hio, memory, sentinels, signals, transcript
 
 try:  # package context (runtime imports ops.stop_completion)
     from . import stop_state
@@ -68,6 +70,13 @@ MIN_HEURISTICS = 2
 EXIT_GATE_RELPATH = Path("skills") / "nav-loop" / "functions" / "exit_gate.py"
 
 DEFAULT_MAX_CONTINUES = 2
+
+# Tool names whose tool_use input carries an on-disk file path (TASK-65).
+FILE_PATH_TOOLS = frozenset({"Edit", "Write", "MultiEdit", "NotebookEdit"})
+
+# A turn ran the test suite when a Bash command matches this (mem-034: only
+# fixed patterns, never transcript text, ever reach the reason string).
+TEST_CMD_RE = re.compile(r"\b(make test|pytest|(python3?\s+-m\s+)?unittest)\b")
 
 
 def _load_exit_gate():
@@ -110,8 +119,29 @@ def _evaluate_heuristics(filtered: dict):
     return met >= MIN_HEURISTICS, met
 
 
+def _collect_tool_evidence(name: str, block: dict, file_paths: list, bash_uses: list):
+    """Pull observable evidence out of one tool_use block (TASK-65).
+
+    File-mutating tools contribute their target path (file_path or, for
+    notebooks, notebook_path); Bash contributes ``(tool_use_id, command)`` so
+    the caller can pair it with the is_error of the FOLLOWING tool_result.
+    """
+    inp = block.get("input")
+    if not isinstance(inp, dict):
+        return
+    if name in FILE_PATH_TOOLS:
+        for key in ("file_path", "notebook_path"):
+            val = inp.get(key)
+            if isinstance(val, str) and val:
+                file_paths.append(val)
+    elif name == "Bash":
+        cmd = inp.get("command")
+        if isinstance(cmd, str):
+            bash_uses.append((block.get("id"), cmd))
+
+
 def _turn_scan(payload: dict):
-    """(last_assistant_text, turn_tool_names) for the ENDING turn.
+    """(last_assistant_text, turn_tool_names, evidence) for the ENDING turn.
 
     Tool names are collected across every assistant message back to the last
     genuine user prompt (string content or a text block — tool_result-only
@@ -121,9 +151,18 @@ def _turn_scan(payload: dict):
     inline field carries no tool information, so tools always come from the
     transcript (an inline-only payload therefore reads as non-mutating and
     never continues; the safe direction under mem-037).
+
+    ``evidence`` (TASK-65) is gathered over the SAME turn span so the
+    completion-indicator populator sees observable turn results: file paths
+    from Edit/Write/MultiEdit/NotebookEdit inputs, and each Bash command paired
+    with whether its matching tool_result was is_error (matched by
+    tool_use_id; an unmatched command defaults to not-errored).
     """
     text = ""
     tools: set = set()
+    file_paths: list = []
+    bash_uses: list = []          # (tool_use_id, command) in the turn span
+    result_errors: dict = {}      # tool_use_id -> is_error(bool)
     tpath = payload.get("transcript_path")
     entries = transcript.tail_entries(tpath) if tpath else []
     for obj in reversed(entries):
@@ -135,11 +174,19 @@ def _turn_scan(payload: dict):
         if role == "user":
             if isinstance(content, str) and content.strip():
                 break  # genuine user prompt: turn boundary
-            if isinstance(content, list) and any(
-                isinstance(block, dict) and block.get("type") == "text"
-                for block in content
-            ):
-                break
+            if isinstance(content, list):
+                if any(
+                    isinstance(block, dict) and block.get("type") == "text"
+                    for block in content
+                ):
+                    break
+                for block in content:  # tool_result plumbing: harvest is_error
+                    if not isinstance(block, dict):
+                        continue
+                    if block.get("type") == "tool_result":
+                        tid = block.get("tool_use_id")
+                        if isinstance(tid, str):
+                            result_errors[tid] = bool(block.get("is_error"))
             continue  # tool_result plumbing rides the user role
         if role != "assistant":
             continue
@@ -153,13 +200,68 @@ def _turn_scan(payload: dict):
                 if isinstance(block.get("text"), str):
                     chunks.append(block["text"])
                 if block.get("type") == "tool_use" and isinstance(block.get("name"), str):
-                    tools.add(block["name"])
+                    name = block["name"]
+                    tools.add(name)
+                    _collect_tool_evidence(name, block, file_paths, bash_uses)
         if chunks and not text:
             text = "\n".join(chunks)
     inline = payload.get("last_assistant_message")
     if isinstance(inline, str) and inline.strip():
         text = inline
-    return text, tools
+    bash = [(cmd, result_errors.get(tid, False)) for tid, cmd in bash_uses]
+    return text, tools, {"file_paths": file_paths, "bash": bash}
+
+
+def _git_clean(root) -> bool:
+    """True when the git working tree at ``root`` is clean.
+
+    ``git status --porcelain`` with a ~2s timeout: empty stdout AND
+    returncode 0 → clean. ANY failure/timeout/non-repo → False (mem-034:
+    subprocess output never touches stderr or the reason string).
+    """
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(root), capture_output=True, text=True, timeout=2,
+        )
+    except Exception:
+        return False
+    return result.returncode == 0 and not result.stdout.strip()
+
+
+def _derive_indicators(evidence: dict, cfg, payload: dict) -> dict:
+    """Completion indicators inferred from OBSERVABLE turn evidence (TASK-65).
+
+    Only True entries are returned; the caller ORs these with any explicit
+    ``completion.indicators`` state (a state True still wins). The six-name
+    vocabulary is covered as follows:
+
+      code_committed   git working tree clean at the project root.
+      tests_passing    a turn Bash command ran the suite and did NOT error.
+      docs_updated     a turn touched a ``*.md`` file.
+      marker_created   a turn touched a path under ``/.context-markers/``.
+      ticket_closed    True only when no PM tool is configured
+                       (project_management == 'none' → nothing to close). With
+                       a PM configured this stays best-effort False: closing a
+                       real ticket needs a PM API call this hook must not make.
+      code_simplified  left unmet — no reliable observable signal exists for
+                       "code was simplified" from transcript/disk evidence.
+    """
+    indicators = {}
+    if _git_clean(hio.project_root(payload)):
+        indicators["code_committed"] = True
+    for command, is_error in evidence.get("bash", ()):
+        if not is_error and TEST_CMD_RE.search(command or ""):
+            indicators["tests_passing"] = True
+            break
+    paths = evidence.get("file_paths", ())
+    if any(isinstance(p, str) and p.endswith(".md") for p in paths):
+        indicators["docs_updated"] = True
+    if any(isinstance(p, str) and "/.context-markers/" in p for p in paths):
+        indicators["marker_created"] = True
+    if config.get(cfg, "project_management", "none") == "none":
+        indicators["ticket_closed"] = True
+    return indicators
 
 
 def _max_continues(cfg) -> int:
@@ -218,7 +320,7 @@ def run(ctx):
     if held >= _max_continues(ctx.config):
         return None  # continue-counter cap (belt under the fuse)
 
-    text, tools = _turn_scan(payload)
+    text, tools, evidence = _turn_scan(payload)
     if not (tools & stop_state.TASK_ACTION_TOOLS):
         return None  # mem-037: never continue a non-mutating turn
 
@@ -226,12 +328,14 @@ def run(ctx):
     if any(sig.get("type") == "exit" for sig in signals.parse(clean)):
         return None  # explicit completion signal wins
 
-    indicators = completion.get("indicators")
-    indicators = indicators if isinstance(indicators, dict) else {}
+    # Observable turn evidence (TASK-65) OR'd with any explicit state
+    # indicators — a state True still wins, so other writers keep counting.
+    state_ind = completion.get("indicators")
+    state_ind = state_ind if isinstance(state_ind, dict) else {}
+    derived = _derive_indicators(evidence, ctx.config, payload)
     filtered = {
-        name: bool(value)
-        for name, value in indicators.items()
-        if name in INDICATOR_VOCABULARY
+        name: bool(state_ind.get(name)) or bool(derived.get(name))
+        for name in INDICATOR_VOCABULARY
     }
     satisfied, met = _evaluate_heuristics(filtered)
     if satisfied:

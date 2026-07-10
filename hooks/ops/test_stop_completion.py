@@ -24,6 +24,7 @@ import tempfile
 import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))          # this dir
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # hooks/
@@ -43,13 +44,52 @@ ENV_VARS = ("PILOT_EXECUTOR", "CLAUDE_USER_MESSAGE", "CLAUDE_PROJECT_DIR",
 EXIT_LINE = signals.emit("exit", success=True, reason="all done")
 
 
-def enabled_cfg(**overrides):
+def enabled_cfg(project_management=None, **overrides):
     cfg = copy.deepcopy(nav_config.DEFAULTS)
     cfg["stop_completion"]["enabled"] = True
     cfg["stop_completion"]["continue_enabled"] = True
+    if project_management is not None:
+        cfg["project_management"] = project_management
     for key, value in overrides.items():
         cfg["stop_completion"][key] = value
     return cfg
+
+
+def pm_cfg(**overrides):
+    """Enabled config WITH a PM tool configured, so the derived ticket_closed
+    indicator (TASK-65) stays False — isolating the other five indicators to
+    exact counts in tests that pre-date the observable-evidence populator."""
+    return enabled_cfg(project_management="github", **overrides)
+
+
+def turn_with_tools(steps, closing="working, more to do", user_prompt="do it"):
+    """A turn whose tool_use blocks carry real ``input`` + ``id`` and whose
+    tool_results carry ``is_error`` — exercising the TASK-65 evidence scan.
+
+    ``steps`` items: {"name", "input"?, "id"?, "is_error"?}. Layout mirrors the
+    real harness: user prompt -> [tool_use, tool_result]* -> closing text.
+    """
+    entries = [{"message": {"role": "user", "content": user_prompt}}]
+    for i, step in enumerate(steps):
+        tid = step.get("id", f"toolu_{i}")
+        use = {"type": "tool_use", "name": step["name"], "id": tid}
+        if "input" in step:
+            use["input"] = step["input"]
+        entries.append({"message": {"role": "assistant", "content": [
+            {"type": "text", "text": f"step {i}"}, use]}})
+        result = {"type": "tool_result", "tool_use_id": tid, "content": "ok"}
+        if step.get("is_error"):
+            result["is_error"] = True
+        entries.append({"message": {"role": "user", "content": [result]}})
+    entries.append({"message": {"role": "assistant",
+                                "content": [{"type": "text", "text": closing}]}})
+    return entries
+
+
+def unmet_names(reason: str) -> set:
+    """The set of indicator names listed as unmet in a block reason string."""
+    segment = reason.split("unmet: ")[1].split(")")[0]
+    return {name.strip() for name in segment.split(",")}
 
 
 def transcript_entries(closing_text, tools=("Edit",), user_prompt="implement it"):
@@ -85,6 +125,13 @@ class StopCompletionTestBase(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.tmp = Path(os.path.realpath(self._tmp.name))
+        # Deterministic default: no real git call leaks into op-level tests
+        # (this checkout may be clean or dirty). Tests that assert the
+        # code_committed rule override this per-case. Subprocess dispatch tests
+        # are unaffected — they run their own git in a throwaway non-repo dir.
+        git = mock.patch.object(stop_completion, "_git_clean", return_value=False)
+        git.start()
+        self.addCleanup(git.stop)
 
     def _restore(self):
         for key, value in self._saved.items():
@@ -112,7 +159,10 @@ class StopCompletionTestBase(unittest.TestCase):
 
 class DualConditionTest(StopCompletionTestBase):
     def test_unfinished_mutating_turn_blocks(self):
-        ctx = self.make_ctx(transcript_entries("edited the file; more to do"))
+        # pm_cfg + patched-dirty git + no md/marker/test evidence => a fully
+        # unfinished turn stays 0/6 (all six indicators genuinely unmet).
+        ctx = self.make_ctx(transcript_entries("edited the file; more to do"),
+                            cfg=pm_cfg())
         result = stop_completion.run(ctx)
         self.assertEqual(result["decision"], "block")
         self.assertNotIn("continue_", result)   # mem-051: continue is a no-op
@@ -150,7 +200,8 @@ class DualConditionTest(StopCompletionTestBase):
 
     def test_one_indicator_is_not_enough(self):
         state = {"completion": {"indicators": {"code_committed": True}}}
-        ctx = self.make_ctx(transcript_entries("committed"), state=state)
+        ctx = self.make_ctx(transcript_entries("committed"), state=state,
+                            cfg=pm_cfg())
         result = stop_completion.run(ctx)
         self.assertEqual(result["decision"], "block")
         self.assertIn("1/6", result["reason"])
@@ -158,7 +209,8 @@ class DualConditionTest(StopCompletionTestBase):
 
     def test_non_vocabulary_indicators_are_ignored(self):
         state = {"completion": {"indicators": {"vibes": True, "swagger": True}}}
-        ctx = self.make_ctx(transcript_entries("done?"), state=state)
+        ctx = self.make_ctx(transcript_entries("done?"), state=state,
+                            cfg=pm_cfg())
         result = stop_completion.run(ctx)
         self.assertEqual(result["decision"], "block")
         self.assertIn("0/6", result["reason"])
@@ -237,6 +289,135 @@ class BreakerTest(StopCompletionTestBase):
         ]
         ctx = self.make_ctx(entries)
         self.assertIsNone(stop_completion.run(ctx))
+
+
+class DerivedIndicatorTest(StopCompletionTestBase):
+    """TASK-65: completion indicators populated from OBSERVABLE turn evidence.
+
+    Each rule is proven independently. Where a single indicator is met the gate
+    still blocks (met=1 < MIN_HEURISTICS=2), so the rule is verified by reading
+    the unmet list out of the reason string.
+    """
+
+    def _block(self, entries, cfg=None):
+        result = stop_completion.run(self.make_ctx(entries, cfg=cfg or pm_cfg()))
+        self.assertIsNotNone(result, "expected a block")
+        self.assertEqual(result["decision"], "block")
+        return result["reason"]
+
+    def test_code_committed_when_git_clean(self):
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        with mock.patch.object(stop_completion, "_git_clean", return_value=True):
+            reason = self._block(entries)
+        self.assertIn("1/6", reason)
+        self.assertNotIn("code_committed", unmet_names(reason))
+
+    def test_dirty_tree_leaves_code_committed_unmet(self):
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        # base setUp patches _git_clean -> False (dirty tree)
+        reason = self._block(entries)
+        self.assertIn("0/6", reason)
+        self.assertIn("code_committed", unmet_names(reason))
+
+    def test_tests_passing_when_test_command_not_errored(self):
+        entries = turn_with_tools(
+            [{"name": "Bash", "input": {"command": "make test"}, "is_error": False}])
+        reason = self._block(entries)
+        self.assertNotIn("tests_passing", unmet_names(reason))
+
+    def test_unittest_module_command_counts_as_tests_passing(self):
+        entries = turn_with_tools(
+            [{"name": "Bash",
+              "input": {"command": "python3 -m unittest test_stop_completion"}}])
+        reason = self._block(entries)
+        self.assertNotIn("tests_passing", unmet_names(reason))
+
+    def test_failing_test_command_does_not_count(self):
+        entries = turn_with_tools(
+            [{"name": "Bash", "input": {"command": "pytest"}, "is_error": True}])
+        reason = self._block(entries)
+        self.assertIn("0/6", reason)
+        self.assertIn("tests_passing", unmet_names(reason))
+
+    def test_non_test_command_does_not_count(self):
+        entries = turn_with_tools(
+            [{"name": "Bash", "input": {"command": "ls -la"}, "is_error": False}])
+        reason = self._block(entries)
+        self.assertIn("tests_passing", unmet_names(reason))
+
+    def test_docs_updated_when_md_touched(self):
+        entries = turn_with_tools(
+            [{"name": "Edit", "input": {"file_path": "docs/README.md"}}])
+        reason = self._block(entries)
+        self.assertNotIn("docs_updated", unmet_names(reason))
+
+    def test_marker_created_when_context_marker_written(self):
+        # A .json marker path isolates marker_created from docs_updated (.md).
+        entries = turn_with_tools([{"name": "Write", "input": {
+            "file_path": "/repo/.agent/.context-markers/save.json"}}])
+        reason = self._block(entries)
+        self.assertNotIn("marker_created", unmet_names(reason))
+        self.assertIn("docs_updated", unmet_names(reason))
+
+    def test_notebook_path_is_collected_as_file_path(self):
+        entries = turn_with_tools([{"name": "NotebookEdit", "input": {
+            "notebook_path": "analysis.md"}}])
+        reason = self._block(entries)
+        self.assertNotIn("docs_updated", unmet_names(reason))
+
+    def test_ticket_closed_when_no_pm_configured(self):
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        reason = self._block(entries, cfg=enabled_cfg())  # project_management none
+        self.assertNotIn("ticket_closed", unmet_names(reason))
+
+    def test_ticket_open_when_pm_configured(self):
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        reason = self._block(entries, cfg=pm_cfg())
+        self.assertIn("ticket_closed", unmet_names(reason))
+
+    def test_code_simplified_never_derived(self):
+        # Even a rich turn (md doc touched) never derives code_simplified.
+        entries = turn_with_tools(
+            [{"name": "Edit", "input": {"file_path": "notes.md"}}])
+        reason = self._block(entries)
+        self.assertIn("code_simplified", unmet_names(reason))
+
+    def test_committed_and_tested_turn_yields_no_continue(self):
+        # code_committed (git clean) + tests_passing (make test ok) = 2 => yield.
+        entries = turn_with_tools(
+            [{"name": "Bash", "input": {"command": "make test"}, "is_error": False}])
+        ctx = self.make_ctx(entries, cfg=pm_cfg())
+        with mock.patch.object(stop_completion, "_git_clean", return_value=True):
+            self.assertIsNone(stop_completion.run(ctx))
+        self.assertEqual(ctx.state, {})  # no fuse burned, no counter
+
+    def test_uncommitted_mutating_turn_still_continues(self):
+        # Dirty tree, no other evidence, PM configured => 0/6 => forced continue.
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        ctx = self.make_ctx(entries, cfg=pm_cfg())
+        result = stop_completion.run(ctx)
+        self.assertEqual(result["decision"], "block")
+        self.assertEqual(ctx.state["completion"]["held_count"], 1)
+
+    def test_state_true_indicator_wins_over_empty_derivation(self):
+        # Explicit state indicators still count even when nothing is derived.
+        state = {"completion": {"indicators": {
+            "code_committed": True, "code_simplified": True}}}
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "a.py"}}])
+        ctx = self.make_ctx(entries, cfg=pm_cfg(), state=state)
+        self.assertIsNone(stop_completion.run(ctx))
+
+    def test_state_and_derived_indicators_merge(self):
+        # One from state (code_simplified) + one derived (docs_updated) = 2.
+        state = {"completion": {"indicators": {"code_simplified": True}}}
+        entries = turn_with_tools([{"name": "Edit", "input": {"file_path": "x.md"}}])
+        ctx = self.make_ctx(entries, cfg=pm_cfg(), state=state)
+        self.assertIsNone(stop_completion.run(ctx))
+
+    def test_non_mutating_turn_ignores_evidence(self):
+        # A read-only turn never continues even if it touched a .md path.
+        entries = turn_with_tools([{"name": "Read", "input": {"file_path": "a.md"}}])
+        self.assertIsNone(stop_completion.run(self.make_ctx(entries, cfg=pm_cfg())))
 
 
 class KillSwitchTest(StopCompletionTestBase):

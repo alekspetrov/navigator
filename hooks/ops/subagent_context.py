@@ -34,7 +34,7 @@ from pathlib import Path
 
 from nav_hook_lib import budget, config, hio, memory
 
-TOP_K_DEFAULT = 5
+TOP_K = 5  # default number of session memories injected (config may override)
 RECALL_TIMEOUT = 3
 README_SCAN_BYTES = 20_000
 ACTIVE_TASK_MAX_CHARS = 160
@@ -57,6 +57,19 @@ def _active_task(root: Path):
         return None
     task = match.group(1).strip()
     return task[:ACTIVE_TASK_MAX_CHARS] if task else None
+
+
+def _top_k_memories(summary: str, k: int) -> str:
+    """Cap recall's already-ranked summary to at most ``k`` memory lines.
+
+    ``memory.recall`` returns a compact, confidence-ranked list (one memory per
+    line, highest confidence first) and applies its own ``--limit``. We re-cap
+    here so the injected set is bounded by TOP_K regardless of what recall
+    returns; recall's ranking order is preserved verbatim — a stable, blank-line
+    -free slice that is deterministic across runs.
+    """
+    lines = [line for line in summary.splitlines() if line.strip()]
+    return "\n".join(lines[: max(0, k)])
 
 
 def _last_marker(root: Path):
@@ -86,10 +99,11 @@ def run(ctx):
     if marker:
         snapshot_parts.append(f"Last context marker: {marker}.")
 
-    limit = int(config.get(
-        ctx.config, "knowledge_graph.max_session_memories", TOP_K_DEFAULT))
-    memories = memory.recall(auto=True, agent_dir=agent_dir, limit=limit,
+    top_k = int(config.get(
+        ctx.config, "knowledge_graph.max_session_memories", TOP_K))
+    memories = memory.recall(auto=True, agent_dir=agent_dir, limit=top_k,
                              timeout_s=RECALL_TIMEOUT)
+    memories = _top_k_memories(memories, top_k)
 
     if not snapshot_parts and not memories:
         return None  # nothing worth a subagent's budget — stay silent

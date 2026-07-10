@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))          # this dir
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # hooks/ (nav_hook_lib)
 
 import read_guard
-from nav_hook_lib import config, sentinels
+from nav_hook_lib import config, runtime, sentinels, state
 
 SESSION_ID = "sess-read-guard-tests"
 NOW = 1_700_000_000.0
@@ -55,13 +55,16 @@ class ReadGuardTestBase(unittest.TestCase):
         path = self.root / ".agent" / ".nav-config.json"
         path.write_text(json.dumps({"read_guard_hook": hook_cfg}), encoding="utf-8")
 
-    def payload(self, file_path, tool_name="Read"):
-        return {
+    def payload(self, file_path, tool_name="Read", tool_use_id=None):
+        doc = {
             "cwd": str(self.root),
             "session_id": SESSION_ID,
             "tool_name": tool_name,
             "tool_input": {"file_path": file_path},
         }
+        if tool_use_id is not None:
+            doc["tool_use_id"] = tool_use_id
+        return doc
 
     def ctx(self, payload, state=None, now=NOW):
         return types.SimpleNamespace(
@@ -226,6 +229,100 @@ class StalenessTest(ReadGuardTestBase):
             state={"reads": {"turn_count": 4, "updated_at": NOW - 61}})
         self.assertIsNone(result)
         self.assertEqual(ctx.state["reads"]["turn_count"], 1)
+
+
+class DoubleDispatchDedupTest(ReadGuardTestBase):
+    """TASK-66 regression: a single Read tool-use must advance the per-turn
+    counter EXACTLY once, even when its PreToolUse surface dispatches twice
+    (dual hook wiring / harness double-fire). Before the fix, N reads reached
+    2N and the block escalated on the 3rd read instead of the 5th."""
+
+    def _run_id(self, state, tool_use_id, rel="tasks/TASK-01-sample.md", now=NOW):
+        ctx = self.ctx(self.payload(self.agent_file(rel), tool_use_id=tool_use_id),
+                       state=state, now=now)
+        return read_guard.run(ctx), ctx
+
+    def test_duplicate_dispatch_of_same_tool_use_is_idempotent(self):
+        st = {}
+        r1, ctx = self._run_id(st, "toolu-A")
+        self.assertIsNone(r1)
+        self.assertEqual(ctx.state["reads"]["turn_count"], 1)
+        # SAME tool_use_id dispatched again this turn — must not re-increment.
+        r2, ctx = self._run_id(st, "toolu-A")
+        self.assertIsNone(r2)
+        self.assertEqual(ctx.state["reads"]["turn_count"], 1)
+
+    def test_k_reads_each_double_fired_count_k_not_2k(self):
+        st = {}
+        k = 4
+        ctx = None
+        for i in range(1, k + 1):
+            tid, rel = f"toolu-{i}", f"tasks/TASK-{i:02d}.md"
+            self._run_id(st, tid, rel=rel)          # first wiring
+            _, ctx = self._run_id(st, tid, rel=rel)  # duplicate wiring
+        self.assertEqual(ctx.state["reads"]["turn_count"], k)
+
+    def test_distinct_tool_uses_each_increment_once(self):
+        st = {}
+        self._run_id(st, "toolu-A", rel="tasks/TASK-01-sample.md")
+        _, ctx = self._run_id(st, "toolu-B", rel="tasks/TASK-02-other.md")
+        self.assertEqual(ctx.state["reads"]["turn_count"], 2)
+
+    def test_block_first_fires_on_escalate_th_unique_read(self):
+        st = {}
+        outcomes = []  # (first_dispatch_result, duplicate_result) per unique read
+        for i in range(1, 7):
+            tid, rel = f"toolu-{i}", f"tasks/TASK-{i:02d}.md"
+            first, _ = self._run_id(st, tid, rel=rel)
+            dup, _ = self._run_id(st, tid, rel=rel)
+            outcomes.append((first, dup))
+        # No block on unique reads 1..4, nor on their duplicate dispatches.
+        for first, dup in outcomes[:4]:
+            self.assertNotEqual((first or {}).get("exit_code"), 2)
+            self.assertNotEqual((dup or {}).get("exit_code"), 2)
+        # The block appears first exactly on the 5th unique read (escalate=5),
+        # and the duplicate dispatch of that read re-blocks identically.
+        self.assertEqual(outcomes[4][0]["exit_code"], 2)
+        self.assertEqual(outcomes[4][1]["exit_code"], 2)
+
+    def test_allowlisted_read_never_increments_even_with_id(self):
+        st = {}
+        _, ctx = self._run_id(st, "toolu-A", rel="DEVELOPMENT-README.md")
+        self.assertNotIn("reads", ctx.state)
+
+    def test_missing_id_keeps_v6_per_dispatch_counting(self):
+        # No tool_use_id (older harness firing exactly once): each dispatch
+        # still increments, so nothing regresses for single-fire environments.
+        st = {}
+        ctx = self.ctx(self.payload(self.agent_file()), state=st)
+        read_guard.run(ctx)
+        ctx = self.ctx(self.payload(self.agent_file()), state=st)
+        read_guard.run(ctx)
+        self.assertEqual(ctx.state["reads"]["turn_count"], 2)
+
+
+class DispatcherDoubleFireTest(ReadGuardTestBase):
+    """End-to-end through runtime.dispatch with real state persistence: the
+    same Read tool-use dispatched twice per read (separate processes reload
+    the seen set from disk) counts once, so turn_count tracks unique reads and
+    the block fires on the 5th, not the 3rd."""
+
+    def _dispatch(self, rel, tool_use_id, now):
+        payload = self.payload(self.agent_file(rel), tool_use_id=tool_use_id)
+        return runtime.dispatch("PreToolUse", payload, now=now)
+
+    def test_double_fired_reads_count_once_and_block_on_fifth(self):
+        agent = self.root / ".agent"
+        blocked_at = None
+        for i in range(1, 7):
+            tid, rel = f"toolu-{i}", f"tasks/TASK-{i:02d}.md"
+            self._dispatch(rel, tid, now=NOW + i)          # wiring 1
+            res = self._dispatch(rel, tid, now=NOW + i)     # wiring 2 (duplicate)
+            st = state.load(agent, session_id=SESSION_ID, now=NOW + i)
+            self.assertEqual(st["reads"]["turn_count"], i)  # i, never 2*i
+            if res.exit_code == 2 and blocked_at is None:
+                blocked_at = i
+        self.assertEqual(blocked_at, 5)
 
 
 if __name__ == "__main__":

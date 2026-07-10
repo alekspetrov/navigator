@@ -66,16 +66,73 @@ def extract_concepts_from_task(content: str) -> list:
     return list(concepts) if concepts else ['general']
 
 
+# Emoji → canonical status. Emoji-only Status lines (no word) resolve here.
+STATUS_EMOJI = {
+    '✅': 'completed',
+    '🚧': 'in-progress',
+    '📋': 'backlog',
+    '🔬': 'research',
+    '📐': 'design',
+    '❌': 'deprecated',
+    '🚫': 'blocked',
+    '📨': 'dispatched',
+}
+
+# (phrase, canonical) matched case-insensitively as whole words against the
+# Status line, most-specific phrase first so 'in progress' wins over any
+# shorter substring. Existing canonicals (completed/in-progress/backlog/
+# research) are preserved; new task states get their own canonical value.
+STATUS_WORDS = [
+    ('in progress', 'in-progress'),
+    ('completed', 'completed'),
+    ('complete', 'completed'),
+    ('implemented', 'completed'),
+    ('deprecated', 'deprecated'),
+    ('dispatched', 'dispatched'),
+    ('blocked', 'blocked'),
+    ('planned', 'backlog'),
+    ('backlog', 'backlog'),
+    ('research', 'research'),
+    ('design', 'design'),
+]
+
+# Tolerant Status-line matcher: accepts '**Status**:', '**Status:**', 'Status:'
+# with optional blockquote/bold/whitespace decoration around the label.
+_STATUS_LINE = re.compile(
+    r'(?im)^[>\s]*\*{0,2}\s*status\s*\*{0,2}\s*:\s*\*{0,2}\s*(.+?)\s*$'
+)
+
+
 def extract_status(content: str) -> str:
-    """Extract task status from content."""
-    if '✅ Completed' in content or 'Status**: ✅' in content:
-        return 'completed'
-    if '🚧 In Progress' in content or 'Status**: 🚧' in content:
-        return 'in-progress'
-    if '📋 Backlog' in content or 'Status**: 📋' in content:
-        return 'backlog'
-    if '🔬 Research' in content or 'Status**: 🔬' in content:
-        return 'research'
+    """Extract task status from content.
+
+    Recognizes plain-text status words (case-insensitive, with or without a
+    leading emoji/punctuation) on the Status line, plus the legacy emoji-only
+    forms. Recognition is scoped to the Status line so prose mentions of
+    'design'/'research' elsewhere do not misclassify the task.
+    """
+    line_match = _STATUS_LINE.search(content)
+    if line_match:
+        line = line_match.group(1)
+        lowered = line.lower()
+        for phrase, canonical in STATUS_WORDS:
+            if re.search(r'\b' + re.escape(phrase) + r'\b', lowered):
+                return canonical
+        for emoji, canonical in STATUS_EMOJI.items():
+            if emoji in line:
+                return canonical
+
+    # Legacy fallback for docs without a standard Status line: the exact
+    # emoji+word combos the pre-TASK-67 extractor matched anywhere in content.
+    legacy = [
+        ('✅ Completed', 'completed'),
+        ('🚧 In Progress', 'in-progress'),
+        ('📋 Backlog', 'backlog'),
+        ('🔬 Research', 'research'),
+    ]
+    for needle, canonical in legacy:
+        if needle in content:
+            return canonical
     return 'unknown'
 
 

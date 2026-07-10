@@ -196,6 +196,42 @@ class FalsePositiveTelemetryTest(Tier1TestBase):
         self.assertIsNone(prompt_tier1.run(ctx))
         self.assertNotIn("tier1", ctx.state)
 
+    def test_single_shared_word_after_hit_does_not_count(self):
+        # "stats" is the only token shared with the "nav stats" command:
+        # containment fails and Jaccard (1/5) is well below the threshold.
+        state = {"turn": {"tier1_hit": "nav_stats"}}
+        ctx = make_ctx("stats overview report now", state=state)
+        self.assertIsNone(prompt_tier1.run(ctx))
+        self.assertNotIn("tier1", ctx.state)
+        self.assertEqual(ctx.state["turn"]["tier1_hit"], "nav_stats")  # window kept
+
+    def test_reordered_rephrase_after_hit_counts_via_jaccard(self):
+        # "features show" contains no verbatim command but its token set is
+        # identical (Jaccard 1.0) — a genuine rephrase of "show features".
+        state = {"turn": {"tier1_hit": "show_features"}}
+        ctx = make_ctx("features show", state=state)
+        self.assertIsNone(prompt_tier1.run(ctx))
+        self.assertEqual(ctx.state["tier1"]["false_positives"], 1)
+        self.assertNotIn("tier1_hit", ctx.state["turn"])  # one-shot window
+
+    def test_verbatim_whitespace_miss_is_not_a_false_positive(self):
+        # "nav  stats" misses the exact matcher only on whitespace; normalized
+        # it IS the command (not a rephrase), so it is not counted.
+        state = {"turn": {"tier1_hit": "nav_stats"}}
+        ctx = make_ctx("nav  stats", state=state)
+        self.assertIsNone(prompt_tier1.run(ctx))
+        self.assertNotIn("tier1", ctx.state)
+
+    def test_similarity_helper_constants_are_named(self):
+        self.assertEqual(prompt_tier1.SIMILARITY_MAX_EXTRA_TOKENS, 3)
+        self.assertEqual(prompt_tier1.SIMILARITY_MIN_JACCARD, 0.6)
+        self.assertTrue(prompt_tier1._is_near_identical("nav stats please", "nav stats"))
+        self.assertFalse(prompt_tier1._is_near_identical("nav stats", "nav stats"))
+        # containment but too much padding (>3 extra tokens) fails rule 1, and
+        # Jaccard (2/6) fails rule 2.
+        self.assertFalse(prompt_tier1._is_near_identical(
+            "nav stats a b c d", "nav stats"))
+
     def test_near_identical_without_prior_hit_does_not_count(self):
         ctx = make_ctx("nav stats please")
         self.assertIsNone(prompt_tier1.run(ctx))

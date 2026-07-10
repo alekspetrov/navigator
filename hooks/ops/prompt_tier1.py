@@ -20,9 +20,12 @@ Safety rails (plan risk register + mem-034):
     ``completion.tier1_fuse`` answered-this-turn marker the stop_state barrel
     re-arms); a near-identical re-prompt right after a hit increments
     ``tier1.false_positives`` (surfaced by /nav:stats) and still passes
-    through to the model. "Near-identical" = the normalized prompt contains
-    the hit command verbatim without being it (similarity threshold is a
-    deferred TASK-62 decision; containment is the deliberately-simple seed).
+    through to the model. "Near-identical" is an explicit similarity rule
+    (TASK-68, _is_near_identical): the normalized prompt contains the hit
+    command with at most SIMILARITY_MAX_EXTRA_TOKENS padding words, OR its
+    token-set Jaccard against the command is >= SIMILARITY_MIN_JACCARD. A
+    verbatim re-type (prompt == command) and a loosely-related prompt that
+    only shares a word both clear neither rule and are not counted.
   - Per-rule off-switch ``tier1.rules.<id>: false``; whole feature seeds OFF
     (config.DEFAULTS tier1.enabled=false; the registry config gate skips the
     op, and run() re-checks for standalone callers).
@@ -44,6 +47,12 @@ ESCAPE_LINE = "reply 'ask claude' to run the model"
 MAX_PROMPT_CHARS = 48  # post-strip guard: longer prompts are never matched
 MARKERS_DIR = ".context-markers"
 MAX_MARKERS_SHOWN = 10
+
+# Near-identical re-prompt telemetry (TASK-68). A genuine rephrase of a just-
+# answered Tier-1 command counts as a suspected false positive; a loosely-
+# related prompt does not. TELEMETRY ONLY — never changes routing.
+SIMILARITY_MAX_EXTRA_TOKENS = 3  # containment rule: command + <=3 padding words
+SIMILARITY_MIN_JACCARD = 0.6     # token-set overlap rule (reordered rephrase)
 
 # ---------------------------------------------------------------------------
 # grot-style card renderer (Pilot TUI design system: rounded frame, titled top
@@ -282,6 +291,35 @@ def _record_hit(ctx, rule: str) -> None:
     section["hits"] = int(section.get("hits", 0) or 0) + 1
 
 
+def _is_near_identical(normalized_prompt: str, command: str) -> bool:
+    """True when the re-prompt is a genuine rephrase of the hit ``command``.
+
+    Two named, telemetry-only rules (never routing):
+      - containment + small padding: the prompt contains the command verbatim
+        and adds at most SIMILARITY_MAX_EXTRA_TOKENS words ("nav stats please");
+      - token-set overlap: Jaccard(prompt tokens, command tokens) >=
+        SIMILARITY_MIN_JACCARD (a reordered / reworded near-duplicate).
+
+    A verbatim re-type (prompt == command, a whitespace-only miss of the exact
+    matcher) and a prompt sharing only a single word both clear neither rule.
+    """
+    if normalized_prompt == command:
+        return False
+    prompt_tokens = normalized_prompt.split()
+    command_tokens = command.split()
+    if not prompt_tokens or not command_tokens:
+        return False
+    if command in normalized_prompt:
+        extra = len(prompt_tokens) - len(command_tokens)
+        if 0 <= extra <= SIMILARITY_MAX_EXTRA_TOKENS:
+            return True
+    prompt_set, command_set = set(prompt_tokens), set(command_tokens)
+    union = prompt_set | command_set
+    if not union:
+        return False
+    return (len(prompt_set & command_set) / len(union)) >= SIMILARITY_MIN_JACCARD
+
+
 def _count_false_positive(ctx, normalized_prompt: str) -> None:
     """Hit followed by a near-identical re-prompt => telemetry only.
 
@@ -295,7 +333,7 @@ def _count_false_positive(ctx, normalized_prompt: str) -> None:
     command = RULE_COMMANDS.get(turn.get("tier1_hit"))
     if not command:
         return
-    if command in normalized_prompt and normalized_prompt != command:
+    if _is_near_identical(normalized_prompt, command):
         section = _tier1_section(ctx)
         section["false_positives"] = int(section.get("false_positives", 0) or 0) + 1
         turn.pop("tier1_hit", None)  # one-shot window per hit

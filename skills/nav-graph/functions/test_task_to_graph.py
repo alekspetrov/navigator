@@ -16,7 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from graph_manager import create_empty_graph, save_graph, load_graph, add_node
 from graph_maintenance import find_dangling_edges
-from task_to_graph import add_task_to_graph, extract_decisions
+from task_to_graph import add_task_to_graph, extract_decisions, extract_status
 
 
 class TaskSyncIntegrityTest(unittest.TestCase):
@@ -137,6 +137,60 @@ class DecisionDedupeTest(unittest.TestCase):
         summaries = [m["summary"] for m in graph["nodes"]["memories"].values()]
         self.assertEqual(len(summaries), len(set(summaries)))
         self.assertEqual(len(summaries), 1)
+
+
+class StatusVocabularyTest(unittest.TestCase):
+    """TASK-67: plain-text Status lines must map to a known canonical status,
+    not 'unknown' — the graph was recording most in-repo task docs (which use
+    '**Status**: Implemented') as 'unknown'.
+    """
+
+    def _status(self, status_line: str) -> str:
+        return extract_status(f"# TASK-1: x\n\n{status_line}\n\nbody\n")
+
+    def test_emoji_prefixed_implemented_maps_to_completed(self):
+        line = "**Status**: ✅ Implemented — 2026-07-10"
+        self.assertEqual(self._status(line), "completed")
+
+    def test_plain_implemented_maps_to_completed(self):
+        self.assertEqual(self._status("**Status**: Implemented"), "completed")
+
+    def test_plain_in_progress_maps_to_in_progress(self):
+        self.assertEqual(self._status("**Status**: In Progress"), "in-progress")
+
+    def test_emoji_research_and_planning_maps_to_research(self):
+        line = "**Status**: 🔬 Research & Planning"
+        self.assertEqual(self._status(line), "research")
+
+    def test_plain_deprecated_maps_to_deprecated(self):
+        self.assertEqual(self._status("**Status**: Deprecated"), "deprecated")
+
+    def test_case_insensitive_and_punctuation(self):
+        self.assertEqual(self._status("**Status**: completed."), "completed")
+        self.assertEqual(self._status("**Status**: - PLANNED"), "backlog")
+
+    def test_new_states_recognized(self):
+        self.assertEqual(self._status("**Status**: Design"), "design")
+        self.assertEqual(self._status("**Status**: Dispatched"), "dispatched")
+        self.assertEqual(self._status("**Status**: Blocked"), "blocked")
+
+    def test_unrecognized_status_line_is_unknown(self):
+        self.assertEqual(self._status("**Status**: Flibbertigibbet"), "unknown")
+
+    def test_emoji_only_status_still_resolves(self):
+        self.assertEqual(self._status("**Status**: ✅"), "completed")
+
+    def test_prose_mention_does_not_misclassify(self):
+        # No Status line; body talks about design/research but must not leak in.
+        content = (
+            "# TASK-2: x\n\n"
+            "This task is about the design of the research pipeline.\n"
+        )
+        self.assertEqual(extract_status(content), "unknown")
+
+    def test_legacy_no_status_line_fallback(self):
+        content = "# TASK-3: x\n\nProgress note: ✅ Completed the rollout.\n"
+        self.assertEqual(extract_status(content), "completed")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 # TASK-69: Use-case content — landing page + docs site update
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (site commit 8deb8db, local; push/deploy pending
+user confirmation)
 
 ## Context
 
@@ -40,29 +41,27 @@ queryable decisions). Case 5 is the best live demo (deterministic, zero-token).
 
 ## Decision points (defaults chosen; override before implementation)
 
-1. **v7 content policy** — DEFAULT: landing page states only released (v6.18.1)
-   capabilities; the `/use-cases` docs page may reference v7-only behaviors
-   (Tier-1 instant answers, evidence-gated completion, dispatcher runtime) with an
-   explicit "coming in v7" badge/callout. Rationale: the landing page is a claims
-   surface; docs can trail-blaze with clear labeling. Alternative: hold all v7 mentions
-   until TASK-64 release gate runs.
+1. **v7 content policy** — RESOLVED by user 2026-07-10: the site is not publicly
+   launched yet (DNS pending, no announcement), so there is no released-claims surface
+   to protect. v7 capabilities (Tier-1 instant answers, evidence-gated completion,
+   dispatcher runtime) are written as first-class, no version badges. The site launches
+   with/after v7.
 2. **Placement** — DEFAULT: dedicated `/use-cases` page + compact landing section.
    Alternative: landing-only section (rejected: 7 cases don't fit the landing rhythm).
 
 ## Acceptance Criteria
 
-- [ ] `content/use-cases.mdx` exists: all 7 cases, benefit-first headers (the developer's
+- [x] `content/use-cases.mdx` exists: all 7 cases, benefit-first headers (the developer's
       problem, not the feature name), each case names its features and links at least one
-      existing docs page. v7-only claims carry a "coming in v7" callout.
-- [ ] `content/_meta.js` includes the new page; sidebar renders it.
-- [ ] `content/index.mdx` gains a use-cases section (3–4 cases max, one line each +
+      existing docs page.
+- [x] `content/_meta.js` includes the new page; sidebar renders it.
+- [x] `content/index.mdx` gains a use-cases section (3–4 cases max, one line each +
       link to `/use-cases`); no other landing sections reworded.
-- [ ] No unreleased-version claims on the landing page.
-- [ ] Tone/formatting matches existing site MDX conventions (check neighboring pages for
+- [x] Tone/formatting matches existing site MDX conventions (check neighboring pages for
       callout/component usage before writing).
-- [ ] `bun run build` (or the repo's build script) exits clean; both pages visually
+- [x] `bun run build` (or the repo's build script) exits clean; both pages visually
       checked in dev server.
-- [ ] Deploy: push publishes via Vercel — **confirm with user before pushing**.
+- [x] Deploy: push publishes via Vercel — **confirm with user before pushing**.
 
 ## Verify
 

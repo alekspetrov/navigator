@@ -87,8 +87,10 @@ class ExactMatchTest(Tier1TestBase):
         self.assertNotIn("exit_code", result)   # mem-053: never exit-2
         self.assertNotIn("stderr", result)
         reason = result["reason"]
-        self.assertTrue(reason.startswith("<!-- nav-t1-response -->"), reason)
-        self.assertTrue(reason.endswith("<!-- /nav-t1-response -->"), reason)
+        # Renders as a plain-text grot card: framed, no sentinel litter.
+        self.assertTrue(reason.startswith("╭─"), reason)
+        self.assertTrue(reason.rstrip().endswith("╯"), reason)
+        self.assertNotIn("<!--", reason)   # no marker shows to the user
         self.assertIn(prompt_tier1.ESCAPE_LINE, reason)
         self.assertEqual(ctx.state["turn"]["tier1_hit"], rule)
         self.assertIs(ctx.state["completion"]["tier1_fuse"], True)
@@ -161,15 +163,16 @@ class PassthroughTest(Tier1TestBase):
 class EchoHygieneTest(Tier1TestBase):
     """mem-034 class: an echoed Tier-1 answer can never re-trigger anything."""
 
-    def test_echoed_answer_plus_original_prompt_line_strips_to_nothing(self):
+    def test_answer_is_a_clean_unwrapped_card(self):
+        # A block reason renders as plain text, so the answer carries NO
+        # sentinel marker (it would show literally). Safety comes from the
+        # exact-match rail, not from strip-on-echo (see the pass-through test).
         project = self.make_project()
         ctx = make_ctx("nav stats", cwd=project)
         reason = prompt_tier1.run(ctx)["reason"]
-        echoed = reason + "\nOriginal prompt: nav stats"
-        stripped = sentinels.strip_all(echoed)
-        self.assertNotIn("nav stats", stripped.lower())
-        self.assertNotIn("Original prompt:", stripped)
-        self.assertNotIn("nav-t1-response", stripped)
+        self.assertNotIn("<!--", reason)
+        self.assertNotIn("nav-t1-response", reason)
+        self.assertTrue(reason.startswith("╭─"), reason)
 
     def test_refed_echo_passes_through_without_matching(self):
         project = self.make_project()
@@ -320,7 +323,7 @@ class DispatchContractTest(Tier1TestBase):
         self.assertEqual(result.returncode, 0, result.stderr)
         doc = json.loads(result.stdout)
         self.assertEqual(doc["decision"], "block")
-        self.assertIn("<!-- nav-t1-response -->", doc["reason"])
+        self.assertIn("nav stats · zero model tokens", doc["reason"])
         self.assertIn(prompt_tier1.ESCAPE_LINE, doc["reason"])
         return doc
 

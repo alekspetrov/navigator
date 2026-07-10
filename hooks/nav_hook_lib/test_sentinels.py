@@ -31,9 +31,9 @@ FIXTURE_TAGS = {
     "nav-workflow-block": "<nav-workflow-block>",
     "nav-read-guard-block": "<nav-read-guard-block>",
     "nav-session-start-injected:v1": "<!-- nav-session-start-injected:v1 -->",
-    # TASK-62 Phase 1: Tier-1 deterministic answers (ops/prompt_tier1.py) are
-    # sentinel-wrapped so an echoed answer strips to nothing (mem-034/mem-053).
-    "nav-t1-response": "<!-- nav-t1-response -->",
+    # Tier-1 answers (ops/prompt_tier1.py) are intentionally UNWRAPPED — a block
+    # reason renders as plain text, so a marker would show literally; Tier-1 is
+    # self-safe via its exact-match + 48-char rail (S4/mem-053). No tag here.
 }
 
 # mem-034: the live-observed recursive-block trigger phrase.

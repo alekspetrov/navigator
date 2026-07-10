@@ -11,10 +11,11 @@ Safety rails (plan risk register + mem-034):
   - EXACT-match table only, five seed commands, matched on the
     sentinels.strip_all()'d prompt, <=48 chars post-strip. No fuzzy matching:
     "nav stats please" reaches the model untouched.
-  - Every answer is sentinel-wrapped in <nav-t1-response> (registered in
-    sentinels.TAGS) and carries the escape line, so an echoed answer — plus
-    the harness's 'Original prompt: <trigger>' echo (mem-053) — strips to
-    nothing and can never re-trigger a matcher (mem-034 both halves).
+  - Answers render as plain-text grot cards with the escape line in the footer
+    border — NO sentinel wrapper (the harness draws a block reason as plain
+    text, so an HTML-comment marker would show literally). Self-safe without
+    one: decision:block is shown to the user, never auto-fed to the next prompt
+    (S4/mem-053), and the exact-match + 48-char rail rejects any re-fed card.
   - Telemetry only, never behavior: a hit records ``turn.tier1_hit`` (+ the
     ``completion.tier1_fuse`` answered-this-turn marker the stop_state barrel
     re-arms); a near-identical re-prompt right after a hit increments
@@ -39,7 +40,6 @@ import os
 
 from nav_hook_lib import config, hio, memory, sentinels, signals
 
-SENTINEL_TAG = "nav-t1-response"
 ESCAPE_LINE = "reply 'ask claude' to run the model"
 MAX_PROMPT_CHARS = 48  # post-strip guard: longer prompts are never matched
 MARKERS_DIR = ".context-markers"
@@ -317,10 +317,12 @@ def run(ctx):
         # Record BEFORE building: the nav-stats answer must reflect the hit
         # it is itself producing (tier1.hits includes this one).
         _record_hit(ctx, rule)
-        # The builder returns a complete grot card (escape line in the footer
-        # border); the sentinel wrap is invisible in the render (mem-053).
-        answer = ANSWERS[rule](ctx)
-        reason = sentinels.wrap(SENTINEL_TAG, answer)
+        # The builder returns a complete grot card. No sentinel wrapper: the
+        # harness renders a block reason as PLAIN TEXT (HTML comments show
+        # literally), and Tier-1 is self-safe without one — decision:block is
+        # shown to the user, never auto-fed to the next prompt (S4/mem-053),
+        # and the exact-match + 48-char guard rejects any re-fed card.
+        reason = ANSWERS[rule](ctx)
         # Channel shape comes from the spike-proven emitter (mem-053) —
         # decision:block JSON, NEVER exit-2. The runtime merges the parsed
         # keys into the single output document.

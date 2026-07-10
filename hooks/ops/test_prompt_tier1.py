@@ -87,8 +87,8 @@ class ExactMatchTest(Tier1TestBase):
         self.assertNotIn("exit_code", result)   # mem-053: never exit-2
         self.assertNotIn("stderr", result)
         reason = result["reason"]
-        self.assertTrue(reason.startswith("<nav-t1-response>"), reason)
-        self.assertTrue(reason.endswith("</nav-t1-response>"), reason)
+        self.assertTrue(reason.startswith("<!-- nav-t1-response -->"), reason)
+        self.assertTrue(reason.endswith("<!-- /nav-t1-response -->"), reason)
         self.assertIn(prompt_tier1.ESCAPE_LINE, reason)
         self.assertEqual(ctx.state["turn"]["tier1_hit"], rule)
         self.assertIs(ctx.state["completion"]["tier1_fuse"], True)
@@ -320,7 +320,7 @@ class DispatchContractTest(Tier1TestBase):
         self.assertEqual(result.returncode, 0, result.stderr)
         doc = json.loads(result.stdout)
         self.assertEqual(doc["decision"], "block")
-        self.assertIn("<nav-t1-response>", doc["reason"])
+        self.assertIn("<!-- nav-t1-response -->", doc["reason"])
         self.assertIn(prompt_tier1.ESCAPE_LINE, doc["reason"])
         return doc
 

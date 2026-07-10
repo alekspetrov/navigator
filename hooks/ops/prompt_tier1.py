@@ -45,6 +45,42 @@ MAX_PROMPT_CHARS = 48  # post-strip guard: longer prompts are never matched
 MARKERS_DIR = ".context-markers"
 MAX_MARKERS_SHOWN = 10
 
+# ---------------------------------------------------------------------------
+# grot-style card renderer (Pilot TUI design system: rounded frame, titled top
+# border, aligned rows, footer note). Monochrome — ANSI colour is not portable
+# into a hook block reason, so the frame alone carries the identity. Every glyph
+# used (box-drawing, ·, …) is a single terminal column, so len() == visual width.
+# ---------------------------------------------------------------------------
+
+CARD_WIDTH = 60  # total columns including the two border glyphs
+
+
+def _fit(text: str, width: int) -> str:
+    text = str(text)
+    return text if len(text) <= width else text[: max(0, width - 1)] + "…"
+
+
+def _border(left: str, right: str, note: str) -> str:
+    label = f" {note} " if note else ""
+    fill = CARD_WIDTH - 3 - len(label)
+    if fill < 1:                      # note too long for the frame — clip it
+        label = " " + _fit(note, CARD_WIDTH - 6) + " "
+        fill = CARD_WIDTH - 3 - len(label)
+    return f"{left}─{label}{'─' * fill}{right}"
+
+
+def _row(text: str) -> str:
+    inner = CARD_WIDTH - 2
+    body = "  " + _fit(text, inner - 2)
+    return "│" + body + " " * (inner - len(body)) + "│"
+
+
+def _card(title: str, rows: list, footer: str) -> str:
+    lines = [_border("╭", "╮", title)]
+    lines += [_row(r) for r in rows]
+    lines.append(_border("╰", "╯", footer))
+    return "\n".join(lines)
+
 # The five seed commands (Tier-1 whitelist growth is out of TASK-62 scope).
 # Exact match against the lowercased, strip_all()'d, whitespace-trimmed
 # prompt; rule ids double as the tier1.rules.<id> toggle keys.
@@ -135,8 +171,7 @@ def _answer_nav_stats(ctx) -> str:
     tier1 = ctx.state.get("tier1") or {}
     meta = ctx.state.get("meta") or {}
     op_errors = meta.get("op_errors") if isinstance(meta.get("op_errors"), list) else []
-    return "\n".join([
-        "Navigator stats (deterministic Tier-1 answer, zero model tokens)",
+    return _card("nav stats · zero model tokens", [
         "graph: {} nodes / {} edges / {} memories".format(
             stats.get("total_nodes", 0), stats.get("total_edges", 0),
             stats.get("memory_count", 0)),
@@ -145,48 +180,49 @@ def _answer_nav_stats(ctx) -> str:
         "tier1: {} hits / {} suspected false positives".format(
             tier1.get("hits", 0), tier1.get("false_positives", 0)),
         f"recent op errors: {len(op_errors)}",
-    ])
+    ], ESCAPE_LINE)
 
 
 def _answer_show_features(ctx) -> str:
-    lines = ["Navigator features (.agent/.nav-config.json <block>.enabled)"]
+    rows = []
     for block in FEATURE_BLOCKS:
         enabled = config.get(ctx.config, f"{block}.enabled", None)
         if enabled is None:
             status = "unset"
         else:
             status = "on" if enabled else "off"
-        lines.append(f"{block}: {status}")
-    return "\n".join(lines)
+        rows.append(f"{block}: {status}")
+    return _card("show features · <block>.enabled", rows, ESCAPE_LINE)
 
 
 def _answer_list_markers(ctx) -> str:
     names = _marker_names(ctx)
     if not names:
-        return "No context markers in .agent/.context-markers/"
-    lines = [f"Context markers ({len(names)} total, newest last):"]
-    lines += names[-MAX_MARKERS_SHOWN:]
+        return _card("list markers", [
+            "No context markers in .agent/.context-markers/"], ESCAPE_LINE)
+    rows = list(names[-MAX_MARKERS_SHOWN:])
     if len(names) > MAX_MARKERS_SHOWN:
-        lines.insert(1, f"... showing the last {MAX_MARKERS_SHOWN}")
-    return "\n".join(lines)
+        rows.insert(0, f"... showing the last {MAX_MARKERS_SHOWN}")
+    return _card(f"list markers · {len(names)} total, newest last", rows,
+                 ESCAPE_LINE)
 
 
 def _answer_graph_health(ctx) -> str:
     graph = _graph(ctx)
     if not graph:
-        return ("No knowledge graph (.agent/knowledge/graph.json missing) — "
-                "say 'Initialize knowledge graph' to build one")
+        return _card("graph health", [
+            "No knowledge graph (.agent/knowledge/graph.json missing)",
+            "say 'Initialize knowledge graph' to build one"], ESCAPE_LINE)
     stats = graph.get("stats") or {}
     concepts = graph.get("concept_index")
-    return "\n".join([
-        "Knowledge graph health",
+    return _card("graph health", [
         f"schema version: {graph.get('version', '?')}",
         f"last updated: {graph.get('last_updated', '?')}",
         "nodes: {} | edges: {} | memories: {}".format(
             stats.get("total_nodes", 0), stats.get("total_edges", 0),
             stats.get("memory_count", 0)),
         f"indexed concepts: {len(concepts) if isinstance(concepts, dict) else 0}",
-    ])
+    ], ESCAPE_LINE)
 
 
 def _answer_nav_version(ctx) -> str:
@@ -199,11 +235,11 @@ def _answer_nav_version(ctx) -> str:
         drift = "none"
     else:
         drift = f"config {config_version} != plugin {plugin_version}"
-    return "\n".join([
+    return _card("nav version", [
         f"Navigator plugin: {plugin_version}",
         f"project config version: {config_line}",
         f"version drift: {drift}",
-    ])
+    ], ESCAPE_LINE)
 
 
 ANSWERS = {
@@ -281,9 +317,10 @@ def run(ctx):
         # Record BEFORE building: the nav-stats answer must reflect the hit
         # it is itself producing (tier1.hits includes this one).
         _record_hit(ctx, rule)
+        # The builder returns a complete grot card (escape line in the footer
+        # border); the sentinel wrap is invisible in the render (mem-053).
         answer = ANSWERS[rule](ctx)
-        body = answer + "\n\n" + ESCAPE_LINE
-        reason = sentinels.wrap(SENTINEL_TAG, body)
+        reason = sentinels.wrap(SENTINEL_TAG, answer)
         # Channel shape comes from the spike-proven emitter (mem-053) —
         # decision:block JSON, NEVER exit-2. The runtime merges the parsed
         # keys into the single output document.

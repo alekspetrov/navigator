@@ -69,8 +69,12 @@ TAGS = {
         "source": "hooks/ops/session_start.py",
     },
     "nav-t1-response": {
-        "open": "<nav-t1-response>",
-        "close": "</nav-t1-response>",
+        # HTML-comment delimiters: the markdown renderer hides these in the
+        # terminal (same invisibility as the session-start marker), so the
+        # user sees only the grot card — while strip_all still excises the
+        # whole span on an echoed answer (mem-034/mem-053).
+        "open": "<!-- nav-t1-response -->",
+        "close": "<!-- /nav-t1-response -->",
         "kind": "block",
         "status": "current",
         "source": "hooks/ops/prompt_tier1.py",

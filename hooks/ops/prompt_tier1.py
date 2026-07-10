@@ -76,9 +76,11 @@ def _row(text: str) -> str:
 
 
 def _card(title: str, rows: list, footer: str) -> str:
-    lines = [_border("╭", "╮", title)]
+    # One blank interior row top and bottom (grot card lines 1 & 8) so the
+    # titled borders have breathing room from the content.
+    lines = [_border("╭", "╮", title), _row("")]
     lines += [_row(r) for r in rows]
-    lines.append(_border("╰", "╯", footer))
+    lines += [_row(""), _border("╰", "╯", footer)]
     return "\n".join(lines)
 
 # The five seed commands (Tier-1 whitelist growth is out of TASK-62 scope).

@@ -1,6 +1,6 @@
 # TASK-58: Harness-Conformance Suite — Spike Probes Become Regression Checks
 
-**Status**: 📋 Planned
+**Status**: ✅ Implemented — 2026-07-10 (suite packaged + re-driven live on CC 2.1.205; results file checked in; make conformance-check wired)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)

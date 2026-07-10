@@ -1,7 +1,7 @@
 # Navigator Plugin - Quality Gate Targets
 # These targets support the CI/CD quality gates
 
-.PHONY: build test lint clean
+.PHONY: build test lint clean conformance-check
 
 # Build target - for a plugin, validate JSON and check Python syntax
 build:
@@ -20,6 +20,8 @@ build:
 # discovery.)
 TEST_DIRS := \
 	hooks \
+	hooks/nav_hook_lib \
+	tests/harness-conformance \
 	skills/nav-upgrade/functions \
 	skills/nav-sync-claude/functions \
 	skills/nav-simplify/scripts \
@@ -53,6 +55,21 @@ test:
 	done; \
 	if [ $$fail -ne 0 ]; then echo "TESTS FAILED"; exit 1; fi; \
 	echo "All unit tests passed."
+
+# Conformance gate (TASK-58) — a results file must exist for the installed
+# Claude Code version. Probes are live-driven and cannot run in CI; when this
+# fails, re-drive the suite per tests/harness-conformance/run.md.
+conformance-check:
+	@v=$$(claude --version | awk '{print $$1}'); \
+	f="tests/harness-conformance/results/cc-$$v.json"; \
+	if [ -f "$$f" ]; then \
+		echo "conformance-check: OK ($$f)"; \
+	else \
+		echo "conformance-check: MISSING conformance results for Claude Code $$v"; \
+		echo "expected file: $$f"; \
+		echo "re-drive the suite: tests/harness-conformance/run.md"; \
+		exit 1; \
+	fi
 
 # Lint target - check code style
 lint:

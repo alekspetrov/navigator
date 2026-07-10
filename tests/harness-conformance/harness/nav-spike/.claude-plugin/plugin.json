@@ -1,0 +1,78 @@
+{
+  "name": "nav-spike",
+  "version": "0.1.0",
+  "description": "TASK-57 v7 hook-channel spike probes (S1-S6). Every hook gates on cwd inside /tmp/nav-v7-spike AND a per-probe arm file, so the plugin is inert everywhere else.",
+  "author": {
+    "name": "Aleks Petrov"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'case \"$PWD\" in /tmp/nav-v7-spike/*) mkdir -p /tmp/nav-v7-spike/state; printf \"ROOT=%s PWD=%s\\n\" \"${CLAUDE_PLUGIN_ROOT}\" \"$PWD\" >> /tmp/nav-v7-spike/state/log-s6.txt;; esac'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/s1_posttooluse.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/s2_stop.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/s3_subagentstart.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/s4_userpromptsubmit.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/s5_pretooluse.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

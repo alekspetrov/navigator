@@ -1,0 +1,49 @@
+{
+  "cc_version": "2.1.205",
+  "date": "2026-07-10",
+  "recorded_by": "Aleks Petrov",
+  "probes": {
+    "s1": {
+      "pass": true,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s1.json",
+      "memory": "mem-050",
+      "summary": "PostToolUse additionalContext DELIVERS: declarative-fact sentinel quoted in the visible answer, injected (non-assistant) positions found adjacent to the tool_result. Supersedes mem-035 for this sub-channel."
+    },
+    "s2": {
+      "pass": false,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s2.json",
+      "memory": "mem-051",
+      "summary": "Stop continue:true is a NO-OP (probe pass tracks continue:true, hence false); decision:block+reason forces the continuation and is the working mechanism — channel_works refers to decision:block. Single-shot fuse consumed; run-twice subtest produced zero further continuations (mem-037 belt verified)."
+    },
+    "s3": {
+      "pass": true,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s3.json",
+      "memory": "mem-052",
+      "summary": "SubagentStart additionalContext WORKS: sentinel A present in subagent sidechain context, zero main-thread leaks outside tool_result relays, main-thread-only sentinel B absent from the sidechain (both-way isolation holds)."
+    },
+    "s4": {
+      "pass": true,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s4.json",
+      "memory": "mem-053",
+      "summary": "UserPromptSubmit block-as-answer WORKS in both variants with zero model invocation (num_turns=0); no hook re-trigger and no block-text echo on the follow-up (mem-034 hygiene). Winner remains decision:block — exit-2 leaks hook command chrome in interactive rendering."
+    },
+    "s5": {
+      "pass": true,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s5.json",
+      "memory": "mem-054",
+      "summary": "PreToolUse split unchanged: stdout DEAD (reconfirms mem-035 for stdout), additionalContext DELIVERS (supersedes mem-035 for that sub-channel) — channel_works is true for additionalContext only. read_guard stays deny-only per plan."
+    },
+    "s6": {
+      "pass": true,
+      "channel_works": true,
+      "verdict_file": "/tmp/nav-v7-spike/state/verdict-s6.json",
+      "memory": "mem-055",
+      "summary": "CLAUDE_PLUGIN_ROOT binds to the marketplace SOURCE path (/tmp/nav-v7-spike/marketplace/nav-spike) for dir-source installs; unset and empty variants fail LOUD (exit 2), not as silent no-ops — the mem-036 failure class did not reproduce."
+    }
+  }
+}

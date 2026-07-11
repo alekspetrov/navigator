@@ -28,6 +28,26 @@ Complete hooks-runtime transformation (TASK-57..63). NOT released — alpha unde
   templates/CLAUDE.md 206→47 lines, root CLAUDE.md 988→331 (mandates → hook annotations),
   nav-sync-claude refuses regeneration without observed hook liveness.
 
+**Dogfood hardening (2026-07-10/11, TASK-65..70)** — fixes from live use of the alpha:
+
+- **Tier-1 grot cards**: zero-token answers render as rounded-frame TUI cards (Pilot design
+  language); the sentinel wrapper was dropped after live evidence that block reasons render
+  as plain text (Tier-1 stays self-safe via its exact-match + 48-char rail).
+- **stop_completion evidence populator (TASK-65)**: completion indicators derive from
+  observable turn evidence — git tree clean, test command ran without error, `.md`/marker
+  paths touched — OR'd with explicit state; committed+tested turns now pass the gate.
+- **read_guard double-increment (TASK-66)**: PreToolUse fires twice per Read tool-use;
+  counting is now idempotent per tool_use_id.
+- **Task-status vocabulary (TASK-67)**: plain-text statuses (`Implemented`, `In Progress`,
+  …) map to canonical graph statuses; previously only emoji forms were recognized.
+- **Tuning (TASK-68)**: tier1 near-miss telemetry uses explicit similarity rules;
+  subagent_context injects a deterministic top-K under the 2k budget.
+- **Invisible exit signals + Bash classifier (TASK-70)**: nav-signal v3 exit lines may be
+  HTML-comment-wrapped — hidden by GFM rendering in assistant output (verified live; hook
+  block reasons render plain, the opposite verdict — per-channel discipline). Read-only
+  Bash turns (`grep`/`ls`/`git status`…) no longer count as mutating, killing
+  stop_completion false-fires on inspection turns.
+
 ---
 
 ## [v6.18.1] — 2026-07-09

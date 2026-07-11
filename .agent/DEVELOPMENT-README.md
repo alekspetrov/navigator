@@ -156,6 +156,19 @@ parallel both landed):
 - **TASK-64** — release gate NOT run (alpha is local-only by decision 2026-07-10); RC soak,
   Pilot sign-off, and rollback doc remain before any v7.0.0 tag
 
+**Dogfood hardening** (live use of the alpha, 2026-07-10/11):
+- **TASK-65** ✅ — stop_completion indicators derived from observable turn evidence
+  (git clean, test cmd ran, .md/marker touched) instead of unpopulated state
+- **TASK-66** ✅ — read_guard double-increment fixed (idempotent per tool_use_id;
+  PreToolUse fires twice per Read)
+- **TASK-67** ✅ — task-status vocabulary: plain-text statuses map to canonicals
+- **TASK-68** ✅ — tier1 near-miss similarity telemetry + subagent_context deterministic top-K
+- **TASK-69** ✅ — use-case content for the landing/docs site (work in navigator-site repo)
+- **TASK-70** ✅ — exit signals accept HTML-comment wrapping (invisible in assistant output;
+  verified live) + read-only Bash classifier kills "mutated the codebase" false-fires
+- Tier-1 answers render as grot-style TUI cards (Pilot design language); sentinel wrapper
+  dropped — block reasons render as plain text, so Tier-1 is self-safe via exact-match rail
+
 Other threads:
 - **TASK-15** — marketing strategy & community adoption (plan needs a refresh pass; predates the live site + v6.18.x)
 - **TASK-35** — project memory (research)

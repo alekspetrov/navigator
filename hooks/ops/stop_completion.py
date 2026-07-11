@@ -78,6 +78,22 @@ FILE_PATH_TOOLS = frozenset({"Edit", "Write", "MultiEdit", "NotebookEdit"})
 # fixed patterns, never transcript text, ever reach the reason string).
 TEST_CMD_RE = re.compile(r"\b(make test|pytest|(python3?\s+-m\s+)?unittest)\b")
 
+# Read-only Bash classification (TASK-70): TASK_ACTION_TOOLS counts Bash
+# wholesale, so pure-inspection turns (grep/ls/git status) false-fired the
+# gate as "mutated the codebase". A Bash-only turn is mutating only if some
+# command falls OUTSIDE this allowlist; unknown commands stay mutating (the
+# gate may over-fire on odd inspection commands, never under-fire on writes).
+READONLY_BASH_CMDS = frozenset({
+    "ls", "find", "grep", "rg", "cat", "head", "tail", "wc", "echo", "pwd",
+    "which", "file", "stat", "tree", "du", "df", "type", "env", "printenv",
+    "uname", "whoami", "date", "diff",
+})
+READONLY_GIT_SUBCMDS = frozenset({
+    "status", "log", "diff", "show", "branch", "rev-parse", "describe",
+    "shortlog", "blame", "remote", "ls-files",
+})
+_BASH_SEGMENT_SPLIT = re.compile(r"\|\||&&|;|\||\n")
+
 
 def _load_exit_gate():
     """skills/nav-loop/functions/exit_gate.py as a module, or None.
@@ -212,6 +228,46 @@ def _turn_scan(payload: dict):
     return text, tools, {"file_paths": file_paths, "bash": bash}
 
 
+def _bash_readonly(command) -> bool:
+    """True when every segment of a Bash command starts with a read-only tool.
+
+    Segments split on ``&&``/``||``/``;``/``|``/newline; the first token of
+    each must be in READONLY_BASH_CMDS (or a read-only ``git`` subcommand).
+    Anything unrecognized → False (mutating) so writes are never missed.
+    """
+    if not isinstance(command, str) or not command.strip():
+        return True
+    for segment in _BASH_SEGMENT_SPLIT.split(command):
+        tokens = segment.strip().split()
+        if not tokens:
+            continue
+        head = tokens[0]
+        if head == "git":
+            sub = next((t for t in tokens[1:] if not t.startswith("-")), "")
+            if sub not in READONLY_GIT_SUBCMDS:
+                return False
+        elif head not in READONLY_BASH_CMDS:
+            return False
+    return True
+
+
+def _turn_mutating(tools: set, evidence: dict) -> bool:
+    """Did this turn actually mutate anything? (TASK-70 refinement of mem-037.)
+
+    Vocabulary stays anchored to stop_state.TASK_ACTION_TOOLS (no drift);
+    the refinement is that a Bash-ONLY action turn is mutating only when at
+    least one of its commands is not read-only. A Bash tool_use with no
+    harvested command reads as non-mutating — the safe direction (mem-037:
+    never block a turn that did no work).
+    """
+    action = tools & stop_state.TASK_ACTION_TOOLS
+    if not action:
+        return False
+    if action - {"Bash"}:
+        return True
+    return any(not _bash_readonly(cmd) for cmd, _ in evidence.get("bash", ()))
+
+
 def _git_clean(root) -> bool:
     """True when the git working tree at ``root`` is clean.
 
@@ -289,7 +345,8 @@ def _reason(met: int, unmet: list) -> str:
         f"(unmet: {', '.join(unmet)}) and no completion signal was emitted. "
         "Continue and finish the outstanding work (commit, tests, docs, ticket, "
         "marker — as applicable). When the task is genuinely complete, end your "
-        'reply with a nav-signal:v3 line of type "exit". '
+        "reply with an HTML-comment-wrapped exit signal so the user never sees "
+        'it: <!-- nav-signal:v3:{"type":"exit","reason":"..."} --> . '
         "This forced continuation is single-shot for this turn."
     )
 
@@ -321,8 +378,8 @@ def run(ctx):
         return None  # continue-counter cap (belt under the fuse)
 
     text, tools, evidence = _turn_scan(payload)
-    if not (tools & stop_state.TASK_ACTION_TOOLS):
-        return None  # mem-037: never continue a non-mutating turn
+    if not _turn_mutating(tools, evidence):
+        return None  # mem-037: never continue a non-mutating turn (TASK-70)
 
     clean = sentinels.strip_all(text)  # mem-034: never scan unstripped text
     if any(sig.get("type") == "exit" for sig in signals.parse(clean)):

@@ -102,6 +102,36 @@ class RoundTripTest(unittest.TestCase):
         self.assertEqual(len(parsed), 1)
         self.assertEqual(parsed[0]["type"], "brief")
 
+    # TASK-70: GFM hides HTML comments in assistant output (verified live
+    # 2026-07-11), so a comment-wrapped signal is the user-invisible channel.
+    def test_html_comment_wrapped_v3_line_parses(self):
+        doc = "All done.\n\n<!-- " + signals.emit("exit", reason="finished") + " -->\n"
+        parsed = signals.parse(doc)
+        self.assertEqual(len(parsed), 1)
+        self.assertEqual(parsed[0]["type"], "exit")
+        self.assertEqual(parsed[0]["reason"], "finished")
+
+    def test_comment_wrapped_tolerates_spacing_and_indent(self):
+        line = signals.emit("exit", success=True)
+        for doc in (
+            "<!--" + line + "-->",
+            "   <!--  " + line + "  -->  ",
+            "<!-- " + line + " -->\r\n",
+        ):
+            parsed = signals.parse(doc)
+            self.assertEqual(len(parsed), 1, repr(doc))
+            self.assertEqual(parsed[0]["type"], "exit", repr(doc))
+
+    def test_open_comment_without_close_still_parses(self):
+        # Defensive: a truncated wrapper must not hide a genuine exit signal.
+        parsed = signals.parse("<!-- " + signals.emit("exit"))
+        self.assertEqual(len(parsed), 1)
+
+    def test_comment_on_shared_line_with_prose_is_not_a_signal(self):
+        # The signal must own its line — prose before the comment disqualifies.
+        doc = "done <!-- " + signals.emit("exit") + " -->"
+        self.assertEqual(signals.parse(doc), [])
+
 
 class PilotV2CompatTest(unittest.TestCase):
     def test_vendored_pilot_regex_round_trips_status_fixture(self):

@@ -36,9 +36,14 @@ V3_TYPES = ("exit", "status", "check", "brief", "defer")
 
 # v3 line: optional indentation, prefix, one JSON object, optional trailing
 # whitespace. `.` never matches \n, and the trailing class eats a bare \r, so
-# CRLF documents parse without pre-normalization.
+# CRLF documents parse without pre-normalization. The line may be wrapped in
+# an HTML comment (`<!-- nav-signal:v3:{...} -->`): GFM rendering hides
+# comments in assistant output (verified live 2026-07-11), so a wrapped signal
+# satisfies the Stop gate without the user ever seeing protocol noise.
 _V3_LINE = re.compile(
-    r"^[ \t]*" + re.escape(V3_PREFIX) + r"(\{.*\})[ \t\r]*$",
+    r"^[ \t]*(?:<!--[ \t]*)?"
+    + re.escape(V3_PREFIX)
+    + r"(\{.*\})[ \t]*(?:-->)?[ \t\r]*$",
     re.MULTILINE,
 )
 

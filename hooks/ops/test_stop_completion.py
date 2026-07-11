@@ -186,6 +186,12 @@ class DualConditionTest(StopCompletionTestBase):
         ctx = self.make_ctx(transcript_entries(closing))
         self.assertIsNone(stop_completion.run(ctx))
 
+    def test_html_comment_wrapped_exit_signal_yields(self):
+        # TASK-70: the user-invisible emission convention — comment-wrapped
+        # exit signals must satisfy the gate exactly like bare ones.
+        ctx = self.make_ctx(transcript_entries("done\n<!-- " + EXIT_LINE + " -->"))
+        self.assertIsNone(stop_completion.run(ctx))
+
     def test_inline_last_assistant_message_wins_for_signal_scan(self):
         ctx = self.make_ctx(transcript_entries("no signal in transcript"),
                             payload_extra={"last_assistant_message":
@@ -273,6 +279,48 @@ class BreakerTest(StopCompletionTestBase):
         ctx = self.make_ctx(entries)
         self.assertIsNone(stop_completion.run(ctx))
 
+    def test_readonly_bash_turn_never_continues(self):
+        # TASK-70: pure-inspection Bash turns (grep/ls/git status) false-fired
+        # the gate as "mutated the codebase". PERMANENT — observed live twice
+        # on 2026-07-10/11.
+        entries = turn_with_tools([
+            {"name": "Bash", "input": {"command": "grep -rn foo hooks/ | head"}},
+            {"name": "Bash", "input": {"command": "ls -la && git status --porcelain"}},
+            {"name": "Bash", "input": {"command": "git log --oneline -5; find . -name '*.py'"}},
+        ])
+        ctx = self.make_ctx(entries)
+        self.assertIsNone(stop_completion.run(ctx))
+
+    def test_mutating_bash_turn_still_continues(self):
+        entries = turn_with_tools([
+            {"name": "Bash", "input": {"command": "ls && rm -rf build/"}},
+        ])
+        result = stop_completion.run(self.make_ctx(entries, cfg=pm_cfg()))
+        self.assertEqual(result["decision"], "block")
+
+    def test_unknown_bash_command_counts_as_mutating(self):
+        # Safe direction: unrecognized commands are treated as writes.
+        entries = turn_with_tools([
+            {"name": "Bash", "input": {"command": "python3 scripts/migrate.py"}},
+        ])
+        result = stop_completion.run(self.make_ctx(entries, cfg=pm_cfg()))
+        self.assertEqual(result["decision"], "block")
+
+    def test_mutating_git_subcommand_counts_as_mutating(self):
+        entries = turn_with_tools([
+            {"name": "Bash", "input": {"command": "git add -A && git commit -m x"}},
+        ])
+        result = stop_completion.run(self.make_ctx(entries, cfg=pm_cfg()))
+        self.assertEqual(result["decision"], "block")
+
+    def test_file_tool_beside_readonly_bash_is_mutating(self):
+        entries = turn_with_tools([
+            {"name": "Bash", "input": {"command": "git status"}},
+            {"name": "Edit", "input": {"file_path": "/tmp/x.py"}},
+        ])
+        result = stop_completion.run(self.make_ctx(entries, cfg=pm_cfg()))
+        self.assertEqual(result["decision"], "block")
+
     def test_inline_only_payload_never_continues(self):
         # The inline field carries no tool information: safe direction.
         ctx = self.make_ctx(payload_extra={
@@ -340,8 +388,9 @@ class DerivedIndicatorTest(StopCompletionTestBase):
         self.assertIn("tests_passing", unmet_names(reason))
 
     def test_non_test_command_does_not_count(self):
+        # `make build` is mutating (unknown head) but is not a test command.
         entries = turn_with_tools(
-            [{"name": "Bash", "input": {"command": "ls -la"}, "is_error": False}])
+            [{"name": "Bash", "input": {"command": "make build"}, "is_error": False}])
         reason = self._block(entries)
         self.assertIn("tests_passing", unmet_names(reason))
 

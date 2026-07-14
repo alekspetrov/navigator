@@ -1,0 +1,19 @@
+{
+  "name": "nav-spike-marketplace",
+  "displayName": "Navigator v7 Spike (TASK-57, temporary)",
+  "owner": {
+    "name": "Aleks Petrov",
+    "email": "aleks@quantflow.studio"
+  },
+  "metadata": {
+    "description": "Scratch marketplace for TASK-57 hook-channel probes. Not for distribution.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "nav-spike",
+      "source": "./nav-spike",
+      "description": "TASK-57 v7 hook-channel spike probes (S1-S6). Hooks are inert outside /tmp/nav-v7-spike."
+    }
+  ]
+}

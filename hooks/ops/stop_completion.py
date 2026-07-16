@@ -33,7 +33,12 @@ Circuit breaker, layered (risk register):
     entries scanned back to the last real user prompt — the final assistant
     message is usually text-only, so stop_state's single-message reader would
     read every real turn as non-mutating); the mutating vocabulary is
-    stop_state.TASK_ACTION_TOOLS (one vocabulary, no drift).
+    stop_state.TASK_ACTION_TOOLS (one vocabulary, no drift). Bash-only turns
+    are further classified by command allowlists (TASK-70) and, above that,
+    by working-tree digest evidence (TASK-71): an unchanged
+    ``git status --porcelain`` digest across consecutive Stops overrules a
+    vocabulary-mutating classification — ops turns (daemon restarts, sqlite
+    reads, sibling-repo work) stop reading as "mutated the codebase".
   - Kill switches: stop_completion.enabled AND stop_completion.continue_enabled
     must BOTH be truthy (both seed OFF in config.DEFAULTS; a missing block is
     off). ctx.pilot_executor disables unconditionally, regardless of config —
@@ -41,6 +46,7 @@ Circuit breaker, layered (risk register):
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import re
@@ -87,12 +93,44 @@ READONLY_BASH_CMDS = frozenset({
     "ls", "find", "grep", "rg", "cat", "head", "tail", "wc", "echo", "pwd",
     "which", "file", "stat", "tree", "du", "df", "type", "env", "printenv",
     "uname", "whoami", "date", "diff",
+    # TASK-71: inspection staples observed false-firing live (2026-07-16).
+    "ps", "sort", "uniq", "cut", "tr", "jq", "basename", "dirname",
+    "realpath", "readlink", "printf", "read", "sleep", "true", "false",
+    "test", "[", "[[",
 })
 READONLY_GIT_SUBCMDS = frozenset({
     "status", "log", "diff", "show", "branch", "rev-parse", "describe",
     "shortlog", "blame", "remote", "ls-files",
+    # TASK-71: object/ref inspection; fetch writes refs, never the tree.
+    "fetch", "ls-tree", "ls-remote", "cat-file", "show-ref", "rev-list",
+})
+# gh resolved by subcommand PAIR, mirroring the git pattern (TASK-71): the
+# CLI mixes reads (pr view) and writes (pr merge) under one head. Unlisted
+# pairs stay mutating — same over-fire-only direction as unknown commands.
+READONLY_GH_SUBCMDS = frozenset({
+    "pr view", "pr list", "pr checks", "pr diff", "pr status",
+    "issue view", "issue list", "issue status",
+    "run view", "run list", "workflow view", "workflow list",
+    "release view", "release list", "repo view", "label list",
+    "search prs", "search issues", "search code", "search repos",
 })
 _BASH_SEGMENT_SPLIT = re.compile(r"\|\||&&|;|\||\n")
+# Innermost $(...) / `...` command substitutions (TASK-71): their content is
+# validated as a command in its own right, then removed so the outer text's
+# heads and assignments tokenize cleanly (`LOG=$(ls)` -> `LOG=`).
+_SUBSTITUTION_RE = re.compile(r"\$\(([^()]*)\)|`([^`]*)`")
+_ASSIGNMENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
+# Output redirects: any target other than /dev/null or a file descriptor
+# (&1, &2) makes the segment mutating — closes the `echo x > file` hole that
+# allowlisted heads opened (TASK-71; safe direction, quoted '>' may over-fire).
+_REDIRECT_RE = re.compile(r"[0-9]*>>?\s*(\S+)")
+# Shell words that wrap another command in the same segment — stripped, then
+# the remainder is classified. `for` is standalone: its segment holds only
+# the loop variable and word list; the body arrives as later segments.
+_TRANSPARENT_HEADS = frozenset({
+    "if", "elif", "then", "else", "do", "while", "until", "!", "time",
+})
+_STANDALONE_HEADS = frozenset({"for", "done", "fi", "esac", "case"})
 
 
 def _load_exit_gate():
@@ -229,29 +267,65 @@ def _turn_scan(payload: dict):
 
 
 def _bash_readonly(command) -> bool:
-    """True when every segment of a Bash command starts with a read-only tool.
+    """True when every command in a Bash string is a read-only tool.
 
-    Segments split on ``&&``/``||``/``;``/``|``/newline; the first token of
-    each must be in READONLY_BASH_CMDS (or a read-only ``git`` subcommand).
-    Anything unrecognized → False (mutating) so writes are never missed.
+    Segments split on ``&&``/``||``/``;``/``|``/newline. Before the head
+    check (TASK-71): ``$(...)``/backtick substitutions are validated
+    recursively then removed; output redirects to anything but /dev/null or
+    a file descriptor are mutating; leading ``VAR=`` assignments and
+    control-flow words are stripped; ``git`` and ``gh`` resolve by
+    subcommand; ``command -v`` is a lookup. Anything unrecognized → False
+    (mutating) so writes are never missed.
     """
     if not isinstance(command, str) or not command.strip():
         return True
-    for segment in _BASH_SEGMENT_SPLIT.split(command):
+    text = command
+    while True:  # peel substitutions innermost-out; text strictly shrinks
+        matches = list(_SUBSTITUTION_RE.finditer(text))
+        if not matches:
+            break
+        for match in matches:
+            if not _bash_readonly(match.group(1) or match.group(2) or ""):
+                return False
+        text = _SUBSTITUTION_RE.sub("", text)
+    for match in _REDIRECT_RE.finditer(text):
+        target = match.group(1)
+        if target != "/dev/null" and not target.startswith("&"):
+            return False
+    for segment in _BASH_SEGMENT_SPLIT.split(text):
         tokens = segment.strip().split()
+        while tokens and (
+            tokens[0] in _TRANSPARENT_HEADS or _ASSIGNMENT_RE.match(tokens[0])
+        ):
+            tokens = tokens[1:]
         if not tokens:
-            continue
+            continue  # assignment-only / bare control-flow segment
         head = tokens[0]
+        if head in _STANDALONE_HEADS:
+            continue
+        if head == "command":
+            rest = tokens[1:]
+            if rest and rest[0] in ("-v", "-V"):
+                continue  # pure lookup: prints a path, executes nothing
+            tokens = rest
+            if not tokens:
+                continue
+            head = tokens[0]
         if head == "git":
             sub = next((t for t in tokens[1:] if not t.startswith("-")), "")
             if sub not in READONLY_GIT_SUBCMDS:
+                return False
+        elif head == "gh":
+            pair = [t for t in tokens[1:] if not t.startswith("-")][:2]
+            if " ".join(pair) not in READONLY_GH_SUBCMDS:
                 return False
         elif head not in READONLY_BASH_CMDS:
             return False
     return True
 
 
-def _turn_mutating(tools: set, evidence: dict) -> bool:
+def _turn_mutating(tools: set, evidence: dict, prev_digest=None,
+                   digest=None) -> bool:
     """Did this turn actually mutate anything? (TASK-70 refinement of mem-037.)
 
     Vocabulary stays anchored to stop_state.TASK_ACTION_TOOLS (no drift);
@@ -259,13 +333,24 @@ def _turn_mutating(tools: set, evidence: dict) -> bool:
     least one of its commands is not read-only. A Bash tool_use with no
     harvested command reads as non-mutating — the safe direction (mem-037:
     never block a turn that did no work).
+
+    Tree evidence overrules vocabulary (TASK-71): when the working-tree
+    digest at this Stop equals the one recorded at the previous Stop, a
+    Bash-only turn did not mutate THIS codebase — whatever its commands were
+    named (daemon restarts, sqlite reads, sibling-repo work). File tools and
+    Task/Agent turns never take this path: subagents and Edit/Write carry
+    their own mutation evidence. Missing digests fall back to vocabulary.
     """
     action = tools & stop_state.TASK_ACTION_TOOLS
     if not action:
         return False
     if action - {"Bash"}:
         return True
-    return any(not _bash_readonly(cmd) for cmd, _ in evidence.get("bash", ()))
+    if not any(not _bash_readonly(cmd) for cmd, _ in evidence.get("bash", ())):
+        return False
+    if prev_digest is not None and digest is not None and prev_digest == digest:
+        return False
+    return True
 
 
 def _git_clean(root) -> bool:
@@ -283,6 +368,26 @@ def _git_clean(root) -> bool:
     except Exception:
         return False
     return result.returncode == 0 and not result.stdout.strip()
+
+
+def _tree_digest(root):
+    """sha256 hex of ``git status --porcelain`` at ``root``, or None.
+
+    The digest is the turn-to-turn working-tree fingerprint for TASK-71
+    mutation evidence (kept separate from _git_clean so tests patching one
+    never affect the other). ANY failure/timeout/non-repo → None; callers
+    treat None as 'no evidence' and fall back to vocabulary classification.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(root), capture_output=True, text=True, timeout=2,
+        )
+    except Exception:
+        return None
+    if result.returncode != 0:
+        return None
+    return hashlib.sha256(result.stdout.encode("utf-8", "replace")).hexdigest()
 
 
 def _derive_indicators(evidence: dict, cfg, payload: dict) -> dict:
@@ -371,6 +476,17 @@ def run(ctx):
 
     stored = ctx.state.get("completion")
     completion = stored if isinstance(stored, dict) else {}
+    # TASK-71 tree evidence: capture the working-tree digest at EVERY armed
+    # Stop — before the fuse/cap short-circuits — so the next turn compares
+    # against this turn's true end state. stop_hook_active stops return
+    # above without capturing: a forced continuation's writes land in the
+    # NEXT comparison, which can only over-fire, never under-fire.
+    prev_digest = completion.get("tree_digest")
+    digest = _tree_digest(hio.project_root(payload))
+    if digest is not None and digest != prev_digest:
+        if ctx.state.get("completion") is not completion:
+            ctx.state["completion"] = completion
+        completion["tree_digest"] = digest
     if completion.get("stop_fuse"):
         return None  # single-shot per turn; re-armed by the stop_state barrel
     held = _held_count(completion)
@@ -378,8 +494,8 @@ def run(ctx):
         return None  # continue-counter cap (belt under the fuse)
 
     text, tools, evidence = _turn_scan(payload)
-    if not _turn_mutating(tools, evidence):
-        return None  # mem-037: never continue a non-mutating turn (TASK-70)
+    if not _turn_mutating(tools, evidence, prev_digest, digest):
+        return None  # mem-037: never continue a non-mutating turn (TASK-70/71)
 
     clean = sentinels.strip_all(text)  # mem-034: never scan unstripped text
     if any(sig.get("type") == "exit" for sig in signals.parse(clean)):

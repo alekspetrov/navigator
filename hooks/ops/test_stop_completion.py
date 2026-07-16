@@ -132,6 +132,13 @@ class StopCompletionTestBase(unittest.TestCase):
         git = mock.patch.object(stop_completion, "_git_clean", return_value=False)
         git.start()
         self.addCleanup(git.stop)
+        # Same discipline for the TASK-71 tree digest: None = no evidence, so
+        # every pre-existing test keeps pure vocabulary classification.
+        # DigestEvidenceTest overrides per-case.
+        digest = mock.patch.object(stop_completion, "_tree_digest",
+                                   return_value=None)
+        digest.start()
+        self.addCleanup(digest.stop)
 
     def _restore(self):
         for key, value in self._saved.items():
@@ -337,6 +344,123 @@ class BreakerTest(StopCompletionTestBase):
         ]
         ctx = self.make_ctx(entries)
         self.assertIsNone(stop_completion.run(ctx))
+
+
+class ReadonlyBashParserTest(unittest.TestCase):
+    """TASK-71: _bash_readonly shell-syntax awareness + gh/git allowlists.
+
+    The read-only cases replay the exact command shapes that false-fired the
+    gate live on 2026-07-16 (queue/daemon status checks in the pilot repo).
+    PERMANENT regression tests.
+    """
+
+    READONLY = (
+        # live false-fire replays (2026-07-16)
+        "gh pr view 4373 --json state,reviewDecision",
+        "gh issue list --label pilot --state open --limit 20",
+        "gh run view --job 87651532134 --log 2>/dev/null | tail -40",
+        "ps aux | grep -E '[b]in/pilot' | grep -v grep; echo \"---exit:$?\"",
+        "ps -p 86555 -o pid,etime,command 2>/dev/null | tail -1",
+        'LOG=$(ls -t ~/.pilot/logs/*.log 2>/dev/null | head -1); '
+        '[ -n "$LOG" ] && grep -E "version" "$LOG" | head -5',
+        "command -v pilot",
+        "git fetch origin main 2>&1 | tail -2",
+        "git ls-tree --name-only origin/main .agent/ | tail -8",
+        # syntax shapes
+        "for d in a b; do ls \"$d\"; done",
+        "while read line; do echo \"$line\"; done",
+        "if grep -q foo bar.txt; then echo yes; fi",
+        "FOO=1 BAR=2 ls",
+        "X=`git rev-parse HEAD`",
+        "echo hi >/dev/null 2>&1",
+        "echo hi >&2",
+        "test -f x && cat x",
+    )
+    MUTATING = (
+        "gh pr merge 4373",
+        "gh api repos/o/r/issues -X POST",
+        "gh pr view 1 && gh issue close 2",
+        "git fetch origin && git checkout main",
+        "command pilot --version",          # executes pilot, not a lookup
+        "VAR=1 make build",                 # assignment strip exposes make
+        "echo hi > /tmp/f",                 # redirect to a real path
+        "grep x f >> out.txt",
+        "LOG=$(make build)",                # substitution runs the command
+        "for f in a b; do rm \"$f\"; done",
+        "sqlite3 db.sqlite 'select 1'",     # unknown head stays mutating
+    )
+
+    def test_readonly_commands(self):
+        for cmd in self.READONLY:
+            with self.subTest(cmd=cmd):
+                self.assertTrue(stop_completion._bash_readonly(cmd))
+
+    def test_mutating_commands(self):
+        for cmd in self.MUTATING:
+            with self.subTest(cmd=cmd):
+                self.assertFalse(stop_completion._bash_readonly(cmd))
+
+
+class DigestEvidenceTest(StopCompletionTestBase):
+    """TASK-71: unchanged working-tree digest overrules vocabulary."""
+
+    def entries(self, command="python3 scripts/ops_probe.py"):
+        return turn_with_tools([{"name": "Bash", "input": {"command": command}}])
+
+    def test_unchanged_digest_suppresses_vocab_mutating_turn(self):
+        state = {"completion": {"tree_digest": "D"}}
+        ctx = self.make_ctx(self.entries(), cfg=pm_cfg(), state=state)
+        with mock.patch.object(stop_completion, "_tree_digest",
+                               return_value="D"):
+            self.assertIsNone(stop_completion.run(ctx))
+        completion = ctx.state["completion"]
+        self.assertEqual(completion.get("tree_digest"), "D")
+        self.assertNotIn("stop_fuse", completion)  # no fuse burn
+
+    def test_changed_digest_blocks_and_records(self):
+        state = {"completion": {"tree_digest": "D1"}}
+        ctx = self.make_ctx(self.entries(), cfg=pm_cfg(), state=state)
+        with mock.patch.object(stop_completion, "_tree_digest",
+                               return_value="D2"):
+            result = stop_completion.run(ctx)
+        self.assertEqual(result["decision"], "block")
+        self.assertEqual(ctx.state["completion"]["tree_digest"], "D2")
+
+    def test_no_prior_digest_falls_back_to_vocabulary(self):
+        ctx = self.make_ctx(self.entries(), cfg=pm_cfg())
+        with mock.patch.object(stop_completion, "_tree_digest",
+                               return_value="D"):
+            result = stop_completion.run(ctx)
+        self.assertEqual(result["decision"], "block")
+        self.assertEqual(ctx.state["completion"]["tree_digest"], "D")
+
+    def test_file_tool_turn_ignores_unchanged_digest(self):
+        state = {"completion": {"tree_digest": "D"}}
+        entries = turn_with_tools(
+            [{"name": "Edit", "input": {"file_path": "a.py"}}])
+        ctx = self.make_ctx(entries, cfg=pm_cfg(), state=state)
+        with mock.patch.object(stop_completion, "_tree_digest",
+                               return_value="D"):
+            result = stop_completion.run(ctx)
+        self.assertEqual(result["decision"], "block")
+
+    def test_digest_captured_even_on_consumed_fuse(self):
+        # The fuse short-circuit must not starve the next turn's comparison.
+        state = {"completion": {"stop_fuse": True, "tree_digest": "OLD"}}
+        ctx = self.make_ctx(self.entries(), state=state)
+        with mock.patch.object(stop_completion, "_tree_digest",
+                               return_value="NEW"):
+            self.assertIsNone(stop_completion.run(ctx))
+        self.assertEqual(ctx.state["completion"]["tree_digest"], "NEW")
+        self.assertIs(ctx.state["completion"]["stop_fuse"], True)
+
+    def test_digest_failure_keeps_prior_value(self):
+        state = {"completion": {"tree_digest": "D"}}
+        ctx = self.make_ctx(self.entries(), cfg=pm_cfg(), state=state)
+        # base setUp patches _tree_digest -> None (no evidence this Stop)
+        result = stop_completion.run(ctx)
+        self.assertEqual(result["decision"], "block")  # fallback: vocabulary
+        self.assertEqual(ctx.state["completion"]["tree_digest"], "D")
 
 
 class DerivedIndicatorTest(StopCompletionTestBase):
@@ -618,6 +742,27 @@ class DispatchCompositionTest(StopCompletionTestBase):
                                  transcript_entries("edited; more to do"))
         doc = self.doc(self.dispatch(project, self.payload(project, tpath)))
         self.assertNotIn("decision", doc)
+
+    def test_unchanged_tree_digest_silences_third_stop(self):
+        # TASK-71 end-to-end: stop 1 blocks (no prior digest) and records the
+        # working-tree digest; stop 2 is silent (fuse) and the barrel
+        # re-arms; stop 3 — same unknown-command turn, tree untouched — is
+        # silent on EVIDENCE, where pre-TASK-71 it blocked every turn.
+        project = self.make_project()
+        subprocess.run(["git", "init", "-q"], cwd=project, check=True)
+        entries = turn_with_tools(
+            [{"name": "Bash", "input": {"command": "sqlite3 db 'select 1'"}}])
+        tpath = write_transcript(self.tmp, entries)
+        payload = self.payload(project, tpath)
+
+        first = self.doc(self.dispatch(project, payload))
+        self.assertEqual(first.get("decision"), "block", first)
+        second = self.doc(self.dispatch(project, payload))
+        self.assertNotIn("decision", second)  # fuse consumed; barrel re-arms
+        third = self.doc(self.dispatch(project, payload))
+        self.assertNotIn("decision", third)   # digest evidence: tree unchanged
+        state = self.read_state(project)
+        self.assertEqual(state["completion"]["held_count"], 0)
 
     def test_block_behavior_identical_env_set_and_unset(self):
         # mem-036: CLAUDE_PLUGIN_ROOT set AND unset must both block.

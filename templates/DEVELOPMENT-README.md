@@ -50,6 +50,26 @@
 
 ---
 
+## Project Structure
+
+```
+[Project Name]/
+└── .agent/              ← Navigator docs (this directory)
+```
+
+_Fill in the real source tree above during the first task session._
+
+### Key Components
+
+_Describe the major components/services and their responsibilities — fill in
+during the first task session._
+
+## Key Files
+
+_List the files a new session should read first — fill in as the project grows._
+
+---
+
 ## 📖 Documentation Index
 
 ### System Architecture (`system/`)

@@ -26,8 +26,30 @@ def log(probe: str, obj: dict) -> None:
         f.write(json.dumps(obj) + "\n")
 
 
+def _allow_and_exit() -> None:
+    """Belt-and-suspenders fail-open (GH-27): a probe must never block a real
+    tool call. Emitted only for truly unexpected errors — the expected
+    containment paths below already exit 0 on their own."""
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "allow",
+        }
+    }))
+    sys.exit(0)
+
+
 def gate(probe: str):
     """Return (payload, arm) when armed; exit 0 otherwise."""
+    try:
+        return _gate_impl(probe)
+    except SystemExit:
+        raise
+    except Exception:
+        _allow_and_exit()
+
+
+def _gate_impl(probe: str):
     try:
         payload = json.load(sys.stdin)
     except Exception:

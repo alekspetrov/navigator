@@ -1,6 +1,6 @@
 # TASK-64: v7.0.0 Release Gate — Validation, RC Soak, Rollback
 
-**Status**: 📋 Planned
+**Status**: ✅ Closed — 2026-09-01 (v7.0.0 shipped via modified gate; see Gate Outcome)
 **Created**: 2026-07-10
 **Parent plan**: v7.0.0 hooks-runtime concept (approved 2026-07-10)
 **Execution**: interactive — NOT dispatched to Pilot (user decision 2026-07-10)
@@ -161,6 +161,41 @@ claude plugin install navigator@6.18.1                       # rollback path, du
 - Pilot sign-off record filled in; all five checklist items checked against RC output
 - `releases/RELEASE-NOTES-v7.0.0.md` contains a tested rollback procedure to @6.18.1
 - `v7.0.0` tag exists; marketplace serves it; both hard gates documented as passed
+
+## Gate Outcome (2026-09-01)
+
+The gate ran in a modified form, decided interactively by the user on 2026-09-01
+("Conformance first, then ship"):
+
+- **Conformance hard gate: PASSED as specified.** Full S1–S6 suite re-driven
+  against ship-week CC **2.1.241** (results: `tests/harness-conformance/results/`
+  `cc-2.1.241.json`). All channel verdicts identical to cc-2.1.205 — no harness
+  change affects the runtime. One probe-harness defect found and fixed during the
+  drive: the S6 SessionStart logger string-prefix-gated on `$PWD`, which arrives
+  realpath'd (`/private/tmp/...`) under subprocess-driven sessions — a
+  method-lesson-2 violation in the probe itself; glob widened in
+  `harness/nav-spike/.claude-plugin/plugin.json`. Side observation recorded in
+  the results file: on 2.1.241 headless, S4 exit-2 blocks no longer leak hook
+  chrome to stderr (decision:block remains the shipped winner).
+- **RC soak + Pilot sign-off hard gate: WAIVED by user decision 2026-09-01**, on
+  the evidence of ~7 weeks of continuous dogfood (2026-07-10 → 2026-09-01) on
+  two real workloads — this repo (daily interactive use) and a live Pilot-repo
+  worker — far exceeding the 3-day RC intent. Dogfood defects were fixed as
+  TASK-65..71; no `v7.0.0-rc1` was tagged and the Phase 4 formal sign-off record
+  was not executed. Sign-off record: waived per above.
+- **Phase 1 validator additions (`--verify-dispatcher`, `--verify-conformance`,
+  release.yml `--verify-hooks` wiring): NOT implemented** — carried forward as a
+  post-ship follow-up. Partial coverage shipped instead: `--verify-hook-paths`
+  (all 13 manifest commands route through `nav_dispatch.py`, ran green) and
+  `make conformance-check` (ran green for 2.1.241).
+- **Phase 2 audit**: still five version-bearing files; no dispatcher
+  `__version__` added.
+- **Rollback**: written procedure shipped in `releases/RELEASE-NOTES-v7.0.0.md`
+  (additive-only migration); the live downgrade-to-@6.18.1 drill was not
+  executed pre-tag.
+- Pre-tag checks, all green: `--check-all` (post-bump), `--verify-hooks` 26/26
+  set+unset across 13 events, `--verify-hook-paths`, `make test` 7/7,
+  `make conformance-check`.
 
 ## Refs
 

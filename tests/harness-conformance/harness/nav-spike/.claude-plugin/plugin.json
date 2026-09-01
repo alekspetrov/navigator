@@ -11,7 +11,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'case \"$PWD\" in /tmp/nav-v7-spike/*) mkdir -p /tmp/nav-v7-spike/state; printf \"ROOT=%s PWD=%s\\n\" \"${CLAUDE_PLUGIN_ROOT}\" \"$PWD\" >> /tmp/nav-v7-spike/state/log-s6.txt;; esac'",
+            "command": "sh -c 'case \"$PWD\" in /tmp/nav-v7-spike/*|/private/tmp/nav-v7-spike/*) mkdir -p /tmp/nav-v7-spike/state; printf \"ROOT=%s PWD=%s\\n\" \"${CLAUDE_PLUGIN_ROOT}\" \"$PWD\" >> /tmp/nav-v7-spike/state/log-s6.txt;; esac'",
             "timeout": 5
           }
         ]

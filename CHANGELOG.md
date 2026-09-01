@@ -6,9 +6,12 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
-## [Unreleased] — v7.0.0-alpha "Hooks as Runtime" (2026-07-10, local testing only)
+## [v7.0.0] — 2026-09-01 — "Hooks as Runtime"
 
-Complete hooks-runtime transformation (TASK-57..63). NOT released — alpha under local test.
+Complete hooks-runtime transformation (TASK-57..63), hardened by ~7 weeks of dogfood
+(TASK-65..71) and gated per TASK-64 (full S1–S6 conformance re-drive on ship-week CC 2.1.241;
+RC soak/Pilot sign-off waived on dogfood evidence — see the task doc's Gate Outcome).
+→ [Full release notes](./releases/RELEASE-NOTES-v7.0.0.md)
 
 - **Spike-first**: six hook channels empirically verified on CC 2.1.205 (mem-050..055);
   conformance suite checked in (`tests/harness-conformance/`, `make conformance-check`).
@@ -47,6 +50,14 @@ Complete hooks-runtime transformation (TASK-57..63). NOT released — alpha unde
   block reasons render plain, the opposite verdict — per-channel discipline). Read-only
   Bash turns (`grep`/`ls`/`git status`…) no longer count as mutating, killing
   stop_completion false-fires on inspection turns.
+- **Ops-turn false-fires (TASK-71, 2026-07-16)**: shell-aware read-only Bash classifier
+  (parses `gh pr view`, assignment heads, tests, loops) + tree-digest mutation evidence
+  replacing whole-tree `git status` cleanliness that a busy shared repo pinned False forever.
+- **Pilot context-injection headers (bf04077)**: templates carry the 3 headers Pilot's
+  `loadProjectContext` extracts.
+- **Conformance on CC 2.1.241 (2026-09-01)**: S1–S6 re-driven for the release gate — all
+  channel verdicts identical to 2.1.205; S6 probe's own `$PWD` string-prefix gate fixed
+  (realpath'd cwd, method-lesson-2 class).
 
 ---
 

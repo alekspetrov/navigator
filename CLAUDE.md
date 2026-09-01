@@ -298,7 +298,7 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
 
 ```json
 {
-  "version": "7.0.0-alpha",
+  "version": "7.0.0",
   "project_management": "none",
   "task_prefix": "TASK",
   "team_chat": "none",
@@ -328,4 +328,4 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
 **Last Updated**: 2026-07-11
-**Navigator Version**: 7.0.0-alpha
+**Navigator Version**: 7.0.0

@@ -74,18 +74,25 @@ def _recall_memories(ctx, message: str, budget_chars: int) -> str:
     return text[:budget_chars]
 
 
-def _brief_lines(result: dict, threshold: float, memories: str) -> list:
-    """The v6 emit_brief_instruction stdout, line by line (byte parity)."""
+def _brief_lines(result: dict, threshold: float, memories: str,
+                 contradiction_field: bool = True) -> list:
+    """The v6 emit_brief_instruction stdout, line by line (byte parity when
+    `contradiction_field` is False; TASK-72 adds the optional TRIZ row)."""
     lines = [
         f"🧭 NAV-BRIEF: ambiguous task-shaped prompt "
         f"(score={result['score']}, threshold={threshold})"
     ]
     if result["undefined_dimensions"]:
         lines.append(f"Undefined: {', '.join(result['undefined_dimensions'])}")
+    fields = "  Goal | Scope | Approach | Limits | Verify | Won't do"
+    if contradiction_field:
+        fields += " | Contradiction"
+    lines += ["", "Render a one-screen INTENT BRIEF before writing any code:", fields]
+    if contradiction_field:
+        lines.append(
+            "Contradiction: \"improving X worsens Y\" or \"none\". If declared, "
+            "query prior resolutions before Approach (skill: nav-brief).")
     lines += [
-        "",
-        "Render a one-screen INTENT BRIEF before writing any code:",
-        "  Goal | Scope | Approach | Limits | Verify | Won't do",
         "Pre-fill defaults from the memories below when present. "
         "Max 2 open questions.",
         "Wait for user confirmation before implementation. (skill: nav-brief)",
@@ -115,4 +122,7 @@ def run(ctx):
         return None
 
     memories = _recall_memories(ctx, message, budget_chars)
-    return {"additional_context": "\n".join(_brief_lines(result, threshold, memories))}
+    contradiction_field = bool(
+        config.get(ctx.config, "brief_hook.contradiction_field", True))
+    return {"additional_context": "\n".join(
+        _brief_lines(result, threshold, memories, contradiction_field))}

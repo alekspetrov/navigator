@@ -1,6 +1,6 @@
 ---
 name: nav-brief
-description: Render a one-screen intent brief (Goal/Scope/Approach/Limits/Verify/Won't-do) before implementing ambiguous task-shaped prompts, triggered by the prompt_brief op (UserPromptSubmit via hooks/nav_dispatch.py). Confirms scope with max 2 open questions before touching files; detects brief drift mid-task.
+description: Render a one-screen intent brief (Goal/Scope/Approach/Limits/Verify/Won't-do/Contradiction) before implementing ambiguous task-shaped prompts, triggered by the prompt_brief op (UserPromptSubmit via hooks/nav_dispatch.py). Confirms scope with max 2 open questions before touching files; detects brief drift mid-task.
 version: 1.0.0
 ---
 
@@ -50,6 +50,7 @@ explicitly.
 │ Limits    <numbers, constraints — mark ASSUMED>     │
 │ Verify    <how completion will be proven>           │
 │ Won't do  <explicit non-goals>                      │
+│ Contradict <improving X worsens Y — or "none">      │
 └─────────────────────────────────────────────────────┘
 Confirm / edit? (open questions: <0-2>)
 ```
@@ -62,6 +63,29 @@ Rules:
 - After confirmation, capture corrections: changed defaults are candidate
   knowledge-graph memories (`"Remember we decided..."` flow via nav-graph),
   so future briefs pre-fill better.
+
+## When a Contradiction Is Declared (TRIZ, TASK-72)
+
+`Contradict` is the TRIZ row: the task is inventive only when improving one
+thing worsens another ("faster session start vs enough context"). Most tasks
+are routine — `none` is the expected common case. Never invent a tension to
+fill the row.
+
+When the row is not `none`, query prior resolutions BEFORE filling
+`Approach`:
+
+```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
+[ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
+  --action contradictions --filter "<2-3 key terms>"
+```
+
+Cite matching `mem-NNN` ids in `Approach` ("resolved by separation in time
+before: mem-063"). If nothing matches, say so in one line. After the task,
+if the resolution was non-obvious, capture it as a decision with
+`--contradiction / --separation / --principle` (see nav-graph Step 3B) so the
+next brief can find it. Drift detection does not cover this row.
 
 ## Passthrough Rules (do NOT render a brief)
 

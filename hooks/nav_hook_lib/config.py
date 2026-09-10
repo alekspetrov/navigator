@@ -123,6 +123,7 @@ DEFAULTS = {
         "enabled": True,
         "ambiguity_threshold": 0.5,
         "memory_budget_chars": 1200,
+        "contradiction_field": True,
     },
     "read_guard_hook": {
         "enabled": True,

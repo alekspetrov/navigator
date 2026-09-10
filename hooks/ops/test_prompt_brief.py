@@ -147,6 +147,32 @@ class MemoriesTest(BriefTestBase):
         self.assertNotIn("## Relevant Memories", result["additional_context"])
 
 
+class ContradictionFieldTest(BriefTestBase):
+    """TASK-72: optional TRIZ Contradiction row, gated by config."""
+
+    V6_FIELDS = "  Goal | Scope | Approach | Limits | Verify | Won't do"
+
+    def test_default_injects_contradiction_row(self):
+        self.stub_recall("")
+        context = prompt_brief.run(make_ctx(AMBIGUOUS_PROMPT))["additional_context"]
+        self.assertIn(self.V6_FIELDS + " | Contradiction", context)
+        self.assertIn('Contradiction: "improving X worsens Y" or "none".', context)
+
+    def test_disabled_restores_v6_field_line(self):
+        cfg = copy.deepcopy(nav_config.DEFAULTS)
+        cfg["brief_hook"]["contradiction_field"] = False
+        self.stub_recall("")
+        context = prompt_brief.run(make_ctx(AMBIGUOUS_PROMPT, cfg=cfg))["additional_context"]
+        self.assertIn(self.V6_FIELDS + "\n", context)
+        self.assertNotIn("Contradiction", context)
+
+    def test_memories_block_still_last(self):
+        self.stub_recall("- DECISION: \"x\" (95%) ↔ a vs b")
+        context = prompt_brief.run(make_ctx(AMBIGUOUS_PROMPT))["additional_context"]
+        self.assertTrue(context.endswith("↔ a vs b"))
+        self.assertLess(context.index("Contradiction:"), context.index("## Relevant Memories"))
+
+
 class ConceptExtractionTest(unittest.TestCase):
     def test_stopwords_dropped_dedup_and_cap(self):
         message = "please fix this auth auth token flow " \

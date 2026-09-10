@@ -120,6 +120,21 @@ rm -rf ~/.claude/plugins/cache/navigator-marketplace/
 # Verify no errors in plugin list
 ```
 
+### Update the installed plugin (non-interactive)
+
+```bash
+claude plugin update navigator     # "updated from X to Y ... Restart to apply"
+claude plugin list | grep -A1 navigator@
+```
+
+Restart Claude Code afterwards — skill paths are cached at session start.
+
+### Sync the docs site
+
+Separate repo, no git remote, manual every release — see
+`.agent/sops/development/release-workflow.md` Step 7 (version chip, skill/config pages,
+`bun run build && vercel --prod --yes`, verify the live version string).
+
 ### If Errors Occur
 
 **"skills path not found"**:

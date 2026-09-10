@@ -139,7 +139,7 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-07-10):
+Current active threads (as of 2026-09-10; v7.0.0 tagged 2026-09-01, v7.1.0 + v7.2.0 TRIZ releases 2026-09-10, docs site synced same day):
 
 **v7.0.0 program — "Hooks as Runtime"** — ALPHA COMPLETE 2026-07-10 (uncommitted→committed same
 day; local testing phase, no release tagged; critical path 57→59→60→61→62→64 all landed, 58/63

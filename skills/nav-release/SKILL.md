@@ -191,6 +191,18 @@ If errors occur, see: .agent/sops/deployment/plugin-release.md
 
 ---
 
+### Step 6: Update Installed Plugin + Sync Docs Site
+
+```bash
+claude plugin update navigator && claude plugin list | grep -A1 navigator@   # then restart
+```
+
+The docs site is a separate repo with no git remote (`~/Projects/startups/navigator-site`);
+it does not update itself. Bump `lib/version.ts`, add/adjust `content/skills/*.mdx` and
+`content/reference/nav-config-schema.mdx` for anything new, then
+`bun run build && vercel --prod --yes` and confirm the live version string. Full procedure:
+`.agent/sops/development/release-workflow.md` Step 7.
+
 ## Predefined Functions
 
 ### functions/release_validator.py

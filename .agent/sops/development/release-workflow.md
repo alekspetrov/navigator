@@ -170,6 +170,27 @@ Then confirm the README badge renders (Shields.io CDN cache is 5–10 min). User
 
 ---
 
+### Step 7 — Sync the docs site (manual, every release)
+
+The docs site (`~/Projects/startups/navigator-site`, deployed at navigator-site.vercel.app)
+is a separate repo with **no git remote** — nothing about a plugin release touches it.
+Every release needs:
+
+```bash
+cd ~/Projects/startups/navigator-site
+# 1. Version chip
+sed -i '' 's/CURRENT_VERSION = "v.*"/CURRENT_VERSION = "v<VERSION>"/' lib/version.ts
+# 2. Content: new/changed skills -> content/skills/<name>.mdx (+ content/skills/_meta.js, index.mdx);
+#    new config keys -> content/reference/nav-config-schema.mdx; concepts/workflows as needed
+# 3. Build, commit, deploy
+bun run build && git add -A && git commit -m "docs(v<VERSION>): sync" && vercel --prod --yes
+# 4. Verify
+curl -s https://navigator-site.vercel.app | grep -o 'v[0-9]\.[0-9]\.[0-9]'
+```
+
+Link previews: `metadataBase` derives from `NEXT_PUBLIC_SITE_URL` (fallback vercel.app host).
+After the DNS cutover to navigator.quantflow.studio set that env var in the Vercel project.
+
 ## Pre-release checklist
 
 **Before pushing the tag**

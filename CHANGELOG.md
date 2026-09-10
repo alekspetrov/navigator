@@ -6,6 +6,31 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.3.0] — 2026-09-10 — "Deep Research"
+
+Web deep research (TASK-74): `nav-deep-research` skill — a question in, a cited report out,
+conclusions in the knowledge graph. Ships OFF (`deep_research.enabled`). One hook default
+changed: read-guard allowlist entries ending in `/` match by prefix (`research/` exempt).
+→ [Full release notes](./releases/RELEASE-NOTES-v7.3.0.md)
+
+- **nav-deep-research**: thin router + six step files loaded fresh per step (decompose →
+  sweep → draft → critique → patch → ship); verbatim query as the contract for every
+  subagent; recovery table + `resume`.
+- **Four agents**: `deep-research-fetcher` (sonnet), `-writer`, `-critic` (no Edit),
+  `-patcher` (Read+Edit only) — critic emits findings, patcher applies hunks, nobody
+  regenerates the report.
+- **Source notes** under `.agent/research/<slug>/sources/` wrapped in a
+  `<nav-untrusted-source>` fence (forged tags neutralized, URL escaped); canonical-URL
+  dedup; blocked/skipped classification; bodies gitignored, `refetch` rebuilds.
+- **Ship gate** (`ship_gate.py`): ten deterministic checks (citations resolve, notes exist,
+  no fence leak, no unresolved critical findings, Sources never shrink, min sources…);
+  exit 1 blocks the ship.
+- **Graph ingestion**: typed `## Key findings` bullets → memories with cited URLs as
+  evidence, via the existing `research_to_graph` path.
+- **Config**: `deep_research` block (OFF), `VERSION_CONFIGS["7.3.0"]`, features-table row.
+- **Hyperresearch handoff**: if the project has `.hyperresearch/`, the skill defers to it
+  and only ingests its final report.
+
 ## [v7.2.0] — 2026-09-10 — "Three Candidates"
 
 TRIZ Phase 2 (TASK-73): `nav-triz` skill — divergent solving for declared contradictions.

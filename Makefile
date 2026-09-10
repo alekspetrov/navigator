@@ -33,6 +33,7 @@ TEST_DIRS := \
 	skills/nav-start/functions \
 	skills/nav-graph/functions \
 	skills/nav-brief/functions \
+	skills/nav-triz/functions \
 	skills/nav-onboard/functions \
 	skills/nav-profile/functions
 

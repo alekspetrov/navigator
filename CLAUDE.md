@@ -113,7 +113,9 @@ relevant knowledge-graph memories) prompting a one-screen intent brief — Goal 
 Approach / Limits / Verify / Won't do / Contradiction — with max 2 open questions before
 files change. Contradiction is the optional TRIZ row ("improving X worsens Y", usually
 `none`); when declared, prior resolutions are queried from the knowledge graph before
-Approach is filled (`brief_hook.contradiction_field` toggles the row).
+Approach is filled (`brief_hook.contradiction_field` toggles the row). On substantial
+tasks a declared contradiction hands off to `nav-triz`, which drafts three candidates from
+different separation modes and recommends one (`skills/nav-triz/SKILL.md`).
 Injection happens on UserPromptSubmit — enforced by prompt_brief (hook runtime); this text
 is documentation, not the mechanism. Passthrough: "just do it", "quick fix", "skip the
 brief". Full behavior: `skills/nav-brief/SKILL.md`.

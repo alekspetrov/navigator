@@ -153,7 +153,9 @@ Starting RESEARCH phase...
 - State the Ideal Final Result (the no-new-code version) and the reuse inventory
   (what already does ≥80% of this)
 - If the brief declared a Contradiction, query prior resolutions
-  (`graph_manager.py --action contradictions --filter "<terms>"`)
+  (`graph_manager.py --action contradictions --filter "<terms>"`) and run the
+  nav-triz divergence step: three candidates from different separation modes,
+  one recommended, before PLAN
 - Identify affected files
 - Find existing patterns
 - Document unknowns

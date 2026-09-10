@@ -82,7 +82,10 @@ python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
 ```
 
 Cite matching `mem-NNN` ids in `Approach` ("resolved by separation in time
-before: mem-063"). If nothing matches, say so in one line. After the task,
+before: mem-063"). If nothing matches, say so in one line. On a substantial
+task (Task Mode complexity ≥ 0.5 or more than one subsystem), hand off to
+**nav-triz** before filling `Approach`: it produces three candidates from
+different separation modes and recommends one. After the task,
 if the resolution was non-obvious, capture it as a decision with
 `--contradiction / --separation / --principle` (see nav-graph Step 3B) so the
 next brief can find it. Drift detection does not cover this row.

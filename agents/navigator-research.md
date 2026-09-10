@@ -51,6 +51,8 @@ Before mapping code, answer two TRIZ questions. They are cheap and they change w
 1. **Ideal Final Result (IFR)**: *What if the requested function existed with no new code? What would have to be true?* Name the resource or mechanism that would make the change unnecessary (a config flag, an existing op, a convention, data already on disk). If the IFR is reachable, say so — that is the finding.
 2. **Reuse inventory**: *What in this repo already does ≥80% of this?* Grep for the nearest existing function/op/skill and cite `path:line`, or state `none found`. Do not list candidates you did not verify.
 
+If the task carries a declared Contradiction, also run `python skills/nav-triz/functions/triz_suggest.py --contradiction "<A vs B>" 2>/dev/null` and include its prior-resolution ids and three principle prompts in the output. Do not draft the candidates yourself — the main session runs the nav-triz protocol; you supply the evidence.
+
 ### Phase 1: Entry Point Discovery
 
 Detect the project's language(s), then identify entry points. **Do NOT assume JavaScript or Python** — many projects use other stacks.

@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "slug": "current-status-free-threaded-no-gil",
+  "created": "2026-09-10T14:21:25+00:00",
+  "updated": "2026-09-10T14:39:19+00:00",
+  "tier": "light",
+  "backend": "native",
+  "query_file": "query.md",
+  "steps": {
+    "1": {
+      "name": "decompose",
+      "status": "done",
+      "started_at": "2026-09-10T14:21:41+00:00",
+      "finished_at": "2026-09-10T14:21:41+00:00"
+    },
+    "2": {
+      "name": "sweep",
+      "status": "done",
+      "started_at": "2026-09-10T14:21:41+00:00",
+      "finished_at": "2026-09-10T14:23:51+00:00"
+    },
+    "3": {
+      "name": "draft",
+      "status": "done",
+      "started_at": "2026-09-10T14:23:51+00:00",
+      "finished_at": "2026-09-10T14:29:23+00:00"
+    },
+    "4": {
+      "name": "critique",
+      "status": "done",
+      "started_at": "2026-09-10T14:29:23+00:00",
+      "finished_at": "2026-09-10T14:36:36+00:00"
+    },
+    "5": {
+      "name": "patch",
+      "status": "done",
+      "started_at": "2026-09-10T14:36:36+00:00",
+      "finished_at": "2026-09-10T14:38:47+00:00"
+    },
+    "6": {
+      "name": "ship",
+      "status": "done",
+      "started_at": "2026-09-10T14:38:47+00:00",
+      "finished_at": "2026-09-10T14:39:19+00:00"
+    }
+  },
+  "atomic_items": [],
+  "meta": {
+    "atomic_items": [
+      {
+        "id": "Q1",
+        "text": "Which CPython versions support the free-threaded (no-GIL) build, and what is its official support status (experimental vs supported)?",
+        "kind": "question"
+      },
+      {
+        "id": "Q2",
+        "text": "What performance cost does the free-threaded build carry on single-threaded code, per version?",
+        "kind": "question"
+      },
+      {
+        "id": "Q3",
+        "text": "Which major libraries are compatible with the free-threaded build: NumPy, pandas, Django?",
+        "kind": "entity",
+        "fields": [
+          "NumPy",
+          "pandas",
+          "Django"
+        ]
+      }
+    ],
+    "register": "analyze",
+    "sources_rows_before_patch": 15
+  }
+}

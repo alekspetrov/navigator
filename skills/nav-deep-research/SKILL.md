@@ -39,7 +39,7 @@ every spawn prompt:
 NDR=""
 for cand in "${CLAUDE_PLUGIN_ROOT:-/nonexistent}/skills/nav-deep-research/functions" \
             "$PWD/skills/nav-deep-research/functions" \
-            $(ls -d "$HOME"/.claude/plugins/cache/navigator-marketplace/navigator/*/skills/nav-deep-research/functions 2>/dev/null | sort -V | tail -1); do
+            $(find "$HOME/.claude/plugins/cache/navigator-marketplace/navigator" -maxdepth 4 -type d -path "*/skills/nav-deep-research/functions" 2>/dev/null | sort -V | tail -1); do
   [ -f "$cand/research_run.py" ] && NDR="$cand" && break
 done
 echo "NDR_FUNCTIONS=$NDR"

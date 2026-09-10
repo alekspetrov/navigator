@@ -1,6 +1,6 @@
 # TASK-74: nav-deep-research — web deep research for Navigator
 
-**Status**: ✅ Implemented — 2026-09-10 (end-to-end dry run pending; ships OFF)
+**Status**: ✅ Implemented + dry run passed — 2026-09-10 (ships OFF by default; enabled in this repo for dogfood; unreleased, target v7.3.0)
 
 ## Context
 
@@ -69,7 +69,18 @@ Ships OFF (repo precedent: new feature value vs regression risk → opt-in toggl
 
 - `make test` green (hooks 639, nav_hook_lib 307, golden 27, deep-research 64, migrator,
   features).
-- Pending: WP7 end-to-end dry run — enable `deep_research`, `fetchers: 2`,
+- WP7 end-to-end dry run DONE 2026-09-10 on "current status of free-threaded CPython"
+  (`.agent/research/current-status-free-threaded-no-gil/`): 16 URLs → 15 ok + 1 blocked (429);
+  writer 3031 words / 15 cited; critic 20 findings (1 critical: ignored 33% Mandelbrot outlier),
+  every quote anchored; patcher applied 20/20; gate 10/10; removing one Sources row by hand
+  fails `citations-resolve` + `sources-not-shrunk`; ingestion validated against a temp graph
+  copy (11 memories, no errors) and deliberately NOT written to Navigator's own graph
+  (off-topic); resume returns the right step from both manifest and stale-manifest artifact
+  scan. Dry-run finding fixed: parallel fetchers raced on `next_id` → exclusive-create
+  allocation (b58ea45). Caveat: the plugin agent types are not installed until the next
+  release, so the dry run used general-purpose agents carrying the agent prompts; the
+  frontmatter tool locks are therefore unverified live.
+- Original plan for WP7 (kept for the post-release re-run): WP7 end-to-end dry run — enable `deep_research`, `fetchers: 2`,
   `max_sources: 8`, run a question with a known answer; confirm the read guard does not
   block the writer, the gate fails when a citation is removed by hand and passes after
   restore, `report_to_graph.py --dry-run` lists the memories, and `resume` returns step

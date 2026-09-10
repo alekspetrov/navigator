@@ -1,0 +1,29 @@
+{
+  "run": "current-status-free-threaded-no-gil",
+  "applied": [
+    {"id": "C1", "severity": "critical", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C2", "severity": "major", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C3", "severity": "major", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C4", "severity": "major", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C5", "severity": "major", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C6", "severity": "major", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C7", "severity": "major", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C8", "severity": "major", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C9", "severity": "major", "section": "Key findings"},
+    {"id": "C10", "severity": "major", "section": "Summary"},
+    {"id": "C11", "severity": "minor", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C12", "severity": "minor", "section": "Q2. Single-threaded performance cost, per version"},
+    {"id": "C13", "severity": "minor", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C14", "severity": "minor", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C15", "severity": "minor", "section": "Summary"},
+    {"id": "C16", "severity": "minor", "section": "Q3. Library compatibility: NumPy, pandas, Django"},
+    {"id": "C17", "severity": "minor", "section": "Q1. Which CPython versions support the free-threaded build, and with what status"},
+    {"id": "C18", "severity": "minor", "section": "Open questions"},
+    {"id": "C19", "severity": "minor", "section": "Open questions"},
+    {"id": "C20", "severity": "minor", "section": "Q3. Library compatibility: NumPy, pandas, Django"}
+  ],
+  "rejected": [],
+  "unresolved": [],
+  "sources_appended": [],
+  "structural_forwarded": []
+}

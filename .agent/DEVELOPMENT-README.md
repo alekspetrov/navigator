@@ -134,6 +134,10 @@ When implementation is complete, run these without prompting:
 └── examples/                 ← real workflow case studies
 ```
 
+### Research Reports (research/)
+
+- `research/current-status-free-threaded-no-gil/report.md` — Free-threaded CPython as of September 2026: versions, single-thread cost, NumPy/pandas/Django readiness (15 sources, 2026-09-10; TASK-74 dry run)
+
 ---
 
 ## In-Flight Tasks

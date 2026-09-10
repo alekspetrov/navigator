@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "report-exists",
+      "ok": true,
+      "detail": ".agent/research/current-status-free-threaded-no-gil/report.md"
+    },
+    {
+      "name": "required-sections",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no-citation-ranges",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "citations-resolve",
+      "ok": true,
+      "detail": "body-only=[] table-only=[] consecutive=True rows=15"
+    },
+    {
+      "name": "sources-have-notes",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no-fence-leak",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "patch-log-resolved",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "sources-not-shrunk",
+      "ok": true,
+      "detail": "rows=15 before=15"
+    },
+    {
+      "name": "min-sources",
+      "ok": true,
+      "detail": "rows=15 min=5"
+    },
+    {
+      "name": "key-findings-typed",
+      "ok": true,
+      "detail": "typed=11 untyped=0"
+    }
+  ],
+  "run": "current-status-free-threaded-no-gil"
+}

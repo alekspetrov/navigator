@@ -297,7 +297,17 @@ def store_note(slug: str, url: str, body: str, *, title: str = "", final_url: st
                 "path": str(directory / f"{duplicate['id']}.md")}
     truncated = len(body) > max_chars
     body = body[:max_chars] if truncated else body
-    note_id = next_id(slug, agent_dir)
+    # Parallel fetchers write concurrently: claim the id with an exclusive create
+    # and retry on collision instead of trusting a precomputed next_id.
+    for _ in range(1000):
+        note_id = next_id(slug, agent_dir)
+        try:
+            handle = open(directory / f"{note_id}.md", "x", encoding="utf-8")
+        except FileExistsError:
+            continue
+        break
+    else:  # pragma: no cover - only if a thousand ids collide
+        raise RuntimeError("could not allocate a source id")
     meta = {
         "id": note_id,
         "url": url,
@@ -316,7 +326,8 @@ def store_note(slug: str, url: str, body: str, *, title: str = "", final_url: st
         "headings": " | ".join(headings[:12]) if headings else "",
     }
     path = directory / f"{note_id}.md"
-    path.write_text(render_note(meta, body if status == "ok" else ""), encoding="utf-8")
+    with handle:
+        handle.write(render_note(meta, body if status == "ok" else ""))
     return {"id": note_id, "status": status, "reason": reason, "deduped": False,
             "path": str(path), "chars": len(body), "truncated": truncated,
             "title": meta["title"]}

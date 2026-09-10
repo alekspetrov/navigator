@@ -271,6 +271,16 @@ class TestNotes(unittest.TestCase):
         _, body = parse_note(path.read_text())
         self.assertIn("Gate fidelity", body)
 
+    def test_concurrent_stores_never_share_an_id(self):
+        import concurrent.futures
+        urls = [f"https://e.com/p{i}" for i in range(12)]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+            results = list(pool.map(
+                lambda u: store_note(self.slug, u, "body", agent_dir=self.agent), urls))
+        ids = [r["id"] for r in results]
+        self.assertEqual(len(ids), len(set(ids)), ids)
+        self.assertEqual(len(load_notes(self.slug, self.agent)), 12)
+
     def test_store_into_missing_run_fails(self):
         with self.assertRaises(FileNotFoundError):
             store_note("no-such-run", "https://e.com", "b", agent_dir=self.agent)

@@ -73,3 +73,4 @@ docs/social/
 
 # Workshop materials (event-specific, kept local)
 workshop/
+.agent/.features-shown-*

@@ -29,7 +29,10 @@ holds 10–15 tagged decisions.
   `**Contradiction**` / `**Separation**` / `**Principle**` written by `memory_writer`,
   parsed by `graph_maintenance._parse_memory_file`, threaded through `add_memory`, and
   synced disk → node by `reconcile` (new `field_updates`, applied with `--execute`; never
-  clears, never re-syncs `summary`). Untagged memories are byte-identical to before.
+  clears, never re-syncs `summary`). `--fields-only` applies the sync without registering
+  unindexed files — needed here because `resolved/` holds deliberately pruned memories
+  (mem-058) that a plain `--execute` re-registers under fresh ids with garbage summaries.
+  Untagged memories are byte-identical to before.
 - **Query**: `graph_manager.py --action contradictions [--filter "<terms>"]`; recall
   renderers append ` ↔ A vs B` when present.
 - **Research prompts**: `agents/navigator-research.md` Phase 0.5 (Ideal Final Result +
@@ -62,6 +65,8 @@ holds 10–15 tagged decisions.
 make test
 python3 skills/nav-graph/functions/graph_manager.py --action contradictions --filter rollback
 python3 skills/nav-graph/functions/graph_maintenance.py --action reconcile   # field_updates: 0 after retrofit
+# retrofit apply path (never plain --execute in this repo, see Implementation):
+python3 skills/nav-graph/functions/graph_maintenance.py --action reconcile --execute --fields-only
 python3 skills/nav-graph/functions/graph_maintenance.py --action health
 ```
 

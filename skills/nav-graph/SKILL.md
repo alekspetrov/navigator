@@ -216,7 +216,9 @@ python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
 Tagged memories also render with a ` ↔ A vs B` suffix in session-start and
 nav-brief recall. Hand-tagging an existing decision = append the three
 footer lines after `**Concepts**:` in its `.md`, then
-`graph_maintenance.py --action reconcile --execute` (see Reconcile below).
+`graph_maintenance.py --action reconcile --execute --fields-only` (see
+Reconcile below; `--fields-only` keeps a pruned `resolved/` archive from
+being re-registered under fresh ids).
 
 **Optionally create detailed memory file**:
 ```markdown
@@ -548,8 +550,10 @@ PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketpl
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"
 # Dry-run report
 python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_maintenance.py" --action reconcile
-# Register unindexed files
+# Register unindexed files + apply TRIZ field updates
 python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_maintenance.py" --action reconcile --execute
+# TRIZ field updates only (safe when resolved/ holds deliberately pruned files)
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_maintenance.py" --action reconcile --execute --fields-only
 ```
 
 ### Resolve / Supersede a Memory (v6.17.0+)

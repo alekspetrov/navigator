@@ -448,6 +448,16 @@ class TestReconcileTrizFields(unittest.TestCase):
             self.assertEqual(second["field_updates"], [])
             self.assertEqual(second["registered"], [])
 
+    def test_fields_only_skips_registration(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, g = self._repo(tmp)
+            report = reconcile(g, root=str(root), execute=True, fields_only=True)
+            self.assertEqual(report["registered"], [])
+            self.assertEqual(len(report["unindexed_files"]), 1)  # still reported
+            self.assertEqual(g["nodes"]["memories"]["mem-001"]["contradiction"],
+                             "speed vs safety")
+            self.assertEqual(set(g["nodes"]["memories"]), {"mem-001", "mem-002"})
+
     def test_field_removed_on_disk_is_not_cleared(self):
         with tempfile.TemporaryDirectory() as tmp:
             root, g = self._repo(tmp)

@@ -346,7 +346,8 @@ def _triz_field_updates(graph: dict, root: str, base_dir: str,
 
 def reconcile(graph: dict, root: str = ".",
               base_dir: str = ".agent/knowledge",
-              execute: bool = False) -> dict:
+              execute: bool = False,
+              fields_only: bool = False) -> dict:
     """Report (and optionally repair) disk-vs-graph drift.
 
     Dry-run (default) reports broken file links, unindexed memory files,
@@ -358,6 +359,11 @@ def reconcile(graph: dict, root: str = ".",
     never rewritten, and a TRIZ field removed from disk is never cleared on
     the node — only additions/changes flow disk -> graph. `summary` is never
     re-synced (headings are truncated titles; see add_memory).
+
+    `fields_only` skips registration of unindexed files and applies only the
+    TRIZ field sync. Use it when retrofitting tags in a repo whose
+    `resolved/` archive is deliberately unindexed (pruned memories, mem-058):
+    a plain --execute would re-register those files under fresh ids.
     """
     report = {
         'broken_file_links': find_broken_file_links(graph, root, base_dir),
@@ -369,7 +375,7 @@ def reconcile(graph: dict, root: str = ".",
         'errors': [],
     }
 
-    if not execute:
+    if not execute or fields_only:
         return report
 
     for file_str in report['unindexed_files']:
@@ -766,6 +772,9 @@ def main():
                        help='Show what would be pruned without removing')
     parser.add_argument('--execute', action='store_true',
                        help='Actually perform pruning (override dry-run)')
+    parser.add_argument('--fields-only', action='store_true',
+                        help='With --execute on reconcile: apply TRIZ field '
+                             'updates only; do not register unindexed files')
 
     args = parser.parse_args()
     graph = load_graph(args.graph_path)
@@ -874,7 +883,8 @@ def main():
                 sys.exit(1)
 
     elif args.action == 'reconcile':
-        result = reconcile(graph, root=args.root, execute=args.execute)
+        result = reconcile(graph, root=args.root, execute=args.execute,
+                           fields_only=args.fields_only)
         print("Disk-vs-Graph Reconciliation")
         print("=" * 40)
 

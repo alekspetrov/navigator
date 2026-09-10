@@ -150,6 +150,10 @@ Starting RESEARCH phase...
 
 **RESEARCH Phase**:
 - Use Task agent for codebase exploration
+- State the Ideal Final Result (the no-new-code version) and the reuse inventory
+  (what already does ≥80% of this)
+- If the brief declared a Contradiction, query prior resolutions
+  (`graph_manager.py --action contradictions --filter "<terms>"`)
 - Identify affected files
 - Find existing patterns
 - Document unknowns

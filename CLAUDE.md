@@ -110,7 +110,10 @@ Configuration and full behavior: `loop_mode` block + `skills/nav-loop/SKILL.md`.
 
 Ambiguity ≠ complexity. Ambiguous task-shaped prompts get a NAV-BRIEF injection (plus
 relevant knowledge-graph memories) prompting a one-screen intent brief — Goal / Scope /
-Approach / Limits / Verify / Won't do — with max 2 open questions before files change.
+Approach / Limits / Verify / Won't do / Contradiction — with max 2 open questions before
+files change. Contradiction is the optional TRIZ row ("improving X worsens Y", usually
+`none`); when declared, prior resolutions are queried from the knowledge graph before
+Approach is filled (`brief_hook.contradiction_field` toggles the row).
 Injection happens on UserPromptSubmit — enforced by prompt_brief (hook runtime); this text
 is documentation, not the mechanism. Passthrough: "just do it", "quick fix", "skip the
 brief". Full behavior: `skills/nav-brief/SKILL.md`.
@@ -167,7 +170,7 @@ One query interface across tasks, SOPs, system docs, markers, and experiential m
 |---|---|
 | Pattern | "We use X for Y" |
 | Pitfall | "Watch out for X" |
-| Decision | "We chose X because Y" |
+| Decision | "We chose X because Y" — may carry a TRIZ contradiction it resolved (`--action contradictions`) |
 | Learning | "X usually means Y" |
 
 ---

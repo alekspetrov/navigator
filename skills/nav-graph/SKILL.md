@@ -177,6 +177,47 @@ graph's concept vocabulary — an unknown concept rejects the write and lists
 the valid vocabulary. Pass `--allow-new-concept` to register genuinely new
 concepts instead. Graphs without a curated vocabulary skip validation.
 
+**Decisions may carry a TRIZ contradiction (TASK-72)**. When a decision
+resolved a real tension (improving A worsened B), record it so future
+sessions can ask "how did we resolve this kind of problem before":
+
+```bash
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
+  --action add-memory --memory-type decision \
+  --summary "ship new blocking features OFF by default" \
+  --concepts "release,configuration" --confidence 0.95 \
+  --contradiction "feature value vs regression risk" \
+  --separation condition \
+  --principle "dynamization (config toggle)"
+```
+
+All three flags are optional and free text; keep `--contradiction` under
+~60 chars ("A vs B") because it is appended to recall lines. Separation
+modes (which TRIZ move resolved it):
+
+| Separation | Meaning | Software example |
+|---|---|---|
+| time | A now, B later | re-export shims for one major, delete next (mem-063) |
+| space | A here, B there | single redacting emitter module; ops never print (mem-065) |
+| condition | A when X, B otherwise | confirm + dry-run only on high-stakes dispatch (mem-043) |
+| level | A at part level, B at system level | atomic tmp+rename state file over per-op writes (mem-064) |
+
+Query by contradiction (every filter word must match, case-insensitive,
+across contradiction + summary + principle; always exits 0):
+
+```bash
+python3 "$PLUGIN_DIR/skills/nav-graph/functions/graph_manager.py" \
+  --action contradictions --filter "rollback"
+# Contradictions "rollback" (2)
+#   - DECISION: "..." (95%) ↔ clean codebase vs rollback safety [separation: time]
+#       principle: prior counter-action
+```
+
+Tagged memories also render with a ` ↔ A vs B` suffix in session-start and
+nav-brief recall. Hand-tagging an existing decision = append the three
+footer lines after `**Concepts**:` in its `.md`, then
+`graph_maintenance.py --action reconcile --execute` (see Reconcile below).
+
 **Optionally create detailed memory file**:
 ```markdown
 # Pitfall: Auth Changes Break Session Tests
@@ -496,8 +537,12 @@ another directory.
 Report drift between memory files on disk and graph nodes; `--execute`
 registers unindexed files (type from parent dir, `resolved/` parent →
 `resolved: true`, frontmatter/heading parsing with conservative fallbacks —
-0.5 confidence when unknown). Broken-link nodes are never auto-deleted and
-concept refs are never rewritten — those two are report-and-hint only:
+0.5 confidence when unknown) and copies TRIZ footer fields
+(`**Contradiction**` / `**Separation**` / `**Principle**`, TASK-72) from disk
+onto already-indexed nodes (reported as `field_updates`; never clears a
+field removed on disk, never re-syncs `summary`). Broken-link nodes are
+never auto-deleted and concept refs are never rewritten — those two are
+report-and-hint only:
 ```bash
 PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/cache/navigator-marketplace/navigator}"
 [ -d "$PLUGIN_DIR" ] || PLUGIN_DIR="$HOME/.claude/plugins/marketplaces/navigator-marketplace"

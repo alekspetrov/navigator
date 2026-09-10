@@ -26,6 +26,15 @@ Create actionable implementation plans by:
 - Map affected modules and services
 - Note integration requirements
 
+### 1.5 Ideal Final Result (TRIZ)
+- State what "no new code" would look like: which existing mechanism, flag, or convention
+  would deliver the function if it were used differently
+- If the plan builds anything, say in one line why it falls short of that — this is the
+  justification for the work
+- If the request declares a Contradiction (improving X worsens Y), query prior resolutions:
+  `python skills/nav-graph/functions/graph_manager.py --action contradictions --filter "<terms>"`
+  and reuse the separation move that worked
+
 ### 2. Architecture Review
 - Read relevant system documentation
 - Identify where changes will occur
@@ -54,6 +63,8 @@ Create structured plan in `.agent/tasks/` format
 
 ## Overview
 [1-2 sentence summary of what we're building and why]
+
+**Ideal Final Result**: [no-new-code version, and why this plan falls short of it]
 
 ## Acceptance Criteria
 - [ ] Criterion 1

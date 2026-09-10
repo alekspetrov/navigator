@@ -170,6 +170,9 @@ parallel both landed):
   dropped — block reasons render as plain text, so Tier-1 is self-safe via exact-match rail
 
 Other threads:
+- **TASK-72** ✅ — TRIZ Phase 1: Contradiction row in the brief, optional
+  contradiction/separation/principle on decision memories, `--action contradictions` query,
+  IFR + reuse-inventory questions in research/planner agents; Phase 2 gated on dogfood
 - **TASK-15** — marketing strategy & community adoption (plan needs a refresh pass; predates the live site + v6.18.x)
 - **TASK-35** — project memory (research)
 - **TASK-37** — nav-simplify complexity / cost scoring (design)

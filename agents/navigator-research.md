@@ -39,6 +39,18 @@ Before exploring, consult what Navigator already knows. This often answers the q
 
 3. **Skip to Phase 1 only if** the navigator/graph didn't fully answer the question. Report what they did answer.
 
+4. **If the task declares a Contradiction** (nav-brief row, "improving X worsens Y"), query prior resolutions and cite hits:
+   ```bash
+   python skills/nav-graph/functions/graph_manager.py --action contradictions --filter "<key terms>" 2>/dev/null
+   ```
+
+### Phase 0.5: Ideal Final Result and Reuse Inventory (always, two lines)
+
+Before mapping code, answer two TRIZ questions. They are cheap and they change what you look for in Phase 1–3:
+
+1. **Ideal Final Result (IFR)**: *What if the requested function existed with no new code? What would have to be true?* Name the resource or mechanism that would make the change unnecessary (a config flag, an existing op, a convention, data already on disk). If the IFR is reachable, say so — that is the finding.
+2. **Reuse inventory**: *What in this repo already does ≥80% of this?* Grep for the nearest existing function/op/skill and cite `path:line`, or state `none found`. Do not list candidates you did not verify.
+
 ### Phase 1: Entry Point Discovery
 
 Detect the project's language(s), then identify entry points. **Do NOT assume JavaScript or Python** — many projects use other stacks.
@@ -111,6 +123,11 @@ Return organized findings using the **Output Format** below.
 [What the navigator or knowledge graph already covered. Skip if neither existed.]
 - DEVELOPMENT-README: linked `system/auth.md` → covers JWT setup
 - Graph memory `mem-042` (pitfall, conf 0.85): "auth tests break when JWT_SECRET rotated mid-test"
+- Contradiction hits: `mem-063` resolved "clean code vs rollback safety" by separation in time
+
+### Ideal Final Result / Reuse Inventory (Phase 0.5)
+- IFR: [what "no new code" would look like, and whether it is reachable]
+- Reuse: `path/file.py:NN` does [X] already — or `none found`
 
 ### Architecture Overview
 [2-3 sentences. What the code does and how it's organized.]

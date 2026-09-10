@@ -136,6 +136,7 @@ DEFAULTS = {
             ".nav-config.json",
             ".user-profile.json",
             "knowledge/graph.json",
+            "research/",
         ],
     },
     "knowledge_graph": {

@@ -61,6 +61,7 @@ DEFAULT_ALLOWLIST = frozenset({
     ".nav-config.json",
     ".user-profile.json",
     "knowledge/graph.json",
+    "research/",  # nav-deep-research workspaces: subagents read many source notes (TASK-74)
 })
 
 DEFAULT_WARN_THRESHOLD = 3
@@ -92,6 +93,13 @@ def _allowlist(cfg) -> frozenset:
     if isinstance(value, list):
         return frozenset(str(item) for item in value)
     return DEFAULT_ALLOWLIST
+
+
+def _is_allowlisted(agent_rel: str, allow: frozenset) -> bool:
+    """Exact match, or prefix match for entries ending in '/' (directory allowlist)."""
+    if agent_rel in allow:
+        return True
+    return any(entry.endswith("/") and agent_rel.startswith(entry) for entry in allow)
 
 
 def _is_stale(updated_at, stale_after_s: int, now: float) -> bool:
@@ -202,7 +210,7 @@ def run(ctx):
     agent_rel = _resolve_agent_relative(file_path, root)
     if agent_rel is None:
         return None  # outside .agent/ — ignore
-    if agent_rel in _allowlist(ctx.config):
+    if _is_allowlisted(agent_rel, _allowlist(ctx.config)):
         return None  # allowlisted — counts toward zero
 
     cfg = ctx.config

@@ -107,6 +107,17 @@ class CountingTest(ReadGuardTestBase):
         self.assertIsNone(result)
         self.assertNotIn("reads", ctx.state)
 
+    def test_directory_allowlist_entry_matches_by_prefix(self):
+        # research/ is a default entry (TASK-74): deep-research subagents read many
+        # source notes in one turn and must not trip the ladder.
+        result, ctx = self.run_read(state={}, rel="research/ion-traps/sources/005.md")
+        self.assertIsNone(result)
+        self.assertNotIn("reads", ctx.state)
+
+    def test_directory_entry_does_not_match_sibling_prefix_without_slash(self):
+        result, ctx = self.run_read(state={}, rel="research-notes.md")
+        self.assertEqual(ctx.state["reads"]["turn_count"], 1)
+
     def test_file_outside_agent_dir_is_ignored(self):
         ctx = self.ctx(self.payload(str(self.root / "notes.md")), state={})
         self.assertIsNone(read_guard.run(ctx))

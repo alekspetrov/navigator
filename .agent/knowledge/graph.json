@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-07-10T14:14:59.602445+00:00",
+  "last_updated": "2026-09-01T08:26:02.372407+00:00",
   "stats": {
-    "total_nodes": 175,
-    "total_edges": 847,
-    "memory_count": 61
+    "total_nodes": 185,
+    "total_edges": 884,
+    "memory_count": 66
   },
   "nodes": {
     "tasks": {
@@ -807,17 +807,84 @@
         ]
       },
       "TASK-64": {
-        "path": ".agent/tasks/TASK-64-v7-release-gate.md",
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-64-v7-release-gate.md",
         "title": "v7.0.0 Release Gate \u2014 Validation, RC Soak, Rollback",
-        "status": "backlog",
+        "status": "completed",
         "concepts": [
-          "api",
-          "context",
+          "deployment",
           "database",
+          "api",
+          "skills",
+          "context",
           "workflow",
+          "testing"
+        ]
+      },
+      "TASK-68": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-68-tier1-similarity-subagent-topk.md",
+        "title": "Task 68 Tier1 Similarity Subagent Topk",
+        "status": "completed",
+        "concepts": [
+          "markers",
+          "knowledge",
+          "testing",
+          "context",
+          "deployment"
+        ]
+      },
+      "TASK-66": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-66-read-guard-double-increment.md",
+        "title": "Task 66 Read Guard Double Increment",
+        "status": "completed",
+        "concepts": [
+          "database",
+          "context",
+          "knowledge",
           "deployment",
           "testing",
-          "skills"
+          "theory of mind"
+        ]
+      },
+      "TASK-65": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-65-stop-completion-populator.md",
+        "title": "Task 65 Stop Completion Populator",
+        "status": "completed",
+        "concepts": [
+          "skills",
+          "context",
+          "markers",
+          "workflow",
+          "simplification",
+          "deployment",
+          "testing"
+        ]
+      },
+      "TASK-69": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-69-use-cases-site-update.md",
+        "title": "Use-case content \u2014 landing page + docs site update",
+        "status": "completed",
+        "concepts": [
+          "simplification",
+          "skills",
+          "workflow",
+          "deployment",
+          "context",
+          "knowledge",
+          "testing",
+          "theory of mind",
+          "markers",
+          "frontend"
+        ]
+      },
+      "TASK-70": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-70-signal-visibility-readonly-bash.md",
+        "title": "Invisible exit signals + read-only Bash false-fire",
+        "status": "completed",
+        "concepts": [
+          "deployment",
+          "workflow",
+          "testing",
+          "context"
         ]
       }
     },
@@ -2497,6 +2564,91 @@
         ],
         "created": "2026-07-10",
         "last_validated": "2026-07-10"
+      },
+      "mem-069": {
+        "type": "decision",
+        "summary": "Live hook check in CI: promote `--verify-hooks` into release.yml validate job - flag exists but was never wired \u2014 verified gap; manual steps get skipped",
+        "path": "memories/decisions/mem-069.md",
+        "confidence": 0.95,
+        "concepts": [
+          "workflow",
+          "database",
+          "deployment",
+          "skills",
+          "testing",
+          "context",
+          "api"
+        ],
+        "created": "2026-09-01",
+        "last_validated": "2026-09-01"
+      },
+      "mem-070": {
+        "type": "decision",
+        "summary": "Missing-artifact scope: `--verify-dispatcher` covers ops too - v5.1.0 incident class generalizes: registry entries can reference uncommitted modules",
+        "path": "memories/decisions/mem-070.md",
+        "confidence": 0.95,
+        "concepts": [
+          "workflow",
+          "database",
+          "deployment",
+          "skills",
+          "testing",
+          "context",
+          "api"
+        ],
+        "created": "2026-09-01",
+        "last_validated": "2026-09-01"
+      },
+      "mem-071": {
+        "type": "decision",
+        "summary": "Conformance gating: hard gate: no tag without ship-week CC results - mem-035 proved harness claims version-fragile; CC ships weekly during soak",
+        "path": "memories/decisions/mem-071.md",
+        "confidence": 0.95,
+        "concepts": [
+          "workflow",
+          "database",
+          "deployment",
+          "skills",
+          "testing",
+          "context",
+          "api"
+        ],
+        "created": "2026-09-01",
+        "last_validated": "2026-09-01"
+      },
+      "mem-072": {
+        "type": "decision",
+        "summary": "Release path: v7.0.0-rc1, \u22653 days, this repo + Pilot staging - big-bang runtime replacement; soak is the only end-to-end evidence",
+        "path": "memories/decisions/mem-072.md",
+        "confidence": 0.95,
+        "concepts": [
+          "workflow",
+          "database",
+          "deployment",
+          "skills",
+          "testing",
+          "context",
+          "api"
+        ],
+        "created": "2026-09-01",
+        "last_validated": "2026-09-01"
+      },
+      "mem-073": {
+        "type": "decision",
+        "summary": "Rollback strategy: verified downgrade to @6.18.1 + written procedure as ship requirement - additive-only config migration keeps v6 blocks intact; procedure must be user-executable",
+        "path": "memories/decisions/mem-073.md",
+        "confidence": 0.95,
+        "concepts": [
+          "workflow",
+          "database",
+          "deployment",
+          "skills",
+          "testing",
+          "context",
+          "api"
+        ],
+        "created": "2026-09-01",
+        "last_validated": "2026-09-01"
       }
     },
     "files": {}
@@ -7139,6 +7291,191 @@
       "from": "mem-068",
       "to": "TASK-59",
       "type": "learned-from"
+    },
+    {
+      "from": "TASK-68",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-68",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-68",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-68",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-68",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-66",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-65",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "simplification",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "markers",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-69",
+      "to": "frontend",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-70",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-70",
+      "to": "workflow",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-70",
+      "to": "testing",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-70",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "mem-069",
+      "to": "TASK-64",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-070",
+      "to": "TASK-64",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-071",
+      "to": "TASK-64",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-072",
+      "to": "TASK-64",
+      "type": "learned-from"
+    },
+    {
+      "from": "mem-073",
+      "to": "TASK-64",
+      "type": "learned-from"
     }
   ],
   "concept_index": {
@@ -7191,7 +7528,13 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-66",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "testing": [
       "TASK-32",
@@ -7301,7 +7644,17 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-68",
+      "TASK-66",
+      "TASK-65",
+      "TASK-69",
+      "TASK-70",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "context": [
       "TASK-32",
@@ -7411,7 +7764,17 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-68",
+      "TASK-66",
+      "TASK-65",
+      "TASK-69",
+      "TASK-70",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "skills": [
       "TASK-32",
@@ -7528,7 +7891,14 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-65",
+      "TASK-69",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "session": [
       "TASK-32",
@@ -7701,7 +8071,15 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-65",
+      "TASK-69",
+      "TASK-70",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "backend": [
       "TASK-16",
@@ -7758,7 +8136,8 @@
       "TASK-50",
       "TASK-45",
       "TASK-49",
-      "TASK-55"
+      "TASK-55",
+      "TASK-69"
     ],
     "api": [
       "TASK-01",
@@ -7810,7 +8189,12 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "markers": [
       "TASK-18",
@@ -7887,7 +8271,10 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-68",
+      "TASK-65",
+      "TASK-69"
     ],
     "deployment": [
       "TASK-11",
@@ -7947,7 +8334,17 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-68",
+      "TASK-66",
+      "TASK-65",
+      "TASK-69",
+      "TASK-70",
+      "mem-069",
+      "mem-070",
+      "mem-071",
+      "mem-072",
+      "mem-073"
     ],
     "code quality": [
       "TASK-19",
@@ -8017,7 +8414,10 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-68",
+      "TASK-66",
+      "TASK-69"
     ],
     "theory of mind": [
       "TASK-19",
@@ -8047,7 +8447,9 @@
       "mem-065",
       "mem-066",
       "mem-067",
-      "mem-068"
+      "mem-068",
+      "TASK-66",
+      "TASK-69"
     ],
     "simplification": [
       "TASK-02",
@@ -8063,7 +8465,9 @@
       "TASK-48",
       "TASK-49",
       "TASK-55",
-      "TASK-62"
+      "TASK-62",
+      "TASK-65",
+      "TASK-69"
     ],
     "knowledge-graph": [
       "mem-003",

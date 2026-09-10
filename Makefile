@@ -34,6 +34,7 @@ TEST_DIRS := \
 	skills/nav-graph/functions \
 	skills/nav-brief/functions \
 	skills/nav-triz/functions \
+	skills/nav-deep-research/functions \
 	skills/nav-onboard/functions \
 	skills/nav-profile/functions
 

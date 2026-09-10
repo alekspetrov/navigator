@@ -1,6 +1,6 @@
 # TASK-74: nav-deep-research — web deep research for Navigator
 
-**Status**: ✅ Implemented + dry run passed — 2026-09-10 (ships OFF by default; enabled in this repo for dogfood; unreleased, target v7.3.0)
+**Status**: ✅ Released v7.3.0 + live run verified — 2026-09-10 (ships OFF by default; enabled in this repo for dogfood)
 
 ## Context
 
@@ -80,6 +80,13 @@ Ships OFF (repo precedent: new feature value vs regression risk → opt-in toggl
   allocation (b58ea45). Caveat: the plugin agent types are not installed until the next
   release, so the dry run used general-purpose agents carrying the agent prompts; the
   frontmatter tool locks are therefore unverified live.
+- Live re-run on the released plugin (2026-09-10, after restart, real
+  `navigator:deep-research-*` agent types): "current state of WebGPU support across Chrome,
+  Firefox and Safari" (`.agent/research/current-state-webgpu-support-across-chrome/`): 22/22
+  URLs ok across 4 parallel fetchers with unique ids; writer 3533 words / 22 cited, pre-check
+  10/10; critic 10 findings (2 critical) + 1 structural converted to an anchored finding;
+  patcher applied 11/11 with Read+Edit+Write only (diff vs pre-patch copy: 69 lines changed,
+  0.90 similarity — patched, not regenerated); gate 10/10. Tool locks verified live.
 - Original plan for WP7 (kept for the post-release re-run): WP7 end-to-end dry run — enable `deep_research`, `fetchers: 2`,
   `max_sources: 8`, run a question with a known answer; confirm the read guard does not
   block the writer, the gate fails when a citation is removed by hand and passes after

@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "slug": "current-state-webgpu-support-across-chrome",
+  "created": "2026-09-10T20:03:24+00:00",
+  "updated": "2026-09-10T20:21:05+00:00",
+  "tier": "light",
+  "backend": "native",
+  "query_file": "query.md",
+  "steps": {
+    "1": {
+      "name": "decompose",
+      "status": "done",
+      "started_at": "2026-09-10T20:03:47+00:00",
+      "finished_at": "2026-09-10T20:03:47+00:00"
+    },
+    "2": {
+      "name": "sweep",
+      "status": "done",
+      "started_at": "2026-09-10T20:03:47+00:00",
+      "finished_at": "2026-09-10T20:05:34+00:00"
+    },
+    "3": {
+      "name": "draft",
+      "status": "done",
+      "started_at": "2026-09-10T20:05:34+00:00",
+      "finished_at": "2026-09-10T20:12:22+00:00"
+    },
+    "4": {
+      "name": "critique",
+      "status": "done",
+      "started_at": "2026-09-10T20:12:22+00:00",
+      "finished_at": "2026-09-10T20:17:58+00:00"
+    },
+    "5": {
+      "name": "patch",
+      "status": "done",
+      "started_at": "2026-09-10T20:17:58+00:00",
+      "finished_at": "2026-09-10T20:20:38+00:00"
+    },
+    "6": {
+      "name": "ship",
+      "status": "done",
+      "started_at": "2026-09-10T20:20:38+00:00",
+      "finished_at": "2026-09-10T20:21:05+00:00"
+    }
+  },
+  "atomic_items": [],
+  "meta": {
+    "atomic_items": [
+      {
+        "id": "E1",
+        "text": "Chrome: WebGPU support status (versions, platforms, default-on) and notable limitations or missing features",
+        "kind": "entity",
+        "fields": [
+          "status",
+          "platforms",
+          "limitations"
+        ]
+      },
+      {
+        "id": "E2",
+        "text": "Firefox: WebGPU support status (versions, platforms, default-on) and notable limitations or missing features",
+        "kind": "entity",
+        "fields": [
+          "status",
+          "platforms",
+          "limitations"
+        ]
+      },
+      {
+        "id": "E3",
+        "text": "Safari: WebGPU support status (versions, platforms, default-on) and notable limitations or missing features",
+        "kind": "entity",
+        "fields": [
+          "status",
+          "platforms",
+          "limitations"
+        ]
+      },
+      {
+        "id": "Q1",
+        "text": "Cross-browser: which WebGPU features (e.g. compatibility mode, subgroups, shader-f16, texture formats) differ or are missing between the three engines, per the spec status and implementation trackers",
+        "kind": "question"
+      }
+    ],
+    "register": "survey",
+    "sources_rows_before_patch": 22
+  }
+}

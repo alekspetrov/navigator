@@ -1,0 +1,172 @@
+{
+  "run": "current-state-webgpu-support-across-chrome",
+  "draft_sha_note": "critic read report.md at 2026-09-10T21:00:00Z",
+  "findings": [
+    {
+      "id": "C1",
+      "severity": "critical",
+      "pass": "dialectic",
+      "section": "Cross-engine feature divergence",
+      "quote": "— but the corpus contains no\nevidence of a shipping compatibility-mode implementation in Firefox or Safari.",
+      "cite": 11,
+      "problem": "Source 018 (already cited as [11]) states outright that Safari is not anticipated to ship compatibility mode and that Mozilla has not committed, so the draft claims silence where its own cited source speaks.",
+      "fix": "— and the same intent's availability expectation answers the question directly: Mozilla \"is interested in this feature (and has approved all of the spec changes) but has not committed to implementing it yet\", while for Apple \"it is not anticipated that this feature will ship in Safari since all Apple devices on the market can support the full Core WebGPU spec\"; on the same thread Chrome's WebGPU lead added \"we don't expect all browsers to ship it ever\", describing Firefox as considering it against competing WebGPU priorities [11].",
+      "source_ids": [
+        "018"
+      ]
+    },
+    {
+      "id": "C2",
+      "severity": "critical",
+      "pass": "dialectic",
+      "section": "Open questions",
+      "quote": "- **Will Firefox or Safari implement compatibility mode?** Both registered positive standards\n  positions [11], but the corpus has no implementation signal — WebKit/Mozilla\n  standards-positions entries or tracking bugs would settle it.",
+      "cite": 11,
+      "problem": "This open question is answered by [11] for Safari (not anticipated to ship) and partly for Firefox (considering, not committed), and 'both registered positive standards positions' misstates the source, which says there is no entry for compatibility mode in the standards-positions repos.",
+      "fix": "- **Will Firefox implement compatibility mode?** Safari is effectively settled: the Blink intent says it is \"not anticipated that this feature will ship in Safari\" because all shipping Apple devices support core WebGPU, and compatibility-mode apps run unchanged on core-only browsers [11]. Firefox is the open half — Mozilla approved the spec changes but has not committed to implementing, and neither Gecko nor WebKit has an entry for compatibility mode in the standards-positions repos (the \"Positive\" labels are the intent author's reading of Working Group participation) [11]. A Mozilla tracking bug would settle it.",
+      "source_ids": [
+        "018"
+      ]
+    },
+    {
+      "id": "C3",
+      "severity": "major",
+      "pass": "support",
+      "section": "Reading the evidence: where sources disagree",
+      "quote": "Two further items are launch-day press coverage of the\nFirefox 141 announcement and add no primary facts beyond the Mozilla post [13][14]",
+      "cite": 13,
+      "problem": "Source 019 ([13]) is not pure rehash: it reports the author's own hands-on test on Firefox 141 (a Unity WebGPU game running at barely 30 FPS, dipping to 10-18, with occasional freezes) and the about:config prefs used, which is first-hand evidence of a Firefox limitation the draft omits.",
+      "fix": "Two further items are launch-day press coverage of the\nFirefox 141 announcement; the linuxiac piece adds no primary facts beyond the Mozilla post [14], while the itsfoss piece adds one hands-on data point — a rotating-cube demo rendered cleanly, but a Unity WebGPU game (Project Prismatic) ran at barely 30 FPS, dipping to 10-18, with occasional freezes, on the Firefox 141 beta with `dom.webgpu.enabled` and `dom.webgpu.allow-present-without-readback` set [13]",
+      "source_ids": [
+        "019"
+      ]
+    },
+    {
+      "id": "C4",
+      "severity": "major",
+      "pass": "instruction",
+      "section": "Safari: shipped everywhere Apple ships OS 26, gated by OS version",
+      "quote": "version, and on iOS every browser uses WebKit, making an OS upgrade the only path [2][16].",
+      "cite": 16,
+      "problem": "The query asks for notable limitations per engine, but Safari's non-structural limits that are on disk ([16] stricter mobile GPU limits, [22] Metal buffer-size ceilings) appear only in the meta-commentary section, leaving the Safari section without a limitations inventory.",
+      "fix": "ADD after quote: \" Beyond the OS gate, the corpus names two Apple-platform capability limits, both from secondary sources: because WebKit maps WebGPU onto Metal, iPhone and iPad expose stricter GPU limits (memory, maximum workgroup counts) than Macs, so pipelines and shader modules must be sized for the lower tier [16]; and a July 2025 analysis reports Safari's Metal backend applying default buffer-size ceilings on iOS hardware — cited as 256 MB on older iPhones rising to roughly 993 MB on iPad Pro — which caps how large a single binding, such as a model weight buffer, can be [22]. Neither figure is corroborated by Apple documentation in this corpus.\"",
+      "source_ids": [
+        "007",
+        "021"
+      ]
+    },
+    {
+      "id": "C5",
+      "severity": "major",
+      "pass": "support",
+      "section": "Cross-engine feature divergence",
+      "quote": "is an opt-in, lightly restricted subset of WebGPU that can run on older graphics APIs such\nas OpenGL ES 3.1 and Direct3D 11, requested via `requestAdapter({ featureLevel:\n\"compatibility\" })` [6][7][11].",
+      "cite": 11,
+      "problem": "The section asserts compatibility mode trades features for reach without the quantified reach numbers that sit in the cited intent, so the reader cannot judge how much reach is at stake.",
+      "fix": "ADD after quote: \" The intent quantifies the reach argument: 31% of Chrome users on Windows do not have Direct3D feature level 11.1 or higher, 23% of Android users do not have Vulkan 1.1 (15% have no Vulkan at all), and ChromeOS Vulkan penetration is low while OpenGL ES 3.1 is ubiquitous [11].\"",
+      "source_ids": [
+        "018"
+      ]
+    },
+    {
+      "id": "C6",
+      "severity": "minor",
+      "pass": "support",
+      "section": "Summary",
+      "quote": "have shipped in Chrome and have no announced shipping date in the other two engines [6][7].",
+      "cite": 6,
+      "problem": "Neither [6] nor [7] speaks to Firefox or Safari roadmaps; this is an argument from corpus silence stated as fact about the world.",
+      "fix": "have shipped in Chrome, and this corpus records no announced shipping date for them in Firefox or Safari [6][7].",
+      "source_ids": [
+        "009",
+        "015"
+      ]
+    },
+    {
+      "id": "C7",
+      "severity": "minor",
+      "pass": "support",
+      "section": "Chrome and Chromium: broadest reach, platform tail still open",
+      "quote": "- **Secure-context only.** `navigator.gpu` is undefined over `http:` or `file:`; the API is\n  available only in secure contexts [9].",
+      "cite": 21,
+      "problem": "Listed under limitations 'documented by Chrome itself', which implies a Chrome-specific restriction; MDN [21] documents the secure-context requirement as applying to the whole API in every engine.",
+      "fix": "- **Secure-context only.** `navigator.gpu` is undefined over `http:` or `file:`; the API is\n  available only in secure contexts [9]. This is a spec-level rule rather than a Chrome\n  quirk — MDN states the whole API is available only in a secure context, so Firefox and\n  Safari behave the same way [21].",
+      "source_ids": [
+        "014"
+      ]
+    },
+    {
+      "id": "C8",
+      "severity": "minor",
+      "pass": "dialectic",
+      "section": "Chrome and Chromium: broadest reach, platform tail still open",
+      "quote": "for Android 12+ devices powered by Qualcomm and ARM GPUs [8]",
+      "cite": 2,
+      "problem": "The snapshot table lists the Chrome 121 Android tier as ARM/Qualcomm/Intel per the tracker while this sentence follows Chrome's docs in naming only Qualcomm and ARM; the disagreement is never surfaced.",
+      "fix": "ADD after quote: \" (the gpuweb tracker lists the same Chrome 121 Android tier as ARM/Qualcomm/Intel, so the two vendor lists disagree on Intel [2])\"",
+      "source_ids": [
+        "011",
+        "003"
+      ]
+    },
+    {
+      "id": "C9",
+      "severity": "minor",
+      "pass": "support",
+      "section": "Snapshot: what \"supported\" means per engine",
+      "quote": "grade on the union of platforms, so a Windows-and-macOS-only default-on ship reads as\n\"disabled by default\".",
+      "cite": 5,
+      "problem": "The explanation of caniuse's Firefox grade is the report's own inference; caniuse [5] states no such methodology, and the hedge 'appears to' does not tell the reader the mechanism is unsourced.",
+      "fix": "grade on the union of platforms, so a Windows-and-macOS-only default-on ship reads as\n\"disabled by default\" — an inference from the shape of the table, not a methodology caniuse\nstates [5].",
+      "source_ids": [
+        "006"
+      ]
+    },
+    {
+      "id": "C10",
+      "severity": "minor",
+      "pass": "dialectic",
+      "section": "Safari: shipped everywhere Apple ships OS 26, gated by OS version",
+      "quote": "The reporter could obtain no validation messages from any\nbrowser, which points at diagnostics as well as correctness [19]. This is a single\nthird-party report, not a WebKit-confirmed defect, and the corpus contains no follow-up.",
+      "cite": 19,
+      "problem": "Two details in the note are dropped: the reporter says he also filed the bug directly with Apple, and the macOS repro ran Safari 26.1 'with WebGPU flags enabled', i.e. the pre-26 flagged configuration the preceding paragraph says regressed.",
+      "fix": "The reporter could obtain no validation messages from any\nbrowser, which points at diagnostics as well as correctness [19]. This is a single\nthird-party report, not a WebKit-confirmed defect, and the corpus contains no follow-up —\nthough the reporter states he also filed it with Apple directly, and his macOS repro ran\nSafari 26.1 with WebGPU flags enabled, the same flagged pre-26 configuration implicated\nabove, while the iOS 26 repro used the default-on build [19].",
+      "source_ids": [
+        "012"
+      ]
+    },
+    {
+      "id": "C11",
+      "severity": "major",
+      "pass": "instruction",
+      "section": "Cross-engine feature divergence",
+      "quote": "Beyond platform matrices, the three engines differ on optional features, WGSL extensions and",
+      "cite": null,
+      "problem": "Q1 asks which features differ or are missing between the three engines; the answer is spread across prose with no per-engine comparison (converted from structural S1 by the orchestrator).",
+      "fix": "ADD after quote: a markdown table with columns | Feature | Chrome | Firefox | Safari | and one row each for compatibility mode, subgroups, shader-f16, importExternalTexture, and texture-component-swizzle. Fill cells ONLY from what sources 009, 015, 018, 013 and 005 state, with [n] citations; write 'not documented in this corpus' in any cell the sources do not cover. This hunk may exceed the usual size cap because it is a single table.",
+      "source_ids": [
+        "009",
+        "015",
+        "018",
+        "013",
+        "005"
+      ]
+    }
+  ],
+  "structural": [
+    {
+      "id": "S1",
+      "problem": "Atomic item Q1 (which features differ or are missing between the three engines) is answered only in prose across four sub-headings; there is no compact per-engine comparison of the feature axes the section names (compatibility mode, subgroups/immediates/WGSL extensions, shader-f16, importExternalTexture, texture formats). A small table with one row per feature and Chrome/Firefox/Safari columns — with explicit 'not documented in this corpus' cells for Firefox and Safari — would make the divergence readable at a glance and would show where the corpus is silent rather than negative.",
+      "source_ids": [
+        "009",
+        "015",
+        "018",
+        "013",
+        "005"
+      ]
+    }
+  ],
+  "structural_converted": [
+    "S1 -> C11"
+  ]
+}

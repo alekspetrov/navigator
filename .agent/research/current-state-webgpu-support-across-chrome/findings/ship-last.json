@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "report-exists",
+      "ok": true,
+      "detail": ".agent/research/current-state-webgpu-support-across-chrome/report.md"
+    },
+    {
+      "name": "required-sections",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no-citation-ranges",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "citations-resolve",
+      "ok": true,
+      "detail": "body-only=[] table-only=[] consecutive=True rows=22"
+    },
+    {
+      "name": "sources-have-notes",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "no-fence-leak",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "patch-log-resolved",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "name": "sources-not-shrunk",
+      "ok": true,
+      "detail": "rows=22 before=22"
+    },
+    {
+      "name": "min-sources",
+      "ok": true,
+      "detail": "rows=22 min=8"
+    },
+    {
+      "name": "key-findings-typed",
+      "ok": true,
+      "detail": "typed=12 untyped=0"
+    }
+  ],
+  "run": "current-state-webgpu-support-across-chrome"
+}

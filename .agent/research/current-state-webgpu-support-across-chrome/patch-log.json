@@ -1,0 +1,25 @@
+{
+  "run": "current-state-webgpu-support-across-chrome",
+  "applied": [
+    {"id": "C1", "severity": "critical", "section": "Cross-engine feature divergence"},
+    {"id": "C2", "severity": "critical", "section": "Open questions"},
+    {"id": "C3", "severity": "major", "section": "Reading the evidence: where sources disagree"},
+    {"id": "C4", "severity": "major", "section": "Safari: shipped everywhere Apple ships OS 26, gated by OS version"},
+    {"id": "C5", "severity": "major", "section": "Cross-engine feature divergence"},
+    {"id": "C11", "severity": "major", "section": "Cross-engine feature divergence"},
+    {"id": "C6", "severity": "minor", "section": "Summary"},
+    {"id": "C7", "severity": "minor", "section": "Chrome and Chromium: broadest reach, platform tail still open"},
+    {"id": "C8", "severity": "minor", "section": "Chrome and Chromium: broadest reach, platform tail still open"},
+    {"id": "C9", "severity": "minor", "section": "Snapshot: what \"supported\" means per engine"},
+    {"id": "C10", "severity": "minor", "section": "Safari: shipped everywhere Apple ships OS 26, gated by OS version"}
+  ],
+  "rejected": [],
+  "unresolved": [],
+  "sources_appended": [],
+  "structural_forwarded": [],
+  "notes": [
+    "C11 old_string extended to the end of the sentence (\"...capability tiers. What this corpus establishes:\") so the table lands after a complete sentence rather than mid-clause; table cells cite only [3][6][7][11][20] plus [10] for the Chrome 151-152 subgroup-size-control date the draft already attributes there, with explicit 'not documented in this corpus' cells.",
+    "C1, C2 and C4 replacements run slightly over the ~600-character guidance (approx. 520, 612 and 630 chars of new text) but are sentence-level insertions, not section rewrites; applied because rejecting C1/C2 would leave critical findings unaddressed and C4 supplies the Safari limitations inventory the research_query asks for.",
+    "No new Sources rows were needed: all 22 note ids were already present, so the table still has 22 rows and existing numbering is untouched."
+  ]
+}

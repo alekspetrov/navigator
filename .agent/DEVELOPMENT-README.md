@@ -136,6 +136,7 @@ When implementation is complete, run these without prompting:
 
 ### Research Reports (research/)
 
+- `research/current-state-webgpu-support-across-chrome/report.md` — WebGPU support across Chrome, Firefox, Safari: status, platforms, limitations, per-engine feature table (22 sources, 2026-09-10; first live run on v7.3.0 plugin agents)
 - `research/current-status-free-threaded-no-gil/report.md` — Free-threaded CPython as of September 2026: versions, single-thread cost, NumPy/pandas/Django readiness (15 sources, 2026-09-10; TASK-74 dry run)
 
 ---

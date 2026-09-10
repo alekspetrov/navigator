@@ -6,6 +6,21 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.2.0] — 2026-09-10 — "Three Candidates"
+
+TRIZ Phase 2 (TASK-73): `nav-triz` skill — divergent solving for declared contradictions.
+Additive, new skill only.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.2.0.md)
+
+- **nav-triz**: three candidates from different TRIZ separation modes, mandatory "worsens"
+  cell, one recommendation, capture back to the graph; fires only on explicit ask or a
+  declared contradiction on a substantial task.
+- **`triz_suggest.py`**: deterministic principle prompts (one per separation mode) + prior
+  resolutions from the knowledge graph; always exits 0; generic fallback labelled.
+- **`reference/PRINCIPLES.md`**: separation modes with repo examples, ~20 mapped
+  principles, the non-transferring list.
+- **Hand-offs**: nav-brief, navigator-research Phase 0.5, nav-workflow RESEARCH.
+
 ## [v7.1.0] — 2026-09-10 — "Contradictions"
 
 TRIZ Phase 1 (TASK-72): Navigator starts asking for a *better* solution, not just a fast one.

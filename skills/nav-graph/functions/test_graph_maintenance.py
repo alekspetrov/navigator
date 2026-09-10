@@ -23,6 +23,7 @@ from graph_maintenance import (
     find_unindexed_memory_files,
     find_invalid_concept_refs,
     reconcile,
+    _parse_memory_file,
     repair_graph,
     health_check,
     prune_memories,
@@ -351,6 +352,131 @@ class TestReconcile(unittest.TestCase):
             second = reconcile(g, root=str(root), execute=True)
             self.assertEqual(second["unindexed_files"], [])
             self.assertEqual(second["registered"], [])
+
+
+TRIZ_FOOTER = ("**Contradiction**: speed vs safety\n"
+               "**Separation**: condition\n"
+               "**Principle**: dynamization\n")
+
+
+class TestParseMemoryFileTriz(unittest.TestCase):
+    """TASK-72: optional TRIZ footer lines parse into meta only when present."""
+
+    def test_footer_fields_parsed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "mem-050.md"
+            p.write_text("# Decision: Ship OFF by default\n\n---\n"
+                         "**Confidence**: 95%\n**Concepts**: release\n"
+                         + TRIZ_FOOTER)
+            meta = _parse_memory_file(p)
+        self.assertEqual(meta["contradiction"], "speed vs safety")
+        self.assertEqual(meta["separation"], "condition")
+        self.assertEqual(meta["principle"], "dynamization")
+        self.assertEqual(meta["confidence"], 0.95)  # **Con... prefixes distinct
+        self.assertEqual(meta["concepts"], ["release"])
+
+    def test_absent_fields_not_in_meta(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "mem-051.md"
+            p.write_text("# Pattern: X\n\n---\n**Confidence**: 90%\n"
+                         "**Concepts**: a\n**Contradiction**:   \n")
+            meta = _parse_memory_file(p)
+        self.assertEqual(set(meta), {"summary", "concepts", "confidence", "type"})
+
+
+class TestReconcileTrizFields(unittest.TestCase):
+    """TASK-72: TRIZ fields flow disk -> node for unindexed AND indexed memories."""
+
+    def _repo(self, tmp: str):
+        root = Path(tmp)
+        base = _make_memory_tree(root)
+        (base / "decisions").mkdir()
+        # indexed decision, footer tagged AFTER indexing (retrofit case)
+        (base / "decisions" / "mem-001.md").write_text(
+            "# Decision: Indexed\n\n---\n**Confidence**: 90%\n"
+            "**Concepts**: release\n" + TRIZ_FOOTER)
+        # indexed untagged pattern: must be untouched
+        (base / "patterns" / "mem-002.md").write_text(
+            "# Pattern: Plain\n\n---\n**Confidence**: 80%\n**Concepts**: a\n")
+        # unindexed tagged decision (registration case)
+        (base / "decisions" / "mem-003.md").write_text(
+            "# Decision: Orphan\n\n---\n**Confidence**: 85%\n"
+            "**Concepts**: release\n**Contradiction**: A vs B\n")
+        g = create_empty_graph()
+        g = add_node(g, "memories", "mem-001",
+                     {"type": "decision", "summary": "Indexed", "confidence": 0.9,
+                      "path": "memories/decisions/mem-001.md", "concepts": ["release"]})
+        g = add_node(g, "memories", "mem-002",
+                     {"type": "pattern", "summary": "Plain", "confidence": 0.8,
+                      "path": "memories/patterns/mem-002.md", "concepts": ["a"]})
+        return root, g
+
+    def test_dry_run_reports_field_updates_without_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, g = self._repo(tmp)
+            before = json.dumps(g, sort_keys=True)
+            report = reconcile(g, root=str(root))
+            self.assertEqual(report["field_updates"],
+                             [{"id": "mem-001",
+                               "fields": ["contradiction", "separation", "principle"]}])
+            self.assertEqual(json.dumps(g, sort_keys=True), before)
+
+    def test_execute_syncs_fields_onto_existing_node(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, g = self._repo(tmp)
+            untagged_before = json.dumps(g["nodes"]["memories"]["mem-002"], sort_keys=True)
+            report = reconcile(g, root=str(root), execute=True)
+            node = g["nodes"]["memories"]["mem-001"]
+            self.assertEqual(node["contradiction"], "speed vs safety")
+            self.assertEqual(node["separation"], "condition")
+            self.assertEqual(node["principle"], "dynamization")
+            self.assertEqual(node["summary"], "Indexed")  # never re-synced
+            self.assertEqual(json.dumps(g["nodes"]["memories"]["mem-002"],
+                                        sort_keys=True), untagged_before)
+            # unindexed tagged decision registered WITH its field
+            self.assertEqual(len(report["registered"]), 1)
+            new_id = report["registered"][0]["id"]
+            self.assertEqual(g["nodes"]["memories"][new_id]["contradiction"], "A vs B")
+            self.assertEqual(g["nodes"]["memories"][new_id]["type"], "decision")
+            self.assertNotIn("separation", g["nodes"]["memories"][new_id])
+
+    def test_execute_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, g = self._repo(tmp)
+            reconcile(g, root=str(root), execute=True)
+            second = reconcile(g, root=str(root), execute=True)
+            self.assertEqual(second["field_updates"], [])
+            self.assertEqual(second["registered"], [])
+
+    def test_field_removed_on_disk_is_not_cleared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, g = self._repo(tmp)
+            reconcile(g, root=str(root), execute=True)
+            (root / ".agent/knowledge/memories/decisions/mem-001.md").write_text(
+                "# Decision: Indexed\n\n---\n**Confidence**: 90%\n**Concepts**: release\n")
+            report = reconcile(g, root=str(root), execute=True)
+            self.assertEqual(report["field_updates"], [])
+            self.assertEqual(g["nodes"]["memories"]["mem-001"]["contradiction"],
+                             "speed vs safety")
+
+    def test_round_trip_writer_parse_reconcile(self):
+        from memory_writer import create_memory_file
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _make_memory_tree(root)
+            path = Path(create_memory_file(
+                memory_id="mem-090", memory_type="decision", title="RT",
+                summary="Round trip", concepts=["release"],
+                base_dir=str(root / ".agent" / "knowledge"),
+                contradiction="A vs B", separation="level", principle="intermediary"))
+            meta = _parse_memory_file(path)
+            self.assertEqual((meta["contradiction"], meta["separation"], meta["principle"]),
+                             ("A vs B", "level", "intermediary"))
+            g = create_empty_graph()
+            report = reconcile(g, root=str(root), execute=True)
+            node = g["nodes"]["memories"][report["registered"][0]["id"]]
+            self.assertEqual((node["contradiction"], node["separation"], node["principle"]),
+                             ("A vs B", "level", "intermediary"))
 
 
 class TestRepairConceptIndex(unittest.TestCase):

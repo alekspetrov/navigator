@@ -21,3 +21,6 @@
 **Captured**: {DATE}
 **Confidence**: {CONFIDENCE}%
 **Concepts**: {CONCEPTS}
+**Contradiction**: {CONTRADICTION}   <!-- optional, decisions: "<improving A> vs <worsening B>" -->
+**Separation**: {SEPARATION}         <!-- optional: time | space | condition | level -->
+**Principle**: {PRINCIPLE}           <!-- optional: inventive principle applied -->

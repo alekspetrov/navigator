@@ -24,7 +24,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from graph_manager import load_graph, resolve_concept_alias, memory_file_ref
+from graph_manager import (TRIZ_FIELDS, load_graph, resolve_concept_alias,
+                           memory_file_ref)
 
 
 def is_resolved(mem: dict) -> bool:
@@ -105,6 +106,11 @@ def rank_memories(graph: dict, target_concepts: list,
     ]
 
 
+def _triz_suffix(mem: dict) -> str:
+    """' ↔ A vs B' when the memory carries a TRIZ contradiction, else ''."""
+    return f" ↔ {mem['contradiction']}" if mem.get("contradiction") else ""
+
+
 def render_compact(ranked: list) -> str:
     """- PITFALL: "summary" (90%) — for the session-start hook section."""
     lines = []
@@ -112,7 +118,8 @@ def render_compact(ranked: list) -> str:
         mem_type = mem.get("type", "memory").upper()
         summary = mem.get("summary", mem["id"])
         confidence = int(round(float(mem.get("confidence", 0)) * 100))
-        lines.append(f'- {mem_type}: "{summary}" ({confidence}%)')
+        lines.append(f'- {mem_type}: "{summary}" ({confidence}%)'
+                     f'{_triz_suffix(mem)}')
     return "\n".join(lines)
 
 
@@ -126,7 +133,7 @@ def render_markdown(ranked: list) -> str:
         ref = memory_file_ref(mem)
         suffix = f" — `{ref}`" if ref else ""
         lines.append(f"- **{mem_type}** ({confidence}%, {mem['id']}): "
-                     f"{summary}{suffix}")
+                     f"{summary}{_triz_suffix(mem)}{suffix}")
     return "\n".join(lines)
 
 
@@ -134,7 +141,8 @@ def render_json(ranked: list) -> str:
     return json.dumps(
         [{"id": m["id"], "type": m.get("type"), "summary": m.get("summary"),
           "confidence": m.get("confidence"), "score": m["score"],
-          "file": memory_file_ref(m)} for m in ranked],
+          "file": memory_file_ref(m),
+          **{k: m[k] for k in TRIZ_FIELDS if m.get(k)}} for m in ranked],
         indent=2,
     )
 

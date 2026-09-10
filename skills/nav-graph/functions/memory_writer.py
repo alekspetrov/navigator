@@ -25,9 +25,17 @@ def create_memory_file(
     related_files: list = None,
     confidence: int = 80,
     concepts: list = None,
-    base_dir: str = ".agent/knowledge"
+    base_dir: str = ".agent/knowledge",
+    contradiction: str = "",
+    separation: str = "",
+    principle: str = "",
 ) -> str:
-    """Create a detailed memory markdown file."""
+    """Create a detailed memory markdown file.
+
+    The three TRIZ fields (contradiction / separation / principle) are
+    optional footer lines. When all are empty the output is byte-identical
+    to the pre-TRIZ format, so non-decision memories are unaffected.
+    """
 
     related_tasks = related_tasks or []
     related_sops = related_sops or []
@@ -55,6 +63,16 @@ def create_memory_file(
     # Type display name
     type_display = memory_type.title()
 
+    # Optional TRIZ footer lines (decisions): only emitted when set.
+    triz_lines = []
+    if contradiction:
+        triz_lines.append(f"**Contradiction**: {contradiction}")
+    if separation:
+        triz_lines.append(f"**Separation**: {separation}")
+    if principle:
+        triz_lines.append(f"**Principle**: {principle}")
+    triz_str = ("\n".join(triz_lines) + "\n") if triz_lines else ""
+
     content = f"""# {type_display}: {title}
 
 ## Summary
@@ -76,7 +94,7 @@ def create_memory_file(
 **Captured**: {datetime.now().strftime("%Y-%m-%d")}
 **Confidence**: {confidence}%
 **Concepts**: {", ".join(concepts) if concepts else "general"}
-"""
+{triz_str}"""
 
     if output_path.exists():
         raise FileExistsError(
@@ -104,6 +122,14 @@ def main():
     parser.add_argument('--confidence', type=int, default=80, help='Confidence (0-100)')
     parser.add_argument('--concepts', default='', help='Comma-separated concepts')
     parser.add_argument('--base-dir', default='.agent/knowledge', help='Base directory')
+    parser.add_argument('--contradiction', default='',
+                        help='TRIZ contradiction: "<improving A> vs <worsening B>" '
+                             '(optional, decisions)')
+    parser.add_argument('--separation', default='',
+                        help='TRIZ separation used: time|space|condition|level '
+                             '(optional, free text)')
+    parser.add_argument('--principle', default='',
+                        help='Inventive principle applied, e.g. "prior action" (optional)')
 
     args = parser.parse_args()
 
@@ -126,7 +152,10 @@ def main():
         related_files=related_files,
         confidence=args.confidence,
         concepts=concepts,
-        base_dir=args.base_dir
+        base_dir=args.base_dir,
+        contradiction=args.contradiction,
+        separation=args.separation,
+        principle=args.principle,
     )
 
     print(f"Memory file created: {output_path}")

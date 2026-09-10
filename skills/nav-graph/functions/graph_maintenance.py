@@ -14,6 +14,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 from graph_manager import (
+    TRIZ_FIELDS,
     load_graph,
     save_graph,
     add_memory,
@@ -242,7 +243,10 @@ def _parse_memory_file(path: Path) -> dict:
     Handles both observed formats:
     - YAML-ish frontmatter (consumer/pilot style): name/description/type keys
     - Navigator memory_writer style: '# Type: Title' heading + footer lines
-      '**Confidence**: NN%' and '**Concepts**: a, b'
+      '**Confidence**: NN%' and '**Concepts**: a, b', plus the optional
+      TRIZ footer lines '**Contradiction**:', '**Separation**:',
+      '**Principle**:' (TASK-72) — set in `meta` only when present and
+      non-empty, so untagged files parse to the same dict as before.
     Conservative fallbacks: summary=filename, confidence=0.5, concepts=[].
     """
     meta = {'summary': path.stem.replace('_', ' ').replace('-', ' '),
@@ -285,6 +289,18 @@ def _parse_memory_file(path: Path) -> dict:
             raw = s.split(':', 1)[1].strip()
             if raw and raw.lower() != 'general':
                 meta['concepts'] = [c.strip().lower() for c in raw.split(',') if c.strip()]
+        elif s.startswith('**Contradiction**:'):
+            v = s.split(':', 1)[1].strip()
+            if v:
+                meta['contradiction'] = v
+        elif s.startswith('**Separation**:'):
+            v = s.split(':', 1)[1].strip()
+            if v:
+                meta['separation'] = v
+        elif s.startswith('**Principle**:'):
+            v = s.split(':', 1)[1].strip()
+            if v:
+                meta['principle'] = v
 
     meta['summary'] = meta['summary'][:200]
     return meta
@@ -305,21 +321,51 @@ def _infer_type_and_resolved(path: Path) -> tuple:
     return memory_type, resolved
 
 
+def _triz_field_updates(graph: dict, root: str, base_dir: str,
+                        apply: bool) -> list:
+    """Indexed memory nodes whose backing file carries TRIZ fields the node
+    lacks or differs on. Returns [{'id', 'fields'}]; mutates nodes only when
+    `apply` is True. Never clears node fields absent from disk."""
+    updates = []
+    for mem_id, node in graph.get('nodes', {}).get('memories', {}).items():
+        ref = memory_file_ref(node)
+        path = resolve_memory_file(ref, root, base_dir) if ref else None
+        if path is None:
+            continue
+        meta = _parse_memory_file(path)
+        changed = [k for k in TRIZ_FIELDS
+                   if meta.get(k) and node.get(k) != meta[k]]
+        if not changed:
+            continue
+        updates.append({'id': mem_id, 'fields': changed})
+        if apply:
+            for k in changed:
+                node[k] = meta[k]
+    return updates
+
+
 def reconcile(graph: dict, root: str = ".",
               base_dir: str = ".agent/knowledge",
               execute: bool = False) -> dict:
     """Report (and optionally repair) disk-vs-graph drift.
 
-    Dry-run (default) reports broken file links, unindexed memory files, and
-    invalid concept refs. --execute registers UNINDEXED FILES only — the one
-    safe automatic fix. Broken-link nodes are never auto-deleted (the node's
-    summary is still knowledge) and concept refs are never rewritten.
+    Dry-run (default) reports broken file links, unindexed memory files,
+    invalid concept refs, and TRIZ field updates. --execute applies two safe
+    automatic fixes: registering UNINDEXED FILES, and copying the optional
+    TRIZ footer fields (contradiction / separation / principle, TASK-72)
+    from disk onto already-indexed nodes. Broken-link nodes are never
+    auto-deleted (the node's summary is still knowledge), concept refs are
+    never rewritten, and a TRIZ field removed from disk is never cleared on
+    the node — only additions/changes flow disk -> graph. `summary` is never
+    re-synced (headings are truncated titles; see add_memory).
     """
     report = {
         'broken_file_links': find_broken_file_links(graph, root, base_dir),
         'unindexed_files': find_unindexed_memory_files(graph, root, base_dir),
         'invalid_concept_refs': find_invalid_concept_refs(graph),
         'registered': [],
+        'field_updates': _triz_field_updates(graph, root, base_dir,
+                                             apply=execute),
         'errors': [],
     }
 
@@ -343,6 +389,7 @@ def reconcile(graph: dict, root: str = ".",
                 graph, memory_type, meta['summary'], meta['concepts'],
                 confidence=meta['confidence'], base_dir=str(Path(root) / base_dir),
                 create_file=False,
+                **{k: meta[k] for k in TRIZ_FIELDS if meta.get(k)},
             )
         except (ValueError, OSError) as e:
             report['errors'].append(f"{file_str}: {e}")
@@ -856,18 +903,26 @@ def main():
             print("  Hint: remap to an existing concept, add an alias, or "
                   "register the concept. Never auto-rewritten.")
 
+        updates = result['field_updates']
+        print(f"\nTRIZ field updates (disk -> node): {len(updates)}")
+        for u in updates[:20]:
+            print(f"  - {u['id']}: {', '.join(u['fields'])}")
+        if len(updates) > 20:
+            print(f"  ... and {len(updates) - 20} more")
+
         if args.execute:
             print(f"\nRegistered {len(result['registered'])} unindexed files:")
             for r in result['registered']:
                 print(f"  + {r['id']} <- {r['file']}")
             for e in result['errors']:
                 print(f"  ! {e}", file=sys.stderr)
-            if result['registered']:
+            if result['registered'] or updates:
                 if not save_graph(args.graph_path, graph):
                     print("Failed to save graph", file=sys.stderr)
                     sys.exit(1)
-        elif unindexed:
-            print("\nRun with --execute to register unindexed files.")
+        elif unindexed or updates:
+            print("\nRun with --execute to register unindexed files "
+                  "and apply field updates.")
 
 
 if __name__ == '__main__':

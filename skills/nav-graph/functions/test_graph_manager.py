@@ -19,8 +19,10 @@ from graph_manager import (
     add_edge,
     add_memory,
     query_by_concept,
+    query_contradictions,
     format_query_results,
     _clamp_confidence,
+    _format_memory,
 )
 
 EMPTY_GRAPH_KEYS = {
@@ -506,6 +508,92 @@ class TestResolveMemory(unittest.TestCase):
             {"type": "pitfall", "summary": "s", "confidence": 0.9,
              "resolved": True})
         self.assertIn("[resolved]", line)
+
+
+class TestAddMemoryTriz(unittest.TestCase):
+    """TASK-72: optional TRIZ fields on the node and in the file footer."""
+
+    def test_fields_on_node_and_in_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            graph = create_empty_graph()
+            mem_id = add_memory(
+                graph, "decision", "ship off by default", ["release"],
+                base_dir=tmp, contradiction="value vs risk",
+                separation="condition", principle="dynamization")
+            node = graph["nodes"]["memories"][mem_id]
+            self.assertEqual(node["contradiction"], "value vs risk")
+            self.assertEqual(node["separation"], "condition")
+            self.assertEqual(node["principle"], "dynamization")
+            text = (Path(tmp) / "memories" / "decisions" / f"{mem_id}.md").read_text()
+            self.assertIn("**Contradiction**: value vs risk\n", text)
+
+    def test_without_fields_node_keys_unchanged(self):
+        graph = create_empty_graph()
+        mem_id = add_memory(graph, "decision", "s", ["x"], create_file=False)
+        self.assertEqual(set(graph["nodes"]["memories"][mem_id]),
+                         {"type", "summary", "path", "confidence", "concepts",
+                          "created", "last_validated"})
+
+
+class TestQueryContradictions(unittest.TestCase):
+    def _graph(self):
+        g = create_empty_graph()
+        add_node(g, "memories", "mem-001",
+                 {"type": "decision", "summary": "Ship OFF by default",
+                  "confidence": 0.9, "contradiction": "feature value vs regression risk",
+                  "separation": "condition", "principle": "dynamization"})
+        add_node(g, "memories", "mem-002",
+                 {"type": "decision", "summary": "Re-export shims for one major",
+                  "confidence": 0.95, "contradiction": "clean code vs rollback safety",
+                  "separation": "time"})
+        add_node(g, "memories", "mem-003",
+                 {"type": "decision", "summary": "Untagged decision", "confidence": 0.99})
+        add_node(g, "memories", "mem-004",
+                 {"type": "pitfall", "summary": "Not a decision", "confidence": 0.5,
+                  "contradiction": "x vs y"})
+        return g
+
+    def test_no_filter_returns_all_tagged_sorted(self):
+        ids = [m["id"] for m in query_contradictions(self._graph())]
+        self.assertEqual(ids, ["mem-002", "mem-001", "mem-004"])
+
+    def test_filter_case_insensitive_over_contradiction_summary_principle(self):
+        g = self._graph()
+        self.assertEqual([m["id"] for m in query_contradictions(g, "ROLLBACK")], ["mem-002"])
+        self.assertEqual([m["id"] for m in query_contradictions(g, "ship off")], ["mem-001"])
+        self.assertEqual([m["id"] for m in query_contradictions(g, "dynamization")],
+                         ["mem-001"])
+        self.assertEqual(query_contradictions(g, "risk safety"), [])  # all tokens required
+
+    def test_untagged_never_returned(self):
+        ids = [m["id"] for m in query_contradictions(self._graph(), "untagged")]
+        self.assertEqual(ids, [])
+
+    def test_format_memory_contradiction_suffix(self):
+        line = _format_memory({"type": "decision", "summary": "s", "confidence": 0.9,
+                               "contradiction": "speed vs safety", "separation": "time"})
+        self.assertEqual(line, '  - DECISION: "s" (90%) ↔ speed vs safety [separation: time]')
+
+    def test_format_memory_untagged_exact(self):
+        line = _format_memory({"type": "pitfall", "summary": "s", "confidence": 0.9})
+        self.assertEqual(line, '  - PITFALL: "s" (90%)')
+
+    def test_cli_contradictions_action(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as tmp:
+            gp = Path(tmp) / "graph.json"
+            gp.write_text(json.dumps(self._graph()))
+            run = lambda *a: subprocess.run(
+                [sys.executable, str(Path(__file__).parent / "graph_manager.py"),
+                 "--action", "contradictions", "--graph-path", str(gp), *a],
+                capture_output=True, text=True)
+            proc = run("--filter", "rollback")
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertIn('Contradictions "rollback" (1)', proc.stdout)
+            self.assertIn("↔ clean code vs rollback safety [separation: time]", proc.stdout)
+            proc = run("--filter", "nomatch")
+            self.assertEqual(proc.returncode, 0)
+            self.assertIn("No memories with a Contradiction field match.", proc.stdout)
 
 
 class TestCliAddMemoryRollback(unittest.TestCase):

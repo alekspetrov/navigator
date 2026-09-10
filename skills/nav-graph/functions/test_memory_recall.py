@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from graph_manager import create_empty_graph, add_node
 from memory_recall import collect_auto_concepts, rank_memories, \
-    render_compact, render_markdown
+    render_compact, render_markdown, render_json
 
 RECALL = Path(__file__).parent / "memory_recall.py"
 
@@ -146,6 +146,36 @@ class TestRenderers(unittest.TestCase):
         ranked = rank_memories(_graph(), ["authentication"])
         out = render_compact(ranked)
         self.assertIn('- PITFALL: "Auth breaks session tests" (90%)', out)
+
+    def _triz_graph(self):
+        g = create_empty_graph()
+        add_node(g, "memories", "mem-010",
+                 {"type": "decision", "summary": "Ship OFF", "confidence": 0.9,
+                  "concepts": ["release"], "contradiction": "value vs risk",
+                  "separation": "condition"})
+        add_node(g, "memories", "mem-011",
+                 {"type": "pattern", "summary": "Plain", "confidence": 0.8,
+                  "concepts": ["release"]})
+        return g
+
+    def test_compact_suffix_only_when_contradiction_present(self):
+        out = render_compact(rank_memories(self._triz_graph(), ["release"]))
+        self.assertEqual(out.splitlines(), [
+            '- DECISION: "Ship OFF" (90%) ↔ value vs risk',
+            '- PATTERN: "Plain" (80%)',
+        ])
+
+    def test_markdown_suffix(self):
+        out = render_markdown(rank_memories(self._triz_graph(), ["release"]))
+        self.assertIn("- **DECISION** (90%, mem-010): Ship OFF ↔ value vs risk", out)
+
+    def test_json_triz_keys_only_when_present(self):
+        data = json.loads(render_json(rank_memories(self._triz_graph(), ["release"])))
+        by_id = {d["id"]: d for d in data}
+        self.assertEqual(by_id["mem-010"]["contradiction"], "value vs risk")
+        self.assertEqual(by_id["mem-010"]["separation"], "condition")
+        self.assertNotIn("principle", by_id["mem-010"])
+        self.assertNotIn("contradiction", by_id["mem-011"])
 
 
 class TestCli(unittest.TestCase):

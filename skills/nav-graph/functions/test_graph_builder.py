@@ -45,6 +45,16 @@ def _existing_graph_with_memory() -> dict:
                     "source": "execution",
                     "resolved": True,
                 },
+                "mem-002": {
+                    "type": "decision",
+                    "summary": "Ship OFF by default",
+                    "path": "memories/decisions/mem-002.md",
+                    "confidence": 0.9,
+                    "concepts": ["graph-preserve-test"],
+                    "contradiction": "feature value vs regression risk",
+                    "separation": "condition",
+                    "principle": "dynamization",
+                },
             },
             "files": {},
         },
@@ -70,6 +80,15 @@ class TestBuildGraphPreservesMemories(unittest.TestCase):
             # Graph-only fields survive (unreconstructable from any scan)
             self.assertEqual(mem["source"], "execution")
             self.assertTrue(mem["resolved"])
+
+    def test_triz_fields_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            agent = _make_agent_dir(tmp)
+            graph = build_graph(str(agent), existing_graph=_existing_graph_with_memory())
+            mem = graph["nodes"]["memories"]["mem-002"]
+            self.assertEqual(mem["contradiction"], "feature value vs regression risk")
+            self.assertEqual(mem["separation"], "condition")
+            self.assertEqual(mem["principle"], "dynamization")
 
     def test_memory_concepts_get_nodes_and_index(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -100,7 +119,7 @@ class TestBuildGraphPreservesMemories(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             agent = _make_agent_dir(tmp)
             graph = build_graph(str(agent), existing_graph=_existing_graph_with_memory())
-            self.assertEqual(graph["stats"]["memory_count"], 1)
+            self.assertEqual(graph["stats"]["memory_count"], 2)
 
 
 class TestBuilderCli(unittest.TestCase):

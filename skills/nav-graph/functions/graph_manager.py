@@ -12,6 +12,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+# Optional TRIZ fields a Decision memory may carry (TASK-72). Stored on the
+# node and in the markdown footer only when set; absent keys mean "untagged".
+TRIZ_FIELDS = ("contradiction", "separation", "principle")
+
 
 def load_graph(graph_path: str) -> dict:
     """Load graph from file, return empty structure if missing or corrupt."""
@@ -380,6 +384,29 @@ def query_related(graph: dict, node_id: str, max_depth: int = 2) -> list:
     return list(related)
 
 
+def query_contradictions(graph: dict, text: Optional[str] = None) -> list:
+    """Memories carrying a `contradiction` field, optionally keyword-filtered.
+
+    TRIZ lookup (TASK-72): "how did we resolve this kind of tension before?"
+    Every whitespace-separated word of `text` must appear (case-insensitive)
+    in contradiction + summary + principle. Filters on field presence rather
+    than type so the query is type-agnostic; in practice only decisions carry
+    the field. Sorted by confidence desc, then id. Resolved memories are
+    included and flagged by `_format_memory`, as with `query`.
+    """
+    needles = [w for w in (text or "").lower().split() if w]
+    hits = []
+    for mem_id, mem in graph.get("nodes", {}).get("memories", {}).items():
+        if not mem.get("contradiction"):
+            continue
+        hay = " ".join(str(mem.get(k, "")) for k in
+                       ("contradiction", "summary", "principle")).lower()
+        if all(n in hay for n in needles):
+            hits.append({"id": mem_id, **mem})
+    hits.sort(key=lambda m: (-_clamp_confidence(m.get("confidence", 0)), m["id"]))
+    return hits
+
+
 def _next_memory_id(memories: dict, base_dir: str = ".agent/knowledge") -> str:
     """Generate the next memory ID by scanning both graph nodes AND on-disk files.
 
@@ -420,7 +447,10 @@ def add_memory(graph: dict, memory_type: str, summary: str,
                base_dir: str = ".agent/knowledge",
                create_file: bool = True,
                memory_id: Optional[str] = None,
-               source: Optional[str] = None) -> str:
+               source: Optional[str] = None,
+               contradiction: Optional[str] = None,
+               separation: Optional[str] = None,
+               principle: Optional[str] = None) -> str:
     """Add a memory node to the graph.
 
     Also creates the backing markdown file at
@@ -436,6 +466,11 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     `source` tags the origin of the memory (e.g. 'correction' for memories
     derived from profile corrections). It is persisted on the node only when
     provided, so nodes created without it keep their existing shape.
+
+    `contradiction` / `separation` / `principle` are the optional TRIZ fields
+    (TASK-72): "improving A vs worsening B", the separation mode used, and
+    the inventive principle applied. Same rule as `source`: persisted (on the
+    node and in the file footer) only when provided.
 
     Write ordering (v6.17.0): the backing file is written BEFORE the node is
     added, and file-write failures PROPAGATE (FileExistsError/OSError) with
@@ -469,6 +504,9 @@ def add_memory(graph: dict, memory_type: str, summary: str,
             confidence=int(round(confidence * 100)),
             concepts=concepts or [],
             base_dir=base_dir,
+            contradiction=contradiction or "",
+            separation=separation or "",
+            principle=principle or "",
         )
 
     memory_data = {
@@ -482,6 +520,11 @@ def add_memory(graph: dict, memory_type: str, summary: str,
     }
     if source:
         memory_data["source"] = source
+    for key, val in (("contradiction", contradiction),
+                     ("separation", separation),
+                     ("principle", principle)):
+        if val:
+            memory_data[key] = val
 
     graph = add_node(graph, "memories", memory_id, memory_data)
 
@@ -646,7 +689,12 @@ def _format_memory(memory: dict) -> str:
     confidence = int(memory.get("confidence", 0) * 100)
     # Resolved memories stay queryable but must not present as live truth
     flag = " [resolved]" if memory.get("resolved") else ""
-    return f"  - {mem_type}: \"{summary}\" ({confidence}%){flag}"
+    triz = ""
+    if memory.get("contradiction"):
+        triz = f" ↔ {memory['contradiction']}"
+        if memory.get("separation"):
+            triz += f" [separation: {memory['separation']}]"
+    return f"  - {mem_type}: \"{summary}\" ({confidence}%){flag}{triz}"
 
 
 def _format_sop(sop: dict) -> str:
@@ -725,7 +773,7 @@ def main():
     parser.add_argument('--action', required=True,
                        choices=['query', 'add-node', 'add-memory', 'add-edge',
                                'remove-node', 'stats', 'init', 'related',
-                               'resolve-memory'],
+                               'resolve-memory', 'contradictions'],
                        help='Action to perform')
     parser.add_argument('--graph-path', default='.agent/knowledge/graph.json',
                        help='Path to graph file')
@@ -742,6 +790,14 @@ def main():
                        help='Register unknown concepts as new concept nodes '
                             'instead of rejecting the write')
     parser.add_argument('--source-task', help='Source task for memory')
+    parser.add_argument('--contradiction',
+                       help='TRIZ: "<improving A> vs <worsening B>" (decisions)')
+    parser.add_argument('--separation',
+                       help='TRIZ separation used: time|space|condition|level')
+    parser.add_argument('--principle',
+                       help='Inventive principle applied, e.g. "prior action"')
+    parser.add_argument('--filter',
+                       help='Keyword filter for --action contradictions')
     parser.add_argument('--superseded-by',
                        help='Memory id that supersedes the one being resolved')
     parser.add_argument('--root', default='.',
@@ -838,6 +894,9 @@ def main():
                 graph, args.memory_type, args.summary, concepts,
                 args.confidence, args.source_task,
                 memory_id=args.node_id,
+                contradiction=args.contradiction,
+                separation=args.separation,
+                principle=args.principle,
             )
         except (ValueError, FileExistsError, OSError) as e:
             print(f"Error: {e}", file=sys.stderr)
@@ -848,6 +907,8 @@ def main():
             print(f"Type: {args.memory_type}")
             print(f"Summary: {args.summary}")
             print(f"Concepts: {', '.join(concepts)}")
+            if args.contradiction:
+                print(f"Contradiction: {args.contradiction}")
         else:
             # Roll back the backing file so a failed graph persist doesn't
             # leave an orphan .md that the graph knows nothing about.
@@ -858,6 +919,18 @@ def main():
             print(f"Error: failed to save graph; rolled back backing file "
                   f"for {memory_id}", file=sys.stderr)
             sys.exit(1)
+
+    elif args.action == 'contradictions':
+        graph = load_graph(args.graph_path)
+        hits = query_contradictions(graph, args.filter)
+        label = f' "{args.filter}"' if args.filter else ""
+        print(f"Contradictions{label} ({len(hits)})")
+        for m in hits:
+            print(_format_memory(m))
+            if m.get("principle"):
+                print(f"      principle: {m['principle']}")
+        if not hits:
+            print("No memories with a Contradiction field match.")
 
     elif args.action == 'add-edge':
         if not all([args.from_id, args.to_id, args.edge_type]):

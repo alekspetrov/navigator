@@ -145,7 +145,7 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-09-10; v7.0.0 tagged 2026-09-01, v7.1.0 + v7.2.0 TRIZ releases 2026-09-10, docs site synced same day):
+Current active threads (as of 2026-09-10; v7.0.0 tagged 2026-09-01, v7.1.0 + v7.2.0 TRIZ and v7.3.0 deep-research releases 2026-09-10, docs site synced same day):
 
 **v7.0.0 program — "Hooks as Runtime"** — ALPHA COMPLETE 2026-07-10 (uncommitted→committed same
 day; local testing phase, no release tagged; critical path 57→59→60→61→62→64 all landed, 58/63
@@ -178,7 +178,7 @@ parallel both landed):
 Other threads:
 - **TASK-74** ✅ — nav-deep-research: web deep research (router + 6 step files, 4 agents,
   fenced source notes, deterministic ship gate, graph ingestion); ships OFF via
-  `deep_research.enabled`; end-to-end dry run pending
+  `deep_research.enabled`; released v7.3.0, live run on plugin agents verified 2026-09-10
 - **TASK-72** ✅ — TRIZ Phase 1: Contradiction row in the brief, optional
   contradiction/separation/principle on decision memories, `--action contradictions` query,
   IFR + reuse-inventory questions in research/planner agents (shipped v7.1.0)

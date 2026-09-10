@@ -175,6 +175,22 @@ One query interface across tasks, SOPs, system docs, markers, and experiential m
 | Decision | "We chose X because Y" — may carry a TRIZ contradiction it resolved (`--action contradictions`) |
 | Learning | "X usually means Y" |
 
+### TRIZ Divergent Solving (v7.1.0 – v7.2.0)
+
+Decisions may carry the contradiction they resolved (`--action contradictions` lists them).
+When a brief declares a contradiction on a substantial task, or you ask "find a better
+solution for X", `nav-triz` drafts three candidates from different separation modes, each
+with a named downside, and recommends one. Details: `skills/nav-triz/SKILL.md`.
+
+### Deep Research (v7.3.0)
+
+"Deep research on X" runs a web research pipeline in subagents: three-lens search plan,
+parallel fetchers into fenced source notes, one writer, one adversarial critic, one
+patcher limited to Read+Edit, then a deterministic ship gate before typed Key findings
+become graph memories with URLs as evidence. Ships OFF (`deep_research.enabled`); runs live
+under `.agent/research/<slug>/`. For codebase questions use the `navigator-research` agent.
+Details: `skills/nav-deep-research/SKILL.md`.
+
 ---
 
 ## Agents vs Skills - Token Optimization Strategy
@@ -313,7 +329,8 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
   "auto_update": { "enabled": true, "check_interval_hours": 1 },
   "dispatcher": { "enabled": true },
   "tier1": { "enabled": false, "rules": {} },
-  "stop_completion": { "enabled": false, "continue_enabled": false, "max_continues": 2 }
+  "stop_completion": { "enabled": false, "continue_enabled": false, "max_continues": 2 },
+  "deep_research": { "enabled": false }
 }
 ```
 

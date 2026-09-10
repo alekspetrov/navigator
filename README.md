@@ -104,6 +104,8 @@ Navigator is a superset. Everything you'd expect, plus context engineering.
 | Task Mode | **✅** | ❌ |
 | Theory of Mind | **✅** | ❌ |
 | Knowledge Graph | **✅** | ❌ |
+| TRIZ divergent solving | **✅** | ❌ |
+| Web deep research (cited, gate-checked) | **✅** | ❌ |
 | Loop mode | **✅** | ❌ |
 | OpenTelemetry metrics | **✅** | ❌ |
 | Figma MCP integration | **✅** | ❌ |
@@ -175,6 +177,7 @@ That's it. Navigator handles the rest.
 "Add an API endpoint for posts"           → Endpoint + validation + tests
 "Create context marker: checkpoint"       → 97% context compression
 "Run until done: add dark mode"           → Loop mode completion
+"Deep research on WebGPU browser support"  → Cited report + graph memories
 ```
 
 **No commands to memorize.** Skills detect intent and execute.

@@ -190,6 +190,17 @@ FEATURES = {
         "default": True,
         "type": "config"
     },
+    "deep_research": {
+        "name": "deep_research",
+        "display_name": "Deep Research",
+        "version": "7.3.0",
+        "description": "Web deep research: cited report from fetched sources, critic + ship gate, graph ingestion (nav-deep-research skill)",
+        "short_desc": "Web research → cited report → graph",
+        "config_key": "deep_research",
+        "enabled_key": "enabled",
+        "default": False,
+        "type": "config"
+    },
     "tier1": {
         "name": "tier1",
         "display_name": "Tier-1 Answers",

@@ -464,6 +464,13 @@ python3 "$PLUGIN_DIR/skills/nav-graph/functions/research_to_graph.py" findings.j
 
 **Schema**: see the `Output Format` section of `agents/navigator-research.md` for the full JSON shape the agent emits.
 
+### nav-deep-research (Web Research Skill)
+
+Web research runs (`skills/nav-deep-research`) ingest through the same path: after the ship gate
+passes, `report_to_graph.py --run <slug>` turns every typed `## Key findings` bullet of the report
+into a memory whose evidence is the cited source URL(s), then calls `research_to_graph.ingest_findings`.
+Same 0.7 confidence and memory types; no schema change.
+
 ---
 
 ## Configuration

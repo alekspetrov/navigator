@@ -1,6 +1,6 @@
 ---
 name: navigator-research
-description: Specialized codebase exploration and architecture discovery. Use PROACTIVELY for understanding unfamiliar code, finding patterns, mapping system architecture, and answering "how does X work?" questions. Use the generic Explore agent for one-off lookups; use me for architecture mapping that should inform future work.
+description: Specialized codebase exploration and architecture discovery. Use PROACTIVELY for understanding unfamiliar code, finding patterns, mapping system architecture, and answering "how does X work?" questions. Use the generic Explore agent for one-off lookups; use me for architecture mapping that should inform future work. For questions about the outside world (web sources, literature, vendors) use the nav-deep-research skill instead.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 permissionMode: default

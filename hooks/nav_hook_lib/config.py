@@ -188,6 +188,16 @@ DEFAULTS = {
     "setup_hook": {
         "enabled": True,
     },
+    # ---- v7.3 nav-deep-research (TASK-74) — ships OFF, opt-in ----
+    "deep_research": {
+        "enabled": False,
+        "max_sources": 30,
+        "min_sources": 8,
+        "fetchers": 4,
+        "max_full_reads": 10,
+        "critic_enabled": True,
+        "models": {"fetcher": "sonnet", "writer": "opus", "critic": "opus", "patcher": "opus"},
+    },
 }
 
 

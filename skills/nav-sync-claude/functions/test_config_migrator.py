@@ -163,6 +163,7 @@ TIER1_RULE_IDS = {
 # Every feature / hook block VERSION_CONFIGS knows how to seed, regardless of
 # introduction version. Keep in sync with config_migrator.VERSION_CONFIGS.
 ALL_FEATURE_BLOCKS = {
+    "deep_research",  # 7.3.0 (TASK-74)
     "tom_features",
     "loop_mode",
     "simplification",

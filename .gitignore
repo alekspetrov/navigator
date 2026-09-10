@@ -74,3 +74,5 @@ docs/social/
 # Workshop materials (event-specific, kept local)
 workshop/
 .agent/.features-shown-*
+# nav-deep-research fetched bodies (third-party text; rebuild with source_store.py refetch)
+.agent/research/*/sources/

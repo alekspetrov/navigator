@@ -237,6 +237,17 @@ VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
             "enabled": True
         }
     },
+    "7.3.0": {
+        "deep_research": {
+            "enabled": False,
+            "max_sources": 30,
+            "min_sources": 8,
+            "fetchers": 4,
+            "max_full_reads": 10,
+            "critic_enabled": True,
+            "models": {"fetcher": "sonnet", "writer": "opus", "critic": "opus", "patcher": "opus"}
+        }
+    },
 }
 
 

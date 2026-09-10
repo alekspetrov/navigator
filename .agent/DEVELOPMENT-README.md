@@ -130,6 +130,7 @@ When implementation is complete, run these without prompting:
 ├── philosophy/               ← context-efficiency manifesto + patterns
 ├── learning/                 ← guides, examples, decision frameworks
 ├── knowledge/                ← project knowledge graph (graph.json + memories/)
+├── research/                 ← nav-deep-research runs (query, report, gate; sources/ gitignored)
 └── examples/                 ← real workflow case studies
 ```
 
@@ -170,6 +171,9 @@ parallel both landed):
   dropped — block reasons render as plain text, so Tier-1 is self-safe via exact-match rail
 
 Other threads:
+- **TASK-74** ✅ — nav-deep-research: web deep research (router + 6 step files, 4 agents,
+  fenced source notes, deterministic ship gate, graph ingestion); ships OFF via
+  `deep_research.enabled`; end-to-end dry run pending
 - **TASK-72** ✅ — TRIZ Phase 1: Contradiction row in the brief, optional
   contradiction/separation/principle on decision memories, `--action contradictions` query,
   IFR + reuse-inventory questions in research/planner agents (shipped v7.1.0)

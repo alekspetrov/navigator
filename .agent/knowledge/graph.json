@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-10T09:51:43.912147+00:00",
+  "last_updated": "2026-09-10T14:19:39.270113+00:00",
   "stats": {
-    "total_nodes": 186,
-    "total_edges": 884,
+    "total_nodes": 187,
+    "total_edges": 892,
     "memory_count": 67
   },
   "nodes": {
@@ -885,6 +885,21 @@
           "workflow",
           "testing",
           "context"
+        ]
+      },
+      "TASK-74": {
+        "path": "/Users/aleks.petrov/Projects/startups/navigator/.agent/tasks/TASK-74-nav-deep-research.md",
+        "title": "nav-deep-research \u2014 web deep research for Navigator",
+        "status": "completed",
+        "concepts": [
+          "context",
+          "api",
+          "deployment",
+          "skills",
+          "knowledge",
+          "theory of mind",
+          "database",
+          "testing"
         ]
       }
     },
@@ -7521,6 +7536,46 @@
       "from": "mem-073",
       "to": "TASK-64",
       "type": "learned-from"
+    },
+    {
+      "from": "TASK-74",
+      "to": "context",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "api",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "deployment",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "skills",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "knowledge",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "theory of mind",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "database",
+      "type": "implements"
+    },
+    {
+      "from": "TASK-74",
+      "to": "testing",
+      "type": "implements"
     }
   ],
   "concept_index": {
@@ -7579,7 +7634,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "testing": [
       "TASK-32",
@@ -7699,7 +7755,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "context": [
       "TASK-32",
@@ -7819,7 +7876,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "skills": [
       "TASK-32",
@@ -7943,7 +8001,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "session": [
       "TASK-32",
@@ -8240,7 +8299,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "markers": [
       "TASK-18",
@@ -8390,7 +8450,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "TASK-74"
     ],
     "code quality": [
       "TASK-19",
@@ -8464,7 +8525,8 @@
       "TASK-68",
       "TASK-66",
       "TASK-69",
-      "mem-074"
+      "mem-074",
+      "TASK-74"
     ],
     "theory of mind": [
       "TASK-19",
@@ -8496,7 +8558,8 @@
       "mem-067",
       "mem-068",
       "TASK-66",
-      "TASK-69"
+      "TASK-69",
+      "TASK-74"
     ],
     "simplification": [
       "TASK-02",

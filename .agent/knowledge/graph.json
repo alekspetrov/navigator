@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-01T08:26:02.372407+00:00",
+  "last_updated": "2026-09-10T09:51:43.912147+00:00",
   "stats": {
-    "total_nodes": 185,
+    "total_nodes": 186,
     "total_edges": 884,
-    "memory_count": 66
+    "memory_count": 67
   },
   "nodes": {
     "tasks": {
@@ -2235,7 +2235,10 @@
           "authentication"
         ],
         "created": "2026-06-15",
-        "last_validated": "2026-06-15"
+        "last_validated": "2026-06-15",
+        "contradiction": "dispatch autonomy vs outward-artifact safety",
+        "separation": "condition",
+        "principle": "confirmation + --dry-run only on high-stakes dispatch (ToM checkpoint)"
       },
       "mem-050": {
         "type": "learning",
@@ -2395,7 +2398,10 @@
           "skills"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "new feature value vs regression risk",
+        "separation": "condition",
+        "principle": "dynamization: ship OFF, opt-in config toggle"
       },
       "mem-061": {
         "type": "decision",
@@ -2416,7 +2422,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "scoring nuance vs explainability",
+        "separation": "n/a (contradiction dissolved)",
+        "principle": "ideality: drop the contradictory base-0.5\u00b1 variant, additive model only"
       },
       "mem-062": {
         "type": "decision",
@@ -2437,7 +2446,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "one simple score vs two distinct concerns",
+        "separation": "level",
+        "principle": "segmentation: ambiguity as its own axis on ScoreCard"
       },
       "mem-063": {
         "type": "decision",
@@ -2458,7 +2470,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "clean codebase vs rollback safety",
+        "separation": "time",
+        "principle": "temporary re-export shims for one major, delete in v8"
       },
       "mem-064": {
         "type": "decision",
@@ -2479,7 +2494,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "many event writers vs consistent state",
+        "separation": "level",
+        "principle": "merging: single state file, atomic tmp+rename per event"
       },
       "mem-065": {
         "type": "decision",
@@ -2500,7 +2518,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "ops need diagnostics vs no secret leakage",
+        "separation": "space",
+        "principle": "intermediary: single redacting emitter in sentinels.py, grep-enforced"
       },
       "mem-066": {
         "type": "decision",
@@ -2521,7 +2542,10 @@
           "theory of mind"
         ],
         "created": "2026-07-10",
-        "last_validated": "2026-07-10"
+        "last_validated": "2026-07-10",
+        "contradiction": "hooks must scan text vs echoed blocks false-fire",
+        "separation": "time",
+        "principle": "prior action: strip_all() before any op scans text"
       },
       "mem-067": {
         "type": "decision",
@@ -2631,7 +2655,10 @@
           "api"
         ],
         "created": "2026-09-01",
-        "last_validated": "2026-09-01"
+        "last_validated": "2026-09-01",
+        "contradiction": "release speed vs end-to-end confidence",
+        "separation": "time",
+        "principle": "rc soak >=3 days in this repo + Pilot staging before tag"
       },
       "mem-073": {
         "type": "decision",
@@ -2648,7 +2675,25 @@
           "api"
         ],
         "created": "2026-09-01",
-        "last_validated": "2026-09-01"
+        "last_validated": "2026-09-01",
+        "contradiction": "big-bang runtime replacement vs reversibility",
+        "separation": "time",
+        "principle": "beforehand cushioning: additive-only config migration + verified downgrade"
+      },
+      "mem-074": {
+        "type": "decision",
+        "summary": "reconcile: use --execute --fields-only to sync TRIZ tags; plain --execute re-registers pruned resolved/ files under fresh ids",
+        "path": "memories/decisions/mem-074.md",
+        "confidence": 0.95,
+        "concepts": [
+          "knowledge",
+          "workflow"
+        ],
+        "created": "2026-09-10",
+        "last_validated": "2026-09-10",
+        "contradiction": "reconcile completeness vs pruned-archive integrity",
+        "separation": "condition",
+        "principle": "dynamization: opt-in --fields-only flag"
       }
     },
     "files": {}
@@ -8079,7 +8124,8 @@
       "mem-070",
       "mem-071",
       "mem-072",
-      "mem-073"
+      "mem-073",
+      "mem-074"
     ],
     "backend": [
       "TASK-16",
@@ -8417,7 +8463,8 @@
       "mem-068",
       "TASK-68",
       "TASK-66",
-      "TASK-69"
+      "TASK-69",
+      "mem-074"
     ],
     "theory of mind": [
       "TASK-19",

@@ -330,5 +330,5 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2026-07-11
-**Navigator Version**: 7.0.0
+**Last Updated**: 2026-09-10
+**Navigator Version**: 7.1.0

@@ -236,7 +236,7 @@ VERSION_CONFIGS: Dict[str, Dict[str, Any]] = {
         "setup_hook": {
             "enabled": True
         }
-    }
+    },
 }
 
 

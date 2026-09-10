@@ -6,6 +6,24 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.1.0] — 2026-09-10 — "Contradictions"
+
+TRIZ Phase 1 (TASK-72): Navigator starts asking for a *better* solution, not just a fast one.
+Additive, no hook-path or state changes.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.1.0.md)
+
+- **Brief**: optional `Contradiction` row ("improving X worsens Y" or `none`); declared
+  contradictions trigger a prior-resolutions lookup before `Approach`. Off-switch
+  `brief_hook.contradiction_field`.
+- **Decision memories**: optional `**Contradiction**` / `**Separation**` / `**Principle**`
+  footer fields (`add-memory --contradiction/--separation/--principle`); `reconcile` syncs
+  them disk → node (`field_updates`; new `--fields-only` to skip registering unindexed files).
+  Untagged memories byte-identical.
+- **Query**: `graph_manager.py --action contradictions [--filter]`; recall renders ` ↔ A vs B`.
+- **Agents**: `navigator-research` Phase 0.5 (Ideal Final Result + reuse inventory),
+  `task-planner` step 1.5 + IFR line, nav-workflow RESEARCH bullets.
+- **Retrofit**: 11 decisions tagged in this repo's graph.
+
 ## [v7.0.0] — 2026-09-01 — "Hooks as Runtime"
 
 Complete hooks-runtime transformation (TASK-57..63), hardened by ~7 weeks of dogfood

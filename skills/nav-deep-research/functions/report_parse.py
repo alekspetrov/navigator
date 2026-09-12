@@ -9,6 +9,11 @@ The citation contract the writer, critic, patcher and gate all agree on:
 - ``## Sources`` is the last H2 and holds a table ``| n | id | title | url |``
   where ``id`` is the three-digit source note id (``sources/NNN.md``)
 - ``## Key findings`` bullets are ``- (pattern|pitfall|decision|learning) text [n]``
+
+The readable layout (reference/REPORT-FORMAT.md) adds two mechanical checks:
+- ``## Summary`` opens with a ``**Answer:**`` line and carries at least two bullets
+- no paragraph, blockquote, or single bullet before ``## Sources`` exceeds
+  ``MAX_PARAGRAPH_CHARS``; tables, headings, and fenced code are exempt
 """
 
 from __future__ import annotations
@@ -21,8 +26,12 @@ FENCE_RE = re.compile(r"^```.*?^```", re.MULTILINE | re.DOTALL)
 H2_RE = re.compile(r"^## +(.+?)\s*$", re.MULTILINE)
 FINDING_RE = re.compile(r"^-\s+\((pattern|pitfall|decision|learning)\)\s+(.+?)\s*$",
                         re.IGNORECASE)
-REQUIRED_SECTIONS = ("Summary", "Key findings", "Sources")
+REQUIRED_SECTIONS = ("Summary", "Key findings", "Open questions", "Sources")
 MEMORY_TYPES = ("pattern", "pitfall", "decision", "learning")
+ANSWER_RE = re.compile(r"^\*\*Answer:?\*\*:?\s+\S", re.IGNORECASE)
+BULLET_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
+MAX_PARAGRAPH_CHARS = 700
+MIN_SUMMARY_BULLETS = 2
 
 
 def strip_code(text: str) -> str:
@@ -100,3 +109,55 @@ def untyped_findings(text: str) -> list[str]:
     body = find_section(text, "Key findings") or ""
     return [line.strip() for line in body.splitlines()
             if line.strip().startswith("- ") and not FINDING_RE.match(line.strip())]
+
+
+def summary_structure(text: str) -> dict:
+    """{has_answer, bullets} for the ## Summary section (missing section → zeros)."""
+    body = find_section(text, "Summary") or ""
+    lines = [line.strip() for line in body.splitlines()]
+    return {
+        "has_answer": any(ANSWER_RE.match(line) for line in lines),
+        "bullets": sum(1 for line in lines if BULLET_RE.match(line)),
+    }
+
+
+def paragraphs(text: str) -> list[dict]:
+    """Prose blocks before ## Sources: [{section, chars, head}].
+
+    A block is a run of non-blank lines; each bullet item starts its own block so a
+    list is measured item by item. Headings, table rows, and fenced code are skipped.
+    ``section`` is the enclosing H2 title, or ``(header)`` before the first H2.
+    """
+    out: list[dict] = []
+    section = "(header)"
+    block: list[str] = []
+
+    def flush() -> None:
+        if block:
+            joined = " ".join(line.strip() for line in block)
+            out.append({"section": section, "chars": len(joined), "head": joined[:60]})
+            block.clear()
+
+    for line in strip_code(body_without_sources(text)).splitlines():
+        stripped = line.strip()
+        if not stripped:
+            flush()
+            continue
+        if stripped.startswith("#"):
+            flush()
+            match = H2_RE.match(stripped)
+            if match:
+                section = match.group(1).strip()
+            continue
+        if stripped.startswith("|"):
+            flush()
+            continue
+        if BULLET_RE.match(line):
+            flush()
+        block.append(line)
+    flush()
+    return out
+
+
+def long_paragraphs(text: str, limit: int = MAX_PARAGRAPH_CHARS) -> list[dict]:
+    return [p for p in paragraphs(text) if p["chars"] > limit]

@@ -35,12 +35,19 @@ graph memories, an index line in `.agent/DEVELOPMENT-README.md`.
 6. `python3 "$NDR/research_run.py" step --run <slug> --done 6`
 7. **Tell the user**, in this shape and nothing longer:
    ```
-   Research shipped: .agent/research/<slug>/report.md
-   Sources cited: K (ok=…, blocked=…, skipped=…)   Critic: applied=a unresolved=0
-   Graph: n memories added (ids …)
-   Open questions: <count>, see the report's Open questions section
+   **Research shipped:** `.agent/research/<slug>/report.md`
+
+   - Sources: K cited (ok=…, blocked=…, skipped=…)
+   - Critic: a applied, 0 unresolved
+   - Graph: n memories added (ids …)
+   - Open questions: <count> (listed in the report)
+
+   ## Summary
+   <the report's ## Summary section, verbatim: the **Answer:** line, the bullets,
+   the counter-position, the still-open line>
    ```
-   Then quote the report's `## Summary` section verbatim.
+   The Summary is the reader's whole first screen, so it is quoted as written; do not
+   paraphrase or compress it.
 
 ## Hyperresearch backend
 

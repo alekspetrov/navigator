@@ -2,6 +2,8 @@
 
 **Status**: ✅ Released v7.3.0 + live run verified — 2026-09-10 (ships OFF by default; enabled in this repo for dogfood)
 
+**Follow-up**: report layout made answer-first with two extra gate checks in v7.4.0 (TASK-75).
+
 ## Context
 
 **Problem**: Navigator's research is codebase research (`agents/navigator-research.md`)

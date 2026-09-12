@@ -10,21 +10,26 @@
 3. Spawn ONE writer, `subagent_type: navigator:deep-research-writer`, model from
    `config.models.writer`. Prompt = spawn contract, then:
    ```
+   report_format: <absolute path of skills/nav-deep-research/reference/REPORT-FORMAT.md>
    atomic_items: <the JSON list>
    register: <analyze|survey|teach>
    coverage_gaps: <list or none>  (state these in Open questions; do not invent coverage)
    max_full_reads: <config.max_full_reads>
-   Write <run_dir>/report.md in one Write call. Follow the citation contract exactly.
+   Write <run_dir>/report.md in one Write call. Read report_format first and follow
+   its layout; follow the citation contract exactly.
    ```
+   `report_format` resolves from `$NDR`: `"${NDR%/functions}/reference/REPORT-FORMAT.md"`.
 4. While it runs, keep `<run_dir>/orchestrator-notes.md` updated with a tool call; no
    bare text turns.
 5. When the writer returns, run a quick pre-check without writing `ship.json`:
    ```bash
    python3 "$NDR/ship_gate.py" --run <slug> --min-sources <config.min_sources> --no-write
    ```
-   Only `citations-resolve`, `required-sections`, `no-citation-ranges` and
-   `key-findings-typed` matter here. If any of those fail, fix them with small Edit
-   hunks yourself (a missing Sources row, a `[3-5]` range, an untyped bullet). Do not
+   Only `citations-resolve`, `required-sections`, `no-citation-ranges`,
+   `key-findings-typed`, `summary-scannable` and `no-wall-of-text` matter here. If any
+   of those fail, fix them with small Edit hunks yourself (a missing Sources row, a
+   `[3-5]` range, an untyped bullet, a missing `**Answer:**` line, a paragraph split
+   at a sentence boundary; the fix path is in `reference/REPORT-FORMAT.md`). Do not
    rerun the writer for these. Content problems are the critic's job, not yours.
 6. Record the Sources row count so the gate can prove the patcher never shrank it:
    ```bash
@@ -35,8 +40,8 @@
 
 ## Exit criterion
 
-`report.md` exists with Summary, body sections, Key findings, Open questions, Sources;
-the four structural gate checks pass.
+`report.md` exists with the header block, an answer-first Summary, body sections, Key
+findings, Open questions, Sources; the six structural gate checks pass.
 
 ## Next
 

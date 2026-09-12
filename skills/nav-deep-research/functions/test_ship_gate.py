@@ -9,7 +9,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from report_parse import body_citations, citation_ranges, key_findings, sources_table
+from report_parse import (MAX_PARAGRAPH_CHARS, body_citations, citation_ranges, key_findings,
+                          long_paragraphs, paragraphs, sources_table, summary_structure)
 from research_run import init_run, set_meta
 from ship_gate import evaluate
 from source_store import store_note
@@ -17,7 +18,17 @@ from source_store import store_note
 SCRIPT = Path(__file__).parent / "ship_gate.py"
 
 
-def _report(n_sources=3, extra_body="", findings=None, tail=""):
+SUMMARY = (
+    "**Answer:** Trapped ions lead on fidelity {cites}. {extra}\n\n"
+    "- **Cooling.** Laser cooling is standard [1]\n"
+    "- **Depth.** Heating rates cap circuit depth [1]\n\n"
+    "**Counter-position:** Neutral atoms scale faster [1]\n\n"
+    "**Still open:** see Open questions\n"
+)
+
+
+def _report(n_sources=3, extra_body="", findings=None, tail="", summary=SUMMARY,
+            body=""):
     findings = findings if findings is not None else [
         "- (pattern) Trapped ions use laser cooling [1]",
         "- (pitfall) Heating rates limit gate depth [2][3]",
@@ -26,12 +37,17 @@ def _report(n_sources=3, extra_body="", findings=None, tail=""):
                      for i in range(1, n_sources + 1))
     cites = " ".join(f"[{i}]" for i in range(1, n_sources + 1))
     return (
-        "# Report\n\n## Summary\n\nIntro citing {cites}. {extra}\n\n"
+        "# Report\n\n> **Query:** gate tests\n\n## Summary\n\n{summary}\n"
         "```\ncode [99] is ignored\n```\n\n"
-        "A markdown link [text](https://x) is not a cite.\n\n"
+        "## Q1. Body\n\nA markdown link [text](https://x) is not a cite.\n\n{body}\n"
         "## Key findings\n\n{findings}\n\n"
+        "## Open questions\n\n- **Which trap wins?** A head-to-head benchmark.\n\n"
         "## Sources\n\n| n | id | title | url |\n|---|---|---|---|\n{rows}\n{tail}"
-    ).format(cites=cites, extra=extra_body, findings="\n".join(findings), rows=rows, tail=tail)
+    ).format(summary=summary.format(cites=cites, extra=extra_body), body=body,
+             findings="\n".join(findings), rows=rows, tail=tail)
+
+
+WALL = "Sentence number one about ions. " * 30  # ~960 chars, over the cap
 
 
 class TestReportParse(unittest.TestCase):
@@ -41,6 +57,27 @@ class TestReportParse(unittest.TestCase):
 
     def test_ranges_detected(self):
         self.assertEqual(citation_ranges("a [3-5] b [1–2]"), ["[3-5]", "[1–2]"])
+
+    def test_summary_structure_detects_answer_line_and_bullets(self):
+        self.assertEqual(summary_structure(_report()), {"has_answer": True, "bullets": 2})
+        plain = _report(summary="Just prose {cites}. {extra}\n")
+        self.assertEqual(summary_structure(plain), {"has_answer": False, "bullets": 0})
+        self.assertEqual(summary_structure("no summary here"),
+                         {"has_answer": False, "bullets": 0})
+
+    def test_paragraphs_split_on_blank_lines_bullets_and_skip_tables_code(self):
+        text = (
+            "# T\n\n> **Query:** q\n\n## Summary\n\npara one\nstill one\n\n"
+            "- bullet a\n  continued\n- bullet b\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n"
+            "```\n" + "x" * 2000 + "\n```\n\n## Sources\n\n" + "y" * 2000 + "\n"
+        )
+        blocks = paragraphs(text)
+        self.assertEqual([b["section"] for b in blocks],
+                         ["(header)", "Summary", "Summary", "Summary"])
+        self.assertEqual([b["head"] for b in blocks][1:],
+                         ["para one still one", "- bullet a continued", "- bullet b"])
+        self.assertEqual(long_paragraphs(text), [])
+        self.assertTrue(long_paragraphs("## Summary\n\n" + "z" * (MAX_PARAGRAPH_CHARS + 1)))
 
     def test_sources_table_and_findings(self):
         text = _report()
@@ -86,8 +123,40 @@ class TestGate(unittest.TestCase):
     def test_missing_section_and_sources_not_last(self):
         self._write(_report().replace("## Summary", "## Overview"))
         self.assertIn("required-sections", self._failed(evaluate(self.dir, 3)))
+        self._write(_report().replace("## Open questions", "## Loose ends"))
+        self.assertIn("required-sections", self._failed(evaluate(self.dir, 3)))
         self._write(_report(tail="\n## Appendix\n\nmore\n"))
         self.assertIn("required-sections", self._failed(evaluate(self.dir, 3)))
+
+    def test_summary_without_answer_line_or_bullets_fails(self):
+        self._write(_report(summary="Answer buried in prose {cites}. {extra}\n\n"
+                                    "- **One.** bullet [1]\n- **Two.** bullet [1]\n"))
+        self.assertEqual(self._failed(evaluate(self.dir, 3)), {"summary-scannable"})
+        self._write(_report(summary="**Answer:** short {cites}. {extra}\n\n- only one [1]\n"))
+        self.assertEqual(self._failed(evaluate(self.dir, 3)), {"summary-scannable"})
+        self._write(_report(summary="**Answer**: colon outside works {cites}. {extra}\n\n"
+                                    "- a [1]\n- b [1]\n"))
+        self.assertTrue(evaluate(self.dir, 3)["ok"])
+
+    def test_wall_of_text_fails_with_section_named(self):
+        self._write(_report(body=WALL + "[1]\n\n"))
+        result = evaluate(self.dir, 3)
+        self.assertEqual(self._failed(result), {"no-wall-of-text"})
+        detail = next(c["detail"] for c in result["checks"] if c["name"] == "no-wall-of-text")
+        self.assertIn("[Q1. Body]", detail)
+        self.assertIn("Sentence number one", detail)
+        self._write(_report(summary=SUMMARY + "\n" + WALL + "\n"))
+        self.assertIn("no-wall-of-text", self._failed(evaluate(self.dir, 3)))
+
+    def test_wall_of_text_exempts_tables_code_and_measures_bullets_individually(self):
+        cell = "w" * 400
+        table = f"| a | b |\n|---|---|\n| {cell} | {cell} |\n\n"
+        code = "```\n" + "c" * 2000 + "\n```\n\n"
+        bullets = "".join(f"- item {i} " + "b" * 300 + " [1]\n" for i in range(6)) + "\n"
+        self._write(_report(body=table + code + bullets))
+        self.assertTrue(evaluate(self.dir, 3)["ok"], evaluate(self.dir, 3))
+        self._write(_report(body="- one giant bullet " + "b" * 700 + " [1]\n\n"))
+        self.assertIn("no-wall-of-text", self._failed(evaluate(self.dir, 3)))
 
     def test_citation_range_fails(self):
         self._write(_report(extra_body="and [1-3]"))

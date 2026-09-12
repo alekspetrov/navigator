@@ -10,7 +10,8 @@ re-interpreting the checks.
 
 Checks:
   report-exists          report.md is present and non-empty
-  required-sections      ## Summary, ## Key findings, ## Sources present; Sources is last
+  required-sections      ## Summary, ## Key findings, ## Open questions, ## Sources
+                         present; Sources is last
   no-citation-ranges     no [3-5] style citations
   citations-resolve      set(body [n]) == set(table n); n is 1..K consecutive
   sources-have-notes     every table id maps to sources/NNN.md with status ok
@@ -20,6 +21,11 @@ Checks:
   sources-not-shrunk     Sources rows >= run.json meta.sources_rows_before_patch
   min-sources            K >= --min-sources
   key-findings-typed     at least one typed Key findings bullet, no untyped ones
+  summary-scannable      ## Summary opens with a **Answer:** line and has >= 2 bullets
+  no-wall-of-text        no paragraph, blockquote, or bullet before ## Sources exceeds
+                         report_parse.MAX_PARAGRAPH_CHARS (tables/headings/code exempt)
+
+Layout rules the last two checks enforce: reference/REPORT-FORMAT.md.
 """
 
 from __future__ import annotations
@@ -30,8 +36,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from report_parse import (REQUIRED_SECTIONS, body_citations, citation_ranges,  # noqa: E402
-                          key_findings, sections, sources_table, untyped_findings)
+from report_parse import (MAX_PARAGRAPH_CHARS, MIN_SUMMARY_BULLETS,  # noqa: E402
+                          REQUIRED_SECTIONS, body_citations, citation_ranges,
+                          key_findings, long_paragraphs, sections, sources_table,
+                          summary_structure, untyped_findings)
 from source_store import parse_note  # noqa: E402
 from untrusted import contains_fence  # noqa: E402
 
@@ -117,6 +125,17 @@ def evaluate(run_directory: Path, min_sources: int = DEFAULT_MIN_SOURCES) -> dic
     typed, untyped = key_findings(text), untyped_findings(text)
     check("key-findings-typed", bool(typed) and not untyped,
           f"typed={len(typed)} untyped={len(untyped)}")
+
+    summary = summary_structure(text)
+    check("summary-scannable",
+          summary["has_answer"] and summary["bullets"] >= MIN_SUMMARY_BULLETS,
+          f"answer-line={summary['has_answer']} bullets={summary['bullets']} "
+          f"(need **Answer:** line and >= {MIN_SUMMARY_BULLETS} bullets)")
+
+    walls = long_paragraphs(text)
+    check("no-wall-of-text", not walls,
+          "; ".join(f"[{w['section']}] {w['chars']} chars: {w['head']!r}" for w in walls)
+          if walls else f"ok (cap {MAX_PARAGRAPH_CHARS} chars)")
 
     return {"ok": all(c["ok"] for c in checks), "checks": checks}
 

@@ -1,7 +1,7 @@
 ---
 name: nav-deep-research
 description: Web deep research producing a cited report from fetched sources, adversarially reviewed and gate-checked, with conclusions ingested into the knowledge graph. Auto-invoke when user says "deep research on", "research the web for", "write a research report on", "what does the literature say about", or "deep dive into" a topic outside the codebase. For codebase questions use the navigator-research agent instead.
-version: 1.0.0
+version: 1.1.0
 allowed-tools: Read, Write, Edit, Bash, WebSearch, WebFetch, Task
 ---
 
@@ -75,6 +75,10 @@ list` shows runs.
 | 4 Critique | `steps/4-critique.md` | one `deep-research-critic` (+ one gap wave) | `findings/critic.json` |
 | 5 Patch | `steps/5-patch.md` | one `deep-research-patcher` | `patch-log.json` |
 | 6 Ship | `steps/6-ship.md` | main session | `ship.json`, graph memories, README line |
+
+The report follows the readable layout in `reference/REPORT-FORMAT.md` (answer-first
+Summary, At-a-glance table for comparisons, one section per atomic item, paragraph cap);
+the writer reads that file at step 3 and the gate checks it at steps 3 and 6.
 
 Steps 4 and 5 are skipped (`research_run.py step --skip N --reason "critic disabled"`)
 when `critic_enabled` is false. Before each step:
@@ -162,5 +166,6 @@ refetch --run <slug>` rebuilds them from the recorded URLs and reports sha misma
 - `functions/ship_gate.py` — deterministic checks, exit 1 on failure
 - `functions/report_to_graph.py` — Key findings → knowledge graph
 - `functions/untrusted.py` — the `<nav-untrusted-source>` fence
+- `reference/REPORT-FORMAT.md` — the readable report layout, gate rules, fix path
 - Agents: `agents/deep-research-{fetcher,writer,critic,patcher}.md`
 - Task doc: `.agent/tasks/TASK-74-nav-deep-research.md`

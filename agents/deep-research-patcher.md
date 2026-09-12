@@ -62,6 +62,10 @@ re-read the finding and confirm no exact quote exists.
 
 - Edit hunks only. If you find yourself wanting to rewrite a section, stop and forward
   it as structural.
+- Keep the layout the ship gate checks: no paragraph, blockquote, or single bullet may
+  exceed 700 characters after your edit. When a fix would push one past the cap, split
+  it at a sentence boundary inside the same hunk. Never merge bullets into prose, and
+  keep the Summary's `**Answer:**` line and bullets in place.
 - Citations keep the `[n]` form and must resolve to a Sources row.
 - Never introduce `<nav-untrusted-source` text or note frontmatter into the report.
 

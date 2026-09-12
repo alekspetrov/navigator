@@ -6,6 +6,24 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.4.0] — 2026-09-12 — "Readable Reports"
+
+nav-deep-research reports are answer-first (TASK-75): a fixed Summary block, an At-a-glance
+table for comparisons, one section per atomic item with lead sentence + bullets, and a
+700-character paragraph cap enforced by the ship gate. Additive; no config change.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.4.0.md)
+
+- **`reference/REPORT-FORMAT.md`**: the layout, rules, fix path per gate failure, abridged
+  example; the writer reads it before drafting.
+- **Ship gate**: two new checks (twelve total) — `summary-scannable` (`**Answer:**` line +
+  ≥ 2 bullets) and `no-wall-of-text` (no paragraph, blockquote, or bullet over 700 chars;
+  tables/headings/code exempt; detail names the section). `## Open questions` is now a
+  required section.
+- **Agents**: writer takes `report_format` and plans the At-a-glance table + Answer sentence
+  first; patcher keeps the cap and the Answer line when applying hunks.
+- **Steps**: step 3 pre-check covers the six structural checks; step 6 ship message is a
+  short bullet block + the Summary verbatim.
+
 ## [v7.3.0] — 2026-09-10 — "Deep Research"
 
 Web deep research (TASK-74): `nav-deep-research` skill — a question in, a cited report out,

@@ -194,6 +194,16 @@ Ships OFF (`deep_research.enabled`); runs live under `.agent/research/<slug>/`. 
 codebase questions use the `navigator-research` agent.
 Details: `skills/nav-deep-research/SKILL.md`.
 
+### Code Intelligence (v7.5.0)
+
+When a language-server plugin from the official marketplace is enabled (pyright-lsp,
+typescript-lsp, gopls-lsp, …), `navigator-research` uses the `LSP` tool for symbol
+questions — references, definition, outline, hover — and falls back to Grep when the
+tool is absent. Nothing bundled, no config key: the plugin's presence is the toggle.
+Measured on this repo (TASK-76): a who-calls question dropped from 9 requests / 284k
+context tokens to 5 / 142k with the complete call-site list; convention questions are
+unaffected. `scripts/agent_tool_counts.py` gives real per-tool counts from a transcript.
+
 ---
 
 ## Agents vs Skills - Token Optimization Strategy
@@ -213,6 +223,8 @@ Details: `skills/nav-deep-research/SKILL.md`.
 
 Prefer a Task agent over manually Reading many files (fan-out Reads are guarded — enforced
 by read_guard (hook runtime); this text is documentation, not the mechanism).
+With an LSP plugin installed the research agent uses `LSP` for symbol questions and Grep
+otherwise (`agents/navigator-research.md`, Phase 1.5).
 
 ---
 
@@ -352,5 +364,5 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2026-09-12
-**Navigator Version**: 7.4.0
+**Last Updated**: 2026-09-13
+**Navigator Version**: 7.5.0

@@ -6,6 +6,24 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.5.0] — 2026-09-13 — "Code Intelligence"
+
+`navigator-research` uses Claude Code's `LSP` tool for symbol questions when a
+language-server plugin is enabled and falls back to Grep otherwise (TASK-76). Nothing is
+bundled and there is no config key: the plugin's presence is the toggle. Additive.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.5.0.md)
+
+- **`agents/navigator-research.md`**: `LSP` in `tools:`; new Phase 1.5 (availability
+  check, question→operation table, one-retry rule for the server's first-request
+  indexing race, static-imports-only caveat, never for conventions); Sampling Report
+  gains an `LSP calls:` line.
+- **`scripts/agent_tool_counts.py`**: per-tool call counts and per-request-deduplicated
+  token usage from any transcript JSONL, the ground truth behind the A/B (6 tests).
+- **Measured on this repo**: a who-calls question dropped from 9 requests / 284k context
+  tokens to 5 / 142k with the complete call-site list; convention questions unchanged.
+
+---
+
 ## [v7.4.0] — 2026-09-12 — "Readable Reports"
 
 nav-deep-research reports are answer-first (TASK-75): a fixed Summary block, an At-a-glance

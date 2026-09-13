@@ -5,7 +5,7 @@
 Sessions that last. AI that learns. Features that ship.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-7.4.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
+[![Version](https://img.shields.io/badge/version-7.5.0-blue.svg)](https://github.com/alekspetrov/navigator/releases)
 
 ---
 
@@ -150,6 +150,13 @@ Efficiency score:                  94/100 (excellent)
 
 # Restart Claude Code
 ```
+
+**Code intelligence (optional).** Install a language-server plugin for your stack
+(`/plugin install pyright-lsp@claude-plugins-official`, `typescript-lsp`, `gopls-lsp`, …;
+the server binary must be on your PATH) and the research agent answers symbol questions
+with go-to-definition, references and outlines instead of text search. Without one it
+uses Grep exactly as before. Measured on this repo: a who-calls question went from 9
+requests and 284k context tokens to 5 requests and 142k, with the complete call-site list.
 
 ### Initialize
 

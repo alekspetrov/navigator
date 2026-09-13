@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "last_updated": "2026-09-10T14:19:39.270113+00:00",
+  "last_updated": "2026-09-13T12:02:11.986989+00:00",
   "stats": {
-    "total_nodes": 187,
+    "total_nodes": 189,
     "total_edges": 892,
-    "memory_count": 67
+    "memory_count": 68
   },
   "nodes": {
     "tasks": {
@@ -1669,6 +1669,11 @@
         "name": "Subagents",
         "aliases": [],
         "domain": "general"
+      },
+      "lsp": {
+        "name": "Lsp",
+        "aliases": [],
+        "domain": "general"
       }
     },
     "memories": {
@@ -2709,6 +2714,20 @@
         "contradiction": "reconcile completeness vs pruned-archive integrity",
         "separation": "condition",
         "principle": "dynamization: opt-in --fields-only flag"
+      },
+      "mem-075": {
+        "type": "learning",
+        "summary": "Claude Code 2.1.258: the LSP tool is grantable to a subagent by listing LSP in tools: (agent .md frontmatter or --agents JSON); listing it without a language-server plugin is harmless (agent loads, zero LSP calls, no error). pyright's first request after server start races workspace indexing \u2014 findReferences returns only the definition, a second identical call returns the full set (61 refs for runtime.dispatch). Evidence: TASK-76 spike transcripts 7cd03832\u2026/agent-af6a7fa4a596a9b78.jsonl (grant), 27906176\u2026/agent-ae808b30ec9fbda5a.jsonl (negative control), e9008f11\u2026/subagents (retry \u2192 61).",
+        "path": "memories/learnings/mem-075.md",
+        "confidence": 0.95,
+        "concepts": [
+          "hooks",
+          "subagents",
+          "harness-behavior",
+          "lsp"
+        ],
+        "created": "2026-09-13",
+        "last_validated": "2026-09-13"
       }
     },
     "files": {}
@@ -8644,7 +8663,8 @@
       "mem-052",
       "mem-053",
       "mem-054",
-      "mem-055"
+      "mem-055",
+      "mem-075"
     ],
     "session-lifecycle": [
       "mem-026",
@@ -8745,7 +8765,8 @@
       "mem-052",
       "mem-053",
       "mem-054",
-      "mem-055"
+      "mem-055",
+      "mem-075"
     ],
     "sessionstart": [
       "mem-036"
@@ -8824,7 +8845,11 @@
       "mem-055"
     ],
     "subagents": [
-      "mem-052"
+      "mem-052",
+      "mem-075"
+    ],
+    "lsp": [
+      "mem-075"
     ]
   }
 }

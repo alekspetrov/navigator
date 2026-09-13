@@ -36,7 +36,8 @@ TEST_DIRS := \
 	skills/nav-triz/functions \
 	skills/nav-deep-research/functions \
 	skills/nav-onboard/functions \
-	skills/nav-profile/functions
+	skills/nav-profile/functions \
+	scripts
 
 # Standalone shell test scripts (each exits non-zero on failure).
 SHELL_TESTS := \

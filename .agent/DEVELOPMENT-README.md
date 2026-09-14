@@ -283,16 +283,31 @@ Each op keeps its v6 `*_hook.enabled` toggle in `.agent/.nav-config.json` (confi
 3. If changing a blocking hook: explicit design review against three-layer architecture
 4. Add an end-to-end smoke test that covers the cooperating-hook composition, not just unit behavior
 
+**Scenario: answering a question about the codebase or the outside world**
+1. Codebase → the `navigator-research` agent. With a language-server plugin installed
+   (pyright-lsp, typescript-lsp, gopls-lsp) it uses the `LSP` tool for symbol questions
+   and Grep otherwise; see its Phase 1.5
+2. Outside world → `"Deep research on X"` (nav-deep-research, ships OFF via
+   `deep_research.enabled`). Output lands in `research/<slug>/` and the graph
+3. Either way, check the knowledge graph first: `"What do we know about X?"`
+
 **Scenario: releasing a new version**
 1. `sops/development/release-workflow.md`
 2. Run `release_validator.py --check-all` and `--verify-hooks`
-3. Bump 6 files (marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json, RELEASE-NOTES-*.md)
-4. Tag → CI publishes via `release.yml`
+3. `./scripts/bump-version.sh X.Y.Z` — updates the five canonical version files
+   (marketplace.json, plugin.json, README.md badge, CLAUDE.md, .nav-config.json) and
+   re-validates. Author `releases/RELEASE-NOTES-vX.Y.Z.md` and the CHANGELOG entry by hand
+4. Commit both (feature commit, then `chore(release): prepare vX.Y.Z`), push, then tag →
+   CI publishes via `release.yml`. Never `gh release create` locally
 5. Verify with `release_validator.py --verify-tag vX.Y.Z`
 
 **Scenario: investigating a session deadlock or unexpected block**
-1. Read `.agent/.nav-workflow-state.json` — what did the Stop hook record?
-2. Read `.agent/.nav-read-counter.json` — read guard state
+1. Read `.agent/.nav-runtime-state.json` — the single schema-2 state file every op reads
+   and writes. `turn` is what the Stop ops recorded, `reads` the read-guard counter,
+   `completion` the stop-completion indicators, `meta.op_errors` any op that failed open.
+   (`.nav-workflow-state.json` and `.nav-read-counter.json` are frozen v6 files, kept for
+   forensics only — nothing writes them since v7.0.0.)
+2. Reproduce the event headlessly: `echo '<payload>' | python3 hooks/nav_dispatch.py <Event>`
 3. Query `"What do we know about hooks?"` for known pitfalls
 4. If novel, capture as `mem-XXX.md` under `.agent/knowledge/memories/pitfalls/`
 
@@ -336,11 +351,14 @@ cd ~/Projects/tmp/nav-test
 "Create an SOP for debugging [issue]"
 "Update system architecture documentation"
 "What do we know about <topic>?"
+"Deep research on <topic>"            # web research → cited report → graph memories
+"Find a better solution for <X>"      # nav-triz, when a contradiction is declared
+"Remember this pitfall: ..."
 "Clear context and preserve markers"
 "Release plugin"
 ```
 
 ---
 
-**Last Updated**: 2026-07-09 (v6.18.1 — nav-brief shipped v6.18.0; decision-extraction separator/dedupe fix v6.18.1; audit roadmap TASK-42 closed incl. wp12 security re-sweep)
+**Last Updated**: 2026-09-14 (v7.6.0 — LSP-aware codebase research TASK-76 v7.5.0; deep-research provenance tags TASK-77 v7.5.1; source lens + `findings-corroborated` gate check TASK-78 v7.6.0)
 **Powered By**: Navigator (Complete Framework)

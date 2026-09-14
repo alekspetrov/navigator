@@ -187,7 +187,8 @@ with a named downside, and recommends one. Details: `skills/nav-triz/SKILL.md`.
 "Deep research on X" runs a web research pipeline in subagents: three-lens search plan,
 parallel fetchers into fenced source notes, one writer, one adversarial critic, one
 patcher limited to Read+Edit, then a deterministic ship gate before typed Key findings
-become graph memories with URLs as evidence. Reports are answer-first: a fixed Summary
+become graph memories with URLs as evidence, each tagged with its fetch date and
+content-hash prefix so a later reader can tell which page version supported the claim. Reports are answer-first: a fixed Summary
 block (Answer, bullets, counter-position), an At-a-glance table for comparisons, one
 section per item, and a paragraph cap the gate enforces (`reference/REPORT-FORMAT.md`).
 Ships OFF (`deep_research.enabled`); runs live under `.agent/research/<slug>/`. For
@@ -364,5 +365,5 @@ the `*_hook` toggle blocks; missing blocks default safe via `nav_hook_lib.config
 
 **For complete Navigator documentation**: See `.agent/DEVELOPMENT-README.md`
 
-**Last Updated**: 2026-09-13
-**Navigator Version**: 7.5.0
+**Last Updated**: 2026-09-14
+**Navigator Version**: 7.5.1

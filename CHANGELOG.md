@@ -6,6 +6,23 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.5.1] — 2026-09-14 — "Provenance"
+
+Deep-research memories now say when and which version of a page supported each claim:
+every cited URL carries `fetched YYYY-MM-DD, sha256 <12 hex>` from the run's local
+source note (TASK-77). Also fixes the parser that dropped citations from wrapped Key
+findings bullets, which had left the first live report's memories without URLs.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.5.1.md)
+
+- **`functions/report_to_graph.py`**: `provenance_by_url()` tags cited URLs from the
+  local notes; URL-only when notes are absent.
+- **`functions/report_parse.py`**: `key_findings()` joins wrapped bullet lines before
+  extracting type, text and cites; trailing punctuation no longer floats.
+- **Tests**: four new cases; dry-run on the WebGPU report goes from 0/12 to 12/12
+  memories with URL evidence, all tagged.
+
+---
+
 ## [v7.5.0] — 2026-09-13 — "Code Intelligence"
 
 `navigator-research` uses Claude Code's `LSP` tool for symbol questions when a

@@ -6,6 +6,23 @@ This project follows [Semantic Versioning](https://semver.org/). The authoritati
 
 ---
 
+## [v7.6.0] — 2026-09-14 — "Provenance, Not Reputation"
+
+Deep research now records which search lens found each source and refuses to let a
+finding rest on a single generic-search hit (TASK-78). Provenance is a fact recorded at
+fetch time, so the gate can check it; source quality stays a judgment for the critic.
+→ [Full release notes](./releases/RELEASE-NOTES-v7.6.0.md)
+
+- **Lens travels end to end**: `canonical`, `breadth`, `adversarial`, `gap` from the
+  search queue into the source note, the writer's digest and the report's Sources table.
+- **Thirteenth gate check** `findings-corroborated`: no Key finding may cite a single
+  `breadth`-lens source. A lone `canonical` or `adversarial` source still passes. Reports
+  without a lens column are exempt.
+- **Fifth critic pass** (Corroboration) flags the same case at severity major, with the
+  fix path: cite a corroborating source on disk, or move the claim to Open questions.
+
+---
+
 ## [v7.5.1] — 2026-09-14 — "Provenance"
 
 Deep-research memories now say when and which version of a page supported each claim:

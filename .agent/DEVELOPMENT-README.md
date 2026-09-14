@@ -145,7 +145,7 @@ When implementation is complete, run these without prompting:
 
 See `.agent/tasks/*.md` for current plans. Shipped work lives in `.agent/tasks/archive/`.
 
-Current active threads (as of 2026-09-13; v7.0.0 tagged 2026-09-01, v7.1.0 + v7.2.0 TRIZ and v7.3.0 deep-research releases 2026-09-10, v7.4.0 readable reports 2026-09-12, v7.5.0 LSP-aware research 2026-09-13 — docs site synced through v7.4.0, v7.5.0 sync pending):
+Current active threads (as of 2026-09-13; v7.0.0 tagged 2026-09-01, v7.1.0 + v7.2.0 TRIZ and v7.3.0 deep-research releases 2026-09-10, v7.4.0 readable reports 2026-09-12, v7.5.0 LSP-aware research 2026-09-13, v7.5.1 research provenance 2026-09-14 — docs site synced through v7.4.0, later sync pending):
 
 **v7.0.0 program — "Hooks as Runtime"** — ALPHA COMPLETE 2026-07-10 (uncommitted→committed same
 day; local testing phase, no release tagged; critical path 57→59→60→61→62→64 all landed, 58/63
@@ -176,6 +176,9 @@ parallel both landed):
   dropped — block reasons render as plain text, so Tier-1 is self-safe via exact-match rail
 
 Other threads:
+- **TASK-77** ✅ — research provenance: every cited URL in a deep-research memory carries
+  `fetched YYYY-MM-DD, sha256 <12 hex>` from the local source note; wrapped Key findings
+  bullets keep their cites (parser joined continuation lines) (shipped v7.5.1)
 - **TASK-76** ✅ — LSP-aware research: `navigator-research` lists the `LSP` tool and uses it
   for symbol questions when a language-server plugin is present (Phase 1.5), Grep
   otherwise; `scripts/agent_tool_counts.py` counts tool calls per transcript; A/B on this

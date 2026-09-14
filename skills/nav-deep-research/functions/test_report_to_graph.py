@@ -9,8 +9,9 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from report_to_graph import build_findings, run
+from report_to_graph import build_findings, provenance_by_url, run
 from research_run import init_run
+from source_store import store_note
 
 SCRIPT = Path(__file__).parent / "report_to_graph.py"
 
@@ -36,7 +37,34 @@ Text [1] and [2].
 """
 
 
+REPORT_WRAPPED = """# Report
+
+## Key findings
+
+- (pattern) All three engines ship WebGPU by default in at least one stable configuration as
+  of late 2025, making cross-engine WebGPU a real target rather than a Chromium-only one
+  [1][2].
+- (pitfall) Short one [2]
+
+## Sources
+
+| n | id | title | url |
+|---|---|---|---|
+| 1 | 001 | One | https://e.com/1 |
+| 2 | 002 | Two | https://e.com/2 |
+"""
+
+
 class TestBuildFindings(unittest.TestCase):
+    def test_wrapped_bullet_keeps_cites_and_full_text(self):
+        # writers wrap at ~90 cols; the cite lands on a continuation line (TASK-77)
+        memories = build_findings(REPORT_WRAPPED, "t", "s")["memories"]
+        self.assertEqual(len(memories), 2)
+        self.assertEqual(memories[0]["evidence"], "https://e.com/1, https://e.com/2")
+        self.assertTrue(memories[0]["summary"].endswith("rather than a Chromium-only one."))
+        self.assertIn("as of late 2025", memories[0]["summary"])
+        self.assertEqual(memories[1]["evidence"], "https://e.com/2")
+
     def test_maps_cites_to_urls_and_defaults(self):
         findings = build_findings(REPORT, "Ion traps", "ion-traps")
         self.assertEqual(findings["topic"], "Ion traps")
@@ -49,6 +77,17 @@ class TestBuildFindings(unittest.TestCase):
         self.assertEqual(memories[1]["evidence"], "https://e.com/1, https://e.com/2")
         self.assertEqual(memories[2]["evidence"], "nav-deep-research run ion-traps")
         self.assertTrue(all(m["confidence"] == 0.7 for m in memories))
+
+    def test_provenance_tags_each_cited_url(self):
+        prov = {"https://e.com/1": "fetched 2026-09-10, sha256 911574a1f5b0"}
+        memories = build_findings(REPORT, "Ion traps", "ion-traps", prov)["memories"]
+        self.assertEqual(memories[0]["evidence"],
+                         "https://e.com/1 (fetched 2026-09-10, sha256 911574a1f5b0)")
+        # untagged URL stays bare; tagged one keeps its tag in the same list
+        self.assertEqual(
+            memories[1]["evidence"],
+            "https://e.com/1 (fetched 2026-09-10, sha256 911574a1f5b0), https://e.com/2")
+        self.assertEqual(memories[2]["evidence"], "nav-deep-research run ion-traps")
 
 
 class TestRun(unittest.TestCase):
@@ -65,6 +104,29 @@ class TestRun(unittest.TestCase):
 
     def tearDown(self):
         self.tmp.cleanup()
+
+    def test_provenance_read_from_local_source_notes(self):
+        import hashlib
+        body = "WebGPU is available in Chrome 113 and later."
+        store_note(self.slug, "https://e.com/1", body, title="One", agent_dir=self.agent)
+        prov = provenance_by_url(self.slug, self.agent)
+        expected = hashlib.sha256(body.encode("utf-8")).hexdigest()[:12]
+        self.assertIn("https://e.com/1", prov)
+        self.assertTrue(prov["https://e.com/1"].startswith("fetched 20"))
+        self.assertTrue(prov["https://e.com/1"].endswith(f"sha256 {expected}"))
+        (self.dir / "report.md").write_text(REPORT, encoding="utf-8")
+        out, code = run(self.slug, self.agent, str(self.graph), dry_run=True)
+        self.assertEqual(code, 0)
+        evidence = out["memories"][0]["evidence"]
+        self.assertTrue(evidence.startswith("https://e.com/1 (fetched "))
+        self.assertIn(f"sha256 {expected})", evidence)
+        # source 2 has no note on disk → bare URL, no tag
+        self.assertTrue(out["memories"][1]["evidence"].endswith(", https://e.com/2"))
+
+    def test_no_notes_keeps_url_only_evidence(self):
+        (self.dir / "report.md").write_text(REPORT, encoding="utf-8")
+        out, _ = run(self.slug, self.agent, str(self.graph), dry_run=True)
+        self.assertEqual(out["memories"][0]["evidence"], "https://e.com/1")
 
     def test_missing_report_exit_1(self):
         out, code = run(self.slug, self.agent, str(self.graph), dry_run=True)

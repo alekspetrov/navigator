@@ -94,15 +94,32 @@ def key_findings(text: str) -> list[dict]:
     """[{type, text, cites:[n], raw}] from ## Key findings bullets; untyped bullets skipped."""
     body = find_section(text, "Key findings") or ""
     out = []
-    for line in body.splitlines():
-        match = FINDING_RE.match(line.strip())
+    for item in bullet_items(body):
+        match = FINDING_RE.match(item)
         if not match:
             continue
         mtype, rest = match.group(1).lower(), match.group(2)
         cites = [int(n) for n in CITE_RE.findall(rest)]
         clean = " ".join(CITE_RE.sub("", rest).split())
-        out.append({"type": mtype, "text": clean, "cites": cites, "raw": line.strip()})
+        clean = re.sub(r"\s+([.,;:])", r"\1", clean)  # "one [1]." -> "one." not "one ."
+        out.append({"type": mtype, "text": clean, "cites": cites, "raw": item})
     return out
+
+
+def bullet_items(body: str) -> list[str]:
+    """Top-level ``- `` bullets with their wrapped continuation lines joined by a space.
+
+    Writers wrap long bullets at ~90 columns, so a finding's citation often sits on an
+    indented continuation line; parsing line by line dropped those cites (TASK-77).
+    """
+    items: list[str] = []
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("- "):
+            items.append(stripped)
+        elif stripped and line[:1].isspace() and items:
+            items[-1] = f"{items[-1]} {stripped}"
+    return items
 
 
 def untyped_findings(text: str) -> list[str]:

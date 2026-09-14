@@ -21,7 +21,9 @@ graph memories, an index line in `.agent/DEVELOPMENT-README.md`.
    python3 "$NDR/report_to_graph.py" --run <slug> --dry-run
    python3 "$NDR/report_to_graph.py" --run <slug>
    ```
-   Every typed Key findings bullet becomes a memory with the cited URLs as evidence.
+   Every typed Key findings bullet becomes a memory with the cited URLs as evidence,
+   each tagged `fetched YYYY-MM-DD, sha256 <12 hex>` from the run's local source note
+   (URL only when the note is missing). `source_store.py refetch` compares the hash.
    Skip this when `.agent/knowledge/graph.json` does not exist and say so.
 4. **Index line.** Append one line to the `## Documentation Structure` section of
    `.agent/DEVELOPMENT-README.md` under a `### Research Reports (research/)` heading

@@ -51,13 +51,17 @@ reader must get the answer from the first screen and be able to stop at any head
 - `n` is assigned in first-use order starting at 1 and never skips.
 - The last section is `## Sources` with exactly this table, one row per cited `n`:
   ```
-  | n | id | title | url |
-  |---|---|---|---|
-  | 1 | 007 | <title> | <url> |
+  | n | id | title | url | lens |
+  |---|---|---|---|---|
+  | 1 | 007 | <title> | <url> | canonical |
   ```
-  `id` is the three-digit note id from the digest. Every row must be cited at least
-  once in the body; every body citation must have a row.
+  `id` is the three-digit note id from the digest; `lens` is that note's `lens:` line,
+  copied verbatim (`breadth`, `canonical`, `adversarial`, `gap`, `unspecified`). Every
+  row must be cited at least once in the body; every body citation must have a row.
 - Only sources with `status: ok` may be cited.
+- A Key finding must not rest on a single `breadth`-lens source: cite a corroborating
+  source as well, or state the claim in Open questions instead (gate:
+  `findings-corroborated`).
 - Sources with `fetch_method: webfetch` may be paraphrased, never quoted verbatim.
 - Direct quotes come only from notes you Read in full, copied exactly.
 

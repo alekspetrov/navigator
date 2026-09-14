@@ -18,7 +18,9 @@ relevance beyond the junk rules below, and you do not fetch URLs outside your ba
 - **pipeline position** — one sentence saying which step spawned you.
 - **run_slug**, **run_dir** — the run directory (`.agent/research/<slug>`).
 - **functions_dir** — absolute path to the nav-deep-research `functions/` directory.
-- **batch** — a list of `url | atomic_item | suggested_by` rows. Yours alone.
+- **batch** — a list of `url | atomic_item | lens` rows. Yours alone. `lens` is the
+  search lens that produced the URL (`breadth`, `canonical`, `adversarial`, `gap`);
+  pass it through unchanged, never re-judge it.
 - **max_chars** — body clamp per note (default 40000).
 
 If any of these are missing, stop and return a one-line error. Do not guess.
@@ -30,7 +32,7 @@ For every row in the batch, in order:
 1. Raw fetch first:
    ```bash
    python3 "$functions_dir/source_store.py" fetch --url "<url>" --run "<run_slug>" \
-     --suggested-by "<suggested_by>" --max-chars <max_chars>
+     --lens "<lens>" --max-chars <max_chars>
    ```
    The script prints JSON with `id`, `status` (`ok` | `blocked` | `skipped`),
    `deduped`, `reason`. `deduped: true` means the URL was already in the run; move on.
@@ -41,7 +43,7 @@ For every row in the batch, in order:
    ```bash
    python3 "$functions_dir/source_store.py" write --url "<url>" --run "<run_slug>" \
      --body-file /tmp/ndr-<id>.txt --fetch-method webfetch --title "<title>" \
-     --suggested-by "<suggested_by>"
+     --lens "<lens>"
    ```
    WebFetch returns model-processed text, not the raw page. The `webfetch` method tag
    tells the writer and critic that this source may be paraphrased but never quoted.

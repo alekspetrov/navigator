@@ -8,7 +8,8 @@ suggested_by, fetch_method, http_status, status, reason, chars, truncated,
 sha256) followed by the body wrapped in the ``<nav-untrusted-source>`` fence.
 
 Commands (all print JSON except ``digest``):
-  fetch   --url U --run SLUG [--suggested-by ID] [--max-chars N] [--timeout S]
+  fetch   --url U --run SLUG [--lens breadth|canonical|adversarial|gap]
+          [--max-chars N] [--timeout S]
   write   --url U --run SLUG --body-file F --fetch-method webfetch [--title T]
   list    --run SLUG [--status ok]
   digest  --run SLUG [--head-chars N]      per-source digest for the writer (markdown)
@@ -283,6 +284,23 @@ def find_duplicate(slug: str, url: str, agent_dir: str = ".agent") -> dict | Non
     return None
 
 
+# Which search lens produced a URL (TASK-78). Recorded in ``suggested_by`` so the
+# writer, the critic and the gate can tell a canonical source from a breadth one.
+# ``canonical`` = primary/authoritative (spec, vendor doc, paper, issue tracker).
+LENSES = ("breadth", "canonical", "adversarial", "gap")
+DEFAULT_LENS = "unspecified"
+
+
+def normalize_lens(value) -> str:
+    """A lens name from ``LENSES``, or ``unspecified`` for anything else.
+
+    Pre-TASK-78 runs wrote ``seed``; unknown values degrade the same way rather
+    than failing a fetch, because a mislabelled source is better than a lost one.
+    """
+    name = str(value or "").strip().lower()
+    return name if name in LENSES else DEFAULT_LENS
+
+
 def store_note(slug: str, url: str, body: str, *, title: str = "", final_url: str = "",
                fetch_method: str = "raw", http_status: int = 0, status: str = "ok",
                reason: str = "", suggested_by: str = "seed", headings: list[str] | None = None,
@@ -315,7 +333,7 @@ def store_note(slug: str, url: str, body: str, *, title: str = "", final_url: st
         "canonical_url": canonical_url(url),
         "title": title or url,
         "fetched_at": now_iso(),
-        "suggested_by": suggested_by or "seed",
+        "suggested_by": normalize_lens(suggested_by),
         "fetch_method": fetch_method,
         "http_status": http_status,
         "status": status,
@@ -364,6 +382,7 @@ def digest(slug: str, head_chars: int = 1500, agent_dir: str = ".agent") -> str:
         parts.append(
             f"### [{meta['id']}] {meta.get('title', '')}\n"
             f"url: {meta.get('url', '')}\n"
+            f"lens: {meta.get('suggested_by', DEFAULT_LENS)}\n"
             f"fetch_method: {meta.get('fetch_method', 'raw')} | chars: {meta.get('chars', 0)}"
             f" | truncated: {str(meta.get('truncated', False)).lower()}\n"
             f"headings: {meta.get('headings', '') or '-'}\n\n"
@@ -402,7 +421,8 @@ def main(argv=None) -> int:
     p_fetch = sub.add_parser("fetch")
     p_fetch.add_argument("--url", required=True)
     p_fetch.add_argument("--run", required=True)
-    p_fetch.add_argument("--suggested-by", default="seed")
+    p_fetch.add_argument("--lens", "--suggested-by", dest="suggested_by",
+                         default=DEFAULT_LENS, help="search lens that produced the URL")
     p_fetch.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
     p_fetch.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT)
 
@@ -412,7 +432,8 @@ def main(argv=None) -> int:
     p_write.add_argument("--body-file", required=True)
     p_write.add_argument("--fetch-method", default="webfetch")
     p_write.add_argument("--title", default="")
-    p_write.add_argument("--suggested-by", default="seed")
+    p_write.add_argument("--lens", "--suggested-by", dest="suggested_by",
+                         default=DEFAULT_LENS, help="search lens that produced the URL")
     p_write.add_argument("--max-chars", type=int, default=DEFAULT_MAX_CHARS)
 
     p_list = sub.add_parser("list")

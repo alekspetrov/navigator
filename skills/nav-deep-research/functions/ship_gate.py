@@ -20,12 +20,15 @@ Checks:
                          lists no unresolved critical findings
   sources-not-shrunk     Sources rows >= run.json meta.sources_rows_before_patch
   min-sources            K >= --min-sources
+  findings-corroborated  no Key finding rests on a single breadth-lens source (skipped
+                         when the Sources table carries no lens column)
   key-findings-typed     at least one typed Key findings bullet, no untyped ones
   summary-scannable      ## Summary opens with a **Answer:** line and has >= 2 bullets
   no-wall-of-text        no paragraph, blockquote, or bullet before ## Sources exceeds
                          report_parse.MAX_PARAGRAPH_CHARS (tables/headings/code exempt)
 
 Layout rules the last two checks enforce: reference/REPORT-FORMAT.md.
+Lens vocabulary: source_store.LENSES (TASK-78).
 """
 
 from __future__ import annotations
@@ -37,9 +40,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from report_parse import (MAX_PARAGRAPH_CHARS, MIN_SUMMARY_BULLETS,  # noqa: E402
-                          REQUIRED_SECTIONS, body_citations, citation_ranges,
-                          key_findings, long_paragraphs, sections, sources_table,
-                          summary_structure, untyped_findings)
+                          REQUIRED_SECTIONS, UNSPECIFIED_LENS, body_citations,
+                          citation_ranges, key_findings, long_paragraphs, sections,
+                          sources_table, summary_structure, untyped_findings)
 from source_store import parse_note  # noqa: E402
 from untrusted import contains_fence  # noqa: E402
 
@@ -121,6 +124,17 @@ def evaluate(run_directory: Path, min_sources: int = DEFAULT_MIN_SOURCES) -> dic
         check("sources-not-shrunk", True, "no pre-patch row count recorded")
 
     check("min-sources", len(rows) >= min_sources, f"rows={len(rows)} min={min_sources}")
+
+    by_n = {row["n"]: row for row in rows}
+    if any(row["lens"] != UNSPECIFIED_LENS for row in rows):
+        weak = [f["text"][:60] for f in key_findings(text)
+                if len(f["cites"]) == 1
+                and by_n.get(f["cites"][0], {}).get("lens") == "breadth"]
+        check("findings-corroborated", not weak,
+              "; ".join(f"single breadth-lens source: {w!r}" for w in weak) if weak
+              else "ok (every finding is corroborated or cites a canonical/adversarial source)")
+    else:
+        check("findings-corroborated", True, "no lens data in the Sources table")
 
     typed, untyped = key_findings(text), untyped_findings(text)
     check("key-findings-typed", bool(typed) and not untyped,

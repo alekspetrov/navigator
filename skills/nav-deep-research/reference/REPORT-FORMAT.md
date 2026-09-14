@@ -54,9 +54,9 @@ Sources table, typed Key findings) is unchanged and documented in the writer age
 
 ## Sources
 
-| n | id | title | url |
-|---|---|---|---|
-| 1 | 007 | <title> | <url> |
+| n | id | title | url | lens |
+|---|---|---|---|---|
+| 1 | 007 | <title> | <url> | canonical |
 ```
 
 ## Rules
@@ -64,6 +64,12 @@ Sources table, typed Key findings) is unchanged and documented in the writer age
 **Answer first.** The title states the conclusion. The Summary opens with an
 `**Answer:**` line, then bullets, then the counter-position. Nothing in the Summary is
 new: every bullet is expanded in a body section.
+
+**Source lens (gate: `findings-corroborated`).** Every Sources row carries the lens that
+found it, copied from the note: `canonical` (spec, vendor doc, paper, issue tracker),
+`breadth`, `adversarial`, `gap`. A Key finding may not rest on a single `breadth` source —
+cite a corroborating source too, or state it in Open questions. Fix by adding a citation,
+never by relabelling a lens.
 
 **Summary shape (gate: `summary-scannable`).** A line starting with `**Answer:**` and at
 least two bullets (aim for three to six). The `**Counter-position:**` and `**Still
@@ -166,8 +172,8 @@ separate opt-in build, and no release has committed to making it the default [1]
 
 ## Sources
 
-| n | id | title | url |
-|---|---|---|---|
-| 1 | 001 | What's New in Python 3.14 | https://docs.python.org/3.14/whatsnew/3.14.html |
-| 2 | 002 | PEP 779 | https://peps.python.org/pep-0779/ |
+| n | id | title | url | lens |
+|---|---|---|---|---|
+| 1 | 001 | What's New in Python 3.14 | https://docs.python.org/3.14/whatsnew/3.14.html | canonical |
+| 2 | 002 | PEP 779 | https://peps.python.org/pep-0779/ | canonical |
 ```

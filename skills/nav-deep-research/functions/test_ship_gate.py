@@ -28,13 +28,19 @@ SUMMARY = (
 
 
 def _report(n_sources=3, extra_body="", findings=None, tail="", summary=SUMMARY,
-            body=""):
+            body="", lenses=None):
+    """A gate-passing report. ``lenses``: {n: lens} adds the TASK-78 Sources column."""
     findings = findings if findings is not None else [
         "- (pattern) Trapped ions use laser cooling [1]",
         "- (pitfall) Heating rates limit gate depth [2][3]",
     ]
-    rows = "\n".join(f"| {i} | {i:03d} | Source {i} | https://e.com/{i} |"
-                     for i in range(1, n_sources + 1))
+    if lenses:
+        rows = "\n".join(
+            f"| {i} | {i:03d} | Source {i} | https://e.com/{i} | {lenses.get(i, 'breadth')} |"
+            for i in range(1, n_sources + 1))
+    else:
+        rows = "\n".join(f"| {i} | {i:03d} | Source {i} | https://e.com/{i} |"
+                         for i in range(1, n_sources + 1))
     cites = " ".join(f"[{i}]" for i in range(1, n_sources + 1))
     return (
         "# Report\n\n> **Query:** gate tests\n\n## Summary\n\n{summary}\n"
@@ -42,9 +48,11 @@ def _report(n_sources=3, extra_body="", findings=None, tail="", summary=SUMMARY,
         "## Q1. Body\n\nA markdown link [text](https://x) is not a cite.\n\n{body}\n"
         "## Key findings\n\n{findings}\n\n"
         "## Open questions\n\n- **Which trap wins?** A head-to-head benchmark.\n\n"
-        "## Sources\n\n| n | id | title | url |\n|---|---|---|---|\n{rows}\n{tail}"
+        "## Sources\n\n{header}\n{rows}\n{tail}"
     ).format(summary=summary.format(cites=cites, extra=extra_body), body=body,
-             findings="\n".join(findings), rows=rows, tail=tail)
+             findings="\n".join(findings), rows=rows, tail=tail,
+             header=("| n | id | title | url | lens |\n|---|---|---|---|---|" if lenses
+                     else "| n | id | title | url |\n|---|---|---|---|"))
 
 
 WALL = "Sentence number one about ions. " * 30  # ~960 chars, over the cap
@@ -54,6 +62,17 @@ class TestReportParse(unittest.TestCase):
     def test_citations_ignore_code_and_links_and_keep_first_use_order(self):
         text = "see [3] then [1] and [3] again\n```\n[7]\n```\n[link](u) [2]\n## Sources\n[9]"
         self.assertEqual(body_citations(text), [3, 1, 2])
+
+    def test_sources_table_lens_column_is_optional(self):
+        legacy = sources_table(_report())
+        self.assertEqual([r["lens"] for r in legacy], ["unspecified"] * 3)
+        tagged = sources_table(_report(lenses={1: "canonical", 2: "adversarial"}))
+        self.assertEqual([r["lens"] for r in tagged],
+                         ["canonical", "adversarial", "breadth"])
+        self.assertEqual(tagged[0]["url"], "https://e.com/1")
+        # an unknown value degrades rather than inventing a lens
+        self.assertEqual(sources_table(_report(lenses={1: "vibes"}))[0]["lens"],
+                         "unspecified")
 
     def test_ranges_detected(self):
         self.assertEqual(citation_ranges("a [3-5] b [1–2]"), ["[3-5]", "[1–2]"])
@@ -115,6 +134,31 @@ class TestGate(unittest.TestCase):
         self._write(_report())
         result = evaluate(self.dir, min_sources=3)
         self.assertTrue(result["ok"], result)
+
+    def test_findings_corroborated_flags_single_breadth_source(self):
+        # finding 1 cites [1] alone, and [1] was found by a generic search
+        self._write(_report(lenses={1: "breadth", 2: "canonical", 3: "canonical"}))
+        result = evaluate(self.dir, 3)
+        self.assertEqual(self._failed(result), {"findings-corroborated"})
+        detail = next(c["detail"] for c in result["checks"]
+                      if c["name"] == "findings-corroborated")
+        self.assertIn("laser cooling", detail)
+
+    def test_findings_corroborated_allows_canonical_and_corroborated_singles(self):
+        # single citation, but a canonical source: a spec or vendor doc can stand alone
+        self._write(_report(lenses={1: "canonical", 2: "breadth", 3: "breadth"}))
+        self.assertTrue(evaluate(self.dir, 3)["ok"])
+        # single adversarial source is fine too; finding 2 cites [2][3], so it is corroborated
+        self._write(_report(lenses={1: "adversarial", 2: "breadth", 3: "breadth"}))
+        self.assertTrue(evaluate(self.dir, 3)["ok"])
+
+    def test_findings_corroborated_skipped_without_lens_data(self):
+        self._write(_report())  # pre-TASK-78 report: no lens column
+        result = evaluate(self.dir, 3)
+        self.assertTrue(result["ok"])
+        detail = next(c["detail"] for c in result["checks"]
+                      if c["name"] == "findings-corroborated")
+        self.assertIn("no lens data", detail)
 
     def test_missing_report(self):
         result = evaluate(self.dir, min_sources=3)

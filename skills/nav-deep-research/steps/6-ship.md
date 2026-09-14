@@ -12,7 +12,9 @@ graph memories, an index line in `.agent/DEVELOPMENT-README.md`.
    ```
    Exit 0 means shippable. On exit 1, read the failing checks and fix the report with
    Edit hunks: add the missing Sources row, remove the dangling `[n]`, type the untyped
-   bullet, apply the unresolved critical finding. Rerun. Three rounds without a pass:
+   bullet, apply the unresolved critical finding. For `findings-corroborated`, cite a
+   corroborating source already on disk or move the claim to Open questions — never by
+   relabelling the source's lens. Rerun. Three rounds without a pass:
    `research_run.py step --run <slug> --block 6 --reason "<failing checks>"` and tell
    the user which checks fail. Never change `--min-sources`, the gate script, or the
    meaning of a check.

@@ -27,6 +27,9 @@ H2_RE = re.compile(r"^## +(.+?)\s*$", re.MULTILINE)
 FINDING_RE = re.compile(r"^-\s+\((pattern|pitfall|decision|learning)\)\s+(.+?)\s*$",
                         re.IGNORECASE)
 REQUIRED_SECTIONS = ("Summary", "Key findings", "Open questions", "Sources")
+# Mirrors source_store.LENSES; duplicated so report_parse stays import-free.
+LENSES = ("breadth", "canonical", "adversarial", "gap")
+UNSPECIFIED_LENS = "unspecified"
 MEMORY_TYPES = ("pattern", "pitfall", "decision", "learning")
 ANSWER_RE = re.compile(r"^\*\*Answer:?\*\*:?\s+\S", re.IGNORECASE)
 BULLET_RE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
@@ -76,7 +79,11 @@ def citation_ranges(text: str) -> list[str]:
 
 
 def sources_table(text: str) -> list[dict]:
-    """Rows of the ## Sources table: [{n, id, title, url}], in table order."""
+    """Rows of the ## Sources table: [{n, id, title, url, lens}], in table order.
+
+    The ``lens`` column (TASK-78) is optional: reports written before it, and rows
+    whose value is not a known lens, come back as ``unspecified``.
+    """
     body = find_section(text, "Sources") or ""
     rows = []
     for line in body.splitlines():
@@ -85,8 +92,9 @@ def sources_table(text: str) -> list[dict]:
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if len(cells) < 4 or not cells[0].isdigit():
             continue
+        lens = cells[4].lower() if len(cells) > 4 else ""
         rows.append({"n": int(cells[0]), "id": cells[1], "title": cells[2],
-                     "url": cells[3]})
+                     "url": cells[3], "lens": lens if lens in LENSES else UNSPECIFIED_LENS})
     return rows
 
 

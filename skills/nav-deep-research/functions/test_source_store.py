@@ -14,9 +14,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from research_run import init_run
-from source_store import (canonical_url, classify, digest, extract_text, fetch_and_store,
-                          fetch_url, find_duplicate, load_notes, parse_note, refetch,
-                          render_note, store_note)
+from source_store import (DEFAULT_LENS, canonical_url, classify, digest, extract_text,
+                          fetch_and_store, fetch_url, find_duplicate, load_notes,
+                          normalize_lens, parse_note, refetch, render_note, store_note)
 from untrusted import PREAMBLE, TAG, contains_fence, neutralize, unwrap_body, wrap_body
 
 SCRIPT = Path(__file__).parent / "source_store.py"
@@ -308,6 +308,41 @@ class TestCLI(unittest.TestCase):
                                    "--run", slug], capture_output=True, text=True)
             self.assertIn("fetch_method: webfetch", proc.stdout)
 
+
+
+
+class LensTest(unittest.TestCase):
+    """The search lens travels from the queue into the note and the digest (TASK-78)."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.agent = str(Path(self.tmp.name) / ".agent")
+        init_run("lens tests", self.agent, self.tmp.name)
+        self.slug = "lens-tests"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_normalize_lens_vocabulary(self):
+        for name in ("breadth", "canonical", "adversarial", "gap"):
+            self.assertEqual(normalize_lens(name), name)
+            self.assertEqual(normalize_lens(f"  {name.upper()} "), name)
+        # pre-TASK-78 runs wrote "seed"; unknown values degrade, they never raise
+        for junk in ("seed", "", None, "primary", 7):
+            self.assertEqual(normalize_lens(junk), DEFAULT_LENS)
+
+    def test_store_note_records_the_lens_and_digest_surfaces_it(self):
+        out = store_note(self.slug, "https://e.com/spec", "Spec body here.",
+                         title="Spec", suggested_by="canonical", agent_dir=self.agent)
+        notes = {meta["id"]: meta for meta, _, _ in load_notes(self.slug, self.agent)}
+        self.assertEqual(notes[out["id"]]["suggested_by"], "canonical")
+        self.assertIn("lens: canonical", digest(self.slug, agent_dir=self.agent))
+
+    def test_unknown_lens_stored_as_unspecified(self):
+        out = store_note(self.slug, "https://e.com/blog", "Blog body.", title="Blog",
+                         suggested_by="seed", agent_dir=self.agent)
+        notes = {meta["id"]: meta for meta, _, _ in load_notes(self.slug, self.agent)}
+        self.assertEqual(notes[out["id"]]["suggested_by"], DEFAULT_LENS)
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,18 +10,22 @@ between `min_sources` and `max_sources`.
 
 1. `python3 "$NDR/research_run.py" step --run <slug> --start 2`
 2. **Build the URL queue.** Run the searches in `search-plan.md` with `WebSearch`. From
-   each result set keep the 2-4 most promising URLs, tagged with the atomic item and
-   lens. Drop obvious junk (link farms, product listings, social feeds). Do not open
-   pages yourself; fetchers do that. Stop adding when the queue reaches about
-   1.5x `max_sources` (some fetches will fail).
+   each result set keep the 2-4 most promising URLs, tagged with the atomic item and the
+   lens of the search that produced them (`breadth`, `canonical`, `adversarial`). The
+   lens travels with the URL into the note and the report's Sources table, so a later
+   reader can tell a spec or vendor doc from a blog that a generic search surfaced —
+   carry it accurately, do not relabel a breadth hit as canonical. Drop obvious junk
+   (link farms, product listings, social feeds). Do not open pages yourself; fetchers do
+   that. Stop adding when the queue reaches about 1.5x `max_sources` (some fetches will
+   fail).
 3. **Batch and spawn.** Split the queue into `fetchers` disjoint batches, balanced across
    atomic items so one blocked site cannot empty an item. Spawn all fetchers in ONE
    message with `subagent_type: navigator:deep-research-fetcher`, model from
    `config.models.fetcher`. Each prompt follows the spawn contract and then lists:
    ```
    batch (yours alone):
-   | url | atomic_item | suggested_by |
-   | https://... | Q1 | seed |
+   | url | atomic_item | lens |
+   | https://... | Q1 | canonical |
    max_chars: 40000
    ```
 4. **While fetchers run, do not emit a bare text turn.** Append your evolving notes to
@@ -35,6 +39,8 @@ between `min_sources` and `max_sources`.
    than two ok sources is a gap. Any fetcher report row marked `junk` does not count.
 6. **One gap wave, at most.** For gap items only: run 2-3 new searches per item (prefer
    canonical and adversarial lenses), build a small queue, spawn one or two fetchers.
+   Tag these rows with the lens that found them, or `gap` when the search was a plain
+   catch-all.
    Then re-check. If an item still has fewer than two sources, record it:
    ```bash
    python3 "$NDR/research_run.py" set --run <slug> --key coverage_gaps --value '["E3"]'

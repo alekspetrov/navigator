@@ -26,7 +26,7 @@ finding the patcher should reject, so do not emit it.
 1. Read the draft in full. Read `<run_dir>/query.md`.
 2. List the sources: `python3 "$functions_dir/source_store.py" list --run "<run_slug>"`.
    Note which ids are `status: ok`, and which have `fetch_method: webfetch`.
-3. Run four passes over the draft, each producing findings:
+3. Run five passes over the draft, each producing findings:
    - **Dialectic.** For each committed claim, Grep the `sources/` notes for
      counter-evidence that is ON DISK but absent from the draft. A source the draft
      cites for one thing while ignoring its disagreement on another counts.
@@ -39,6 +39,12 @@ finding the patcher should reject, so do not emit it.
    - **Instruction.** Compare the section structure against atomic_items and the
      query's own shape. A missing item is critical. An item covered only in passing is
      major.
+   - **Corroboration.** Read the `lens` column of the Sources table. Flag any Key
+     finding whose only citation is a `breadth`-lens source, severity major, fix: cite a
+     corroborating source that is already on disk, or move the claim to Open questions.
+     Do not flag a single `canonical` or `adversarial` source — a spec, a vendor doc or
+     a bug report can stand alone. Judge the lens as recorded; you are not re-ranking
+     sources by reputation.
 4. Write the findings JSON to `output_path` in ONE Write call.
 
 ## Findings format
